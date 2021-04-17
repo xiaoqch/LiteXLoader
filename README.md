@@ -4,7 +4,8 @@
 ## Compiling
 1. Install **Microsoft Visual Studio** with standard C++ building suite
 2. Install CMake and add it to `PATH`
-3. Run the building batch below
+3. Search Windows SDK and install the newest version
+4. Run the building batch below
 
 ---
 

@@ -21,7 +21,8 @@ set (LITE_DLL_SOURCES
 
 ############ Working Below ... ############
 set(CMAKE_CXX_STANDARD 17)
-#set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_BUILD_TYPE Release)
 
 # Main
 set (LIBRARY_OUTPUT_PATH ../Output) 
