@@ -5,18 +5,14 @@ project ( LiteXLoader.Js )
 set (SCRIPTX_BACKEND V8)
 set (BACKEND_LIB_DIR_NAME V8)
 set (BACKEND_LIBS
-DbgHelp
-WinMM
+v8
 v8_libbase
 v8_libplatform
-v8_monolith
 )
 set (BACKEND_INCLUDE_DIRS
     ../engine/${BACKEND_LIB_DIR_NAME}/include
     ../engine/${BACKEND_LIB_DIR_NAME}/include/libplatform
 )
-set(CMAKE_CXX_FLAGS_RELEASE "/MT")
-set(CMAKE_CXX_FLAGS_DEBUG "/MTd")
 
 ############  Sources  ############
 set (LITE_DLL_SOURCES

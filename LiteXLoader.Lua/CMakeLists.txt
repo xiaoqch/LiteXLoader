@@ -5,7 +5,7 @@ project ( LiteXLoader.Lua )
 set (SCRIPTX_BACKEND Lua)
 set (BACKEND_LIB_DIR_NAME Lua)
 set (BACKEND_LIBS
-lua54
+    lua54
 )
 set (BACKEND_INCLUDE_DIRS
     ../engine/${BACKEND_LIB_DIR_NAME}/include

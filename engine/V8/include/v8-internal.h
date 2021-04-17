@@ -7,7 +7,6 @@
 
 #include <stddef.h>
 #include <stdint.h>
-#include <string.h>
 #include <type_traits>
 
 #include "v8-version.h"  // NOLINT(build/include)
@@ -30,6 +29,7 @@ static const Address kNullAddress = 0;
  * Configuration of tagging scheme.
  */
 const int kApiSystemPointerSize = sizeof(void*);
+const int kApiTaggedSize = kApiSystemPointerSize;
 const int kApiDoubleSize = sizeof(double);
 const int kApiInt32Size = sizeof(int32_t);
 const int kApiInt64Size = sizeof(int64_t);
@@ -48,32 +48,28 @@ const intptr_t kSmiTagMask = (1 << kSmiTagSize) - 1;
 template <size_t tagged_ptr_size>
 struct SmiTagging;
 
-constexpr intptr_t kIntptrAllBitsSet = intptr_t{-1};
-constexpr uintptr_t kUintptrAllBitsSet =
-    static_cast<uintptr_t>(kIntptrAllBitsSet);
-
 // Smi constants for systems where tagged pointer is a 32-bit value.
 template <>
 struct SmiTagging<4> {
   enum { kSmiShiftSize = 0, kSmiValueSize = 31 };
-
-  static constexpr intptr_t kSmiMinValue =
-      static_cast<intptr_t>(kUintptrAllBitsSet << (kSmiValueSize - 1));
-  static constexpr intptr_t kSmiMaxValue = -(kSmiMinValue + 1);
-
   V8_INLINE static int SmiToInt(const internal::Address value) {
     int shift_bits = kSmiTagSize + kSmiShiftSize;
-    // Truncate and shift down (requires >> to be sign extending).
-    return static_cast<int32_t>(static_cast<uint32_t>(value)) >> shift_bits;
+    // Shift down (requires >> to be sign extending).
+    return static_cast<int>(static_cast<intptr_t>(value)) >> shift_bits;
   }
   V8_INLINE static constexpr bool IsValidSmi(intptr_t value) {
-    // Is value in range [kSmiMinValue, kSmiMaxValue].
-    // Use unsigned operations in order to avoid undefined behaviour in case of
-    // signed integer overflow.
-    return (static_cast<uintptr_t>(value) -
-            static_cast<uintptr_t>(kSmiMinValue)) <=
-           (static_cast<uintptr_t>(kSmiMaxValue) -
-            static_cast<uintptr_t>(kSmiMinValue));
+    // To be representable as an tagged small integer, the two
+    // most-significant bits of 'value' must be either 00 or 11 due to
+    // sign-extension. To check this we add 01 to the two
+    // most-significant bits, and check if the most-significant bit is 0.
+    //
+    // CAUTION: The original code below:
+    // bool result = ((value + 0x40000000) & 0x80000000) == 0;
+    // may lead to incorrect results according to the C language spec, and
+    // in fact doesn't work correctly with gcc4.1.1 in some cases: The
+    // compiler may produce undefined results in case of signed integer
+    // overflow. The computation must be done w/ unsigned ints.
+    return static_cast<uintptr_t>(value) + 0x40000000U < 0x80000000U;
   }
 };
 
@@ -81,11 +77,6 @@ struct SmiTagging<4> {
 template <>
 struct SmiTagging<8> {
   enum { kSmiShiftSize = 31, kSmiValueSize = 32 };
-
-  static constexpr intptr_t kSmiMinValue =
-      static_cast<intptr_t>(kUintptrAllBitsSet << (kSmiValueSize - 1));
-  static constexpr intptr_t kSmiMaxValue = -(kSmiMinValue + 1);
-
   V8_INLINE static int SmiToInt(const internal::Address value) {
     int shift_bits = kSmiTagSize + kSmiShiftSize;
     // Shift down and throw away top 32 bits.
@@ -101,23 +92,18 @@ struct SmiTagging<8> {
 static_assert(
     kApiSystemPointerSize == kApiInt64Size,
     "Pointer compression can be enabled only for 64-bit architectures");
-const int kApiTaggedSize = kApiInt32Size;
-#else
-const int kApiTaggedSize = kApiSystemPointerSize;
 #endif
 
 #ifdef V8_31BIT_SMIS_ON_64BIT_ARCH
-using PlatformSmiTagging = SmiTagging<kApiInt32Size>;
+typedef SmiTagging<kApiInt32Size> PlatformSmiTagging;
 #else
-using PlatformSmiTagging = SmiTagging<kApiTaggedSize>;
+typedef SmiTagging<kApiTaggedSize> PlatformSmiTagging;
 #endif
 
-// TODO(ishell): Consinder adding kSmiShiftBits = kSmiShiftSize + kSmiTagSize
-// since it's used much more often than the inividual constants.
 const int kSmiShiftSize = PlatformSmiTagging::kSmiShiftSize;
 const int kSmiValueSize = PlatformSmiTagging::kSmiValueSize;
-const int kSmiMinValue = static_cast<int>(PlatformSmiTagging::kSmiMinValue);
-const int kSmiMaxValue = static_cast<int>(PlatformSmiTagging::kSmiMaxValue);
+const int kSmiMinValue = (static_cast<unsigned int>(-1)) << (kSmiValueSize - 1);
+const int kSmiMaxValue = -(kSmiMinValue + 1);
 constexpr bool SmiValuesAre31Bits() { return kSmiValueSize == 31; }
 constexpr bool SmiValuesAre32Bits() { return kSmiValueSize == 32; }
 
@@ -145,8 +131,12 @@ class Internals {
   static const int kJSObjectHeaderSize = 3 * kApiTaggedSize;
   static const int kFixedArrayHeaderSize = 2 * kApiTaggedSize;
   static const int kEmbedderDataArrayHeaderSize = 2 * kApiTaggedSize;
-  static const int kEmbedderDataSlotSize = kApiSystemPointerSize;
-  static const int kNativeContextEmbedderDataOffset = 6 * kApiTaggedSize;
+  static const int kEmbedderDataSlotSize =
+#ifdef V8_COMPRESS_POINTERS
+      2 *
+#endif
+      kApiSystemPointerSize;
+  static const int kNativeContextEmbedderDataOffset = 7 * kApiTaggedSize;
   static const int kFullStringRepresentationMask = 0x0f;
   static const int kStringEncodingMask = 0x8;
   static const int kExternalTwoByteRepresentationTag = 0x02;
@@ -154,7 +144,6 @@ class Internals {
 
   static const uint32_t kNumIsolateDataSlots = 4;
 
-  // IsolateData layout guarantees.
   static const int kIsolateEmbedderDataOffset = 0;
   static const int kExternalMemoryOffset =
       kNumIsolateDataSlots * kApiSystemPointerSize;
@@ -162,14 +151,8 @@ class Internals {
       kExternalMemoryOffset + kApiInt64Size;
   static const int kExternalMemoryAtLastMarkCompactOffset =
       kExternalMemoryLimitOffset + kApiInt64Size;
-  static const int kIsolateFastCCallCallerFpOffset =
-      kExternalMemoryAtLastMarkCompactOffset + kApiInt64Size;
-  static const int kIsolateFastCCallCallerPcOffset =
-      kIsolateFastCCallCallerFpOffset + kApiSystemPointerSize;
-  static const int kIsolateStackGuardOffset =
-      kIsolateFastCCallCallerPcOffset + kApiSystemPointerSize;
   static const int kIsolateRootsOffset =
-      kIsolateStackGuardOffset + 7 * kApiSystemPointerSize;
+      kExternalMemoryAtLastMarkCompactOffset + kApiInt64Size;
 
   static const int kUndefinedValueRootIndex = 4;
   static const int kTheHoleValueRootIndex = 5;
@@ -183,10 +166,13 @@ class Internals {
   static const int kNodeStateMask = 0x7;
   static const int kNodeStateIsWeakValue = 2;
   static const int kNodeStateIsPendingValue = 3;
+  static const int kNodeStateIsNearDeathValue = 4;
+  static const int kNodeIsIndependentShift = 3;
+  static const int kNodeIsActiveShift = 4;
 
   static const int kFirstNonstringType = 0x40;
   static const int kOddballType = 0x43;
-  static const int kForeignType = 0x46;
+  static const int kForeignType = 0x47;
   static const int kJSSpecialApiObjectType = 0x410;
   static const int kJSApiObjectType = 0x420;
   static const int kJSObjectType = 0x421;
@@ -291,17 +277,6 @@ class Internals {
   V8_INLINE static T ReadRawField(internal::Address heap_object_ptr,
                                   int offset) {
     internal::Address addr = heap_object_ptr + offset - kHeapObjectTag;
-#ifdef V8_COMPRESS_POINTERS
-    if (sizeof(T) > kApiTaggedSize) {
-      // TODO(ishell, v8:8875): When pointer compression is enabled 8-byte size
-      // fields (external pointers, doubles and BigInt data) are only
-      // kTaggedSize aligned so we have to use unaligned pointer friendly way of
-      // accessing them in order to avoid undefined behavior in C++ code.
-      T r;
-      memcpy(&r, reinterpret_cast<void*>(addr), sizeof(T));
-      return r;
-    }
-#endif
     return *reinterpret_cast<const T*>(addr);
   }
 
@@ -326,24 +301,45 @@ class Internals {
 #endif
   }
 
+  V8_INLINE static internal::Address ReadTaggedAnyField(
+      internal::Address heap_object_ptr, int offset) {
 #ifdef V8_COMPRESS_POINTERS
-  // See v8:7703 or src/ptr-compr.* for details about pointer compression.
-  static constexpr size_t kPtrComprHeapReservationSize = size_t{1} << 32;
-  static constexpr size_t kPtrComprIsolateRootAlignment = size_t{1} << 32;
-
-  V8_INLINE static internal::Address GetRootFromOnHeapAddress(
-      internal::Address addr) {
-    return addr & -static_cast<intptr_t>(kPtrComprIsolateRootAlignment);
-  }
-
-  V8_INLINE static internal::Address DecompressTaggedAnyField(
-      internal::Address heap_object_ptr, int32_t value) {
+    int32_t value = ReadRawField<int32_t>(heap_object_ptr, offset);
     internal::Address root_mask = static_cast<internal::Address>(
         -static_cast<intptr_t>(value & kSmiTagMask));
     internal::Address root_or_zero =
         root_mask & GetRootFromOnHeapAddress(heap_object_ptr);
     return root_or_zero +
            static_cast<internal::Address>(static_cast<intptr_t>(value));
+#else
+    return ReadRawField<internal::Address>(heap_object_ptr, offset);
+#endif
+  }
+
+#ifdef V8_COMPRESS_POINTERS
+  static constexpr size_t kPtrComprHeapReservationSize = size_t{1} << 32;
+  static constexpr size_t kPtrComprIsolateRootBias =
+      kPtrComprHeapReservationSize / 2;
+  static constexpr size_t kPtrComprIsolateRootAlignment = size_t{1} << 32;
+
+  V8_INLINE static internal::Address GetRootFromOnHeapAddress(
+      internal::Address addr) {
+    return (addr + kPtrComprIsolateRootBias) &
+           -static_cast<intptr_t>(kPtrComprIsolateRootAlignment);
+  }
+
+#else
+
+  template <typename T>
+  V8_INLINE static T ReadEmbedderData(const v8::Context* context, int index) {
+    typedef internal::Address A;
+    typedef internal::Internals I;
+    A ctx = *reinterpret_cast<const A*>(context);
+    A embedder_data =
+        I::ReadTaggedPointerField(ctx, I::kNativeContextEmbedderDataOffset);
+    int value_offset =
+        I::kEmbedderDataArrayHeaderSize + (I::kEmbedderDataSlotSize * index);
+    return I::ReadRawField<T>(embedder_data, value_offset);
   }
 #endif  // V8_COMPRESS_POINTERS
 };
@@ -379,10 +375,6 @@ V8_EXPORT internal::Isolate* IsolateFromNeverReadOnlySpaceObject(Address obj);
 // mode based on the current context and the closure. This returns true if the
 // language mode is strict.
 V8_EXPORT bool ShouldThrowOnError(v8::internal::Isolate* isolate);
-
-// A base class for backing stores, which is needed due to vagaries of
-// how static casts work with std::shared_ptr.
-class BackingStoreBase {};
 
 }  // namespace internal
 }  // namespace v8
