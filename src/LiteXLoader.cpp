@@ -1,21 +1,4 @@
-#include <windows.h>
-#include <iostream>
-#include <string>
-#include <list>
-#include <filesystem>
-#include <fstream>
-#include <exception>
-// Ignore error below
-#include "ScriptX.h"
-#include "ConfigHelp.h"
-
-
-#define LXL_DEF_LOAD_PATH "./plugins"
-#ifdef SCRIPTX_LANG_JAVASCRIPT
-    #define PLUGINS_SUFFIX ".js"
-#elif defined(SCRIPTX_LANG_LUA)
-    #define PLUGINS_SUFFIX ".lua"
-#endif
+#include "pch.h"
 
 using EnginePtr = std::shared_ptr<script::ScriptEngine>;
 std::list<EnginePtr> modules;
@@ -25,35 +8,38 @@ extern std::string_view GetScriptBaseLib();
 
 void entry()
 {
-	std::filesystem::directory_iterator files(conf::getStr("Main","PluginsDir",LXL_DEF_LOAD_PATH));
-	std::cout << "[LiteXLoader][Info] Config files loaded." << std::endl;
+	INFO(std::string("LiteXLoader Script Plugin Loader for ") + LXL_SCRIPT_LANG_TYPE +" - Based on LiteLoader");
+	INFO(std::string("Version ") + LXL_VERSION);
+	std::filesystem::directory_iterator files(conf::getString("Main","PluginsDir",LXL_DEF_LOAD_PATH));
+	INFO("Config files loaded.");
 
-	std::cout << "[LiteXLoader][Info] Loading plugins..." << std::endl;
+	INFO("Loading plugins...");
 	for (auto& i : files) {
-		if (i.is_regular_file() && i.path().extension() == PLUGINS_SUFFIX)
+		if (i.is_regular_file() && i.path().extension() == LXL_PLUGINS_SUFFIX)
 		{
 			try
 			{
 				LoadScript(i.path().string());
-				std::cout << "[LiteXLoader][Info] " << i.path().filename() << " loaded." << std::endl;
+				INFO(i.path().filename().string() + " loaded.");
 			}
 			catch(script::Exception& e)
 			{
-				std::cout << "[LiteXLoader][Error] Fail to load" << i.path().filename() << "!" << std::endl;
-				std::cout << "[LiteXLoader][Error] " << e << std::endl;
+				script::EngineScope enter(modules.back().get());
+				ERROR("Fail to load " + i.path().filename().string() + "!\n");
+				std::cerr << e << std::endl;
 			}
 			catch(std::exception& e)
 			{
-				std::cout << "[LiteXLoader][Error] Fail to load" << i.path().filename() << "!" << std::endl;
-				std::cout << "[LiteXLoader][Error] " << e.what() << std::endl;
+				ERROR("Fail to load " + i.path().filename().string() + "!");
+				ERROR(e.what());
 			}
 			catch(...)
 			{
-				std::cout << "[LiteXLoader][Error] Fail to load" << i.path().filename() << "!" << std::endl;
-
+				ERROR("Fail to load " + i.path().filename().string() + "!");
 			}
 		}
 	}
+	//Event::
 }
 
 
