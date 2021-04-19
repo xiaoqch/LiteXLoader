@@ -1,3 +1,4 @@
 @echo off
-call ./BuildJs.bat
-call ./BuildLua.bat
+call ./BuildJs.bat batch
+call ./BuildLua.bat batch
+pause

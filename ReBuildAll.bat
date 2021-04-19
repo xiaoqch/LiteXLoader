@@ -1,3 +1,4 @@
 @echo off
-call ./ReBuildJs.bat
-call ./ReBuildLua.bat
+call ./ReBuildJs.bat batch
+call ./ReBuildLua.bat batch
+pause
