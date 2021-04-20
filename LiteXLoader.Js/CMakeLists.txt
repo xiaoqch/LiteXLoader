@@ -7,17 +7,7 @@ set (BACKEND_LIB_DIR_NAME "V8")
 
 
 
-############  Help Funcs  ############
-macro(SUBDIRLIST result curdir)
-    file(GLOB children RELATIVE ${curdir} ${curdir}/*)
-    set(dirlist "")
-    foreach(child ${children})
-        if(IS_DIRECTORY ${curdir}/${child})
-            LIST(APPEND dirlist ${child})
-        endif()
-    endforeach()
-    set(${result} ${dirlist})
-endmacro()
+
 
 ############ Working Below ... ############
 set(CMAKE_CXX_STANDARD 17)
@@ -32,12 +22,12 @@ add_library( ${PROJECT_NAME} SHARED ${LITE_DLL_SOURCES} )
 # LiteLoader
 target_include_directories( ${PROJECT_NAME} PRIVATE "../libs" )
 target_include_directories( ${PROJECT_NAME} PRIVATE "../src/LiteLoader/headers" )
+#target_include_directories( ${PROJECT_NAME} PRIVATE "../src/LiteLoader/headers/api" )
+#target_include_directories( ${PROJECT_NAME} PRIVATE "../src/LiteLoader/headers/mc" )
 target_link_directories( ${PROJECT_NAME} PUBLIC "../libs/LiteLoader" )
 
 # ScriptX
-SUBDIRLIST (BACKEND_INCLUDE_DIRS "../engine/${BACKEND_LIB_DIR_NAME}/include")
 include_directories( "../engine/${BACKEND_LIB_DIR_NAME}/include" )
-include_directories( ${BACKEND_INCLUDE_DIRS} )
 include_directories( "../src/ScriptX/src/include" )
 include_directories( "../src/ScriptX/src/include/ScriptX" )
 include( "../src/ScriptX/CMakeLists.txt" )
