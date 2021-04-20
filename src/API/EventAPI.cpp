@@ -16,7 +16,6 @@ enum class EVENT_TYPES : int
     OnUseItem, OnTakeItem, OnDropItem,
 	OnDestroyBlock, OnPlaceBlock, OnExplode,
 	OnOpenChest, OnCloseChest, OnOpenBarrel, OnCloseBarrel,
-    OnServerCmd,
 	EVENT_COUNT
 };
 static const std::unordered_map<string, EVENT_TYPES> EventsMap{
@@ -25,7 +24,6 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onRespawn",EVENT_TYPES::OnRespawn},
     {"onChangeDimension",EVENT_TYPES::OnChangeDim},
 	{"onPlayerCmd",EVENT_TYPES::OnCmd},
-    {"onServerCmd",EVENT_TYPES::OnServerCmd},
     {"onChat",EVENT_TYPES::OnChat},
     {"onAttack",EVENT_TYPES::OnAttack},
     {"onMobDeath",EVENT_TYPES::OnMobDeath},
@@ -119,21 +117,9 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
 	if (cmd.at(0) == '/')
 		cmd = cmd.substr(1, cmd.size() - 1);
 
-    if(player == nullptr)
-    {   
-        //Console command
-        EngineBegin(EVENT_TYPES::OnServerCmd);
-        if(!CallEvent(EVENT_TYPES::OnServerCmd,{String::newString(cmd)}))
-            return false;
-        EngineEnd();
-    }
-    else
-    {   
-        //Player command
-        EngineBegin(EVENT_TYPES::OnCmd);
-        if(!CallEvent(EVENT_TYPES::OnCmd,{Number::newNumber((int64_t)(intptr_t)player),String::newString(cmd)}))
-            return false;
-        EngineEnd();
-    }
+    EngineBegin(EVENT_TYPES::OnCmd);
+    if(!CallEvent(EVENT_TYPES::OnCmd,{Number::newNumber((int64_t)(intptr_t)player),String::newString(cmd)}))
+         return false;
+    EngineEnd();
 	return original(_this, a2, x, a4);
 }
