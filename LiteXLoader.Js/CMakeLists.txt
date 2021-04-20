@@ -26,7 +26,7 @@ set(CMAKE_BUILD_TYPE Release)
 
 # Main
 set (LIBRARY_OUTPUT_PATH "../Output") 
-file(GLOB LITE_DLL_SOURCES "../src/*.cpp")
+file(GLOB_RECURSE LITE_DLL_SOURCES "../src/*.cpp")
 add_library( ${PROJECT_NAME} SHARED ${LITE_DLL_SOURCES} )
 
 # LiteLoader

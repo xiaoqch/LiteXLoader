@@ -1,5 +1,7 @@
 #pragma once
-#include "../pch.h"
+#include <iostream>
+#include "ScriptX.h"
+#include "../Configs.h"
 
 #define PREFIX "[LiteXLoader." ## LXL_SCRIPT_LANG_TYPE ## "]"
 #define DEBUG(t)  std::cout << PREFIX ## "[Debug] " << t << std::endl
@@ -8,29 +10,4 @@
 #define ERROR(t)  std::cerr << PREFIX ## "[Error] " << t << std::endl
 #define FATAL(t)  std::cerr << PREFIX ## "[FATAL] " << t << std::endl
 
-#if 0
-class Logger
-{
-private:
-    std::ofstream logout;
-    bool enableLog;
-public:
-    Logger(const std::string &logFile)
-    {
-        enableLog = conf::getBool("Main","EnableLog");
-        logout.open(logFile);
-    }
-
-    void Log(const std::string &log)
-    {
-        if(enableLog)
-        {
-            cout << 
-        }
-    }
-    void Log(const char *log, ...)
-    {
-
-    }
-};
-#endif
+script::Local<script::Value> Print(const script::Arguments& args);

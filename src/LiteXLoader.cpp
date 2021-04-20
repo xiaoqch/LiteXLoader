@@ -1,17 +1,30 @@
-#include "pch.h"
+﻿// Ignore error below
+#include "ScriptX.h"
+#include "LiteLoader/headers/lbpch.h"
+#include <windows.h>
+#include <iostream>
+#include <string>
+#include <list>
+#include <filesystem>
+#include <fstream>
+#include <exception>
+#include "Configs.h"
+#include "API/ConfigHelp.h"
+#include "API/LogAPI.h"
 
 using EnginePtr = std::shared_ptr<script::ScriptEngine>;
 std::list<EnginePtr> modules;
 void LoadScript(const std::string& path);
 void BindAPIs(EnginePtr engine);
-extern std::string_view GetScriptBaseLib();
+void RegisterDebug(EnginePtr engine);
 
 void entry()
 {
-	INFO(std::string("LiteXLoader Script Plugin Loader for ") + LXL_SCRIPT_LANG_TYPE +" - Based on LiteLoader");
+	INFO(std::string("LiteXLoader Script Plugin Loader for ") +
+		LXL_SCRIPT_LANG_TYPE +" - Based on LiteLoader");
 	INFO(std::string("Version ") + LXL_VERSION);
-	std::filesystem::directory_iterator files(conf::getString("Main","PluginsDir",LXL_DEF_LOAD_PATH));
-	INFO("Config files loaded.");
+	std::filesystem::directory_iterator files
+		(conf::getString("Main","PluginsDir",LXL_DEF_LOAD_PATH));
 
 	INFO("Loading plugins...");
 	for (auto& i : files) {
@@ -27,6 +40,7 @@ void entry()
 				script::EngineScope enter(modules.back().get());
 				ERROR("Fail to load " + i.path().filename().string() + "!\n");
 				std::cerr << e << std::endl;
+				//modules.pop_back();
 			}
 			catch(std::exception& e)
 			{
@@ -44,8 +58,6 @@ void entry()
 
 
 /////////////////////////////////////////////
-/////////////////////////////////////////////
-/////////////////////////////////////////////
 
 EnginePtr NewEngine()
 {
@@ -62,35 +74,41 @@ EnginePtr NewEngine()
 	#endif
 }
 
-//////// test ////////
-void clog(std::string str)
+void LoadScript(const std::string& filePath)
 {
-	std::cout << str << std::endl;
-}
-
-void BindAPIs(EnginePtr engine)
-{
-	auto logFunc = script::Function::newFunction(clog);
-	engine->set("log", logFunc);
-}
-//////// test ////////
-
-void LoadScript(const std::string& path)
-{
-	EnginePtr engine = NewEngine();
-	modules.push_back(engine);
-
-	script::EngineScope enter(engine.get());
-	BindAPIs(engine);
-
-	engine->eval(GetScriptBaseLib());
-	std::ifstream fin(path);
-	if(!fin.is_open())
+	std::ifstream scriptFile(filePath);
+	if(!scriptFile)
 	{
 		throw std::exception("Fail to open file!");
 		return;
 	}
-	std::string scripts((std::istreambuf_iterator<char>(fin)), std::istreambuf_iterator<char>());
-	fin.close();
+	std::string scripts((std::istreambuf_iterator<char>(scriptFile)),
+		std::istreambuf_iterator<char>());
+	scriptFile.close();
+
+	//启动引擎
+	EnginePtr engine = NewEngine();
+	modules.push_back(engine);
+	script::EngineScope enter(engine.get());
+
+	BindAPIs(engine);
+	//基础库
+	std::ifstream scriptBaseLib(LXL_SCRIPT_BASE_LIB_PATH);
+	if(scriptBaseLib)
+	{
+		std::string baseLibs((std::istreambuf_iterator<char>(scriptBaseLib)),
+			std::istreambuf_iterator<char>());
+		scriptBaseLib.close();
+		engine->eval(baseLibs);
+	}
+	//加载脚本
 	engine->eval(scripts);
+	
+	//后台调试
+	RegisterDebug(engine);
+}
+
+void RegisterDebug(EnginePtr engine)
+{
+	;
 }
