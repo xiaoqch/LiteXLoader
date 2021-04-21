@@ -17,6 +17,7 @@
 void BindAPIs(std::shared_ptr<script::ScriptEngine> engine)
 {
     //////////////// EventAPI ////////////////
+    InitEventAPIs();
 
     // listen("onChat",OnChatFunction)
     auto funcListen = script::Function::newFunction(AddEventListener);
