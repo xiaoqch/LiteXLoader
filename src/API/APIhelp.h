@@ -13,5 +13,9 @@
     if(ARG.getKind() != TYPE) \
     {return Boolean::newBoolean(false);}
 
+#define CATCH(LOG) \
+    catch(script::Exception& e) \
+    { ERROR(LOG##"\n"); PRINT(e); return Boolean::newBoolean(false);}
+
 // 串行化
 void PrintValue(std::ostream &out, script::Local<script::Value> v);

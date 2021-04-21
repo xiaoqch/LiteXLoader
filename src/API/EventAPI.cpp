@@ -13,11 +13,12 @@ using namespace script;
 enum class EVENT_TYPES : int
 {
     OnJoin=0, OnLeft, OnRespawn, OnChangeDim,
-    OnCmd, OnChat, OnAttack,
+    OnPlayerCmd, OnChat, OnAttack,
     OnUseItem, OnTakeItem, OnDropItem,
     OnDestroyBlock, OnPlaceBlock,
     OnOpenChest, OnCloseChest, OnOpenBarrel, OnCloseBarrel,
-    OnMobDie, OnMobHurt, OnExplode,
+    OnMobDie, OnMobHurt, OnExplode, OnCmdBlockExecute,
+    OnServerStarted,OnServerCmd,
     EVENT_COUNT
 };
 static const std::unordered_map<string, EVENT_TYPES> EventsMap{
@@ -25,7 +26,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onPlayerLeft",EVENT_TYPES::OnLeft},
     {"onRespawn",EVENT_TYPES::OnRespawn},
     {"onChangeDimension",EVENT_TYPES::OnChangeDim},
-    {"onCmd",EVENT_TYPES::OnCmd},
+    {"onPlayerCmd",EVENT_TYPES::OnPlayerCmd},
     {"onChat",EVENT_TYPES::OnChat},
     {"onAttack",EVENT_TYPES::OnAttack},
     {"onMobDie",EVENT_TYPES::OnMobDie},
@@ -40,6 +41,9 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onCloseChest",EVENT_TYPES::OnCloseChest},
     {"onOpenBarrel",EVENT_TYPES::OnOpenBarrel},
     {"onCloseBarrel",EVENT_TYPES::OnCloseBarrel},
+    {"onCmdBlockExecute",EVENT_TYPES::OnCmdBlockExecute},
+    {"onServerStarted",EVENT_TYPES::OnServerStarted},
+    {"onServerCmd",EVENT_TYPES::OnServerCmd},
 };
 struct ListenerListType
 {
@@ -96,12 +100,7 @@ script::Local<script::Value> AddEventListener(const script::Arguments& args)
         DEBUG("Event \""+ args[0].asString().toString() +"\" No Found!\n");
         return Boolean::newBoolean(false);
     }
-    catch(script::Exception& e)
-    {
-        ERROR("Fail to bind listener!\n");
-        PRINT(e);
-        return Boolean::newBoolean(false);
-    }
+    CATCH("Fail to bind listener!")
 }
 
 
@@ -124,6 +123,7 @@ void InitEventAPIs()
         CallEvent(EVENT_TYPES::OnJoin,{ Number::newNumber((intptr_t)ev.Player) });
         EngineEnd();
     });
+
 // ===== onPlayerLeft =====
     Event::addEventListener([](LeftEV ev)
     {
@@ -131,6 +131,7 @@ void InitEventAPIs()
         CallEvent(EVENT_TYPES::OnLeft,{ Number::newNumber((intptr_t)ev.Player) });
         EngineEnd();
     });
+
 // ===== onChat =====
     Event::addEventListener([](ChatEV ev)
     {
@@ -140,6 +141,34 @@ void InitEventAPIs()
         EngineEnd();
         return true;
     });
+
+// ===== onChangeDimension =====
+    Event::addEventListener([](ChangeDimEV ev)
+    {
+        EngineBegin(EVENT_TYPES::OnChangeDim);
+        CallEvent(EVENT_TYPES::OnChangeDim,{ Number::newNumber((intptr_t)ev.Player) });
+        EngineEnd();
+    });
+
+// ===== onCmdBlockExecute =====
+    Event::addEventListener([](CmdBlockExeEV ev)
+    {
+        EngineBegin(EVENT_TYPES::OnCmdBlockExecute);
+        if (!CallEvent(EVENT_TYPES::OnCmdBlockExecute,{ String::newString(ev.cmd), Number::newNumber(ev.bpos.x),
+            Number::newNumber(ev.bpos.y), Number::newNumber(ev.bpos.z) }))
+                return false;
+        EngineEnd();
+        return true;
+    });
+
+// ===== onServerStarted =====
+    Event::addEventListener([](ServerStartedEV ev)
+    {
+        EngineBegin(EVENT_TYPES::OnServerStarted);
+        CallEvent(EVENT_TYPES::OnServerStarted,{});
+        EngineEnd();
+    });
+
 }
 
 // ===== onAttack =====
@@ -164,9 +193,6 @@ THook(bool, "?respawn@Player@@UEAAXXZ",
     return original(pl);
 }
 
-// ===== onChangeDimension =====
-
-
 // ===== onDropItem =====
 THook(bool, "?drop@Player@@UEAA_NAEBVItemStack@@_N@Z",
     Player* _this, ItemStack* a2, bool a3)
@@ -189,20 +215,24 @@ THook(bool, "?take@Player@@QEAA_NAEAVActor@@HH@Z",
     return original(_this, actor, a2, a3);
 }
 
-// ===== onCmd (Server & Player) =====
-THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@VCommandContext@@@std@@_N@Z",
-    MinecraftCommands* _this, unsigned int* a2, std::shared_ptr<CommandContext> x, char a4)
+// ===== onPlayerCmd =====
+THook(void, "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVCommandRequestPacket@@@Z",
+    ServerNetworkHandler* _this, NetworkIdentifier* id, void* pkt)
 {
-    Player* player = MakeSP(x->getOrigin());
-    string cmd = x->getCmd();
-    if (cmd.at(0) == '/')
-        cmd = cmd.substr(1, cmd.size() - 1);
+    auto player = SymCall("?_getServerPlayer@ServerNetworkHandler@@AEAAPEAVServerPlayer@@AEBVNetworkIdentifier@@E@Z",
+        Player*, void*, void*, char)(_this, id, *(char*)((uintptr_t)pkt + 16));
+    if (player)
+    {   // Player Command
+        auto cmd = std::string(*(std::string*)((uintptr_t)pkt + 48));
+        if (cmd.front() == '/')
+            cmd = cmd.substr(1, cmd.size() - 1);
 
-    EngineBegin(EVENT_TYPES::OnCmd);
-    if(!CallEvent(EVENT_TYPES::OnCmd,{ Number::newNumber((intptr_t)player),String::newString(cmd) }))
-         return false;
-    EngineEnd();
-    return original(_this, a2, x, a4);
+        EngineBegin(EVENT_TYPES::OnPlayerCmd);
+        if(!CallEvent(EVENT_TYPES::OnPlayerCmd,{ Number::newNumber((intptr_t)player),String::newString(cmd) }))
+            return;
+        EngineEnd();
+    }
+    return original(_this, id, pkt);
 }
 
 // ===== onUseItem =====
@@ -342,4 +372,23 @@ THook(bool, "?explode@Level@@UEAAXAEAVBlockSource@@PEAVActor@@AEBVVec3@@M_N3M3@Z
             return false;
     EngineEnd();
     return original(_this, bs, actor, pos, a5, a6, a7, a8, a9);
+}
+
+// ===== onServerCmd =====
+THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@VCommandContext@@@std@@_N@Z",
+    MinecraftCommands* _this, unsigned int* a2, std::shared_ptr<CommandContext> x, char a4)
+{
+    Player* player = MakeSP(x->getOrigin());
+    if(!player)
+    {   // Server Command
+        string cmd = x->getCmd();
+        if (cmd.front() == '/')
+            cmd = cmd.substr(1, cmd.size() - 1);
+
+        EngineBegin(EVENT_TYPES::OnServerCmd);
+        if(!CallEvent(EVENT_TYPES::OnServerCmd,{ String::newString(cmd) }))
+            return false;
+        EngineEnd();
+    }
+    return original(_this, a2, x, a4);
 }
