@@ -8,6 +8,7 @@
 #include "../LiteLoader/headers/mc/OffsetHelper.h"
 using namespace script;
 
+//////////////////// Definitions ////////////////////
 
 enum class EVENT_TYPES : int
 {
@@ -80,8 +81,7 @@ script::Local<script::Value> AddEventListener(const script::Arguments& args)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
     CHECK_ARG_TYPE(args[1],ValueKind::kFunction)
 
-    try
-    {
+    try{
         int eventId = int(EventsMap.at(args[0].asString().toString()));
         /*switch(eventId)
         {
@@ -95,7 +95,13 @@ script::Local<script::Value> AddEventListener(const script::Arguments& args)
     {
         DEBUG("Event \""+ args[0].asString().toString() +"\" No Found!\n");
         return Boolean::newBoolean(false);
-    }   
+    }
+    catch(script::Exception& e)
+    {
+        ERROR("Fail to bind listener!\n");
+        PRINT(e);
+        return Boolean::newBoolean(false);
+    }
 }
 
 

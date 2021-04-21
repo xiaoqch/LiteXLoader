@@ -9,5 +9,6 @@
 #define WARN(t)  std::cout << PREFIX ## "[Warning] " << t << std::endl
 #define ERROR(t)  std::cerr << PREFIX ## "[Error] " << t << std::endl
 #define FATAL(t)  std::cerr << PREFIX ## "[FATAL] " << t << std::endl
+#define PRINT(t)  std::cout << t << std::endl
 
 script::Local<script::Value> Print(const script::Arguments& args);

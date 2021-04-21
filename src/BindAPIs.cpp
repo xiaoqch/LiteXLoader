@@ -16,10 +16,14 @@
 
 void BindAPIs(std::shared_ptr<script::ScriptEngine> engine)
 {
+    //////////////// BaseAPI ////////////////
+
+    engine->set("runCmd",script::Function::newFunction(RunCmd));
+
     //////////////// EventAPI ////////////////
+
     InitEventAPIs();
 
-    // listen("onChat",OnChatFunction)
     auto funcListen = script::Function::newFunction(AddEventListener);
     engine->set("listen", funcListen);
     engine->set("addEventListener", funcListen);
@@ -27,7 +31,6 @@ void BindAPIs(std::shared_ptr<script::ScriptEngine> engine)
 
     //////////////// LogAPI ////////////////
 
-    // print("aaa",1,new Array(1,2,3),...)
     auto funcPrint = script::Function::newFunction(Print);
     engine->set("print", funcPrint);
 	engine->set("log", funcPrint);
