@@ -63,7 +63,7 @@ bool CallEvent(EVENT_TYPES type, Args&& ...args)
         EngineScope enter(nowList[i].engine);
         try{
             auto result = nowList[i].func.get().call({},std::forward<Args>(args)...);
-            if(result.isBoolean() && result.asBoolean().value() == false)
+            if(result.isNull() || result.isBoolean() && result.asBoolean().value() == false)
                 return false;
         }
         catch(const Exception& e)

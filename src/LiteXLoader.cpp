@@ -10,6 +10,7 @@ using namespace script;
 #include <filesystem>
 #include <exception>
 #include <thread>
+#include <chrono>
 #include "Configs.h"
 #include "API/APIhelp.h"
 #include "API/ConfigHelp.h"
@@ -113,8 +114,16 @@ void RegisterDebug(EnginePtr engine)
 void InitGlobalData()
 {
     globalEngine = NewEngine();
+
     // 主消息循环
     std::thread([]() {
         globalEngine->messageQueue()->loopQueue(script::utils::MessageQueue::LoopType::kLoopAndWait);
+    }).detach();
+
+    // GC循环
+    std::thread([]() {
+        for(auto engine : modules)
+            engine->messageQueue()->loopQueue(utils::MessageQueue::LoopType::kLoopOnce);
+        std::this_thread::sleep_for(std::chrono::seconds(conf::getInt("Advanced","GCInterval",20)));
     }).detach();
 }
