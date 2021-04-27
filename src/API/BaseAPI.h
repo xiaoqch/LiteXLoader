@@ -76,10 +76,16 @@ public:
 };
 
 
-//////////////////// APIs ////////////////////
+//////////////////// General APIs ////////////////////
 
 Local<Value> GetName(const Arguments& args);
 Local<Value> GetPos(const Arguments& args);
+Local<Value> Teleport(const Arguments& args);
+Local<Value> Kill(const Arguments& args);
+
+
+//////////////////// APIs ////////////////////
+
 Local<Value> RunCmd(const Arguments& args);
 Local<Value> RunCmdEx(const Arguments& args);
 Local<Value> RegisterCmd(const Arguments& args);

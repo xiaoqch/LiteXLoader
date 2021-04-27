@@ -159,22 +159,18 @@ Local<Value> Tell(const Arguments& args)
     CATCH("Fail in Tell!")
 }
 
-Local<Value> Teleport(const Arguments& args)
+Local<Value> GetHand(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
     
     try{
         Player *player = ExtractPlayer(args[0]);
-        FloatPos *pos = ExtractFloatPos(args[1]);
-        if(player && pos)
-        {
-            WPlayer(*player).teleport({pos->x,pos->y,pos->z},pos->dim);
-            return Boolean::newBoolean(true);
-        }
+        if(player)
+            return NewItem(player->getSelectedItem());
         else
             return Local<Value>();    //Null
     }
-    CATCH("Fail in Teleport!")
+    CATCH("Fail in GetHand!")
 }
 
 Local<Value> RunCmdAs(const Arguments& args)

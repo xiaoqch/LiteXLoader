@@ -10,7 +10,7 @@
 using namespace script;
 
 
-//////////////////// APIs ////////////////////
+//////////////////// General APIs ////////////////////
 
 Local<Value> GetName(const Arguments& args)
 { 
@@ -77,6 +77,55 @@ Local<Value> GetPos(const Arguments& args)
     }
     CATCH("Fail in GetPos!")
 }
+
+Local<Value> Teleport(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args,1)
+    
+    try{
+        FloatPos *pos = ExtractFloatPos(args[1]);
+        if(!pos)
+            return Local<Value>();
+
+        Player *player = ExtractPlayer(args[0]);
+        if(player)
+        {
+            WPlayer(*player).teleport({pos->x,pos->y,pos->z},pos->dim);
+            return Boolean::newBoolean(true);
+        }
+        
+        Actor *entity = ExtractEntity(args[0]);
+        if(entity)
+        {
+            WActor(*entity).teleport({pos->x,pos->y,pos->z},pos->dim);
+            return Boolean::newBoolean(true);
+        }
+
+        return Local<Value>();    //Null
+    }
+    CATCH("Fail in Teleport!")
+}
+
+Local<Value> Kill(const Arguments& args)
+{
+    Player *player = ExtractPlayer(args[0]);
+    if(player)
+    {
+        WPlayer(*player).kill();
+        return Boolean::newBoolean(true);
+    }
+    
+    Actor *entity = ExtractEntity(args[0]);
+    if(entity)
+    {
+        SymCall("?kill@Mob@@UEAAXXZ", void, void*)(entity);
+        return Boolean::newBoolean(true);
+    }
+
+    return Local<Value>();    //Null
+}
+
+//////////////////// APIs ////////////////////
 
 Local<Value> RunCmd(const Arguments& args)
 {

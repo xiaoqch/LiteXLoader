@@ -31,6 +31,6 @@ Local<Value> SetPlayerPermLevel(const Arguments& args);
 
 Local<Value> KickPlayer(const Arguments& args);
 Local<Value> Tell(const Arguments& args);
-Local<Value> Teleport(const Arguments& args);
+Local<Value> GetHand(const Arguments& args);
 Local<Value> RunCmdAs(const Arguments& args);
 Local<Value> RenamePlayer(const Arguments& args);

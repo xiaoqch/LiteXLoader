@@ -17,3 +17,9 @@ public:
         return pointer;
     }
 };
+
+//////////////////// APIs ////////////////////
+
+Local<Value> GetCustomName(const Arguments& args);
+Local<Value> GetCount(const Arguments& args);
+Local<Value> SetLore(const Arguments& args);

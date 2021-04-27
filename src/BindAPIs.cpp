@@ -40,6 +40,7 @@ void BindAPIs(std::shared_ptr<ScriptEngine> engine)
     
     engine->registerNativeClass<IntPos>(IntPosBuilder);
     engine->registerNativeClass<FloatPos>(FloatPosBuilder);
+
     engine->set("runCmd",Function::newFunction(RunCmd));
 	engine->set("log", Function::newFunction(Log));
 
@@ -66,8 +67,7 @@ void BindAPIs(std::shared_ptr<ScriptEngine> engine)
     //////////////// EventAPI ////////////////
 
     RegisterEventListeners();
-    auto funcListen = Function::newFunction(Listen);
-    engine->set("listen", funcListen);
+    engine->set("listen", Function::newFunction(Listen));
 
     //////////////// FileSystemAPI ////////////////
 
