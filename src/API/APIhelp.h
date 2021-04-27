@@ -21,17 +21,17 @@ using namespace script;
 // 至少COUNT个参数
 #define CHECK_ARGS_COUNT(ARGS,COUNT) \
     if(ARGS.size()<COUNT) \
-    {return Boolean::newBoolean(false);}
+    {return Local<Value>();}
 
 // 检查是否TYPE类型 
 #define CHECK_ARG_TYPE(ARG,TYPE) \
     if(ARG.getKind() != TYPE) \
-    {return Boolean::newBoolean(false);}
+    {return Local<Value>();}
 
 // 截获引擎异常
 #define CATCH(LOG) \
     catch(Exception& e) \
-    { ERROR(LOG##"\n"); ERRPRINT(e); return Boolean::newBoolean(false);}
+    { ERROR(LOG##"\n"); ERRPRINT(e); return Local<Value>();}
 
 // 串行化
 void PrintValue(std::ostream &out, Local<Value> v);

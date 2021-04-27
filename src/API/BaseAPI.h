@@ -88,3 +88,7 @@ Local<Value> Log(const Arguments& args);
 Local<Value> GetTimeStr(const Arguments& args);
 Local<Value> GetTimeNow(const Arguments& args);
 Local<Value> GetLxlVersion(const Arguments& args);
+
+Local<Value> SetTimeout(const Arguments& args);
+Local<Value> SetInterval(const Arguments& args);
+Local<Value> ClearInterval(const Arguments& args);

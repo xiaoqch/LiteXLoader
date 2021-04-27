@@ -4,11 +4,12 @@ using namespace script;
 #include "LiteLoader/headers/lbpch.h"
 #include <windows.h>
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <list>
 #include <filesystem>
-#include <fstream>
 #include <exception>
+#include <thread>
 #include "Configs.h"
 #include "API/APIhelp.h"
 #include "API/ConfigHelp.h"
@@ -112,4 +113,8 @@ void RegisterDebug(EnginePtr engine)
 void InitGlobalData()
 {
     globalEngine = NewEngine();
+    // 主消息循环
+    std::thread([]() {
+        globalEngine->messageQueue()->loopQueue(script::utils::MessageQueue::LoopType::kLoopAndWait);
+    }).detach();
 }
