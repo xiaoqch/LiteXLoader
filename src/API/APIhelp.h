@@ -1,7 +1,22 @@
 ﻿#pragma once
 #include "ScriptX.h"
 #include "../LiteLoader/headers/lbpch.h"
-#include "LogAPI.h"
+#include "../LiteLoader/headers/mc/OffsetHelper.h"
+#include "../LiteLoader/headers/mc/block.h"
+#include "../LiteLoader/headers/mc/item.h"
+#include "../LiteLoader/headers/api/commands.h"
+#include "../Configs.h"
+#include "BaseAPI.h"
+using namespace script;
+
+// 输出
+#define PREFIX "[LiteXLoader." ## LXL_SCRIPT_LANG_TYPE ## "]"
+#define DEBUG(t)  std::cout << PREFIX ## "[Debug] " << t << std::endl
+#define INFO(t)  std::cout << PREFIX ## "[Info] " << t << std::endl
+#define WARN(t)  std::cout << PREFIX ## "[Warning] " << t << std::endl
+#define ERROR(t)  std::cerr << PREFIX ## "[Error] " << t << std::endl
+#define FATAL(t)  std::cerr << PREFIX ## "[FATAL] " << t << std::endl
+#define ERRPRINT(t)  std::cerr << t << std::endl
 
 // 至少COUNT个参数
 #define CHECK_ARGS_COUNT(ARGS,COUNT) \
@@ -13,9 +28,40 @@
     if(ARG.getKind() != TYPE) \
     {return Boolean::newBoolean(false);}
 
+// 截获引擎异常
 #define CATCH(LOG) \
-    catch(script::Exception& e) \
-    { ERROR(LOG##"\n"); PRINT(e); return Boolean::newBoolean(false);}
+    catch(Exception& e) \
+    { ERROR(LOG##"\n"); ERRPRINT(e); return Boolean::newBoolean(false);}
 
 // 串行化
-void PrintValue(std::ostream &out, script::Local<script::Value> v);
+void PrintValue(std::ostream &out, Local<Value> v);
+
+//全局引擎
+static std::shared_ptr<ScriptEngine> globalEngine;
+//创建新引擎
+std::shared_ptr<ScriptEngine> NewEngine();
+
+// 通用坐标类
+Local<Object> NewPos(int x, int y, int z, int dim = -1);
+Local<Object> NewPos(const BlockPos &v, int dim = -1);
+IntPos* ExtractIntPos(Local<Value> v);
+
+Local<Object> NewPos(double x, double y, double z, int dim = -1);
+Local<Object> NewPos(const Vec3 &v, int dim = -1);
+FloatPos* ExtractFloatPos(Local<Value> v);
+
+//对象指针类
+Local<Object> NewPlayer(Player *p);
+Local<Object> NewPlayer(WPlayer p);
+Player* ExtractPlayer(Local<Value> v);
+
+Local<Object> NewEntity(Actor *p);
+Local<Object> NewEntity(WActor p);
+Actor* ExtractEntity(Local<Value> v);
+
+Local<Object> NewBlock(Block *p);
+Local<Object> NewBlock(WBlock p);
+Block* ExtractBlock(Local<Value> v);
+
+Local<Object> NewItem(ItemStack *p);
+ItemStack* ExtractItem(Local<Value> v);

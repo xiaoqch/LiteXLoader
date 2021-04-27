@@ -1,5 +1,6 @@
 ﻿// Ignore error below
 #include "ScriptX.h"
+using namespace script;
 #include "LiteLoader/headers/lbpch.h"
 #include <windows.h>
 #include <iostream>
@@ -9,23 +10,25 @@
 #include <fstream>
 #include <exception>
 #include "Configs.h"
+#include "API/APIhelp.h"
 #include "API/ConfigHelp.h"
-#include "API/LogAPI.h"
+#include "API/BaseAPI.h"
 
-using EnginePtr = std::shared_ptr<script::ScriptEngine>;
+using EnginePtr = std::shared_ptr<ScriptEngine>;
 std::list<EnginePtr> modules;
 void LoadScript(const std::string& path);
 void BindAPIs(EnginePtr engine);
 void RegisterDebug(EnginePtr engine);
+void InitGlobalData();
 
 void entry()
 {
-    INFO(std::string("LiteXLoader Script Plugin Loader for ") +
-        LXL_SCRIPT_LANG_TYPE +" - Based on LiteLoader");
+    INFO(std::string("LiteXLoader Script Plugin Loader for ") + LXL_SCRIPT_LANG_TYPE +" - Based on LiteLoader");
     INFO(std::string("Version ") + LXL_VERSION);
     std::filesystem::directory_iterator files
         (conf::getString("Main","PluginsDir",LXL_DEF_LOAD_PATH));
 
+    InitGlobalData();
     INFO("Loading plugins...");
     for (auto& i : files) {
         if (i.is_regular_file() && i.path().extension() == LXL_PLUGINS_SUFFIX)
@@ -35,11 +38,11 @@ void entry()
                 LoadScript(i.path().string());
                 INFO(i.path().filename().string() + " loaded.");
             }
-            catch(script::Exception& e)
+            catch(Exception& e)
             {
-                script::EngineScope enter(modules.back().get());
+                EngineScope enter(modules.back().get());
                 ERROR("Fail to load " + i.path().filename().string() + "!\n");
-                PRINT(e);
+                ERRPRINT(e);
                 //modules.pop_back();
             }
             catch(std::exception& e)
@@ -53,26 +56,10 @@ void entry()
             }
         }
     }
-    //Event::
 }
 
 
 /////////////////////////////////////////////
-
-EnginePtr NewEngine()
-{
-    #if !defined(SCRIPTX_BACKEND_WEBASSEMBLY)
-        return EnginePtr{
-            new script::ScriptEngineImpl(),
-                script::ScriptEngine::Deleter()
-        };
-    #else
-        return EnginePtr{
-            script::ScriptEngineImpl::instance(),
-                [](void*) {}
-        };
-    #endif
-}
 
 void LoadScript(const std::string& filePath)
 {
@@ -89,13 +76,13 @@ void LoadScript(const std::string& filePath)
     //启动引擎
     EnginePtr engine = NewEngine();
     modules.push_back(engine);
-    script::EngineScope enter(engine.get());
+    EngineScope enter(engine.get());
 
     //绑定API
     try{
         BindAPIs(engine);
     }
-    catch(script::Exception& e)
+    catch(Exception& e)
     {
         ERROR("Fail in Binding APIs!\n");
         throw;
@@ -120,4 +107,9 @@ void LoadScript(const std::string& filePath)
 void RegisterDebug(EnginePtr engine)
 {
     ;
+}
+
+void InitGlobalData()
+{
+    globalEngine = NewEngine();
 }

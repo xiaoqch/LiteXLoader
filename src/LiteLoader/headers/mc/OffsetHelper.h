@@ -1,3 +1,4 @@
+#pragma once
 #include <loader/Loader.h>
 #include <string>
 #include <api/types/helper.h>

@@ -195,7 +195,7 @@ Local<script::ByteBuffer> ByteBuffer::newByteBuffer(void* nativeBuffer, size_t s
   return ret;
 }
 
-Local<ByteBuffer> ByteBuffer::newByteBuffer(std::shared_ptr<void> nativeBuffer, size_t size) {
+Local<ByteBuffer> ByteBuffer::dnewByteBuffer(std::shared_ptr<void> nativeBuffer, size_t size) {
   JSValueRef jscException = nullptr;
 
   auto data = nativeBuffer.get();
