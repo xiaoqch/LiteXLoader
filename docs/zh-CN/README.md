@@ -8,12 +8,30 @@
 ## 特点
 1. **跨语言**脚本支持  
 基于开源`ScriptX`框架开发，借助其强大的抽象能力，支持多种不同脚本语言编写的插件同时运行，且底层仅需一层统一的C++ API接口，维护和适配都比较方便。
-目前已支持语言：`JavaScript` `Lua`  
-即将支持的语言：`Python` `Ruby` `C#`
+目前已支持语言：`JavaScript`，`Lua`  
+即将支持的语言：`Python`，`Ruby`，`C#`
 
 2. **开源** & **永久免费**  
 采用`GPLv3`开源许可证，保证永远不会收费或者推出商业版。  
 希望社区可以贡献更多的力量共同维护和建设  
+
+## Compiling
+1. Install **Microsoft Visual Studio** with standard C++ building suite
+2. Install the newest version of Windows SDK
+3. Install CMake and add it to `PATH`
+4. Run the building batch below
+
+#### Build & Link
+- `BuildJs.bat`&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Build LiteXRunner for Js
+- `BuildLua.bat`&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Build LiteLuaRunner for Lua
+- `BuildAll.bat`&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Build All targets above
+
+#### Clean everything generated & Rebuild & Link
+- `ReBuildJs.bat`&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;ReBuild LiteXRunner for Js
+- `ReBuildLua.bat`&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;ReBuild LiteXRunner for Lua
+- `ReBuildAll.bat`&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;ReBuild All targets above
+
+##### After building, DLLs will generate at `Release` directory.  
 
 ## 安装
 项目主要发布于**MineBBS**，请[移步MineBBS]()下载
