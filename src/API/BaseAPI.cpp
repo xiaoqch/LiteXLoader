@@ -299,6 +299,8 @@ Local<Value> SetTimeout(const Arguments& args)
         if(wait < 0)
             wait = 0;
         TASK_ID = nowTimeTaskId;
+
+        extern std::shared_ptr<ScriptEngine> globalEngine;
         globalEngine->messageQueue()->postMessage(msg,std::chrono::milliseconds(wait));
         return Number::newNumber((int64_t)nowTimeTaskId++);
     }
@@ -309,6 +311,7 @@ Local<Value> SetTimeout(const Arguments& args)
 void FuncInterval(script::utils::Message& msg)
 {
     using namespace script::utils;
+    extern std::shared_ptr<ScriptEngine> globalEngine;
     EngineScope enter((ScriptEngine*)(msg.tag));
     funcMap[CODE_FUNC].get().call();
     globalEngine->messageQueue()->postMessage(msg,std::chrono::milliseconds(INTERVAL_WAIT));
@@ -320,6 +323,8 @@ void CodeInterval(script::utils::Message& msg)
     EngineScope enter(engine);
     string *toEval = (string*)CODE_STR;
     engine->eval(*toEval);
+
+    extern std::shared_ptr<ScriptEngine> globalEngine;
     globalEngine->messageQueue()->postMessage(msg,std::chrono::milliseconds(INTERVAL_WAIT));
 }
 
@@ -346,6 +351,8 @@ Local<Value> SetInterval(const Arguments& args)
             wait = 0;
         TASK_ID = nowTimeTaskId;
         INTERVAL_WAIT = wait;
+
+        extern std::shared_ptr<ScriptEngine> globalEngine;
         globalEngine->messageQueue()->postMessage(msg,std::chrono::milliseconds(wait));
         return Number::newNumber((int64_t)nowTimeTaskId++);
     }
@@ -360,6 +367,8 @@ Local<Value> ClearInterval(const Arguments& args)
 
     try{
         using namespace script::utils;
+
+        extern std::shared_ptr<ScriptEngine> globalEngine;
         bool res = globalEngine->messageQueue()->removeMessageIf(
             [&args](Message& msg) -> MessageQueue::RemoveMessagePredReturnType
             {

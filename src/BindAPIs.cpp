@@ -41,8 +41,23 @@ void BindAPIs(std::shared_ptr<ScriptEngine> engine)
     engine->registerNativeClass<IntPos>(IntPosBuilder);
     engine->registerNativeClass<FloatPos>(FloatPosBuilder);
 
+    engine->set("getName",Function::newFunction(GetName));
+    engine->set("getPos",Function::newFunction(GetPos));
+    engine->set("teleport",Function::newFunction(Teleport));
+    engine->set("kill",Function::newFunction(Kill));
+
     engine->set("runCmd",Function::newFunction(RunCmd));
+    engine->set("runCmdEx",Function::newFunction(RunCmdEx));
+    engine->set("registerCmd",Function::newFunction(RegisterCmd));
+
 	engine->set("log", Function::newFunction(Log));
+    engine->set("getTimeStr",Function::newFunction(GetTimeStr));
+    engine->set("getTimeNow",Function::newFunction(GetTimeNow));
+    engine->set("getLxlVersion",Function::newFunction(GetLxlVersion));
+
+    engine->set("setTimeout",Function::newFunction(SetTimeout));
+    engine->set("setInterval",Function::newFunction(SetInterval));
+    engine->set("clearInterval",Function::newFunction(ClearInterval));
 
     //////////////// BlockAPI ////////////////
 
@@ -71,7 +86,16 @@ void BindAPIs(std::shared_ptr<ScriptEngine> engine)
 
     //////////////// FileSystemAPI ////////////////
 
+    engine->set("dirCreate",Function::newFunction(DirCreate));
+    engine->set("pathCopy",Function::newFunction(PathCopy));
+    engine->set("pathMove",Function::newFunction(PathMove));
+    engine->set("pathRename",Function::newFunction(PathRename));
+    engine->set("pathDelete",Function::newFunction(PathDelete));
+    engine->set("pathExists",Function::newFunction(PathExists));
 
+    engine->set("fileReadAll",Function::newFunction(FileReadAll));
+    engine->set("fileWriteAll",Function::newFunction(FileWriteAll));
+    engine->set("fileWriteLine",Function::newFunction(FileWriteLine));
 
     //////////////// GuiAPI ////////////////
 
@@ -84,6 +108,10 @@ void BindAPIs(std::shared_ptr<ScriptEngine> engine)
             .constructor(nullptr)
             .build();
     engine->registerNativeClass<ItemPointer>(ItemPointerBuilder);
+
+    engine->set("getCustomName",Function::newFunction(GetCustomName));
+    engine->set("getCount",Function::newFunction(GetCount));
+    engine->set("setLore",Function::newFunction(SetLore));
 
     //////////////// NbtAPI ////////////////
 
@@ -101,4 +129,19 @@ void BindAPIs(std::shared_ptr<ScriptEngine> engine)
             .build();
     engine->registerNativeClass<PlayerPointer>(PlayerPointerBuilder);
 
+    engine->set("getPlayer",Function::newFunction(GetPlayer));
+    engine->set("getXuid",Function::newFunction(GetXuid));
+    engine->set("getRealName",Function::newFunction(GetRealName));
+    engine->set("getIP",Function::newFunction(GetIP));
+    engine->set("getPlayerList",Function::newFunction(GetPlayerList));
+
+    engine->set("isOP",Function::newFunction(IsOP));
+    engine->set("getPlayerPermLevel",Function::newFunction(GetPlayerPermLevel));
+    engine->set("setPlayerPermLevel",Function::newFunction(SetPlayerPermLevel));
+
+    engine->set("kickPlayer",Function::newFunction(KickPlayer));
+    engine->set("tell",Function::newFunction(Tell));
+    engine->set("getHand",Function::newFunction(GetHand));
+    engine->set("runCmdAs",Function::newFunction(RunCmdAs));
+    engine->set("renamePlayer",Function::newFunction(RenamePlayer));
 }

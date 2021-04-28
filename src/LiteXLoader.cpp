@@ -17,7 +17,14 @@ using namespace script;
 #include "API/BaseAPI.h"
 
 using EnginePtr = std::shared_ptr<ScriptEngine>;
+//主引擎表
 std::list<EnginePtr> modules;
+//消息分发引擎
+std::shared_ptr<ScriptEngine> globalEngine;
+//调试引擎
+std::shared_ptr<ScriptEngine> debugEngine;
+bool globalDebug = false;
+//前置声明
 void LoadScript(const std::string& path);
 void BindAPIs(EnginePtr engine);
 void RegisterDebug(EnginePtr engine);
@@ -25,7 +32,7 @@ void InitGlobalData();
 
 void entry()
 {
-    INFO(std::string("LiteXLoader Script Plugin Loader for ") + LXL_SCRIPT_LANG_TYPE +" - Based on LiteLoader");
+    INFO(std::string("====== LiteXLoader Script Plugin Loader for ") + LXL_SCRIPT_LANG_TYPE +" ======");
     INFO(std::string("Version ") + LXL_VERSION);
     std::filesystem::directory_iterator files
         (conf::getString("Main","PluginsDir",LXL_DEF_LOAD_PATH));
@@ -105,21 +112,32 @@ void LoadScript(const std::string& filePath)
 
 void InitGlobalData()
 {
-    globalEngine = NewEngine();
-
     // 主消息循环
-    /*std::thread([]() {
+    globalEngine = NewEngine();
+    std::thread([]() {
         EngineScope enter(globalEngine.get());
         globalEngine->messageQueue()->loopQueue(utils::MessageQueue::LoopType::kLoopAndWait);
-    }).detach();*/
+    }).detach();
 
     // GC循环
     std::thread([]() {
+        std::this_thread::sleep_for(std::chrono::seconds(conf::getInt("Advanced","GCInterval",20)));
         for(auto engine : modules)
         {
-            EngineScope enter(globalEngine.get());
+            EngineScope enter(engine.get());
             engine->messageQueue()->loopQueue(utils::MessageQueue::LoopType::kLoopOnce);
         }
-        std::this_thread::sleep_for(std::chrono::seconds(conf::getInt("Advanced","GCInterval",20)));
     }).detach();
+
+    //后台调试
+    debugEngine = NewEngine();
+    EngineScope enter(debugEngine.get());
+    try{
+        BindAPIs(debugEngine);
+    }
+    catch(Exception& e)
+    {
+        ERROR("Fail in Binding APIs!\n");
+        throw;
+    }
 }

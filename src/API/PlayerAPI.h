@@ -24,6 +24,7 @@ Local<Value> GetPlayer(const Arguments& args);
 Local<Value> GetXuid(const Arguments& args);
 Local<Value> GetRealName(const Arguments& args);
 Local<Value> GetIP(const Arguments& args);
+Local<Value> GetPlayerList(const Arguments& args);
 
 Local<Value> IsOP(const Arguments& args);
 Local<Value> GetPlayerPermLevel(const Arguments& args);

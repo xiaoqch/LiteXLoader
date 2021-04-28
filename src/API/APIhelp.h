@@ -16,6 +16,7 @@ using namespace script;
 #define WARN(t)  std::cout << PREFIX ## "[Warning] " << t << std::endl
 #define ERROR(t)  std::cerr << PREFIX ## "[Error] " << t << std::endl
 #define FATAL(t)  std::cerr << PREFIX ## "[FATAL] " << t << std::endl
+#define PRINT(t)  std::cout << t << std::endl
 #define ERRPRINT(t)  std::cerr << t << std::endl
 
 // 至少COUNT个参数
@@ -36,10 +37,6 @@ using namespace script;
 // 串行化
 void PrintValue(std::ostream &out, Local<Value> v);
 
-//全局调试开关
-static bool globalDebug = false;
-//全局引擎
-static std::shared_ptr<ScriptEngine> globalEngine;
 //创建新引擎
 std::shared_ptr<ScriptEngine> NewEngine();
 

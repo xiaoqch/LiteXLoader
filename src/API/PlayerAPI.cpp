@@ -68,6 +68,18 @@ Local<Value> GetIP(const Arguments& args)
     CATCH("Fail in GetIP!")
 }
 
+Local<Value> GetPlayerList(const Arguments& args)
+{
+    try{
+        auto players = liteloader::getAllPlayers();
+        Local<Array> list = Array::newArray();
+        for(auto p : players)
+            list.add(NewPlayer(p));
+        return list;
+    }
+    CATCH("Fail in GetPlayerList!")
+}
+
 Local<Value> IsOP(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
@@ -128,9 +140,9 @@ Local<Value> KickPlayer(const Arguments& args)
         Player *player = ExtractPlayer(args[0]);
         if(player)
         {
-            auto level = offPlayer::getLevel(player);
-            SymCall("?forceRemoveEntity@Level@@QEAAXAEAVActor@@@Z",
-                void, void*, void*)(level, player);
+            string msg = args[1].asString().toString();
+            WPlayer((*player)).forceKick();
+            
             return Boolean::newBoolean(true);
         }
         else
