@@ -4,6 +4,7 @@
 #include "../LiteLoader/headers/mc/OffsetHelper.h"
 #include "../LiteLoader/headers/mc/block.h"
 #include "../LiteLoader/headers/mc/item.h"
+#include "../LiteLoader/headers/mc/mass.h"
 #include "../LiteLoader/headers/api/commands.h"
 #include "../Configs.h"
 #include "BaseAPI.h"

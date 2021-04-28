@@ -83,7 +83,6 @@ Local<Value> GetPlayerList(const Arguments& args)
 Local<Value> IsOP(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
-/////////////////////////////  May have problems ///////////////////////////// 
     try{
         Player *player = ExtractPlayer(args[0]);
         if(player)
@@ -121,7 +120,7 @@ Local<Value> SetPlayerPermLevel(const Arguments& args)
             int newPerm = args[1].asNumber().toInt32();
             if(newPerm>=0 || newPerm<=4)
             {
-/////////////////////////////  FIX HERE ///////////////////////////// 
+                ((ServerPlayer*)player)->setPermissions((CommandPermissionLevel)newPerm);
                 res = true;
             }
             return Boolean::newBoolean(res);
@@ -141,7 +140,11 @@ Local<Value> KickPlayer(const Arguments& args)
         if(player)
         {
             string msg = args[1].asString().toString();
-            WPlayer((*player)).forceKick();
+            
+            Minecraft *mc;
+            auto nh = mc->getServerNetworkHandler();
+		    NetworkIdentifier* a = offPlayer::getNetworkIdentifier(player);
+		    nh->disconnectClient(*(NetworkIdentifier*)a, msg, 0);
             
             return Boolean::newBoolean(true);
         }

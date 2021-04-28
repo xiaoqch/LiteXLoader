@@ -52,7 +52,7 @@ Local<Value> GetName(const Arguments& args)
             return String::newString(string(blockname));
         }
 
-///////////////////////////// Have better API /////////////////////////////
+///////////////////////////// May Have better API /////////////////////////////
         ItemStack *item = ExtractItem(args[0]);
         if(item)
             return String::newString(item->getName());
@@ -84,11 +84,6 @@ Local<Value> GetPos(const Arguments& args)
             
             return NewPos(bp.x, bp.y ,bp.z, wp.getDimID());
         }*/
-
-///////////////////////////// FIX HERE ///////////////////////////// 
-        /*ItemStack *item = ExtractItem(args[0]);
-        if(item)
-            return NewPos(item->getPos(), item->getDimID());*/
             
         return Local<Value>(); // Null
     }
