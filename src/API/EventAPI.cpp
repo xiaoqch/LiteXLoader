@@ -7,7 +7,7 @@
 #include "SymbolsHelper.h"
 using namespace script;
 
-//////////////////// Definitions ////////////////////
+//////////////////// Listeners ////////////////////
 
 enum class EVENT_TYPES : int
 {
@@ -53,25 +53,26 @@ struct ListenerListType
 static std::vector<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)];
 
 // Call Event
-template <typename ...Args>
-bool CallEvent(EVENT_TYPES type, Args&& ...args)
-{
-    std::vector<ListenerListType> &nowList = listenerList[int(type)];
+#define START_CALL(TYPE) \
+    std::vector<ListenerListType> &nowList = listenerList[int(TYPE)]; \
+    for(int i = 0; i < nowList.size(); ++i) { \
+        EngineScope enter(nowList[i].engine)
 
-    for(int i = 0; i < nowList.size(); ++i)
+#define END_CALL() }
+
+template <typename ...Args>
+bool CallEvent(int id, Args&& ...args)
+{
+    try{
+        auto result = nowList[id].func.get().call({},std::forward<Args>(args)...);
+        if(result.isNull() || result.isBoolean() && result.asBoolean().value() == false)
+            return false;
+    }
+    catch(const Exception& e)
     {
-        EngineScope enter(nowList[i].engine);
-        try{
-            auto result = nowList[i].func.get().call({},std::forward<Args>(args)...);
-            if(result.isNull() || result.isBoolean() && result.asBoolean().value() == false)
-                return false;
-        }
-        catch(const Exception& e)
-        {
-            ERROR("Event Callback Failed!");
-            ERRPRINT(e.message());
-            return true;
-        }
+        ERROR("Event Callback Failed!");
+        ERRPRINT(e.message());
+        return true;
     }
     return true;
 }
@@ -100,6 +101,14 @@ Local<Value> Listen(const Arguments& args)
     CATCH("Fail to bind listener!")
 }
 
+void RegisterBuiltinCmds()
+{
+    //注册后台调试命令
+    Hook_RegisterCmd(LXL_DEBUG_CMD, string(LXL_SCRIPT_LANG_TYPE) + " Engine Real-time Debugging", 4);
+    globalDebug = false;
+
+    DEBUG("Builtin Cmds Registered.");
+}
 
 
 //////////////////// Hook ////////////////////
@@ -112,22 +121,34 @@ void RegisterEventListeners()
     Event::addEventListener([](JoinEV ev)
     {
         IF_EXIST(EVENT_TYPES::OnJoin)
-            CallEvent(EVENT_TYPES::OnJoin, NewPlayer(ev.Player));
+        {
+            START_CALL(EVENT_TYPES::OnJoin);
+            CallEvent(i, NewPlayer(ev.Player));
+            END_CALL();
+        }
     });
 
 // ===== onPlayerLeft =====
     Event::addEventListener([](LeftEV ev)
     {
         IF_EXIST(EVENT_TYPES::OnLeft)
-            CallEvent(EVENT_TYPES::OnLeft, NewPlayer(ev.Player));
+        {
+            START_CALL(EVENT_TYPES::OnLeft);
+            CallEvent(i, NewPlayer(ev.Player));
+            END_CALL();
+        }
     });
 
 // ===== onChat =====
     Event::addEventListener([](ChatEV ev)
     {
-        IF_EXIST(EVENT_TYPES::OnLeft)
-            if(!CallEvent(EVENT_TYPES::OnChat, NewPlayer(ev.pl), ev.msg))
+        IF_EXIST(EVENT_TYPES::OnChat)
+        {
+            START_CALL(EVENT_TYPES::OnChat);
+            if(!CallEvent(i, NewPlayer(ev.pl), ev.msg))
                 return false;
+            END_CALL();
+        }
         return true;
     });
 
@@ -135,23 +156,38 @@ void RegisterEventListeners()
     Event::addEventListener([](ChangeDimEV ev)
     {
         IF_EXIST(EVENT_TYPES::OnChangeDim)
-            CallEvent(EVENT_TYPES::OnChangeDim, NewPlayer(ev.Player));
+        {
+            START_CALL(EVENT_TYPES::OnChangeDim);
+            CallEvent(i, NewPlayer(ev.Player));
+            END_CALL();
+        }
     });
 
 // ===== onCmdBlockExecute =====
     Event::addEventListener([](CmdBlockExeEV ev)
     {
         IF_EXIST(EVENT_TYPES::OnCmdBlockExecute)
-            if (!CallEvent(EVENT_TYPES::OnCmdBlockExecute, ev.cmd, NewPos(ev.bpos.x, ev.bpos.y, ev.bpos.z)))
+        {
+            START_CALL(EVENT_TYPES::OnCmdBlockExecute);
+            if (!CallEvent(i, ev.cmd, NewPos(ev.bpos.x, ev.bpos.y, ev.bpos.z)))
                 return false;
+            END_CALL();
+        }
         return true;
     });
 
 // ===== onServerStarted =====
     Event::addEventListener([](ServerStartedEV ev)
     {
+        //注册预置命令
+        RegisterBuiltinCmds();
+
         IF_EXIST(EVENT_TYPES::OnServerStarted)
-            CallEvent(EVENT_TYPES::OnServerStarted);
+        {
+            START_CALL(EVENT_TYPES::OnServerStarted);
+            CallEvent(i);
+            END_CALL();
+        }
     });
 
 // For RegisterCmd...
@@ -165,8 +201,12 @@ THook(bool, "?attack@Player@@UEAA_NAEAVActor@@@Z",
     Player* pl,  Actor* ac)
 {
     IF_EXIST(EVENT_TYPES::OnAttack)
-        if (!CallEvent(EVENT_TYPES::OnAttack, NewPlayer(pl), NewEntity(ac)))
+    {
+        START_CALL(EVENT_TYPES::OnAttack);
+        if (!CallEvent(i, NewPlayer(pl), NewEntity(ac)))
             return false;
+        END_CALL();
+    }
     return original(pl, ac);
 }
 
@@ -175,8 +215,12 @@ THook(bool, "?respawn@Player@@UEAAXXZ",
     Player* pl)
 {
     IF_EXIST(EVENT_TYPES::OnRespawn)
-        if (!CallEvent(EVENT_TYPES::OnRespawn, NewPlayer(pl)))
+    {
+        START_CALL(EVENT_TYPES::OnRespawn);
+        if (!CallEvent(i, NewPlayer(pl)))
             return false;
+        END_CALL();
+    }
     return original(pl);
 }
 
@@ -185,8 +229,12 @@ THook(bool, "?drop@Player@@UEAA_NAEBVItemStack@@_N@Z",
     Player* _this, ItemStack* a2, bool a3)
 {
     IF_EXIST(EVENT_TYPES::OnDropItem)
-        if (!CallEvent(EVENT_TYPES::OnDropItem, NewPlayer(_this), NewItem(a2)))
+    {
+        START_CALL(EVENT_TYPES::OnDropItem);
+        if (!CallEvent(i, NewPlayer(_this), NewItem(a2)))
             return false;
+        END_CALL();
+    }
     return original(_this, a2, a3);
 }
 
@@ -195,8 +243,12 @@ THook(bool, "?take@Player@@QEAA_NAEAVActor@@HH@Z",
     Player* _this, Actor* actor, int a2, int a3)
 {
     IF_EXIST(EVENT_TYPES::OnTakeItem)
-        if (!CallEvent(EVENT_TYPES::OnTakeItem, NewPlayer(_this), NewEntity(actor)))
+    {
+        START_CALL(EVENT_TYPES::OnTakeItem);
+        if (!CallEvent(i, NewPlayer(_this), NewEntity(actor)))
             return false;
+        END_CALL();
+    }
     return original(_this, actor, a2, a3);
 }
 
@@ -214,8 +266,10 @@ THook(void, "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVComma
             if (cmd.front() == '/')
                 cmd = cmd.substr(1, cmd.size() - 1);
 
-            if(!CallEvent(EVENT_TYPES::OnPlayerCmd, NewPlayer(player), cmd))
+            START_CALL(EVENT_TYPES::OnPlayerCmd);
+            if(!CallEvent(i, NewPlayer(player), cmd))
                 return;
+            END_CALL();
         }
     }
     return original(_this, id, pkt);
@@ -229,8 +283,10 @@ THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@
     {
         auto sp = *reinterpret_cast<Player**>(reinterpret_cast<unsigned long long>(_this) + 8);
 
-        if (!CallEvent(EVENT_TYPES::OnUseItem, NewPlayer(sp), NewBlock(bl), NewPos(bp->x, bp->y, bp->z)))
+        START_CALL(EVENT_TYPES::OnUseItem);
+        if (!CallEvent(i, NewPlayer(sp), NewBlock(bl), NewPos(bp->x, bp->y, bp->z)))
                 return false;
+        END_CALL();
     }
     return original(_this, item, bp, a4, a5, bl);
 }
@@ -243,8 +299,10 @@ THook(bool, "?checkBlockDestroyPermissions@BlockSource@@QEAA_NAEAVActor@@AEBVBlo
     {
         auto block = SymCall("?getBlock@BlockSource@@QEBAAEBVBlock@@AEBVBlockPos@@@Z", Block*, BlockSource*, BlockPos*)(_this, pos);
 ///////////////////////////// player? /////////////////////////////
-        if (!CallEvent(EVENT_TYPES::OnDestroyBlock, NewEntity(player), NewBlock(block), NewPos(pos->x, pos->y, pos->z)))
+        START_CALL(EVENT_TYPES::OnDestroyBlock);
+        if (!CallEvent(i, NewEntity(player), NewBlock(block), NewPos(pos->x, pos->y, pos->z)))
                 return false;
+        END_CALL();
     }
     return original(_this, player, pos,a3, a4);
 }
@@ -254,9 +312,13 @@ THook(bool, "?mayPlace@BlockSource@@QEAA_NAEBVBlock@@AEBVBlockPos@@EPEAVActor@@_
     BlockSource* bs, Block* bl, BlockPos* a3, unsigned __int8 a4, Actor* pl, bool a6)
 {
     IF_EXIST(EVENT_TYPES::OnPlaceBlock)
+    {
 /////////////////////////////////// Player? ////////////////////////////////////////
-        if (!CallEvent(EVENT_TYPES::OnPlaceBlock, NewEntity(pl), NewBlock(bl), NewPos(a3->x, a3->y, a3->z)))
+        START_CALL(EVENT_TYPES::OnPlaceBlock);
+        if (!CallEvent(i, NewEntity(pl), NewBlock(bl), NewPos(a3->x, a3->y, a3->z)))
                 return false;
+        END_CALL();
+    }
     return original(bs, bl, a3, a4, pl, a6);
 }
 
@@ -265,8 +327,12 @@ THook(bool, "?use@ChestBlock@@UEBA_NAEAVPlayer@@AEBVBlockPos@@E@Z",
     void* _this, Player* pl , BlockPos* bp)
 {
     IF_EXIST(EVENT_TYPES::OnOpenChest)
-        if (!CallEvent(EVENT_TYPES::OnOpenChest, NewPlayer(pl), NewPos(bp->x, bp->y, bp->z)))
+    {
+        START_CALL(EVENT_TYPES::OnOpenChest);
+        if (!CallEvent(i, NewPlayer(pl), NewPos(bp->x, bp->y, bp->z)))
                 return false;
+        END_CALL();
+    }
     return original(_this, pl, bp);
 }
 
@@ -278,8 +344,10 @@ THook(bool, "?stopOpen@ChestBlockActor@@UEAAXAEAVPlayer@@@Z",
     {
         auto bp = (BlockPos*)((intptr_t*)_this - 204);
 
-        if (!CallEvent(EVENT_TYPES::OnCloseChest, NewPlayer(pl), NewPos(bp->x, bp->y, bp->z)))
+        START_CALL(EVENT_TYPES::OnCloseChest);
+        if (!CallEvent(i, NewPlayer(pl), NewPos(bp->x, bp->y, bp->z)))
                 return false;
+        END_CALL();
     }
     return original(_this, pl);
 }
@@ -289,8 +357,12 @@ THook(bool, "?use@BarrelBlock@@UEBA_NAEAVPlayer@@AEBVBlockPos@@E@Z",
     void* _this, Player* pl, BlockPos* bp)
 {
     IF_EXIST(EVENT_TYPES::OnOpenBarrel)
-        if (!CallEvent(EVENT_TYPES::OnOpenBarrel, NewPlayer(pl), NewPos(bp->x, bp->y, bp->z)))
+    {
+        START_CALL(EVENT_TYPES::OnOpenBarrel);
+        if (!CallEvent(i, NewPlayer(pl), NewPos(bp->x, bp->y, bp->z)))
                 return false;
+        END_CALL();
+    }
     return original(_this, pl, bp);
 }
 
@@ -302,8 +374,10 @@ THook(bool, "?stopOpen@BarrelBlockActor@@UEAAXAEAVPlayer@@@Z",
     {
         auto bp = (BlockPos*)((intptr_t*)_this - 204);
 
-        if (!CallEvent(EVENT_TYPES::OnCloseBarrel, NewPlayer(pl), NewPos(bp->x, bp->y, bp->z)))
+        START_CALL(EVENT_TYPES::OnCloseBarrel);
+        if (!CallEvent(i, NewPlayer(pl), NewPos(bp->x, bp->y, bp->z)))
                 return false;
+        END_CALL();
     }
     return original(_this, pl);
 }
@@ -333,9 +407,11 @@ THook(void, "?containerContentChanged@LevelContainerModel@@UEAAXH@Z",
             int slotNumber = a2;
             Actor* pl = v3;
 ///////////////////////////// ?pl ///////////////////////////// 
-            if (!CallEvent(EVENT_TYPES::OnChangeSlot, NewEntity(pl), NewBlock(pBlk), slotNumber,
+            START_CALL(EVENT_TYPES::OnChangeSlot);
+            if (!CallEvent(i, NewEntity(pl), NewBlock(pBlk), slotNumber,
                 NewPos(bpos->x, bpos->y, bpos->z), count != 0, NewItem(item)))
                     return /*false*/;
+            END_CALL();
         }
     }
 	//return original(a1, a2);
@@ -354,8 +430,10 @@ THook(bool, "?die@Mob@@UEAAXAEBVActorDamageSource@@@Z",
         auto ac = SymCall("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z"
             , Actor*, Level*, void*, bool)(level, v6, 0);
 /////////////////////////////  ADD MOB ///////////////////////////// 
-        if (!CallEvent(EVENT_TYPES::OnMobDie, NewEntity(self), NewEntity(ac)))
+        START_CALL(EVENT_TYPES::OnMobDie);
+        if (!CallEvent(i, NewEntity(self), NewEntity(ac)))
             return false;
+        END_CALL();
     }
     return original(self, ads);
 }
@@ -372,8 +450,10 @@ THook(bool, "?_hurt@Mob@@MEAA_NAEBVActorDamageSource@@H_N1@Z",
         auto ac = SymCall("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z"
             , Actor*, Level*, void*, bool)(level, v6, 0);
         
-        if (!CallEvent(EVENT_TYPES::OnMobHurt, NewEntity(self), NewEntity(ac)))
+        START_CALL(EVENT_TYPES::OnMobHurt);
+        if (!CallEvent(i, NewEntity(self), NewEntity(ac)))
             return false;
+        END_CALL();
     }
     return original(self, ads, a1, a2, a3);
 }
@@ -383,8 +463,12 @@ THook(bool, "?explode@Level@@UEAAXAEAVBlockSource@@PEAVActor@@AEBVVec3@@M_N3M3@Z
     Level* _this, BlockSource* bs, Actor* actor, Vec3 pos, float a5, bool a6, bool a7, float a8, bool a9)
 {
     IF_EXIST(EVENT_TYPES::OnExplode)
-        if (!CallEvent(EVENT_TYPES::OnExplode, NewEntity(actor), NewPos(pos.x, pos.y, pos.z)))
+    {
+        START_CALL(EVENT_TYPES::OnExplode);
+        if (!CallEvent(i, NewEntity(actor), NewPos(pos.x, pos.y, pos.z)))
                 return false;
+        END_CALL();
+    }
     return original(_this, bs, actor, pos, a5, a6, a7, a8, a9);
 }
 
@@ -401,8 +485,37 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
             if (cmd.front() == '/')
                 cmd = cmd.substr(1, cmd.size() - 1);
 
-            if(!CallEvent(EVENT_TYPES::OnServerCmd, cmd))
+            //后台调试
+            if(cmd == LXL_DEBUG_CMD)
+            {
+                if(globalDebug)
+                {   //EndDebug
+                    globalDebug = false;
+                    return false;
+                }
+                else
+                {   //StartDebug
+                    globalDebug = true;
+                    cout << ">";
+                    cout.flush();
+                    return false;
+                }
+            }
+            if(globalDebug)
+            {
+                DEBUG("Global into debug mode");
+                EngineScope enter(globalEngine.get());
+                DEBUG("Global got debug data");
+                auto result = globalEngine->eval(cmd);
+                cout << result.describeUtf8() << "\n>";
+                cout.flush();
                 return false;
+            }
+
+            START_CALL(EVENT_TYPES::OnServerCmd);
+            if(!CallEvent(i, cmd))
+                return false;
+            END_CALL();
         }
     }
     return original(_this, a2, x, a4);

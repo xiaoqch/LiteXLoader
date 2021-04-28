@@ -7,7 +7,24 @@
 #include <windows.h>
 #include <chrono>
 #include <map>
+#include <memory>
 using namespace script;
+
+
+//////////////////// Hook ////////////////////
+
+void Hook_RegisterCmd(const string &cmd, const string &describe, int cmdLevel)
+{
+///////////////////////////// May Have Better Here ///////////////////////////// 
+    char *desc = new (std::nothrow) char[describe.size()+1];
+    if(!desc)
+        return;
+    describe.copy(desc, std::string::npos);
+
+    SymCall("?registerCommand@CommandRegistry@@QEAAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PEBDW4CommandPermissionLevel@@UCommandFlag@@3@Z",
+        void, void*, std::string const&, char const*, char, char, char)
+        (CmdRegGlobal, cmd, desc, cmdLevel, 0, 0x40);
+}
 
 
 //////////////////// General APIs ////////////////////
@@ -162,23 +179,15 @@ Local<Value> RegisterCmd(const Arguments& args)
         CHECK_ARG_TYPE(args[2],ValueKind::kNumber)
 
     try{
-        std::string describe = args[1].asString().toString();
-        char *desc = new char[describe.size()+1];
-        describe.copy(desc, std::string::npos);
-///////////////////////////// May Have Better Here ///////////////////////////// 
-
         int level = 4;
-        if(args.size() >= 3)
+        if(args.size() >= 3 && args[2].getKind() == ValueKind::kNumber)
         {
             int newLevel = args[2].asNumber().toInt32();
             if(newLevel >= 0 && newLevel <= 4)
                 level = newLevel;
         }
+        Hook_RegisterCmd(args[0].asString().toString(),args[1].asString().toString(),level);
 
-        SymCall("?registerCommand@CommandRegistry@@QEAAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PEBDW4CommandPermissionLevel@@UCommandFlag@@3@Z",
-			void, void*, std::string const&, char const*, char, char, char)
-			(CmdRegGlobal, args[0].asString().toString(), desc, level, 0, 0x40);
-        
         return Boolean::newBoolean(true);
     }
     CATCH("Fail in RegisterCmd!")

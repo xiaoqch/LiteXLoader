@@ -30,7 +30,6 @@ void entry()
     std::filesystem::directory_iterator files
         (conf::getString("Main","PluginsDir",LXL_DEF_LOAD_PATH));
 
-    InitGlobalData();
     INFO("Loading plugins...");
     for (auto& i : files) {
         if (i.is_regular_file() && i.path().extension() == LXL_PLUGINS_SUFFIX)
@@ -58,6 +57,7 @@ void entry()
             }
         }
     }
+    InitGlobalData();
 }
 
 
@@ -101,14 +101,6 @@ void LoadScript(const std::string& filePath)
     }
     //加载脚本
     engine->eval(scripts);
-    
-    //注册后台调试
-    RegisterDebug(engine);
-}
-
-void RegisterDebug(EnginePtr engine)
-{
-    ;
 }
 
 void InitGlobalData()
@@ -116,14 +108,18 @@ void InitGlobalData()
     globalEngine = NewEngine();
 
     // 主消息循环
-    std::thread([]() {
-        globalEngine->messageQueue()->loopQueue(script::utils::MessageQueue::LoopType::kLoopAndWait);
-    }).detach();
+    /*std::thread([]() {
+        EngineScope enter(globalEngine.get());
+        globalEngine->messageQueue()->loopQueue(utils::MessageQueue::LoopType::kLoopAndWait);
+    }).detach();*/
 
     // GC循环
     std::thread([]() {
         for(auto engine : modules)
+        {
+            EngineScope enter(globalEngine.get());
             engine->messageQueue()->loopQueue(utils::MessageQueue::LoopType::kLoopOnce);
+        }
         std::this_thread::sleep_for(std::chrono::seconds(conf::getInt("Advanced","GCInterval",20)));
     }).detach();
 }

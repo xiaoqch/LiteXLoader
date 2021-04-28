@@ -166,7 +166,7 @@ Local<Value> GetHand(const Arguments& args)
     try{
         Player *player = ExtractPlayer(args[0]);
         if(player)
-            return NewItem(player->getSelectedItem());
+            return NewItem((ItemStack*)&(player->getSelectedItem()));
         else
             return Local<Value>();    //Null
     }

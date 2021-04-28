@@ -36,6 +36,8 @@ using namespace script;
 // 串行化
 void PrintValue(std::ostream &out, Local<Value> v);
 
+//全局调试开关
+static bool globalDebug = false;
 //全局引擎
 static std::shared_ptr<ScriptEngine> globalEngine;
 //创建新引擎

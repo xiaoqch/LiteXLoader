@@ -1,6 +1,12 @@
 #pragma once
 #include "ScriptX.h"
+#include <string>
 using namespace script;
+
+//////////////////// Hook ////////////////////
+
+void Hook_RegisterCmd(const std::string &cmd, const std::string &describe, int cmdLevel);
+
 
 //////////////////// Classes ////////////////////
 class IntPos : public ScriptClass

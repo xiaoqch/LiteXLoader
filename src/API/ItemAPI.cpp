@@ -27,10 +27,10 @@ Local<Value> GetCount(const Arguments& args)
     CHECK_ARGS_COUNT(args,1)
     
     try{
-        Item* item = ExtractItem(args[0]);
+        ItemStack* item = ExtractItem(args[0]);
         if(item)
         {
-            return Number::newNumber(WItem(item).getCount());
+            return Number::newNumber(WItem(*item).getCount());
         }
         else
             return Local<Value>();    //Null
@@ -44,7 +44,7 @@ Local<Value> SetLore(const Arguments& args)
     CHECK_ARG_TYPE(args[1],ValueKind::kArray)
 
     try{
-        Item* item = ExtractItem(args[0]);
+        ItemStack* item = ExtractItem(args[0]);
         if(item)
         {
             auto arr = args[1].asArray();
