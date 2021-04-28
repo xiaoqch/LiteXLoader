@@ -123,7 +123,7 @@ Local<Value> Kill(const Arguments& args)
     Player *player = ExtractPlayer(args[0]);
     if(player)
     {
-        WPlayer(*player).kill();
+        SymCall("?kill@Mob@@UEAAXXZ", void, void*)((Actor*)player);
         return Boolean::newBoolean(true);
     }
     

@@ -5,6 +5,7 @@
 #include <exception>
 #include <cstdarg>
 #include "APIhelp.h"
+#include "../Configs.h"
 #include "SymbolsHelper.h"
 using namespace script;
 
@@ -73,7 +74,7 @@ static std::vector<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)]
         EngineScope enter(nowList[i].engine); \
         try{ \
             auto result = nowList[i].func.get().call({},__VA_ARGS__); \
-            if(result.isNull() || result.isBoolean() && result.asBoolean().value() == false) \
+            if(result.isBoolean() && result.asBoolean().value() == false) \
                 return false; \
         } \
         catch(const Exception& e) \
@@ -441,8 +442,7 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
             {   //StartDebug
                 INFO("Debug mode begin");
                 globalDebug = true;
-                cout << ">";
-                cout.flush();
+                cout << LXL_SCRIPT_LANG_TYPE << ">" << flush;
                 return false;
             }
         }
@@ -453,17 +453,13 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
             {
                 auto result = debugEngine->eval(cmd);
                 PrintValue(cout,result);
-                cout << "\n>";
-                cout.flush();
+                cout << "\n" << LXL_SCRIPT_LANG_TYPE << ">" << flush;
             }
             catch(Exception& e)
             {
                 ERRPRINT(e);
-                cout << ">";
-                cout.flush();
+                cout << LXL_SCRIPT_LANG_TYPE << ">" << flush;
             }
-            
-            cout.flush();
             return false;
         }
 

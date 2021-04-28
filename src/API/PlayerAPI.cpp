@@ -6,6 +6,17 @@
 using namespace std;
 using namespace script;
 
+//////////////////// Hook ////////////////////
+
+bool Hook_KickPlayer(Player* player, const string &msg)
+{
+    Minecraft *mc;
+    auto nh = mc->getServerNetworkHandler();
+    NetworkIdentifier* a = offPlayer::getNetworkIdentifier(player);
+    nh->disconnectClient(*(NetworkIdentifier*)a, msg, 0);
+    return true;
+}
+
 //////////////////// APIs ////////////////////
 
 Local<Value> GetPlayer(const Arguments& args)
@@ -80,13 +91,14 @@ Local<Value> GetPlayerList(const Arguments& args)
     CATCH("Fail in GetPlayerList!")
 }
 
+///////////////////////////////////////////////////// May have problems. 1 or 3 ?
 Local<Value> IsOP(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
     try{
         Player *player = ExtractPlayer(args[0]);
         if(player)
-            return Boolean::newBoolean((int)WPlayer(*player).getPermLvl() == 3);
+            return Boolean::newBoolean((int)WPlayer(*player).getPermLvl() == 1);
         else
             return Local<Value>();    //Null
     }
@@ -131,6 +143,7 @@ Local<Value> SetPlayerPermLevel(const Arguments& args)
     CATCH("Fail in SetPlayerPermLevel!")
 }
 
+///////////////////////////////////////////////////// FIX HERE
 Local<Value> KickPlayer(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
@@ -139,14 +152,11 @@ Local<Value> KickPlayer(const Arguments& args)
         Player *player = ExtractPlayer(args[0]);
         if(player)
         {
-            string msg = args[1].asString().toString();
+            string msg="正在从服务器断开连接";
+            if(args.size() >= 2 && args[1].getKind() == ValueKind::kString)
+                msg = args[1].asString().toString();
             
-            Minecraft *mc;
-            auto nh = mc->getServerNetworkHandler();
-		    NetworkIdentifier* a = offPlayer::getNetworkIdentifier(player);
-		    nh->disconnectClient(*(NetworkIdentifier*)a, msg, 0);
-            
-            return Boolean::newBoolean(true);
+            return Boolean::newBoolean(Hook_KickPlayer(player,msg));
         }
         else
             return Local<Value>();    //Null
@@ -160,16 +170,21 @@ Local<Value> Tell(const Arguments& args)
     CHECK_ARG_TYPE(args[1],ValueKind::kString)
 
     try{
-        TextType type = TextType::RAW;
-        if(args.size() >= 3 && args[2].getKind() == ValueKind::kNumber)
+        Player *player = ExtractPlayer(args[0]);
+        if(player)
         {
-            int newType = args[2].asNumber().toInt32();
-            if(newType >= 0 && newType <= 9)
-                type = (TextType)newType;
+            TextType type = TextType::RAW;
+            if(args.size() >= 3 && args[2].getKind() == ValueKind::kNumber)
+            {
+                int newType = args[2].asNumber().toInt32();
+                if(newType >= 0 && newType <= 9)
+                    type = (TextType)newType;
+            }
+            WPlayer(*player).sendText(args[1].asString().toString(),type);
+            return Boolean::newBoolean(true);
         }
-        WPlayer(*EngineScope::currentEngine()->getNativeInstance<PlayerPointer>(args[1])->pointer)
-            .sendText(args[1].asString().toString(),type);
-        return Boolean::newBoolean(true);
+        else
+            return Local<Value>();    //Null
     }
     CATCH("Fail in Tell!")
 }

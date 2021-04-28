@@ -22,6 +22,7 @@ Local<Value> GetCustomName(const Arguments& args)
     CATCH("Fail in GetCustomName!")
 }
 
+///////////////////////////////////////////////////// FIX HERE
 Local<Value> GetCount(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
@@ -38,6 +39,7 @@ Local<Value> GetCount(const Arguments& args)
     CATCH("Fail in GetCount!")
 }
 
+///////////////////////////////////////////////////// FIX HERE ?
 Local<Value> SetLore(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,2)

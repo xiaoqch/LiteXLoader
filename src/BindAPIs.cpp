@@ -20,7 +20,6 @@ void BindAPIs(std::shared_ptr<ScriptEngine> engine)
 
     static ClassDefine<IntPos> IntPosBuilder =
         defineClass<IntPos>("IntPos")
-            .constructor()
             .constructor(&IntPos::create)
             .instanceProperty("x", &IntPos::getX, &IntPos::setX)
             .instanceProperty("y", &IntPos::getY, &IntPos::setY)
@@ -30,7 +29,6 @@ void BindAPIs(std::shared_ptr<ScriptEngine> engine)
 
     static ClassDefine<FloatPos> FloatPosBuilder =
         defineClass<FloatPos>("FloatPos")
-            .constructor()
             .constructor(&FloatPos::create)
             .instanceProperty("x", &FloatPos::getX, &FloatPos::setX)
             .instanceProperty("y", &FloatPos::getY, &FloatPos::setY)
