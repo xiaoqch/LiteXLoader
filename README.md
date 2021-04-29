@@ -17,10 +17,13 @@
 项目采用`GPL-3.0`开源许可证，保证永远不会收费或者推出商业版。  
 希望社区可以贡献更多的力量共同维护和建设  
 
+3. **高性能**  
+使用C++开发，借助ScriptX的高效率通用接口，Js使用V8引擎，Lua使用原生Lua引擎，让脚本插件也可以做到性能优异。
+
 ## 🔨 Compiling
-1. Install **Microsoft Visual Studio** with standard C++ building suite
-2. Install the newest version of Windows SDK
-3. Install CMake and add it to `PATH`
+1. Install newest **Microsoft Visual Studio** with standard C++ building suite
+2. Install the newest version of **Windows SDK**
+3. Install **CMake** and add it to `PATH`
 4. Run the building batch below
 
 #### Build & Link
@@ -80,7 +83,7 @@
 [OpenSSL](https://github.com/openssl/openssl) Apache-2.0 License  
 
 ### Extra Restrictions & Exceptions
-If you provides a server hosting service,you can use this framework for free,but you SHOULD NOT make PRIVATE changes to this framework as a selling point. If you fixed or tweaked the code, please pull request, instead of making it private for commercial use. 
+If you provides a server hosting service,you can use this framework for free, but you SHOULD NOT make PRIVATE changes to this framework as a selling point. If you fixed or tweaked the code, please pull request, instead of making it private for commercial use. 
 > Do not do evil.
 
 Although we expected to build an open-source community, but forcing everything open-source will ruin this community.
