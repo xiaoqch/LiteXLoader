@@ -6,9 +6,9 @@
 ### 新增监听器  
 `listen(event,callback)`
 - 参数：
-    - event : `String`  
+    1. event : `String`  
     要监听的事件名（见下方监听事件列表）
-    - callback : `Function`  
+    2. callback : `Function`  
     注册的监听函数（函数相关参数见下） 
 - 返回值：是否成功监听事件
 - 返回值类型：`Boolean`   
@@ -22,7 +22,7 @@
 - 监听函数原型  
 `function(player)`
 - 参数：
-    - player : `Pointer`  
+    1. player : `Pointer`  
     进入服务器的玩家指针
 - 拦截事件：不可以拦截
 <br>
@@ -31,7 +31,7 @@
 - 监听函数原型  
 `function(player)`
 - 参数：
-    - player : `Pointer`  
+    1. player : `Pointer`  
     离开服务器的玩家指针
 - 拦截事件：不可以拦截
 <br>
@@ -40,7 +40,7 @@
 - 监听函数原型  
 `function(player)`
 - 参数：
-    - player : `Pointer`  
+    1. player : `Pointer`  
     重生的玩家指针
 - 拦截事件：不可以拦截
 <br>
@@ -49,7 +49,7 @@
 - 监听函数原型  
 `function(player)`
 - 参数：
-    - player : `Pointer`  
+    1. player : `Pointer`  
     切换维度的玩家指针
 - 拦截事件：不可以拦截
 <br>
@@ -58,9 +58,9 @@
 - 监听函数原型  
 `function(player,cmd)`
 - 参数：
-    - player : `Pointer`  
+    1. player : `Pointer`  
     执行命令的玩家指针
-    - cmd : `String`  
+    2. cmd : `String`  
     执行的命令
 - 拦截事件：函数返回`false`
 <br>
@@ -69,9 +69,9 @@
 - 监听函数原型  
 `function(player,msg)`
 - 参数：
-    - player : `Pointer`  
+    1. player : `Pointer`  
     发送聊天信息的玩家指针
-    - msg : `String`  
+    2. msg : `String`  
     发送的聊天消息
 - 拦截事件：函数返回`false`
 <br>
@@ -80,9 +80,9 @@
 - 监听函数原型  
 `function(player,entiey)`
 - 参数：
-    - player : `Pointer`  
+    1. player : `Pointer`  
     攻击实体的玩家指针
-    - entity : `Pointer`  
+    2. entity : `Pointer`  
     被攻击的实体指针
 - 拦截事件：函数返回`false`
 <br>
@@ -91,9 +91,9 @@
 - 监听函数原型  
 `function(player,item)`
 - 参数：
-    - player : `Pointer`  
+    1. player : `Pointer`  
     使用物品的玩家指针
-    - item : `Pointer`  
+    2. item : `Pointer`  
     被使用的物品指针
 - 拦截事件：函数返回`false`
 <br>
@@ -102,9 +102,9 @@
 - 监听函数原型  
 `function(player,item)`
 - 参数：
-    - player : `Pointer`  
+    1. player : `Pointer`  
     捡起物品的玩家指针
-    - item : `Pointer`  
+    2. item : `Pointer`  
     被捡起的物品指针
 - 拦截事件：函数返回`false`
 <br>
@@ -113,9 +113,9 @@
 - 监听函数原型  
 `function(player,item)`
 - 参数：
-    - player : `Pointer`  
+    1. player : `Pointer`  
     丢出物品的玩家指针
-    - item : `Pointer`  
+    2. item : `Pointer`  
     被丢出的物品指针
 - 拦截事件：函数返回`false`
 <br>
@@ -124,11 +124,11 @@
 - 监听函数原型  
 `function(player,block,pos)`
 - 参数：
-    - player : `Pointer`  
+    1. player : `Pointer`  
     破坏方块的玩家指针
-    - block : `Pointer`  
+    2. block : `Pointer`  
     被破坏的方块指针
-    - pos : `IntPos`  
+    3. pos : `IntPos`  
     被破坏的方块坐标
 - 拦截事件：函数返回`false`
 <br>
@@ -137,11 +137,11 @@
 - 监听函数原型  
 `function(player,block)`
 - 参数：
-    - player : `Pointer`  
+    1. player : `Pointer`  
     放置方块的玩家指针
-    - block : `Pointer`  
+    2. block : `Pointer`  
     被放置的方块指针
-    - pos : `IntPos`  
+    3. pos : `IntPos`  
     被放置的方块坐标
 - 拦截事件：函数返回`false`
 <br>
@@ -150,9 +150,9 @@
 - 监听函数原型  
 `function(player,pos)`
 - 参数：
-    - player : `Pointer`  
+    1. player : `Pointer`  
     打开箱子的玩家指针
-    - pos : `IntPos`  
+    2. pos : `IntPos`  
     被打开的箱子坐标
 - 拦截事件：函数返回`false`
 <br>
@@ -161,9 +161,9 @@
 - 监听函数原型  
 `function(player,pos)`
 - 参数：
-    - player : `Pointer`  
+    1. player : `Pointer`  
     关闭箱子的玩家指针
-    - pos : `IntPos`  
+    2. pos : `IntPos`  
     被关闭的箱子坐标
 - 拦截事件：函数返回`false`
 <br>
@@ -172,9 +172,9 @@
 - 监听函数原型  
 `function(player,pos)`
 - 参数：
-    - player : `Pointer`  
+    1. player : `Pointer`  
     打开木桶的玩家指针
-    - pos : `IntPos`  
+    2. pos : `IntPos`  
     被打开的木桶坐标
 - 拦截事件：函数返回`false`
 <br>
@@ -183,9 +183,9 @@
 - 监听函数原型  
 `function(player)`
 - 参数：
-    - player : `Pointer`  
+    1. player : `Pointer`  
     关闭木桶的玩家指针
-    - pos : `IntPos`  
+    2. pos : `IntPos`  
     被关闭的木桶坐标
 - 拦截事件：函数返回`false`
 <br>
@@ -194,17 +194,17 @@
 - 监听函数原型  
 `function(player,container,slotNum,isPutIn,item)`
 - 参数：
-    - player : `Pointer`  
+    1. player : `Pointer`  
     操作容器的玩家指针
-    - container : `Pointer`  
+    2. container : `Pointer`  
     被操作的容器的方块指针
-    - slotNum : `Number`  
+    3. slotNum : `Number`  
     操作容器的格子位置（第x个格子）
-    - isPutIn : `Boolean`  
+    4. isPutIn : `Boolean`  
     是否为放入物品
         - 为 `true` 表示正在放入物品
         - 为 `false` 表示正在取出物品
-    - item : `Pointer`  
+    5. item : `Pointer`  
     被操作的物品指针
 - 拦截事件：不可以拦截
 <br>
@@ -213,9 +213,9 @@
 - 监听函数原型  
 `function(mob,source)`
 - 参数：
-    - mob : `Pointer`  
+    1. mob : `Pointer`  
     死亡的实体指针
-    - source : `Pointer`  
+    2. source : `Pointer`  
     伤害来源的实体指针
 - 拦截事件：函数返回`false`
 <br>
@@ -224,9 +224,9 @@
 - 监听函数原型  
 `function(mob,source)`
 - 参数：
-    - mob : `Pointer`  
+    1. mob : `Pointer`  
     死亡的实体指针
-    - source : `Pointer`  
+    2. source : `Pointer`  
     伤害来源的实体指针
 - 拦截事件：函数返回`false`
 <br>
@@ -235,9 +235,9 @@
 - 监听函数原型  
 `function(source,pos)`
 - 参数：
-    - source : `Pointer`  
+    1. source : `Pointer`  
     爆炸来源的实体指针
-    - pos : `FloatPos`  
+    2. pos : `FloatPos`  
     爆炸发生的坐标
 - 拦截事件：函数返回`false`
 <br>
@@ -246,9 +246,9 @@
 - 监听函数原型  
 `function(cmd,pos)`
 - 参数：
-    - cmd : `String`  
+    1. cmd : `String`  
     执行的命令
-    - pos : `IntPos`  
+    2. pos : `IntPos`  
     执行命令的命令方块坐标
 - 拦截事件：函数返回`false`
 <br>
@@ -265,7 +265,7 @@
 - 监听函数原型  
 `function(cmd)`
 - 参数：
-    - cmd : `String`  
+    1. cmd : `String`  
     执行的后台命令
 - 拦截事件：函数返回`false`
 <br>

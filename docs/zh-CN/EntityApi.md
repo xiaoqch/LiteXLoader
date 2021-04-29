@@ -6,7 +6,7 @@
 ### 获取实体名称  
 `getName(entity)`
 - 参数：
-    - entity : `Pointer`  
+    1. entity : `Pointer`  
     待查询的实体指针  
 - 返回值：目标实体的名称
 - 返回值类型： `String` 
@@ -16,7 +16,7 @@
 ### 获取实体坐标  
 `getPos(entity)`
 - 参数：
-    - entity : `Pointer`  
+    1. entity : `Pointer`  
     待查询的实体指针  
 - 返回值：目标实体的位置
 - 返回值类型：`FloatPos` 
@@ -26,18 +26,18 @@
 ### 传送实体至指定位置  
 `teleport(entity,pos)`
 - 参数：
-    - entity : `Pointer`  
+    1. entity : `Pointer`  
     实体指针
-    - pos : `FloatPos`  
+    2. pos : `FloatPos`  
     目标位置坐标
 - 返回值：是否成功传送
 - 返回值类型：`Boolean`   
 <br>
 
-### 杀死实体  
+### 杀死指定实体  
 `kill(entity,pos)`
 - 参数：
-    - entity : `Pointer`  
+    1. entity : `Pointer`  
     实体指针  
 - 返回值：是否成功执行
 - 返回值类型：`Boolean`   

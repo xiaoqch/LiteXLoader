@@ -4,7 +4,7 @@
 ### 获取方块名称  
 `getName(block)`
 - 参数：
-    - block : `Pointer`  
+    1. block : `Pointer`  
     待查询的方块指针  
 - 返回值：目标方块的名称
 - 返回值类型： `String` 

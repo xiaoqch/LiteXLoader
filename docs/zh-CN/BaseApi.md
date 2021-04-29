@@ -4,7 +4,7 @@
 ## 数据类型
 > 接下来，我们熟悉几种在使用 API 过程中会频繁用到的数据类型
 
-### 通用数据类型
+### 通用数据类型约定
 虽然脚本语言通常是弱类型的，不需要关注具体的数据类型，但由于LiteXLoader支持多种不同的脚本语言，为了方便对接API，下面定义一些通用的数据类型。请你首先务必熟悉这些称呼的意思。  
 - `Null` - 空（未定义，不存在,无返回值等等）
 - `Number` - 整数 / 实数（小数，浮点数）
@@ -54,7 +54,11 @@
 <br>
 
 ### API文档描述约定
-在写了，，建议先直接看API
+1. 函数参数按照 **参数名 : 参数类型** 格式描述  
+例如： cmd : `String` 表示一个**字符串**类型的变量cmd  
+如果参数类型出现`Array<...>`表示一个以<>内的变量为内容的数组 / 列表
+2. 如果在API函数原型后出现 `xx环境下别名：...` 则表示在某种特定语言下当前API可以有**另一种**名字或者用法。此时默认的原型和特定的别名都可以使用，达到的效果**相同**。  
+举例：下文提到的setFutureTask函数即是。
 
 ---
 
@@ -64,7 +68,7 @@
 ### 获取指定对象名称  
 `getName(target)`
 - 参数：
-    - target : `Pointer`  
+    1. target : `Pointer`  
     待查询的对象指针，可以传入 **方块指针、实体指针、玩家指针、物品指针**
 - 返回值：目标对象的名称
 - 返回值类型： `String`
@@ -74,7 +78,7 @@
 ### 获取指定对象坐标  
 `getPos(target)`
 - 参数：
-    - target : `Pointer`  
+    1. target : `Pointer`  
     待查询的对象指针，可以传入 **实体指针、玩家指针**  
 - 返回值：目标对象的位置
 - 返回值类型：`IntPos` 或 `FloatPos`
@@ -85,18 +89,18 @@
 ### 传送对象至指定位置  
 `teleport(target,pos)`
 - 参数：
-    - target : `Pointer`  
+    1. target : `Pointer`  
     待传送的对象指针，可以传入 **实体指针、玩家指针**  
-    - pos : `FloatPos`  
+    2. pos : `FloatPos`  
     目标位置坐标
 - 返回值：是否成功传送
 - 返回值类型：`Boolean`   
 <br>
 
-### 杀死对象  
+### 杀死指定对象  
 `kill(target,pos)`
 - 参数：
-    - target : `Pointer`  
+    1. target : `Pointer`  
     对象指针，可以传入 **实体指针、玩家指针**  
 - 返回值：是否成功执行
 - 返回值类型：`Boolean`   
@@ -105,7 +109,7 @@
 ### 执行一条后台命令  
 `runCmd(cmd)`
 - 参数：
-    - cmd : `String`  
+    1. cmd : `String`  
     待执行的命令  
 - 返回值：是否执行成功
 - 返回值类型： `Boolean`  
@@ -114,7 +118,7 @@
 ### 执行一条后台命令（强化版）  
 `runCmdEx(cmd)`
 - 参数：
-    - cmd : `String`  
+    1. cmd : `String`  
     待执行的命令  
 - 返回值：结果`Object` 
     - 成员 result : `Boolean`  
@@ -127,11 +131,11 @@
 ### 注册一个命令  
 `registerCmd(cmd,description[,level])`
 - 参数：
-    - cmd : `String`
+    1. cmd : `String`
     待注册命令
-    - description : `String`
+    2. description : `String`
     命令描述文本  
-    - level(可选参数) : `Number`  
+    3. level(可选参数) : `Number`  
     命令的注册等级，默认为4
         - 0 : Normal
         - 1 : Privileged
@@ -142,10 +146,10 @@
 - 返回值类型：`Boolean`  
 <br>
 
-### 设置服务器Motd  
+### 设置服务器Motd字符串  
 `setServerMotd(motd)`
 - 参数：
-    - motd : `String`  
+    1. motd : `String`  
     目标Motd字符串  
 - 返回值：是否设置成功
 - 返回值类型：`Boolean`  
@@ -158,7 +162,7 @@
 ### 输出到控制台  
 `log(data1,data2,...)`
 - 参数：
-    - dataN : `任意类型`  
+    1. dataN : `任意类型`  
     待输出的变量或者数据  
     可以是任意类型，参数数量可以是任意个  
 - 返回值：无  
@@ -193,57 +197,62 @@
 <br>
 
 ### 推迟一段时间执行函数  
-`setTimeout(func,msec)`
+`setFutureTask(func,msec)` (Js环境下别名：`setTimeout(func,msec)`)
 - 参数：
-    - func : `Function`  
+    1. func : `Function`  
     待执行的函数
-    - msec : `Number`  
+    2. msec : `Number`  
     推迟执行的时间（毫秒）  
 - 返回值：此任务ID
 - 返回值类型：`Number`   
 > 推迟执行的函数可能与其他线程代码同时执行，使用时注意潜在的数据竞争和死锁问题  
+
 <br>
 
 ### 推迟一段时间执行代码段（eval）  
-`setTimeout(code,msec)`
+`setFutureTask(code,msec)`
+(Js环境下别名：`setTimeout(code,msec)`)
 - 参数：
-    - code : `String`  
+    1. code : `String`  
     待执行的代码段
-    - msec : `Number`  
+    2. msec : `Number`  
     推迟执行的时间（毫秒）  
 - 返回值：此任务ID
 - 返回值类型：`Number`   
 > 推迟执行的代码可能与其他线程代码同时执行，使用时注意潜在的数据竞争和死锁问题  
+
 <br>
 
 ### 设置周期执行函数  
-`setInterval(func,msec)`
+`setLoopTask(func,msec)` (Js环境下别名：`setInterval(func,msec)`)
 - 参数：
-    - func : `Function`  
+    1. func : `Function`  
     待执行的函数
-    - msec : `Number`  
+    2. msec : `Number`  
     执行间隔周期（毫秒）  
 - 返回值：此任务ID
 - 返回值类型： `Number`  
-> 周期执行的函数可能与其他线程代码同时执行，使用时注意潜在的数据竞争和死锁问题   
+> 周期执行的函数可能与其他线程代码同时执行，使用时注意潜在的数据竞争和死锁问题  
+
 <br>
 
 ### 设置周期执行代码段（eval）  
-`setInterval(code,msec)`
+`setLoopTask(code,msec)` (Js环境下别名：`setInterval(code,msec)`)
 - 参数：
-    - code : `String`  
+    1. code : `String`  
     待执行的代码段
-    - msec : `Number`  
+    2. msec : `Number`  
     执行间隔周期（毫秒）  
 - 返回值：此任务ID
 - 返回值类型： `Number`  
 > 周期执行的代码可能与其他线程代码同时执行，使用时注意潜在的数据竞争和死锁问题   
+
 <br>
 
 ### 取消延时 / 周期执行项  
-`clearInterval(taskid)`
+`cancelTask(taskid)` (Js环境下别名：`clearInterval(taskid)`)
 - 参数：
-    - timerid : `Number`  
+    1. timerid : `Number`  
     由前几个函数返回的任务ID  
 - 返回值：是否取消成功
 - 返回值类型： `Boolean`   
@@ -253,7 +262,7 @@
 (仅用于运行时动态加载插件，若要导入外部代码请用各自语言的import或者require)  
 `loadPlugin(path)`
 - 参数：
-    - path : `String`  
+    1. path : `String`  
     要加载的插件文件路径（如`addplugin.js`)  
     > 只能加载与当前开发语言相同的插件，比如说在js插件中不能动态加载.lua文件
 - 返回值：是否启动成功
