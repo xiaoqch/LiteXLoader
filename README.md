@@ -4,27 +4,31 @@
 [![Build](https://img.shields.io/badge/build-passing-brightgreen)](#)
 ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/LiteLDev/LiteXLoader?include_prereleases)
 
+简体中文 | [English]()
 ## 🎨 简介
 `LiteXLoader`是一个基岩版官方服务端`Bedrock Delicated Server`（以下简称**BDS**）插件框架，提供强大的跨语言脚本插件支持能力和稳定的开发API支持。  
 由`LiteLoader`插件加载器加载并提供部分基础API。  
-使用脚本开发**BDS**插件具有上手容易、便于维护的优点。同时脚本插件不需要随着**BDS**版本更新而修改代码，仅需本项目适配即可，给开发者们带来极大便利。  
+使用脚本开发**BDS**插件具有上手容易、代码简洁、便于维护的优点。同时脚本插件不需要随着**BDS**版本更新而修改代码，仅需本项目在底层适配即可，给开发者们带来很大便利。  
 
 ## 🎁 优势
 > “为什么我要选择LiteXLoader？”
+
 1. **跨语言**脚本插件开发支持  
-基于开源`ScriptX`框架，借助其强大的抽象能力，`LiteXLoader`支持**多种**不同脚本语言编写的插件同时运行，且底层仅有一层统一的C++ API接口，维护和适配都比较方便。  
+基于开源`ScriptX`框架，借助其强大的抽象能力，`LiteXLoader`支持**多种**不同脚本语言编写的插件同时运行，同时保证面向各种语言的接口统一，带来舒适的开发体验。  
 目前已支持的插件开发语言：`JavaScript`，`Lua`  
-即将支持的插件开发语言：`Python`，`Ruby`，`C#`
+即将支持的插件开发语言：`Python`，`Ruby`，`C#`，`TypeScript`
 
 2. **开源 & 永久免费**  
 项目采用`GPL-3.0`开源许可证，保证**永远不会**收费或者推出商业版。  
 希望社区可以贡献更多的力量，共同参与维护和建设💕  
 
 3. **高性能**  
-使用C++开发，借助ScriptX的高效率通用接口，Js使用V8引擎，Lua使用原生Lua引擎，让即使是脚本插件也可以做到性能优异。
+  使用C++开发，底层性能优越。借助ScriptX的高效率通用接口，Js使用V8引擎，Lua使用原生Lua引擎，让即使是脚本插件也可以做到高效运行。  
+  底层仅有一层统一的C++ API，维护和适配都比较方便。  
 
-4. **文档清晰**
-借助抽象引擎，各种语言保持统一的API接口，同时开发文档又清晰明了，相信很快你就会喜欢上它。
+4. **开发逻辑清晰**  
+后续版本更新时将保证API**向后兼容**，避免出现插件需要一再重写的情况。  
+开发文档清晰明了，相信很快你就会喜欢上它 ヾ(≧▽≦*)o
 
 ## 🔨 Compiling
 1. Install newest **Microsoft Visual Studio** with standard C++ building suite
@@ -75,14 +79,16 @@
 进入Lua实时调试模式
 
 实时调试模式下，标准输入会被当做对应类型的脚本语言执行，并实时输出结果。  
+如果发生错误，引擎将输出错误信息与堆栈跟踪信息。  
 再次输入对应的`jsdebug`或`luadebug`将退出实时调试模式。
 
 ## 📍 许可协议声明
 在使用我们的产品的时候，我们默认您已经承认并遵守了[Mojang Studios EULA](https://account.mojang.com/documents/minecraft_eula)协议。  
 这意味着你不能对本项目进行任何违反EULA的商业性使用。违反EULA协议造成的一切后果由违反者自行承担。  
-另外，您需要遵守本项目的`GPL-3.0`开源许可证条款，以及下列提到的各关联项目的开源许可证条款
+另外，您需要遵守本项目的`GPL-3.0`开源许可证条款，以及下列提到的各关联项目的开源许可证条款 
 
 [LiteLoader](https://github.com/LiteLDev/LiteLoader) GPLv3 with extra restrictions&exceptions    
+[ScriptX](https://github.com/Tencent/ScriptX) Apache License Version 2.0  
 [BedrockX](https://github.com/Sysca11/BedrockX) GPLv3 with extra restrictions&exceptions  
 [ElementZero](https://github.com/Element-0/ElementZero) GPL v3  
 [ChakraCore](https://github.com/chakra-core/ChakraCore) MIT  
@@ -100,7 +106,7 @@ but if you modified the framework, or write a new framework based on this framew
 开源[ScriptX](https://github.com/Tencent/ScriptX)项目提供的跨语言引擎支持  
 [LiteLoader](https://github.com/LiteLDev/LiteLoaderBDS)项目提供的加载服务与基础API  
 旧[LiteLuaLoader](#)项目提供的部分底层接口实现
-> 特别鸣谢：LiteLDev全体成员  
+> 特别鸣谢：LiteLDev各位大佬们  
 > 在开发过程中给予了作者以非常大的支持。感谢他们！ 💖💖
 
 ## 📞 联系我们
@@ -111,4 +117,4 @@ Telegram电报频道：#LiteLoader [点击加入](https://t.me/LiteLoader)
 
 ## 💕赞助作者💕
 项目已接入爱发电 [点击此处](https://afdian.net/@LiteXLoader?tab=home)   
-给我们不断继续下去的鼓励！  
+给我们不断继续下去的动力！  

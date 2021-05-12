@@ -451,9 +451,14 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
             EngineScope enter(debugEngine.get());
             try
             {
-                auto result = debugEngine->eval(cmd);
-                PrintValue(cout,result);
-                cout << "\n" << LXL_SCRIPT_LANG_TYPE << ">" << flush;
+                if(cmd == "stop")
+                    WARN("请先退出Debug实时调试模式再使用stop！");
+                else
+                {
+                    auto result = debugEngine->eval(cmd);
+                    PrintValue(cout,result);
+                    cout << "\n" << LXL_SCRIPT_LANG_TYPE << ">" << flush;
+                }
             }
             catch(Exception& e)
             {

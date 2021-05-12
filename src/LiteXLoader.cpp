@@ -137,7 +137,7 @@ void InitGlobalData()
     }
     catch(Exception& e)
     {
-        ERROR("Fail in Binding APIs!\n");
+        ERROR("Fail in starting Debug Engine!\n");
         throw;
     }
 }
