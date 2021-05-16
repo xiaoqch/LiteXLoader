@@ -21,15 +21,20 @@ public:
 //////////////////// APIs ////////////////////
 
 Local<Value> GetPlayer(const Arguments& args);
+Local<Value> GetPlayerList(const Arguments& args);
+
+Local<Value> GetPlayerName(const Arguments& args);
+Local<Value> GetPlayerPos(const Arguments& args);
 Local<Value> GetXuid(const Arguments& args);
 Local<Value> GetRealName(const Arguments& args);
 Local<Value> GetIP(const Arguments& args);
-Local<Value> GetPlayerList(const Arguments& args);
 
 Local<Value> IsOP(const Arguments& args);
 Local<Value> GetPlayerPermLevel(const Arguments& args);
 Local<Value> SetPlayerPermLevel(const Arguments& args);
 
+Local<Value> TeleportPlayer(const Arguments& args);
+Local<Value> KillPlayer(const Arguments& args);
 Local<Value> KickPlayer(const Arguments& args);
 Local<Value> Tell(const Arguments& args);
 Local<Value> GetHand(const Arguments& args);

@@ -8,17 +8,23 @@
 #include "EntityAPI.h"
 #include "ItemAPI.h"
 #include "PlayerAPI.h"
+#include "../Kernel/Global.h"
 using namespace script;
 
 //////////////////// APIs ////////////////////
 
+// Int Position
 Local<Object> NewPos(int x, int y, int z, int dim)
 {
     return EngineScope::currentEngine()->newNativeClass<IntPos>(x,y,z,dim);
 }
-Local<Object> NewPos(double x, double y, double z, int dim)
+Local<Object> NewPos(const BlockPos &b, int dim)
 {
-    return EngineScope::currentEngine()->newNativeClass<FloatPos>(x,y,z,dim);
+    return NewPos(b.x, b.y, b.z, dim);
+}
+Local<Object> NewPos(const IntVec4 &v)
+{
+    return NewPos(v.x, v.y, v.z, v.dim);
 }
 IntPos* ExtractIntPos(Local<Value> v)
 {
@@ -28,13 +34,18 @@ IntPos* ExtractIntPos(Local<Value> v)
         return nullptr;
 }
 
+// Float Position
+Local<Object> NewPos(double x, double y, double z, int dim)
+{
+    return EngineScope::currentEngine()->newNativeClass<FloatPos>(x,y,z,dim);
+}
 Local<Object> NewPos(const Vec3 &v, int dim)
 {
-    return NewPos(v.x,v.y,v.z,dim);
+    return NewPos(v.x, v.y, v.z, dim);
 }
-Local<Object> NewPos(const BlockPos &b, int dim)
+Local<Object> NewPos(const FloatVec4 &v)
 {
-    return NewPos(b.x,b.y,b.z,dim);
+    return NewPos(v.x, v.y, v.z, v.dim);
 }
 FloatPos* ExtractFloatPos(Local<Value> v)
 {

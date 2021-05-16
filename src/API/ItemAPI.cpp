@@ -1,10 +1,25 @@
 #include "APIhelp.h"
 #include "ItemAPI.h"
+#include "../Kernel/Item.h"
 #include <vector>
 #include <string>
 using namespace script;
 
 //////////////////// APIs ////////////////////
+
+Local<Value> GetItemName(const Arguments& args)
+{ 
+    CHECK_ARGS_COUNT(args,1)
+
+    try{
+        ItemStack *item = ExtractItem(args[0]);
+        if(item)
+            return String::newString(Raw_GetItemName(item));
+        
+        return Local<Value>(); // Null
+    }
+    CATCH("Fail in GetItemName!")
+}
 
 Local<Value> GetCustomName(const Arguments& args)
 {
@@ -14,7 +29,7 @@ Local<Value> GetCustomName(const Arguments& args)
         ItemStack* item = ExtractItem(args[0]);
         if(item)
         {
-            return String::newString(item->getCustomName());
+            return String::newString(Raw_GetCustomName(item));
         }
         else
             return Local<Value>();    //Null
@@ -22,7 +37,6 @@ Local<Value> GetCustomName(const Arguments& args)
     CATCH("Fail in GetCustomName!")
 }
 
-///////////////////////////////////////////////////// FIX HERE
 Local<Value> GetCount(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
@@ -31,7 +45,7 @@ Local<Value> GetCount(const Arguments& args)
         ItemStack* item = ExtractItem(args[0]);
         if(item)
         {
-            return Number::newNumber(WItem(*item).getCount());
+            return Number::newNumber(Raw_GetCount(item));
         }
         else
             return Local<Value>();    //Null
@@ -39,7 +53,6 @@ Local<Value> GetCount(const Arguments& args)
     CATCH("Fail in GetCount!")
 }
 
-///////////////////////////////////////////////////// FIX HERE ?
 Local<Value> SetLore(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,2)
@@ -60,8 +73,7 @@ Local<Value> SetLore(const Arguments& args)
             if(lores.empty())
                 return Boolean::newBoolean(false);
             
-            SymCall("?setCustomLore@ItemStackBase@@QEAAXAEBV?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@@Z",
-		        void, void*, std::vector<std::string>)(item, lores);
+            Raw_SetLore(item, lores);
             return Boolean::newBoolean(true);
         }
         else

@@ -1,11 +1,6 @@
 ﻿#pragma once
 #include "ScriptX.h"
-#include "../LiteLoader/headers/lbpch.h"
-#include "../LiteLoader/headers/mc/OffsetHelper.h"
-#include "../LiteLoader/headers/mc/block.h"
-#include "../LiteLoader/headers/mc/item.h"
-#include "../LiteLoader/headers/mc/mass.h"
-#include "../LiteLoader/headers/api/commands.h"
+#include "../Kernel/Global.h"
 #include "../Configs.h"
 #include "BaseAPI.h"
 using namespace script;
@@ -44,10 +39,12 @@ std::shared_ptr<ScriptEngine> NewEngine();
 // 通用坐标类
 Local<Object> NewPos(int x, int y, int z, int dim = -1);
 Local<Object> NewPos(const BlockPos &v, int dim = -1);
+Local<Object> NewPos(const IntVec4 &v);
 IntPos* ExtractIntPos(Local<Value> v);
 
 Local<Object> NewPos(double x, double y, double z, int dim = -1);
 Local<Object> NewPos(const Vec3 &v, int dim = -1);
+Local<Object> NewPos(const FloatVec4 &v);
 FloatPos* ExtractFloatPos(Local<Value> v);
 
 //对象指针类

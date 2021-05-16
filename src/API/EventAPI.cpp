@@ -4,6 +4,7 @@
 #include <map>
 #include <exception>
 #include <cstdarg>
+#include "../Kernel/Base.h"
 #include "APIhelp.h"
 #include "../Configs.h"
 #include "SymbolsHelper.h"
@@ -111,7 +112,7 @@ Local<Value> Listen(const Arguments& args)
 void RegisterBuiltinCmds()
 {
     //注册后台调试命令
-    Hook_RegisterCmd(LXL_DEBUG_CMD, string(LXL_SCRIPT_LANG_TYPE) + " Engine Real-time Debugging", 4);
+    Raw_RegisterCmd(LXL_DEBUG_CMD, string(LXL_SCRIPT_LANG_TYPE) + " Engine Real-time Debugging", 4);
 
     DEBUG("Builtin Cmds Registered.");
 }

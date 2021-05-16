@@ -3,18 +3,11 @@
 #include <string>
 using namespace script;
 
-//////////////////// Hook ////////////////////
-
-void Hook_RegisterCmd(const std::string &cmd, const std::string &describe, int cmdLevel);
-
-
 //////////////////// Classes ////////////////////
-class IntPos : public ScriptClass
+class IntVec4;
+class IntPos : public IntVec4, public ScriptClass
 {
 public:
-	long long x,y,z;
-    int dim;
-
 	explicit IntPos(const Local<Object>& scriptObj) : ScriptClass(scriptObj) {}
     static IntPos* create(const Arguments& args)
     {
@@ -45,12 +38,10 @@ public:
     void setDim(const Local<Value>& value) { dim = value.asNumber().toInt32(); }
 };
 
-class FloatPos : public ScriptClass
+class FloatVec4;
+class FloatPos : public FloatVec4, public ScriptClass
 {
 public:
-	float x,y,z;
-    int dim;
-
 	explicit FloatPos(const Local<Object>& scriptObj) : ScriptClass(scriptObj) {}
     static FloatPos* create(const Arguments& args)
     {

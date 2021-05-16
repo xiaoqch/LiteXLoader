@@ -1,23 +1,11 @@
 #include "APIhelp.h"
 #include "BaseAPI.h"
 #include "PlayerAPI.h"
+#include "../Kernel/Player.h"
 #include <string>
 #include <vector>
 using namespace std;
 using namespace script;
-
-//////////////////// Hook ////////////////////
-
-bool Hook_KickPlayer(Player* player, const string &msg)
-{
-    Minecraft *mc;
-    auto nh = mc->getServerNetworkHandler();
-    NetworkIdentifier* a = offPlayer::getNetworkIdentifier(player);
-    nh->disconnectClient(*(NetworkIdentifier*)a, msg, 0);
-    return true;
-}
-
-//////////////////// APIs ////////////////////
 
 Local<Value> GetPlayer(const Arguments& args)
 {
@@ -26,15 +14,43 @@ Local<Value> GetPlayer(const Arguments& args)
 
     try{
         string target = args[0].asString().toString();
-        auto playerList = liteloader::getAllPlayers();
+        auto playerList = Raw_GetAllPlayers();
         for(Player *p : playerList)
         {
-            if(offPlayer::getXUIDString(p) == target || p->getNameTag() == target)
+            if(Raw_GetXuid(p) == target || Raw_GetPlayerName(p) == target)
                 return NewPlayer(p);
         }
         return Local<Value>();    //Null
     }
     CATCH("Fail in GetPlayer!")
+}
+
+Local<Value> GetPlayerName(const Arguments& args)
+{ 
+    CHECK_ARGS_COUNT(args,1)
+
+    try{
+        Player *player = ExtractPlayer(args[0]);
+        if(player)
+            return String::newString(Raw_GetPlayerName(player));
+
+        return Local<Value>(); // Null
+    }
+    CATCH("Fail in GetPlayerName!")
+}
+
+Local<Value> GetPlayerPos(const Arguments& args)
+{ 
+    CHECK_ARGS_COUNT(args,1)
+
+    try{
+        Player *player = ExtractPlayer(args[0]);
+        if(player)
+            return NewPos(Raw_GetPlayerPos(player));
+            
+        return Local<Value>(); // Null
+    }
+    CATCH("Fail in GetPlayerPos!")
 }
 
 Local<Value> GetXuid(const Arguments& args)
@@ -44,7 +60,7 @@ Local<Value> GetXuid(const Arguments& args)
     try{
         Player *player = ExtractPlayer(args[0]);
         if(player)
-            return String::newString(offPlayer::getXUIDString(player));
+            return String::newString(Raw_GetXuid(player));
         else
             return Local<Value>();    //Null
     }
@@ -58,7 +74,7 @@ Local<Value> GetRealName(const Arguments& args)
     try{
         Player *player = ExtractPlayer(args[0]);
         if(player)
-            return String::newString(offPlayer::getRealName(player));
+            return String::newString(Raw_GetRealName(player));
         else
             return Local<Value>();    //Null
     }
@@ -72,7 +88,7 @@ Local<Value> GetIP(const Arguments& args)
     try{
         Player *player = ExtractPlayer(args[0]);
         if(player)
-            return String::newString(liteloader::getIP(*offPlayer::getNetworkIdentifier(player)));
+            return String::newString(Raw_GetIP(player));
         else
             return Local<Value>();    //Null
     }
@@ -82,7 +98,7 @@ Local<Value> GetIP(const Arguments& args)
 Local<Value> GetPlayerList(const Arguments& args)
 {
     try{
-        auto players = liteloader::getAllPlayers();
+        auto players = Raw_GetPlayerList();
         Local<Array> list = Array::newArray();
         for(auto p : players)
             list.add(NewPlayer(p));
@@ -91,14 +107,45 @@ Local<Value> GetPlayerList(const Arguments& args)
     CATCH("Fail in GetPlayerList!")
 }
 
-///////////////////////////////////////////////////// May have problems. 1 or 3 ?
+Local<Value> TeleportPlayer(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args,2)
+    
+    try{
+        FloatPos *pos = ExtractFloatPos(args[1]);
+        if(!pos)
+            return Local<Value>();
+
+        Player *player = ExtractPlayer(args[0]);
+        if(player)
+            return Boolean::newBoolean(Raw_TeleportPlayer(player,*pos));
+
+        return Local<Value>();    //Null
+    }
+    CATCH("Fail in TeleportPlayer!")
+}
+
+Local<Value> KillPlayer(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args,1)
+    
+    try{
+        Player *player = ExtractPlayer(args[0]);
+        if(player)
+            return Boolean::newBoolean(Raw_KillPlayer(player));
+
+        return Local<Value>();    //Null
+    }
+    CATCH("Fail in KillPlayer!")
+}
+
 Local<Value> IsOP(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
     try{
         Player *player = ExtractPlayer(args[0]);
         if(player)
-            return Boolean::newBoolean((int)WPlayer(*player).getPermLvl() == 1);
+            return Boolean::newBoolean(Raw_GetPlayerPermLevel(player) >= 1);
         else
             return Local<Value>();    //Null
     }
@@ -112,7 +159,7 @@ Local<Value> GetPlayerPermLevel(const Arguments& args)
     try{
         Player *player = ExtractPlayer(args[0]);
         if(player)
-            return Number::newNumber((int)WPlayer(*player).getPermLvl());
+            return Number::newNumber(Raw_GetPlayerPermLevel(player));
         else
             return Local<Value>();    //Null
     }
@@ -131,10 +178,7 @@ Local<Value> SetPlayerPermLevel(const Arguments& args)
             bool res = false;
             int newPerm = args[1].asNumber().toInt32();
             if(newPerm>=0 || newPerm<=4)
-            {
-                ((ServerPlayer*)player)->setPermissions((CommandPermissionLevel)newPerm);
-                res = true;
-            }
+                res = Raw_SetPlayerPermLevel(player,newPerm);
             return Boolean::newBoolean(res);
         }
         else
@@ -156,7 +200,7 @@ Local<Value> KickPlayer(const Arguments& args)
             if(args.size() >= 2 && args[1].getKind() == ValueKind::kString)
                 msg = args[1].asString().toString();
             
-            return Boolean::newBoolean(Hook_KickPlayer(player,msg));
+            return Boolean::newBoolean(Raw_KickPlayer(player,msg));
         }
         else
             return Local<Value>();    //Null
@@ -180,8 +224,7 @@ Local<Value> Tell(const Arguments& args)
                 if(newType >= 0 && newType <= 9)
                     type = (TextType)newType;
             }
-            WPlayer(*player).sendText(args[1].asString().toString(),type);
-            return Boolean::newBoolean(true);
+            return Boolean::newBoolean(Raw_Tell(player,args[1].asString().toString(),type));
         }
         else
             return Local<Value>();    //Null
@@ -196,26 +239,11 @@ Local<Value> GetHand(const Arguments& args)
     try{
         Player *player = ExtractPlayer(args[0]);
         if(player)
-            return NewItem((ItemStack*)&(player->getSelectedItem()));
+            return NewItem(Raw_GetHand(player));
         else
             return Local<Value>();    //Null
     }
     CATCH("Fail in GetHand!")
-}
-
-Local<Value> RunCmdAs(const Arguments& args)
-{
-    CHECK_ARGS_COUNT(args,1)
-    CHECK_ARG_TYPE(args[1],ValueKind::kString)
-    
-    try{
-        Player *player = ExtractPlayer(args[0]);
-        if(player)
-            return Boolean::newBoolean(liteloader::runcmdAs(player,args[1].asString().toString()));
-        else
-            return Local<Value>();    //Null
-    }
-    CATCH("Fail in RunCmdAs!")
 }
 
 Local<Value> RenamePlayer(const Arguments& args)
@@ -227,8 +255,7 @@ Local<Value> RenamePlayer(const Arguments& args)
         Player *player = ExtractPlayer(args[0]);
         if(player)
         {
-            player->setNameTag(args[1].asString().toString());
-            return Boolean::newBoolean(true);
+            return Boolean::newBoolean(Raw_RenamePlayer(player,args[1].asString().toString()));
         }
         else
             return Local<Value>();    //Null

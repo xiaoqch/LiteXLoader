@@ -17,3 +17,10 @@ public:
         return pointer;
     }
 };
+
+//////////////////// APIs ////////////////////
+
+Local<Value> GetEntityName(const Arguments& args);
+Local<Value> GetEntityPos(const Arguments& args);
+Local<Value> TeleportEntity(const Arguments& args);
+Local<Value> KillEntity(const Arguments& args);

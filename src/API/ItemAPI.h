@@ -20,6 +20,7 @@ public:
 
 //////////////////// APIs ////////////////////
 
+Local<Value> GetItemName(const Arguments& args);
 Local<Value> GetCustomName(const Arguments& args);
 Local<Value> GetCount(const Arguments& args);
 Local<Value> SetLore(const Arguments& args);

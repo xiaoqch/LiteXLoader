@@ -18,3 +18,7 @@ public:
         return pointer;
     }
 };
+
+//////////////////// APIs ////////////////////
+
+Local<Value> GetBlockName(const Arguments& args);

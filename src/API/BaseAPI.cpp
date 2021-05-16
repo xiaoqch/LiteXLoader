@@ -4,64 +4,14 @@
 #include "ItemAPI.h"
 #include "BlockAPI.h"
 #include "EntityAPI.h"
+#include "../Kernel/Base.h"
 #include <windows.h>
 #include <chrono>
 #include <map>
 #include <memory>
 using namespace script;
 
-
-//////////////////// Hook ////////////////////
-
-void Hook_RegisterCmd(const string &cmd, const string &describe, int cmdLevel)
-{
-///////////////////////////// May Have Better Here ///////////////////////////// 
-    char *desc = new (std::nothrow) char[describe.size()+1];
-    if(!desc)
-        return;
-    describe.copy(desc, std::string::npos);
-
-    SymCall("?registerCommand@CommandRegistry@@QEAAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PEBDW4CommandPermissionLevel@@UCommandFlag@@3@Z",
-        void, void*, std::string const&, char const*, char, char, char)
-        (CmdRegGlobal, cmd, desc, cmdLevel, 0, 0x40);
-}
-
-
-//////////////////// General APIs ////////////////////
-
-Local<Value> GetName(const Arguments& args)
-{ 
-    CHECK_ARGS_COUNT(args,1)
-
-    try{
-        Player *player = ExtractPlayer(args[0]);
-        if(player)
-            return String::newString(player->getNameTag());
-        
-        Actor *entity = ExtractEntity(args[0]);
-        if(entity)
-            return String::newString(entity->getNameTag());
-
-        Block *block = ExtractBlock(args[0]);
-        if(block)
-        {
-            void* hashedstr = SymCall("?getName@Block@@QEBAAEBVHashedString@@XZ",
-                void*, void*)(block);
-            auto blockname = ((const char*)hashedstr + 8);
-            
-            return String::newString(string(blockname));
-        }
-
-///////////////////////////// May Have better API /////////////////////////////
-        ItemStack *item = ExtractItem(args[0]);
-        if(item)
-            return String::newString(item->getName());
-            
-        return Local<Value>(); // Null
-    }
-    CATCH("Fail in GetName!")
-}
-
+/*
 Local<Value> GetPos(const Arguments& args)
 { 
     CHECK_ARGS_COUNT(args,1)
@@ -76,87 +26,55 @@ Local<Value> GetPos(const Arguments& args)
             return NewPos(entity->getPos(), WActor(*entity).getDimID());
 
 ///////////////////////////// FIX HERE /////////////////////////////
-        /*Block *block = ExtractBlock(args[0]);
+        Block *block = ExtractBlock(args[0]);
         if(block)
         {
             WBlock wp(*block);
             BlockPos bp = wp.getBlockPosition(); 
             
             return NewPos(bp.x, bp.y ,bp.z, wp.getDimID());
-        }*/
+        }
             
         return Local<Value>(); // Null
     }
     CATCH("Fail in GetPos!")
-}
-
-Local<Value> Teleport(const Arguments& args)
-{
-    CHECK_ARGS_COUNT(args,1)
-    
-    try{
-        FloatPos *pos = ExtractFloatPos(args[1]);
-        if(!pos)
-            return Local<Value>();
-
-        Player *player = ExtractPlayer(args[0]);
-        if(player)
-        {
-            WPlayer(*player).teleport({pos->x,pos->y,pos->z},pos->dim);
-            return Boolean::newBoolean(true);
-        }
-        
-        Actor *entity = ExtractEntity(args[0]);
-        if(entity)
-        {
-            WActor(*entity).teleport({pos->x,pos->y,pos->z},pos->dim);
-            return Boolean::newBoolean(true);
-        }
-
-        return Local<Value>();    //Null
-    }
-    CATCH("Fail in Teleport!")
-}
-
-Local<Value> Kill(const Arguments& args)
-{
-    Player *player = ExtractPlayer(args[0]);
-    if(player)
-    {
-        SymCall("?kill@Mob@@UEAAXXZ", void, void*)((Actor*)player);
-        return Boolean::newBoolean(true);
-    }
-    
-    Actor *entity = ExtractEntity(args[0]);
-    if(entity)
-    {
-        SymCall("?kill@Mob@@UEAAXXZ", void, void*)(entity);
-        return Boolean::newBoolean(true);
-    }
-
-    return Local<Value>();    //Null
-}
+}*/
 
 //////////////////// APIs ////////////////////
 
-Local<Value> RunCmd(const Arguments& args)
+Local<Value> Runcmd(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
 
     try{
-        return Boolean::newBoolean(liteloader::runcmd(args[0].asString().toString()));
+        return Boolean::newBoolean(Raw_Runcmd(args[0].asString().toString()));
     }
     CATCH("Fail in RunCmd!")
 }
 
-Local<Value> RunCmdEx(const Arguments& args)
+Local<Value> RuncmdAs(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args,1)
+    CHECK_ARG_TYPE(args[1],ValueKind::kString)
+    
+    try{
+        Player *player = ExtractPlayer(args[0]);
+        if(player)
+            return Boolean::newBoolean(Raw_RuncmdAs(player,args[1].asString().toString()));
+        else
+            return Local<Value>();    //Null
+    }
+    CATCH("Fail in RunCmdAs!")
+}
+
+Local<Value> RuncmdEx(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
 
     try{
-        std::pair<bool, string> result = liteloader::runcmdEx(args[0].asString().toString());
+        std::pair<bool, string> result = Raw_RuncmdEx(args[0].asString().toString());
         Local<Object> resObj = Object::newObject();
         resObj.set("result",result.first);
         resObj.set("output",result.second);
@@ -181,7 +99,7 @@ Local<Value> RegisterCmd(const Arguments& args)
             if(newLevel >= 0 && newLevel <= 4)
                 level = newLevel;
         }
-        Hook_RegisterCmd(args[0].asString().toString(),args[1].asString().toString(),level);
+        Raw_RegisterCmd(args[0].asString().toString(),args[1].asString().toString(),level);
 
         return Boolean::newBoolean(true);
     }
