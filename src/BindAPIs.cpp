@@ -13,10 +13,11 @@ using namespace script;
 #include "API/FileSystemAPI.h"
 #include "API/NetworkAPI.h"
 #include "API/PlayerAPI.h"
+#include "API/StaticClasses.h"
 
 void BindAPIs(std::shared_ptr<ScriptEngine> engine)
 {
-    //////////////// BaseAPI ////////////////
+    //////////////// Base Classes ////////////////
 
     static ClassDefine<IntPos> IntPosBuilder =
         defineClass<IntPos>("IntPos")
@@ -36,34 +37,63 @@ void BindAPIs(std::shared_ptr<ScriptEngine> engine)
             .instanceProperty("dim", &FloatPos::getDim, &FloatPos::setDim)
             .build();
     
+    static ClassDefine<void> McClassBuilder =
+        defineClass("mc")
+            .function("runcmd", &McClass::runcmd)
+            .function("runcmdEx", &McClass::runcmdEx)
+            .function("registerCmd", &McClass::registerCmd)
+            .function("setServerMotd", &McClass::setServerMotd)
+            .function("listen", &McClass::listen)
+            .function("getPlayer", &McClass::getPlayer)
+            .function("getOnlinePlayers", &McClass::getOnlinePlayers)
+            .build();
+
+    static ClassDefine<void> SystemClassBuilder =
+        defineClass("system")
+            .function("getTimeStr", &SystemClass::getTimeStr)
+            .function("getTimeObj", &SystemClass::getTimeObj)
+            .function("randomGuid", &SystemClass::randomGuid)
+            .function("cmd", &SystemClass::cmd)
+            .build();
+    
+    static ClassDefine<void> FileClassBuilder =
+        defineClass("file")
+            .function("read", &FileClass::read)
+            .function("write", &FileClass::write)
+            .function("writeLine", &FileClass::writeLine)
+
+            .function("createDir", &FileClass::createDir)
+            .function("copy", &FileClass::copy)
+            .function("move", &FileClass::move)
+            .function("rename", &FileClass::rename)
+            .function("delete", &FileClass::del)
+            .function("exists", &FileClass::exists)
+            .build();
+    
     engine->registerNativeClass<IntPos>(IntPosBuilder);
     engine->registerNativeClass<FloatPos>(FloatPosBuilder);
+    engine->registerNativeClass(McClassBuilder);
+    engine->registerNativeClass(SystemClassBuilder);
+    engine->registerNativeClass(FileClassBuilder);
 
-    engine->set("getName",Function::newFunction(GetName));
-    engine->set("getPos",Function::newFunction(GetPos));
-    engine->set("teleport",Function::newFunction(Teleport));
-    engine->set("kill",Function::newFunction(Kill));
 
-    engine->set("runCmd",Function::newFunction(RunCmd));
-    engine->set("runCmdEx",Function::newFunction(RunCmdEx));
-    engine->set("registerCmd",Function::newFunction(RegisterCmd));
-
+    //////////////// Global Functions ////////////////
 	engine->set("log", Function::newFunction(Log));
-    engine->set("getTimeStr",Function::newFunction(GetTimeStr));
-    engine->set("getTimeNow",Function::newFunction(GetTimeNow));
     engine->set("getLxlVersion",Function::newFunction(GetLxlVersion));
 
     engine->set("setTimeout",Function::newFunction(SetTimeout));
     engine->set("setInterval",Function::newFunction(SetInterval));
     engine->set("clearInterval",Function::newFunction(ClearInterval));
 
+
     //////////////// BlockAPI ////////////////
 
-    static ClassDefine<BlockPointer> BlockPointerBuilder=
-        defineClass<BlockPointer>("BlockPointer")
+    static ClassDefine<BlockClass> BlockClassBuilder =
+        defineClass<BlockClass>("Block")
             .constructor(nullptr)
+            .instanceProperty("name", &BlockClass::getName)
             .build();
-    engine->registerNativeClass<BlockPointer>(BlockPointerBuilder);
+    engine->registerNativeClass<BlockClass>(BlockClassBuilder);
 
     //////////////// DbAPI ////////////////
 
@@ -71,29 +101,20 @@ void BindAPIs(std::shared_ptr<ScriptEngine> engine)
 
     //////////////// EntityAPI ////////////////
 
-    static ClassDefine<EntityPointer> EntityPointerBuilder =
-        defineClass<EntityPointer>("EntityPointer")
+    static ClassDefine<EntityClass> EntityClassBuilder =
+        defineClass<EntityClass>("Entity")
             .constructor(nullptr)
+            .instanceProperty("name", &EntityClass::getName)
+            .instanceProperty("pos", &EntityClass::getPos)
+
+            .instanceFunction("teleport", &EntityClass::teleport)
+            .instanceFunction("kill", &EntityClass::kill)
             .build();
-    engine->registerNativeClass<EntityPointer>(EntityPointerBuilder);
+    engine->registerNativeClass<EntityClass>(EntityClassBuilder);
 
     //////////////// EventAPI ////////////////
 
-    RegisterEventListeners();
-    engine->set("listen", Function::newFunction(Listen));
-
-    //////////////// FileSystemAPI ////////////////
-
-    engine->set("dirCreate",Function::newFunction(DirCreate));
-    engine->set("pathCopy",Function::newFunction(PathCopy));
-    engine->set("pathMove",Function::newFunction(PathMove));
-    engine->set("pathRename",Function::newFunction(PathRename));
-    engine->set("pathDelete",Function::newFunction(PathDelete));
-    engine->set("pathExists",Function::newFunction(PathExists));
-
-    engine->set("fileReadAll",Function::newFunction(FileReadAll));
-    engine->set("fileWriteAll",Function::newFunction(FileWriteAll));
-    engine->set("fileWriteLine",Function::newFunction(FileWriteLine));
+    InitEventListeners();
 
     //////////////// GuiAPI ////////////////
 
@@ -101,15 +122,16 @@ void BindAPIs(std::shared_ptr<ScriptEngine> engine)
 
     //////////////// ItemAPI ////////////////
 
-    static ClassDefine<ItemPointer> ItemPointerBuilder =
-        defineClass<ItemPointer>("ItemPointer")
+    static ClassDefine<ItemClass> ItemClassBuilder =
+        defineClass<ItemClass>("Item")
             .constructor(nullptr)
-            .build();
-    engine->registerNativeClass<ItemPointer>(ItemPointerBuilder);
+            .instanceProperty("name", &ItemClass::getName)
+            .instanceProperty("customName", &ItemClass::getCustomName)
+            .instanceProperty("count", &ItemClass::getCount)
 
-    engine->set("getCustomName",Function::newFunction(GetCustomName));
-    engine->set("getCount",Function::newFunction(GetCount));
-    engine->set("setLore",Function::newFunction(SetLore));
+            .instanceFunction("setLore", &ItemClass::setLore)
+            .build();
+    engine->registerNativeClass<ItemClass>(ItemClassBuilder);
 
     //////////////// NbtAPI ////////////////
 
@@ -121,25 +143,26 @@ void BindAPIs(std::shared_ptr<ScriptEngine> engine)
 
     //////////////// PlayerAPI ////////////////
 
-    static ClassDefine<PlayerPointer> PlayerPointerBuilder =
-        defineClass<PlayerPointer>("PlayerPointer")
+    static ClassDefine<PlayerClass> PlayerClassBuilder =
+        defineClass<PlayerClass>("Player")
             .constructor(nullptr)
+            .instanceProperty("name", &PlayerClass::getName)
+            .instanceProperty("pos", &PlayerClass::getPos)
+            .instanceProperty("realName", &PlayerClass::getRealName)
+            .instanceProperty("xuid", &PlayerClass::getXuid)
+            .instanceProperty("ip", &PlayerClass::getIP)
+
+            .instanceFunction("isOP", &PlayerClass::isOP)
+            .instanceFunction("getPlayerPermLevel", &PlayerClass::getPlayerPermLevel)
+            .instanceFunction("setPlayerPermLevel", &PlayerClass::setPlayerPermLevel)
+
+            .instanceFunction("runcmdAs", &PlayerClass::runcmdAs)
+            .instanceFunction("teleport", &PlayerClass::teleport)
+            .instanceFunction("kill", &PlayerClass::kill)
+            .instanceFunction("kick", &PlayerClass::kick)
+            .instanceFunction("tell", &PlayerClass::tell)
+            .instanceFunction("getHand", &PlayerClass::getHand)
+            .instanceFunction("rename", &PlayerClass::rename)
             .build();
-    engine->registerNativeClass<PlayerPointer>(PlayerPointerBuilder);
-
-    engine->set("getPlayer",Function::newFunction(GetPlayer));
-    engine->set("getXuid",Function::newFunction(GetXuid));
-    engine->set("getRealName",Function::newFunction(GetRealName));
-    engine->set("getIP",Function::newFunction(GetIP));
-    engine->set("getPlayerList",Function::newFunction(GetPlayerList));
-
-    engine->set("isOP",Function::newFunction(IsOP));
-    engine->set("getPlayerPermLevel",Function::newFunction(GetPlayerPermLevel));
-    engine->set("setPlayerPermLevel",Function::newFunction(SetPlayerPermLevel));
-
-    engine->set("kickPlayer",Function::newFunction(KickPlayer));
-    engine->set("tell",Function::newFunction(Tell));
-    engine->set("getHand",Function::newFunction(GetHand));
-    engine->set("runCmdAs",Function::newFunction(RunCmdAs));
-    engine->set("renamePlayer",Function::newFunction(RenamePlayer));
+    engine->registerNativeClass<PlayerClass>(PlayerClassBuilder);
 }

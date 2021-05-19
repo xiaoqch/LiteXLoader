@@ -7,18 +7,6 @@ set (BACKEND_LIB_DIR_NAME "Lua")
 
 
 
-############  Help Funcs  ############
-macro(SUBDIRLIST result curdir)
-    file(GLOB children RELATIVE ${curdir} ${curdir}/*)
-    set(dirlist "")
-    foreach(child ${children})
-        if(IS_DIRECTORY ${curdir}/${child})
-            LIST(APPEND dirlist ${child})
-        endif()
-    endforeach()
-    set(${result} ${dirlist})
-endmacro()
-
 ############ Working Below ... ############
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -26,7 +14,7 @@ set(CMAKE_BUILD_TYPE Release)
 
 # Main
 set (LIBRARY_OUTPUT_PATH "../Output") 
-file(GLOB_RECURSE LITE_DLL_SOURCES "../src/*.cpp")
+file(GLOB_RECURSE LITE_DLL_SOURCES "../src/*.cpp" "../src/API/*.cpp" "../src/Kernel/*.cpp")
 add_library( ${PROJECT_NAME} SHARED ${LITE_DLL_SOURCES} )
 
 # LiteLoader
@@ -35,9 +23,7 @@ target_include_directories( ${PROJECT_NAME} PRIVATE "../src/LiteLoader/headers" 
 target_link_directories( ${PROJECT_NAME} PUBLIC "../libs/LiteLoader" )
 
 # ScriptX
-SUBDIRLIST (BACKEND_INCLUDE_DIRS "../engine/${BACKEND_LIB_DIR_NAME}/include")
 include_directories( "../engine/${BACKEND_LIB_DIR_NAME}/include" )
-include_directories( ${BACKEND_INCLUDE_DIRS} )
 include_directories( "../src/ScriptX/src/include" )
 include_directories( "../src/ScriptX/src/include/ScriptX" )
 include( "../src/ScriptX/CMakeLists.txt" )

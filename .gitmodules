@@ -1,6 +1,3 @@
-[submodule "docs"]
-	path = docs
-	url = https://github.com/yqs112358/LiteXLoader-Docs.git
 [submodule "src/ScriptX"]
 	path = src/ScriptX
 	url = https://github.com/Tencent/ScriptX.git

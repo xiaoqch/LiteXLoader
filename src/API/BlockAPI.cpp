@@ -3,15 +3,17 @@
 #include "../Kernel/Block.h"
 using namespace script;
 
-Local<Value> GetBlockName(const Arguments& args)
-{ 
-    CHECK_ARGS_COUNT(args,1)
+BlockClass::BlockClass(Block *p)
+    :ScriptClass(ScriptClass::ConstructFromCpp<BlockClass>{}),block(p)
+{
+    name = Raw_GetBlockName(block);
+}
 
+Local<Value> BlockClass::getName()
+{
     try{
-        Block *block = ExtractBlock(args[0]);
-        if(block)
-            return String::newString(Raw_GetBlockName(block));
-        return Local<Value>(); // Null
+        //return String::newString(Raw_GetBlockName(block));
+        return String::newString(name);
     }
     CATCH("Fail in GetBlockName!")
 }

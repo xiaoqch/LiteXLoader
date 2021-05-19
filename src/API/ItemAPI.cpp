@@ -5,79 +5,60 @@
 #include <string>
 using namespace script;
 
-//////////////////// APIs ////////////////////
+ItemClass::ItemClass(ItemStack *p)
+    :ScriptClass(ScriptClass::ConstructFromCpp<ItemClass>{}),item(p)
+{
+    name = Raw_GetItemName(item);
+    customName = Raw_GetCustomName(item);
+    count = Raw_GetCount(item);
+}
 
-Local<Value> GetItemName(const Arguments& args)
+Local<Value> ItemClass::getName()
 { 
-    CHECK_ARGS_COUNT(args,1)
-
     try{
-        ItemStack *item = ExtractItem(args[0]);
-        if(item)
-            return String::newString(Raw_GetItemName(item));
-        
-        return Local<Value>(); // Null
+        //return String::newString(Raw_GetItemName(item));
+        return String::newString(name);
     }
     CATCH("Fail in GetItemName!")
 }
 
-Local<Value> GetCustomName(const Arguments& args)
+Local<Value> ItemClass::getCustomName()
 {
-    CHECK_ARGS_COUNT(args,1)
-    
     try{
-        ItemStack* item = ExtractItem(args[0]);
-        if(item)
-        {
-            return String::newString(Raw_GetCustomName(item));
-        }
-        else
-            return Local<Value>();    //Null
+        //return String::newString(Raw_GetCustomName(item));
+        return String::newString(customName);
     }
     CATCH("Fail in GetCustomName!")
 }
 
-Local<Value> GetCount(const Arguments& args)
+Local<Value> ItemClass::getCount()
 {
-    CHECK_ARGS_COUNT(args,1)
-    
     try{
-        ItemStack* item = ExtractItem(args[0]);
-        if(item)
-        {
-            return Number::newNumber(Raw_GetCount(item));
-        }
-        else
-            return Local<Value>();    //Null
+        //return Number::newNumber(Raw_GetCount(item));
+        return Number::newNumber(count);
     }
     CATCH("Fail in GetCount!")
 }
 
-Local<Value> SetLore(const Arguments& args)
+Local<Value> ItemClass::setLore(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args,2)
-    CHECK_ARG_TYPE(args[1],ValueKind::kArray)
+    CHECK_ARGS_COUNT(args,1)
+    CHECK_ARG_TYPE(args[0],ValueKind::kArray)
 
     try{
-        ItemStack* item = ExtractItem(args[0]);
-        if(item)
+        auto arr = args[0].asArray();
+        std::vector<std::string> lores;
+        for(int i=0;i<arr.size();++i)
         {
-            auto arr = args[1].asArray();
-            std::vector<std::string> lores;
-            for(int i=0;i<arr.size();++i)
-            {
-                auto value = arr.get(i);
-                if(value.getKind() == ValueKind::kString)
-                    lores.push_back(value.asString().toString());
-            }
-            if(lores.empty())
-                return Boolean::newBoolean(false);
-            
-            Raw_SetLore(item, lores);
-            return Boolean::newBoolean(true);
+            auto value = arr.get(i);
+            if(value.getKind() == ValueKind::kString)
+                lores.push_back(value.asString().toString());
         }
-        else
-            return Local<Value>();    //Null
+        if(lores.empty())
+            return Boolean::newBoolean(false);
+        
+        Raw_SetLore(item, lores);
+        return Boolean::newBoolean(true);
     }
     CATCH("Fail in SetLore!")
 }

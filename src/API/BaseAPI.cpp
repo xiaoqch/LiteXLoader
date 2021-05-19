@@ -11,35 +11,6 @@
 #include <memory>
 using namespace script;
 
-/*
-Local<Value> GetPos(const Arguments& args)
-{ 
-    CHECK_ARGS_COUNT(args,1)
-
-    try{
-        Player *player = ExtractPlayer(args[0]);
-        if(player)
-            return NewPos(player->getPos(), WPlayer(*player).getDimID());
-
-        Actor *entity = ExtractEntity(args[0]);
-        if(entity)
-            return NewPos(entity->getPos(), WActor(*entity).getDimID());
-
-///////////////////////////// FIX HERE /////////////////////////////
-        Block *block = ExtractBlock(args[0]);
-        if(block)
-        {
-            WBlock wp(*block);
-            BlockPos bp = wp.getBlockPosition(); 
-            
-            return NewPos(bp.x, bp.y ,bp.z, wp.getDimID());
-        }
-            
-        return Local<Value>(); // Null
-    }
-    CATCH("Fail in GetPos!")
-}*/
-
 //////////////////// APIs ////////////////////
 
 Local<Value> Runcmd(const Arguments& args)
@@ -51,21 +22,6 @@ Local<Value> Runcmd(const Arguments& args)
         return Boolean::newBoolean(Raw_Runcmd(args[0].asString().toString()));
     }
     CATCH("Fail in RunCmd!")
-}
-
-Local<Value> RuncmdAs(const Arguments& args)
-{
-    CHECK_ARGS_COUNT(args,1)
-    CHECK_ARG_TYPE(args[1],ValueKind::kString)
-    
-    try{
-        Player *player = ExtractPlayer(args[0]);
-        if(player)
-            return Boolean::newBoolean(Raw_RuncmdAs(player,args[1].asString().toString()));
-        else
-            return Local<Value>();    //Null
-    }
-    CATCH("Fail in RunCmdAs!")
 }
 
 Local<Value> RuncmdEx(const Arguments& args)
@@ -106,6 +62,16 @@ Local<Value> RegisterCmd(const Arguments& args)
     CATCH("Fail in RegisterCmd!")
 }
 
+Local<Value> SetServerMotd(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args,1)
+
+    try{
+        return Boolean::newBoolean(Raw_SetServerMotd(args[0].asString().toString()));
+    }
+    CATCH("Fail in SetServerMotd!")
+}
+
 Local<Value> Log(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
@@ -131,7 +97,7 @@ Local<Value> GetTimeStr(const Arguments& args)
     CATCH("Fail in GetTimeStr!")
 }
 
-Local<Value> GetTimeNow(const Arguments& args)
+Local<Value> GetTimeObj(const Arguments& args)
 {
     try{
         SYSTEMTIME st;
@@ -147,6 +113,12 @@ Local<Value> GetTimeNow(const Arguments& args)
         return res;
     }
     CATCH("Fail in GetTimeNow!")
+}
+
+Local<Value> RandomGuid(const Arguments& args)
+{
+    ///////////////////////////////// Add code here ///////////////////////////////// 
+    return String::newString(LXL_VERSION);
 }
 
 Local<Value> GetLxlVersion(const Arguments& args)

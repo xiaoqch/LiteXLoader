@@ -3,62 +3,40 @@
 #include "../Kernel/Entity.h"
 using namespace script;
 
-Local<Value> GetEntityName(const Arguments& args)
+Local<Value> EntityClass::getName()
 { 
-    CHECK_ARGS_COUNT(args,1)
-
     try{
-        Actor *entity = ExtractEntity(args[0]);
-        if(entity)
-            return String::newString(Raw_GetEntityName(entity));
-        return Local<Value>(); // Null
+        return String::newString(Raw_GetEntityName(entity));
     }
     CATCH("Fail in GetEntityName!")
 }
 
-Local<Value> GetEntityPos(const Arguments& args)
+Local<Value> EntityClass::getPos()
 { 
-    CHECK_ARGS_COUNT(args,1)
-
     try{
-        Actor *entity = ExtractEntity(args[0]);
-        if(entity)
-            return NewPos(Raw_GetEntityPos(entity));
- 
-        return Local<Value>(); // Null
+        return NewPos(Raw_GetEntityPos(entity));
     }
     CATCH("Fail in GetEntityPos!")
 }
 
-Local<Value> TeleportEntity(const Arguments& args)
+Local<Value> EntityClass::teleport(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args,2)
+    CHECK_ARGS_COUNT(args,1)
     
     try{
-        FloatPos *pos = ExtractFloatPos(args[1]);
+        FloatPos *pos = ExtractFloatPos(args[0]);
         if(!pos)
             return Local<Value>();
         
-        Actor *entity = ExtractEntity(args[0]);
-        if(entity)
-            return Boolean::newBoolean(Raw_TeleportEntity(entity,*pos););
-
-        return Local<Value>();    //Null
+        return Boolean::newBoolean(Raw_TeleportEntity(entity,*pos));
     }
     CATCH("Fail in TeleportEntity!")
 }
 
-Local<Value> KillEntity(const Arguments& args)
+Local<Value> EntityClass::kill(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args,1)
-
-    try
-    {
-        Actor *entity = ExtractEntity(args[0]);
-        if(entity)
-            return Boolean::newBoolean(Raw_KillEntity(entity));
-
-        return Local<Value>();    //Null
+    try{
+        return Boolean::newBoolean(Raw_KillEntity(entity));
     }
     CATCH("Fail in KillEntity!")
 }

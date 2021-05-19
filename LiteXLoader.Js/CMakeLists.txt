@@ -14,14 +14,12 @@ set(CMAKE_BUILD_TYPE Release)
 
 # Main
 set (LIBRARY_OUTPUT_PATH "../Output") 
-file(GLOB_RECURSE LITE_DLL_SOURCES "../src/*.cpp")
+file(GLOB_RECURSE LITE_DLL_SOURCES "../src/*.cpp" "../src/API/*.cpp" "../src/Kernel/*.cpp")
 add_library( ${PROJECT_NAME} SHARED ${LITE_DLL_SOURCES} )
 
 # LiteLoader
 target_include_directories( ${PROJECT_NAME} PRIVATE "../libs" )
 target_include_directories( ${PROJECT_NAME} PRIVATE "../src/LiteLoader/headers" )
-#target_include_directories( ${PROJECT_NAME} PRIVATE "../src/LiteLoader/headers/api" )
-#target_include_directories( ${PROJECT_NAME} PRIVATE "../src/LiteLoader/headers/mc" )
 target_link_directories( ${PROJECT_NAME} PUBLIC "../libs/LiteLoader" )
 
 # ScriptX

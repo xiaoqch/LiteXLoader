@@ -1,7 +1,7 @@
 #include "Block.h"
 using namespace std;
 
-string inline Raw_GetBlockName(Block* block)
+string Raw_GetBlockName(Block* block)
 {
     void* hashedstr = SymCall("?getName@Block@@QEBAAEBVHashedString@@XZ",
         void*, void*)(block);

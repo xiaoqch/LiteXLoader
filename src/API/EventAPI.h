@@ -2,5 +2,5 @@
 #include "ScriptX.h"
 using namespace script;
 
-void RegisterEventListeners();
+void InitEventListeners();
 Local<Value> Listen(const Arguments& args);

@@ -1,24 +1,25 @@
 #pragma once
+#include <string>
 #include "ScriptX.h"
 using namespace script;
 
 //////////////////// Classes ////////////////////
-
 class Block;
-class BlockPointer : public ScriptClass
+class BlockClass : public ScriptClass
 {
-public:
-	Block *pointer;
+private:
+    Block *block;
 
-	explicit BlockPointer(Block *p)
-        :ScriptClass(ScriptClass::ConstructFromCpp<BlockPointer>{}),pointer(p)
-    {}
+    // Pre data
+    std::string name;
+
+public:
+	explicit BlockClass(Block *p);
+
     Block *get()
     {
-        return pointer;
+        return block;
     }
+
+    Local<Value> getName();
 };
-
-//////////////////// APIs ////////////////////
-
-Local<Value> GetBlockName(const Arguments& args);

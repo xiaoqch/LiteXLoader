@@ -71,19 +71,21 @@ static std::vector<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)]
     }
 #define CallEventEx(TYPE,...) \
     std::vector<ListenerListType> &nowList = listenerList[int(TYPE)]; \
+    bool passToBDS = true; \
     for(int i = 0; i < nowList.size(); ++i) { \
         EngineScope enter(nowList[i].engine); \
         try{ \
             auto result = nowList[i].func.get().call({},__VA_ARGS__); \
             if(result.isBoolean() && result.asBoolean().value() == false) \
-                return false; \
+                passToBDS = false; \
         } \
         catch(const Exception& e) \
         { \
             ERROR("Event Callback Failed!"); \
             ERRPRINT(e.message()); \
         } \
-    }
+    }\
+    if(!passToBDS) { return false; }
 
 
 //////////////////// APIs ////////////////////
@@ -122,7 +124,7 @@ void RegisterBuiltinCmds()
 
 #define IF_EXIST(EVENT) if(!listenerList[int(EVENT)].empty())
 
-void RegisterEventListeners()
+void InitEventListeners()
 {
 // ===== onPlayerJoin =====
     Event::addEventListener([](JoinEV ev)
@@ -473,3 +475,46 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
     }
     return original(_this, a2, x, a4);
 }
+/*
+/////////////////////////// THook /////////////////////
+template <>
+struct THookTemplate<
+    do_hash("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z"),
+    do_hash2("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z")
+>{
+	typedef bool (*original_type)(Player *_this, ItemStack *a2, bool a3);
+	static original_type &_original()
+	{
+		static original_type storage;
+		return storage;
+	}
+	template <typename... Params>
+	static bool original(Params &&...params) {
+        return _original()(std::forward<Params>(params)...);
+    }
+	static bool _hook(Player *_this, ItemStack *a2, bool a3);
+};
+template <>
+static THookRegister THookRegisterTemplate<
+	do_hash("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z"),
+	do_hash2("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z")
+>{
+    "?drop@Player@@UEAA_NAEBVItemStack@@_N@Z",
+	&THookTemplate<do_hash("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z"),
+	do_hash2("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z")>::_hook,
+	(void **)&THookTemplate<do_hash("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z"),
+	do_hash2("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z")>::_original()
+};
+bool THookTemplate<
+	do_hash("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z"),
+	do_hash2("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z")>
+    ::_hook(Player *_this, ItemStack *a2, bool a3)
+{
+	
+}
+
+/////////////////////////// Symcall /////////////////////
+__imp_Call<
+    do_hash("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z"),
+    do_hash2("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z"),
+Actor*, Level*, void*, bool>("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z")*/

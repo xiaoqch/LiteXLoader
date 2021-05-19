@@ -2,7 +2,7 @@
 #include "ScriptX.h"
 
 ////////////// Configs //////////////
-#define LXL_VERSION "0.1.3"
+#define LXL_VERSION "0.0.6"
 
 // 后端宏
 #if defined(SCRIPTX_LANG_JAVASCRIPT)
@@ -14,11 +14,12 @@
 #endif
 
 // 配置文件
-#define LXL_DEF_LOAD_PATH "./plugins"
+#define LXL_DEF_LOAD_DIR "./plugins"
 #define LXL_CONFIG_PATH "./plugins/LiteXLoader/config.ini"
 #define LXL_CONFIG_MAX_LEN 1024
 
-// 基础库
+// 基础库 & 依赖库
+#define LXL_SCRIPT_DEPENDS_DIR "./plugins/lib"
 #define LXL_SCRIPT_BASE_LIB_PATH "./plugins/LiteXLoader/BaseLib" ## LXL_PLUGINS_SUFFIX
 
 // 全局调试

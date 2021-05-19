@@ -1,10 +1,10 @@
 #pragma once
 #include "ScriptX.h"
 #include <string>
+#include "../Kernel/Global.h"
 using namespace script;
 
 //////////////////// Classes ////////////////////
-class IntVec4;
 class IntPos : public IntVec4, public ScriptClass
 {
 public:
@@ -38,7 +38,6 @@ public:
     void setDim(const Local<Value>& value) { dim = value.asNumber().toInt32(); }
 };
 
-class FloatVec4;
 class FloatPos : public FloatVec4, public ScriptClass
 {
 public:
@@ -73,23 +72,18 @@ public:
 };
 
 
-//////////////////// General APIs ////////////////////
-
-Local<Value> GetName(const Arguments& args);
-Local<Value> GetPos(const Arguments& args);
-Local<Value> Teleport(const Arguments& args);
-Local<Value> Kill(const Arguments& args);
-
-
 //////////////////// APIs ////////////////////
 
-Local<Value> RunCmd(const Arguments& args);
-Local<Value> RunCmdEx(const Arguments& args);
+Local<Value> Runcmd(const Arguments& args);
+Local<Value> RuncmdEx(const Arguments& args);
 Local<Value> RegisterCmd(const Arguments& args);
+
+Local<Value> SetServerMotd(const Arguments& args);
 
 Local<Value> Log(const Arguments& args);
 Local<Value> GetTimeStr(const Arguments& args);
-Local<Value> GetTimeNow(const Arguments& args);
+Local<Value> GetTimeObj(const Arguments& args);
+Local<Value> RandomGuid(const Arguments& args);
 Local<Value> GetLxlVersion(const Arguments& args);
 
 Local<Value> SetTimeout(const Arguments& args);

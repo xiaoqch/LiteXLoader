@@ -57,67 +57,67 @@ FloatPos* ExtractFloatPos(Local<Value> v)
 
 Local<Object> NewPlayer(Player *p)
 {
-  auto newp = new PlayerPointer(p);
+  auto newp = new PlayerClass(p);
   return newp->getScriptObject();
 }
 Local<Object> NewPlayer(WPlayer p)
 {
-  auto newp = new PlayerPointer(p.v);
+  auto newp = new PlayerClass(p.v);
   return newp->getScriptObject();
 }
 Player* ExtractPlayer(Local<Value> v)
 {
-    if(EngineScope::currentEngine()->isInstanceOf<PlayerPointer>(v))
-        return EngineScope::currentEngine()->getNativeInstance<PlayerPointer>(v)->get();
+    if(EngineScope::currentEngine()->isInstanceOf<PlayerClass>(v))
+        return EngineScope::currentEngine()->getNativeInstance<PlayerClass>(v)->get();
     else
         return nullptr;
 }
 
 Local<Object> NewEntity(Actor *p)
 {
-  auto newp = new EntityPointer(p);
+  auto newp = new EntityClass(p);
   return newp->getScriptObject();
 }
 Local<Object> NewEntity(WActor p)
 {
-  auto newp = new EntityPointer(p.v);
+  auto newp = new EntityClass(p.v);
   return newp->getScriptObject();
 }
 Actor* ExtractEntity(Local<Value> v)
 {
-    if(EngineScope::currentEngine()->isInstanceOf<EntityPointer>(v))
-        return EngineScope::currentEngine()->getNativeInstance<EntityPointer>(v)->get();
+    if(EngineScope::currentEngine()->isInstanceOf<EntityClass>(v))
+        return EngineScope::currentEngine()->getNativeInstance<EntityClass>(v)->get();
     else
         return nullptr;
 }
 
 Local<Object> NewBlock(Block *p)
 {
-  auto newp = new BlockPointer(p);
+  auto newp = new BlockClass(p);
   return newp->getScriptObject();
 }
 Local<Object> NewBlock(WBlock p)
 {
-  auto newp = new BlockPointer(p.v);
+  auto newp = new BlockClass(p.v);
   return newp->getScriptObject();
 }
 Block* ExtractBlock(Local<Value> v)
 {
-    if(EngineScope::currentEngine()->isInstanceOf<BlockPointer>(v))
-        return EngineScope::currentEngine()->getNativeInstance<BlockPointer>(v)->get();
+    if(EngineScope::currentEngine()->isInstanceOf<BlockClass>(v))
+        return EngineScope::currentEngine()->getNativeInstance<BlockClass>(v)->get();
     else
         return nullptr;
 }
 
 Local<Object> NewItem(ItemStack *p)
 {
-  auto newp = new ItemPointer(p);
+  auto newp = new ItemClass(p);
   return newp->getScriptObject();
 }
 ItemStack* ExtractItem(Local<Value> v)
 {
-    if(EngineScope::currentEngine()->isInstanceOf<ItemPointer>(v))
-        return EngineScope::currentEngine()->getNativeInstance<ItemPointer>(v)->get();
+    if(EngineScope::currentEngine()->isInstanceOf<ItemClass>(v))
+        return EngineScope::currentEngine()->getNativeInstance<ItemClass>(v)->get();
     else
         return nullptr;
 }
