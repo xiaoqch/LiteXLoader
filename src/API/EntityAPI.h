@@ -4,16 +4,22 @@ using namespace script;
 
 //////////////////// Classes ////////////////////
 class Actor;
-class EntityPointer : public ScriptClass
+class EntityClass : public ScriptClass
 {
+private:
+    Actor *entity;
 public:
-	Actor *pointer;
-
-	explicit EntityPointer(Actor *p)
-        :ScriptClass(ScriptClass::ConstructFromCpp<EntityPointer>{}),pointer(p)
+	explicit EntityClass(Actor *p)
+        :ScriptClass(ScriptClass::ConstructFromCpp<EntityClass>{}),entity(p)
     {}
     Actor *get()
     {
-        return pointer;
+        return entity;
     }
+
+    Local<Value> getName();
+    Local<Value> getPos();
+
+    Local<Value> teleport(const Arguments& args);
+    Local<Value> kill(const Arguments& args);
 };

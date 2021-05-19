@@ -4,6 +4,7 @@
 #include <map>
 #include <exception>
 #include <cstdarg>
+#include "../Kernel/Base.h"
 #include "APIhelp.h"
 #include "../Configs.h"
 #include "SymbolsHelper.h"
@@ -70,19 +71,21 @@ static std::vector<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)]
     }
 #define CallEventEx(TYPE,...) \
     std::vector<ListenerListType> &nowList = listenerList[int(TYPE)]; \
+    bool passToBDS = true; \
     for(int i = 0; i < nowList.size(); ++i) { \
         EngineScope enter(nowList[i].engine); \
         try{ \
             auto result = nowList[i].func.get().call({},__VA_ARGS__); \
             if(result.isBoolean() && result.asBoolean().value() == false) \
-                return false; \
+                passToBDS = false; \
         } \
         catch(const Exception& e) \
         { \
             ERROR("Event Callback Failed!"); \
             ERRPRINT(e.message()); \
         } \
-    }
+    }\
+    if(!passToBDS) { return false; }
 
 
 //////////////////// APIs ////////////////////
@@ -111,7 +114,7 @@ Local<Value> Listen(const Arguments& args)
 void RegisterBuiltinCmds()
 {
     //注册后台调试命令
-    Hook_RegisterCmd(LXL_DEBUG_CMD, string(LXL_SCRIPT_LANG_TYPE) + " Engine Real-time Debugging", 4);
+    Raw_RegisterCmd(LXL_DEBUG_CMD, string(LXL_SCRIPT_LANG_TYPE) + " Engine Real-time Debugging", 4);
 
     DEBUG("Builtin Cmds Registered.");
 }
@@ -121,7 +124,7 @@ void RegisterBuiltinCmds()
 
 #define IF_EXIST(EVENT) if(!listenerList[int(EVENT)].empty())
 
-void RegisterEventListeners()
+void InitEventListeners()
 {
 // ===== onPlayerJoin =====
     Event::addEventListener([](JoinEV ev)
@@ -451,9 +454,14 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
             EngineScope enter(debugEngine.get());
             try
             {
-                auto result = debugEngine->eval(cmd);
-                PrintValue(cout,result);
-                cout << "\n" << LXL_SCRIPT_LANG_TYPE << ">" << flush;
+                if(cmd == "stop")
+                    WARN("请先退出Debug实时调试模式再使用stop！");
+                else
+                {
+                    auto result = debugEngine->eval(cmd);
+                    PrintValue(cout,result);
+                    cout << "\n" << LXL_SCRIPT_LANG_TYPE << ">" << flush;
+                }
             }
             catch(Exception& e)
             {
@@ -467,3 +475,46 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
     }
     return original(_this, a2, x, a4);
 }
+/*
+/////////////////////////// THook /////////////////////
+template <>
+struct THookTemplate<
+    do_hash("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z"),
+    do_hash2("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z")
+>{
+	typedef bool (*original_type)(Player *_this, ItemStack *a2, bool a3);
+	static original_type &_original()
+	{
+		static original_type storage;
+		return storage;
+	}
+	template <typename... Params>
+	static bool original(Params &&...params) {
+        return _original()(std::forward<Params>(params)...);
+    }
+	static bool _hook(Player *_this, ItemStack *a2, bool a3);
+};
+template <>
+static THookRegister THookRegisterTemplate<
+	do_hash("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z"),
+	do_hash2("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z")
+>{
+    "?drop@Player@@UEAA_NAEBVItemStack@@_N@Z",
+	&THookTemplate<do_hash("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z"),
+	do_hash2("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z")>::_hook,
+	(void **)&THookTemplate<do_hash("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z"),
+	do_hash2("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z")>::_original()
+};
+bool THookTemplate<
+	do_hash("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z"),
+	do_hash2("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z")>
+    ::_hook(Player *_this, ItemStack *a2, bool a3)
+{
+	
+}
+
+/////////////////////////// Symcall /////////////////////
+__imp_Call<
+    do_hash("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z"),
+    do_hash2("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z"),
+Actor*, Level*, void*, bool>("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z")*/

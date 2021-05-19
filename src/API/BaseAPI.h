@@ -1,20 +1,13 @@
 #pragma once
 #include "ScriptX.h"
 #include <string>
+#include "../Kernel/Global.h"
 using namespace script;
 
-//////////////////// Hook ////////////////////
-
-void Hook_RegisterCmd(const std::string &cmd, const std::string &describe, int cmdLevel);
-
-
 //////////////////// Classes ////////////////////
-class IntPos : public ScriptClass
+class IntPos : public IntVec4, public ScriptClass
 {
 public:
-	long long x,y,z;
-    int dim;
-
 	explicit IntPos(const Local<Object>& scriptObj) : ScriptClass(scriptObj) {}
     static IntPos* create(const Arguments& args)
     {
@@ -45,12 +38,9 @@ public:
     void setDim(const Local<Value>& value) { dim = value.asNumber().toInt32(); }
 };
 
-class FloatPos : public ScriptClass
+class FloatPos : public FloatVec4, public ScriptClass
 {
 public:
-	float x,y,z;
-    int dim;
-
 	explicit FloatPos(const Local<Object>& scriptObj) : ScriptClass(scriptObj) {}
     static FloatPos* create(const Arguments& args)
     {
@@ -82,23 +72,18 @@ public:
 };
 
 
-//////////////////// General APIs ////////////////////
-
-Local<Value> GetName(const Arguments& args);
-Local<Value> GetPos(const Arguments& args);
-Local<Value> Teleport(const Arguments& args);
-Local<Value> Kill(const Arguments& args);
-
-
 //////////////////// APIs ////////////////////
 
-Local<Value> RunCmd(const Arguments& args);
-Local<Value> RunCmdEx(const Arguments& args);
+Local<Value> Runcmd(const Arguments& args);
+Local<Value> RuncmdEx(const Arguments& args);
 Local<Value> RegisterCmd(const Arguments& args);
+
+Local<Value> SetServerMotd(const Arguments& args);
 
 Local<Value> Log(const Arguments& args);
 Local<Value> GetTimeStr(const Arguments& args);
-Local<Value> GetTimeNow(const Arguments& args);
+Local<Value> GetTimeObj(const Arguments& args);
+Local<Value> RandomGuid(const Arguments& args);
 Local<Value> GetLxlVersion(const Arguments& args);
 
 Local<Value> SetTimeout(const Arguments& args);

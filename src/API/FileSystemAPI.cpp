@@ -158,3 +158,16 @@ Local<Value> FileWriteLine(const Arguments& args)
     }
     CATCH("Fail in FileWriteLine!")
 }
+
+Local<Value> SystemCmd(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args,1)
+    CHECK_ARG_TYPE(args[0],ValueKind::kString)
+
+    try
+    {
+        ///////////////////////// Add code here /////////////////////////
+        return Boolean::newBoolean(true);
+    }
+    CATCH("Fail in SystemCmd!")
+}

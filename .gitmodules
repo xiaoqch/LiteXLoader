@@ -1,0 +1,3 @@
+[submodule "src/ScriptX"]
+	path = src/ScriptX
+	url = https://github.com/Tencent/ScriptX.git
