@@ -25,7 +25,8 @@ std::shared_ptr<ScriptEngine> globalEngine;
 //调试引擎
 std::shared_ptr<ScriptEngine> debugEngine;
 bool globalDebug = false;
-//依赖库
+//基础库 & 依赖库
+std::string baseLib;
 std::vector<std::string> depends;
 //前置声明
 std::string ReadFileFrom(const string &filePath);
@@ -38,6 +39,16 @@ void entry()
 {
     INFO(std::string("====== LiteXLoader Script Plugin Loader for ") + LXL_SCRIPT_LANG_TYPE +" ======");
     INFO(std::string("Version ") + LXL_VERSION);
+
+    //预加载基础库
+    std::ifstream scriptBaseLib(LXL_SCRIPT_BASE_LIB_PATH);
+    if(scriptBaseLib)
+    {
+        baseLib = string((std::istreambuf_iterator<char>(scriptBaseLib)),
+            std::istreambuf_iterator<char>());
+        scriptBaseLib.close();
+        INFO("Script BaseLib Loaded.");
+    }
 
     //预加载依赖库
     std::filesystem::directory_iterator deps(conf::getString("Main","DependsDir",LXL_SCRIPT_DEPENDS_DIR));
@@ -131,18 +142,13 @@ void LoadScript(const std::string& filePath)
     }
 
     //加载基础库
-    std::ifstream scriptBaseLib(LXL_SCRIPT_BASE_LIB_PATH);
-    if(scriptBaseLib)
-    {
-        std::string baseLibs((std::istreambuf_iterator<char>(scriptBaseLib)),
-            std::istreambuf_iterator<char>());
-        scriptBaseLib.close();
-        engine->eval(baseLibs);
-    }
+    engine->eval(baseLib);
+
     //加载libs依赖库
     for (auto& i : depends) {
         engine->eval(i);
     }
+    
     //加载脚本
     engine->eval(scripts);
 }
