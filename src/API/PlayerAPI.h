@@ -22,6 +22,23 @@ public:
         return player;
     }
 
+    static Local<Object> newPlayer(Player *p)
+    {
+        auto newp = new PlayerClass(p);
+        return newp->getScriptObject();
+    }
+    static Local<Object> newPlayer(WPlayer p)
+    {
+        return PlayerClass::newPlayer(p.v);
+    }
+    static Player* extractPlayer(Local<Value> v)
+    {
+        if(EngineScope::currentEngine()->isInstanceOf<PlayerClass>(v))
+            return EngineScope::currentEngine()->getNativeInstance<PlayerClass>(v)->get();
+        else
+            return nullptr;
+    }
+
     Local<Value> getName();
     Local<Value> getPos();
     Local<Value> getRealName();

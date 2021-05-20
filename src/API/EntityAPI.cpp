@@ -14,7 +14,7 @@ Local<Value> EntityClass::getName()
 Local<Value> EntityClass::getPos()
 { 
     try{
-        return NewPos(Raw_GetEntityPos(entity));
+        return FloatPos::newPos(Raw_GetEntityPos(entity));
     }
     CATCH("Fail in GetEntityPos!")
 }
@@ -24,7 +24,7 @@ Local<Value> EntityClass::teleport(const Arguments& args)
     CHECK_ARGS_COUNT(args,1)
     
     try{
-        FloatPos *pos = ExtractFloatPos(args[0]);
+        FloatPos *pos = FloatPos::extractPos(args[0]);
         if(!pos)
             return Local<Value>();
         

@@ -1,6 +1,7 @@
 #include "APIhelp.h"
 #include "BaseAPI.h"
 #include "PlayerAPI.h"
+#include "ItemAPI.h"
 #include "../Kernel/Player.h"
 #include <string>
 #include <vector>
@@ -18,7 +19,7 @@ Local<Value> GetPlayer(const Arguments& args)
         for(Player *p : playerList)
         {
             if(Raw_GetXuid(p) == target || Raw_GetPlayerName(p) == target)
-                return NewPlayer(p);
+                return PlayerClass::newPlayer(p);
         }
         return Local<Value>();    //Null
     }
@@ -31,7 +32,7 @@ Local<Value> GetOnlinePlayers(const Arguments& args)
         auto players = Raw_GetOnlinePlayers();
         Local<Array> list = Array::newArray();
         for(auto p : players)
-            list.add(NewPlayer(p));
+            list.add(PlayerClass::newPlayer(p));
         return list;
     }
     CATCH("Fail in GetOnlinePlayers!")
@@ -48,7 +49,7 @@ Local<Value> PlayerClass::getName()
 Local<Value> PlayerClass::getPos()
 { 
     try{
-        return NewPos(Raw_GetPlayerPos(player));
+        return FloatPos::newPos(Raw_GetPlayerPos(player));
     }
     CATCH("Fail in GetPlayerPos!")
 }
@@ -82,7 +83,7 @@ Local<Value> PlayerClass::teleport(const Arguments& args)
     CHECK_ARGS_COUNT(args,1)
     
     try{
-        FloatPos *pos = ExtractFloatPos(args[0]);
+        FloatPos *pos = FloatPos::extractPos(args[0]);
         if(!pos)
             return Local<Value>();
         
@@ -174,7 +175,7 @@ Local<Value> PlayerClass::tell(const Arguments& args)
 Local<Value> PlayerClass::getHand(const Arguments& args)
 {
     try{
-        return NewItem(Raw_GetHand(player));
+        return ItemClass::newItem(Raw_GetHand(player));
     }
     CATCH("Fail in GetHand!")
 }

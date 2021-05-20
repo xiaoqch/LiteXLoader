@@ -27,6 +27,19 @@ public:
         return item;
     }
 
+    static Local<Object> newItem(ItemStack *p)
+    {
+        auto newp = new ItemClass(p);
+        return newp->getScriptObject();
+    }
+    static ItemStack* extractItem(Local<Value> v)
+    {
+        if(EngineScope::currentEngine()->isInstanceOf<ItemClass>(v))
+            return EngineScope::currentEngine()->getNativeInstance<ItemClass>(v)->get();
+        else
+            return nullptr;
+    }
+
     Local<Value> getName();
     Local<Value> getCustomName();
     Local<Value> getCount();

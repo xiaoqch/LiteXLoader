@@ -35,30 +35,3 @@ void PrintValue(std::ostream &out, Local<Value> v);
 
 //创建新引擎
 std::shared_ptr<ScriptEngine> NewEngine();
-
-// 通用坐标类
-Local<Object> NewPos(int x, int y, int z, int dim = -1);
-Local<Object> NewPos(const BlockPos &v, int dim = -1);
-Local<Object> NewPos(const IntVec4 &v);
-IntPos* ExtractIntPos(Local<Value> v);
-
-Local<Object> NewPos(double x, double y, double z, int dim = -1);
-Local<Object> NewPos(const Vec3 &v, int dim = -1);
-Local<Object> NewPos(const FloatVec4 &v);
-FloatPos* ExtractFloatPos(Local<Value> v);
-
-//对象指针类
-Local<Object> NewPlayer(Player *p);
-Local<Object> NewPlayer(WPlayer p);
-Player* ExtractPlayer(Local<Value> v);
-
-Local<Object> NewEntity(Actor *p);
-Local<Object> NewEntity(WActor p);
-Actor* ExtractEntity(Local<Value> v);
-
-Local<Object> NewBlock(Block *p);
-Local<Object> NewBlock(WBlock p);
-Block* ExtractBlock(Local<Value> v);
-
-Local<Object> NewItem(ItemStack *p);
-ItemStack* ExtractItem(Local<Value> v);
