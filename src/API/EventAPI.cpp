@@ -5,13 +5,14 @@
 #include <exception>
 #include <cstdarg>
 #include "../Kernel/Base.h"
+#include "../Kernel/Block.h"
+#include "../Kernel/Player.h"
 #include "APIhelp.h"
 #include "BlockAPI.h"
 #include "ItemAPI.h"
 #include "EntityAPI.h"
 #include "PlayerAPI.h"
 #include "../Configs.h"
-#include "SymbolsHelper.h"
 using namespace script;
 
 //////////////////// Listeners ////////////////////
@@ -19,11 +20,12 @@ using namespace script;
 enum class EVENT_TYPES : int
 {
     OnJoin=0, OnLeft, OnRespawn, OnChangeDim,
-    OnPlayerCmd, OnChat, OnAttack,
+    OnPlayerCmd, OnChat, OnAttack, OnEat,
     OnUseItem, OnTakeItem, OnDropItem,
     OnDestroyBlock, OnPlaceBlock,
     OnOpenChest, OnCloseChest, OnOpenBarrel, OnCloseBarrel, OnChangeSlot,
-    OnMobDie, OnMobHurt, OnExplode, OnCmdBlockExecute,
+    OnMobDie, OnMobHurt, OnExplode, OnBlockExploded, OnCmdBlockExecute,
+    OnProjectileHit,
     OnServerStarted, OnServerCmd,
     EVENT_COUNT
 };
@@ -35,6 +37,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onPlayerCmd",EVENT_TYPES::OnPlayerCmd},
     {"onChat",EVENT_TYPES::OnChat},
     {"onAttack",EVENT_TYPES::OnAttack},
+    {"onEat",EVENT_TYPES::OnEat},
     {"onMobDie",EVENT_TYPES::OnMobDie},
     {"onMobHurt",EVENT_TYPES::OnMobHurt},
     {"onUseItem",EVENT_TYPES::OnUseItem},
@@ -43,12 +46,14 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onDestroyBlock",EVENT_TYPES::OnDestroyBlock},
     {"onPlaceBlock",EVENT_TYPES::OnPlaceBlock},
     {"onExplode",EVENT_TYPES::OnExplode},
+    {"onBlockExploded",EVENT_TYPES::OnBlockExploded},
     {"onOpenChest",EVENT_TYPES::OnOpenChest},
     {"onCloseChest",EVENT_TYPES::OnCloseChest},
     {"onOpenBarrel",EVENT_TYPES::OnOpenBarrel},
     {"onCloseBarrel",EVENT_TYPES::OnCloseBarrel},
     {"onChangeSlot",EVENT_TYPES::OnChangeSlot},
     {"onCmdBlockExecute",EVENT_TYPES::OnCmdBlockExecute},
+    {"onProjectileHit",EVENT_TYPES::OnProjectileHit},
     {"onServerStarted",EVENT_TYPES::OnServerStarted},
     {"onServerCmd",EVENT_TYPES::OnServerCmd},
 };
@@ -206,6 +211,17 @@ THook(bool, "?attack@Player@@UEAA_NAEAVActor@@@Z",
     return original(pl, ac);
 }
 
+// ===== onEat =====
+THook(void, "?eat@Player@@QEAAXAEBVItemStack@@@Z",
+    Player* _this, ItemStack* eaten)
+{
+    IF_EXIST(EVENT_TYPES::OnEat)
+    {
+        CallEvent(EVENT_TYPES::OnEat, PlayerClass::newPlayer(_this), ItemClass::newItem(eaten));
+    }
+    return original(_this, eaten);
+}
+
 // ===== onRespawn =====
 THook(bool, "?respawn@Player@@UEAAXXZ",
     Player* pl)
@@ -267,7 +283,7 @@ THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@
     {
         auto sp = *reinterpret_cast<Player**>(reinterpret_cast<unsigned long long>(_this) + 8);
 
-        CallEventEx(EVENT_TYPES::OnUseItem, PlayerClass::newPlayer(sp), BlockClass::newBlock(bl), IntPos::newPos(bp->x, bp->y, bp->z));
+        CallEventEx(EVENT_TYPES::OnUseItem, PlayerClass::newPlayer(sp), BlockClass::newBlock(bl,bp), IntPos::newPos(bp->x, bp->y, bp->z,WPlayer(*sp).getDimID()));
     }
     return original(_this, item, bp, a4, a5, bl);
 }
@@ -280,21 +296,21 @@ THook(bool, "?checkBlockDestroyPermissions@BlockSource@@QEAA_NAEAVActor@@AEBVBlo
     {
         auto block = SymCall("?getBlock@BlockSource@@QEBAAEBVBlock@@AEBVBlockPos@@@Z", Block*, BlockSource*, BlockPos*)(_this, pos);
 ///////////////////////////// player? /////////////////////////////
-        CallEventEx(EVENT_TYPES::OnDestroyBlock, EntityClass::newEntity(player), BlockClass::newBlock(block), IntPos::newPos(pos->x, pos->y, pos->z));
+        CallEventEx(EVENT_TYPES::OnDestroyBlock, EntityClass::newEntity(player), BlockClass::newBlock(block,pos,_this), IntPos::newPos(pos->x, pos->y, pos->z,Raw_GetBlockDimension(_this)));
     }
     return original(_this, player, pos,a3, a4);
 }
 
 // ===== onPlaceBlock =====
 THook(bool, "?mayPlace@BlockSource@@QEAA_NAEBVBlock@@AEBVBlockPos@@EPEAVActor@@_N@Z",
-    BlockSource* bs, Block* bl, BlockPos* a3, unsigned __int8 a4, Actor* pl, bool a6)
+    BlockSource* bs, Block* bl, BlockPos* bp, unsigned __int8 a4, Actor* pl, bool a6)
 {
     IF_EXIST(EVENT_TYPES::OnPlaceBlock)
     {
 /////////////////////////////////// Player? ////////////////////////////////////////
-        CallEventEx(EVENT_TYPES::OnPlaceBlock, EntityClass::newEntity(pl), BlockClass::newBlock(bl), IntPos::newPos(a3->x, a3->y, a3->z));
+        CallEventEx(EVENT_TYPES::OnPlaceBlock, EntityClass::newEntity(pl), BlockClass::newBlock(bl,bp,bs), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetBlockDimension(bs)));
     }
-    return original(bs, bl, a3, a4, pl, a6);
+    return original(bs, bl, bp, a4, pl, a6);
 }
 
 // ===== onOpenChest =====
@@ -303,7 +319,7 @@ THook(bool, "?use@ChestBlock@@UEBA_NAEAVPlayer@@AEBVBlockPos@@E@Z",
 {
     IF_EXIST(EVENT_TYPES::OnOpenChest)
     {
-        CallEventEx(EVENT_TYPES::OnOpenChest, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z));
+        CallEventEx(EVENT_TYPES::OnOpenChest, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, WPlayer(*pl).getDimID()));
     }
     return original(_this, pl, bp);
 }
@@ -316,7 +332,7 @@ THook(bool, "?stopOpen@ChestBlockActor@@UEAAXAEAVPlayer@@@Z",
     {
         auto bp = (BlockPos*)((intptr_t*)_this - 204);
 
-        CallEventEx(EVENT_TYPES::OnCloseChest, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z));
+        CallEventEx(EVENT_TYPES::OnCloseChest, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, WPlayer(*pl).getDimID()));
     }
     return original(_this, pl);
 }
@@ -327,7 +343,7 @@ THook(bool, "?use@BarrelBlock@@UEBA_NAEAVPlayer@@AEBVBlockPos@@E@Z",
 {
     IF_EXIST(EVENT_TYPES::OnOpenBarrel)
     {
-        CallEventEx(EVENT_TYPES::OnOpenBarrel, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z));
+        CallEventEx(EVENT_TYPES::OnOpenBarrel, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z), WPlayer(*pl).getDimID());
     }
     return original(_this, pl, bp);
 }
@@ -340,12 +356,13 @@ THook(bool, "?stopOpen@BarrelBlockActor@@UEAAXAEAVPlayer@@@Z",
     {
         auto bp = (BlockPos*)((intptr_t*)_this - 204);
 
-        CallEventEx(EVENT_TYPES::OnCloseBarrel, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z));
+        CallEventEx(EVENT_TYPES::OnCloseBarrel, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, WPlayer(*pl).getDimID()));
     }
     return original(_this, pl);
 }
 
 // ===== onChangeSlot =====
+class LevelContainerModel;
 THook(void, "?containerContentChanged@LevelContainerModel@@UEAAXH@Z",
     LevelContainerModel* a1, int a2)
 {
@@ -354,8 +371,8 @@ THook(void, "?containerContentChanged@LevelContainerModel@@UEAAXH@Z",
         Actor* v3 = dAccess<Actor*, 208>(a1);
         BlockSource* bs = dAccess<BlockSource*, 840>(v3);
         //offset LevelContainerModel::_getContainer(LevelContainerModel *this) Line->BlockSource::getBlockEntity
-        BlockPos* bpos = offLevelContainerModel::getBlockPos(a1);
-        Block* pBlk = SymBlockSource::getBlock(bs, bpos);
+        BlockPos* bpos = dAccess<BlockPos*, 216>(a1);
+        Block* pBlk = SymCall("?getBlock@BlockSource@@QEBAAEBVBlock@@AEBVBlockPos@@@Z", Block*, BlockSource*, BlockPos*)(bs, bpos);
         auto v5 = (*(__int64(__fastcall**)(LevelContainerModel*))(*(uintptr_t*)a1 + 160i64))(a1);
         if (v5)
         {
@@ -370,11 +387,10 @@ THook(void, "?containerContentChanged@LevelContainerModel@@UEAAXH@Z",
             int slotNumber = a2;
             Actor* pl = v3;
 ///////////////////////////// ?pl ///////////////////////////// 
-            CallEvent(EVENT_TYPES::OnChangeSlot, EntityClass::newEntity(pl), BlockClass::newBlock(pBlk), slotNumber, IntPos::newPos(bpos->x, bpos->y, bpos->z), count != 0, ItemClass::newItem(item));
+            CallEvent(EVENT_TYPES::OnChangeSlot, EntityClass::newEntity(pl), BlockClass::newBlock(pBlk,bpos,bs), slotNumber, IntPos::newPos(bpos->x, bpos->y, bpos->z, Raw_GetBlockDimension(bs)), count != 0, ItemClass::newItem(item));
         }
     }
-	//return original(a1, a2);
-////////////////////////////////////// 返回值？ /////////////////////////////////
+	return original(a1, a2);
 }
 
 // ===== onMobDie =====
@@ -422,6 +438,28 @@ THook(bool, "?explode@Level@@UEAAXAEAVBlockSource@@PEAVActor@@AEBVVec3@@M_N3M3@Z
     return original(_this, bs, actor, pos, a5, a6, a7, a8, a9);
 }
 
+// ===== onBlockExploded =====
+THook(void, "?onExploded@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@PEAVActor@@@Z",
+    Block* _this, BlockSource *bs, BlockPos *bp, Actor * actor)
+{
+    IF_EXIST(EVENT_TYPES::OnPlayerCmd)
+    {
+        CallEvent(EVENT_TYPES::OnBlockExploded,BlockClass::newBlock(_this,bp,bs),IntPos::newPos(*bp,Raw_GetBlockDimension(bs)),EntityClass::newEntity(actor));
+    }
+    return original(_this, bs, bp, actor);
+}
+
+// ===== OnProjectileHit =====
+THook(void, "?onProjectileHit@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@AEBVActor@@@Z",
+    Block* _this, BlockSource* bs, BlockPos* bp, Actor* actor)
+{
+    IF_EXIST(EVENT_TYPES::OnProjectileHit)
+    {
+        CallEvent(EVENT_TYPES::OnProjectileHit,BlockClass::newBlock(_this,bp,bs),IntPos::newPos(*bp, Raw_GetBlockDimension(bs)),EntityClass::newEntity(actor));
+    }
+    return original(_this, bs, bp, actor);
+}
+
 // ===== onServerCmd =====
 THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@VCommandContext@@@std@@_N@Z",
     MinecraftCommands* _this, unsigned int* a2, std::shared_ptr<CommandContext> x, char a4)
@@ -449,7 +487,7 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
             {   //StartDebug
                 INFO("Debug mode begin");
                 globalDebug = true;
-                cout << LXL_SCRIPT_LANG_TYPE << ">" << flush;
+                std::cout << LXL_SCRIPT_LANG_TYPE << ">" << std::flush;
                 return false;
             }
         }
@@ -463,14 +501,14 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
                 else
                 {
                     auto result = debugEngine->eval(cmd);
-                    PrintValue(cout,result);
-                    cout << "\n" << LXL_SCRIPT_LANG_TYPE << ">" << flush;
+                    PrintValue(std::cout,result);
+                    std::cout << "\n" << LXL_SCRIPT_LANG_TYPE << ">" << std::flush;
                 }
             }
             catch(Exception& e)
             {
                 ERRPRINT(e);
-                cout << LXL_SCRIPT_LANG_TYPE << ">" << flush;
+                std::cout << LXL_SCRIPT_LANG_TYPE << ">" << std::flush;
             }
             return false;
         }
@@ -479,46 +517,3 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
     }
     return original(_this, a2, x, a4);
 }
-/*
-/////////////////////////// THook /////////////////////
-template <>
-struct THookTemplate<
-    do_hash("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z"),
-    do_hash2("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z")
->{
-	typedef bool (*original_type)(Player *_this, ItemStack *a2, bool a3);
-	static original_type &_original()
-	{
-		static original_type storage;
-		return storage;
-	}
-	template <typename... Params>
-	static bool original(Params &&...params) {
-        return _original()(std::forward<Params>(params)...);
-    }
-	static bool _hook(Player *_this, ItemStack *a2, bool a3);
-};
-template <>
-static THookRegister THookRegisterTemplate<
-	do_hash("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z"),
-	do_hash2("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z")
->{
-    "?drop@Player@@UEAA_NAEBVItemStack@@_N@Z",
-	&THookTemplate<do_hash("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z"),
-	do_hash2("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z")>::_hook,
-	(void **)&THookTemplate<do_hash("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z"),
-	do_hash2("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z")>::_original()
-};
-bool THookTemplate<
-	do_hash("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z"),
-	do_hash2("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z")>
-    ::_hook(Player *_this, ItemStack *a2, bool a3)
-{
-	
-}
-
-/////////////////////////// Symcall /////////////////////
-__imp_Call<
-    do_hash("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z"),
-    do_hash2("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z"),
-Actor*, Level*, void*, bool>("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z")*/

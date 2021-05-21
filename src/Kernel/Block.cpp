@@ -9,3 +9,16 @@ string Raw_GetBlockName(Block* block)
     
     return string(blockname);
 }
+
+//GetBlockDimension_Helper
+class AutomaticID<class Dimension, int> GetDimensionId(BlockSource *bs)
+{
+    class AutomaticID<class Dimension, int> (BlockSource::*rv)() const;
+    *((void **)&rv) = dlsym("?getDimensionId@BlockSource@@QEBA?AV?$AutomaticID@VDimension@@H@@XZ");
+    return (bs->*rv)();
+}
+
+int Raw_GetBlockDimension(BlockSource *bs)
+{
+    return GetDimensionId(bs);
+}

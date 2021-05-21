@@ -3,6 +3,25 @@
 #include "../Kernel/Entity.h"
 using namespace script;
 
+//生成函数
+Local<Object> EntityClass::newEntity(Actor *p)
+{
+    auto newp = new EntityClass(p);
+    return newp->getScriptObject();
+}
+Local<Object> EntityClass::newEntity(WActor p)
+{
+    return EntityClass::newEntity(p.v);
+}
+Actor* EntityClass::extractEntity(Local<Value> v)
+{
+    if(EngineScope::currentEngine()->isInstanceOf<EntityClass>(v))
+        return EngineScope::currentEngine()->getNativeInstance<EntityClass>(v)->get();
+    else
+        return nullptr;
+}
+
+//成员函数
 Local<Value> EntityClass::getName()
 { 
     try{

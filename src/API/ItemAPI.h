@@ -27,18 +27,8 @@ public:
         return item;
     }
 
-    static Local<Object> newItem(ItemStack *p)
-    {
-        auto newp = new ItemClass(p);
-        return newp->getScriptObject();
-    }
-    static ItemStack* extractItem(Local<Value> v)
-    {
-        if(EngineScope::currentEngine()->isInstanceOf<ItemClass>(v))
-            return EngineScope::currentEngine()->getNativeInstance<ItemClass>(v)->get();
-        else
-            return nullptr;
-    }
+    static Local<Object> newItem(ItemStack *p);
+    static ItemStack* extractItem(Local<Value> v);
 
     Local<Value> getName();
     Local<Value> getCustomName();

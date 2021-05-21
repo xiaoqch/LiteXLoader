@@ -8,6 +8,25 @@
 using namespace std;
 using namespace script;
 
+//生成函数
+Local<Object> PlayerClass::newPlayer(Player *p)
+{
+    auto newp = new PlayerClass(p);
+    return newp->getScriptObject();
+}
+Local<Object> PlayerClass::newPlayer(WPlayer p)
+{
+    return PlayerClass::newPlayer(p.v);
+}
+Player* PlayerClass::extractPlayer(Local<Value> v)
+{
+    if(EngineScope::currentEngine()->isInstanceOf<PlayerClass>(v))
+        return EngineScope::currentEngine()->getNativeInstance<PlayerClass>(v)->get();
+    else
+        return nullptr;
+}
+
+//公用API
 Local<Value> GetPlayer(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
@@ -38,6 +57,7 @@ Local<Value> GetOnlinePlayers(const Arguments& args)
     CATCH("Fail in GetOnlinePlayers!")
 }
 
+//成员函数
 Local<Value> PlayerClass::getName()
 { 
     try{

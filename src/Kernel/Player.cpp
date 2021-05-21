@@ -57,8 +57,7 @@ bool  Raw_SetPlayerPermLevel(Player* player, int permLevel)
 
 bool Raw_KickPlayer(Player* player, const string &msg)
 {
-    ///////////////////////////////////////////////////// FIX HERE
-    Minecraft *mc;
+    extern Minecraft *mc;
     auto nh = mc->getServerNetworkHandler();
     NetworkIdentifier* a = offPlayer::getNetworkIdentifier(player);
     nh->disconnectClient(*(NetworkIdentifier*)a, msg, 0);

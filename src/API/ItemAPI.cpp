@@ -13,6 +13,21 @@ ItemClass::ItemClass(ItemStack *p)
     count = Raw_GetCount(item);
 }
 
+//生成函数
+Local<Object> ItemClass::newItem(ItemStack *p)
+{
+    auto newp = new ItemClass(p);
+    return newp->getScriptObject();
+}
+ItemStack* ItemClass::extractItem(Local<Value> v)
+{
+    if(EngineScope::currentEngine()->isInstanceOf<ItemClass>(v))
+        return EngineScope::currentEngine()->getNativeInstance<ItemClass>(v)->get();
+    else
+        return nullptr;
+}
+
+//成员函数
 Local<Value> ItemClass::getName()
 { 
     try{

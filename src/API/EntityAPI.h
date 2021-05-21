@@ -17,22 +17,9 @@ public:
         return entity;
     }
 
-    static Local<Object> newEntity(Actor *p)
-    {
-        auto newp = new EntityClass(p);
-        return newp->getScriptObject();
-    }
-    static Local<Object> newEntity(WActor p)
-    {
-        return EntityClass::newEntity(p.v);
-    }
-    static Actor* extractEntity(Local<Value> v)
-    {
-        if(EngineScope::currentEngine()->isInstanceOf<EntityClass>(v))
-            return EngineScope::currentEngine()->getNativeInstance<EntityClass>(v)->get();
-        else
-            return nullptr;
-    }
+    static Local<Object> newEntity(Actor *p);
+    static Local<Object> newEntity(WActor p);
+    static Actor* extractEntity(Local<Value> v);
 
     Local<Value> getName();
     Local<Value> getPos();

@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "../Kernel/Global.h"
 #include "ScriptX.h"
 using namespace script;
 
@@ -12,31 +13,23 @@ private:
 
     // Pre data
     std::string name;
+    IntVec4 pos;
 
 public:
 	explicit BlockClass(Block *p);
+    BlockClass(Block *p, BlockPos bp, int dim);
 
     Block *get()
     {
         return block;
     }
 
-    static Local<Object> newBlock(Block *p)
-    {
-        auto newp = new BlockClass(p);
-        return newp->getScriptObject();
-    }
-    static Local<Object> newBlock(WBlock p)
-    {
-        return BlockClass::newBlock(p.v);
-    }
-    static Block* extractBlock(Local<Value> v)
-    {
-        if(EngineScope::currentEngine()->isInstanceOf<BlockClass>(v))
-            return EngineScope::currentEngine()->getNativeInstance<BlockClass>(v)->get();
-        else
-            return nullptr;
-    }
+    static Local<Object> newBlock(Block *p);
+    static Local<Object> newBlock(Block *p, BlockPos *pos);
+    static Local<Object> newBlock(Block *p, BlockPos *pos, BlockSource *bs);
+    static Local<Object> newBlock(WBlock p);
+    static Block* extractBlock(Local<Value> v);
 
     Local<Value> getName();
+    Local<Value> getPos();
 };
