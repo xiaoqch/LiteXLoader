@@ -1,7 +1,7 @@
 ﻿// Ignore error below
 #include "ScriptX.h"
 #include "API/APIhelp.h"
-#include "API/ConfigHelp.h"
+#include "Kernel/ConfigHelp.h"
 #include <windows.h>
 #include <string>
 #include <exception>

@@ -1,6 +1,6 @@
 #include "ScriptX.h"
 #include "API/APIhelp.h"
-#include "API/ConfigHelp.h"
+#include "Kernel/ConfigHelp.h"
 #include <list>
 #include <string>
 #include <vector>
