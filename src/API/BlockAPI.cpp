@@ -28,6 +28,11 @@ Local<Object> BlockClass::newBlock(Block *p, BlockPos *pos)
     auto newp = new BlockClass(p,*pos,-1);
     return newp->getScriptObject();
 }
+Local<Object> BlockClass::newBlock(Block *p, BlockPos *pos, int dim)
+{
+    auto newp = new BlockClass(p,*pos,dim);
+    return newp->getScriptObject();
+}
 Local<Object> BlockClass::newBlock(Block *p, BlockPos *pos, BlockSource *bs)
 {
     auto newp = new BlockClass(p,*pos,Raw_GetBlockDimension(bs));
@@ -61,4 +66,25 @@ Local<Value> BlockClass::getPos()
         return IntPos::newPos(pos);
     }
     CATCH("Fail in GetBlockPos!")
+}
+
+//公用API
+Local<Value> GetBlock(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args,1)
+
+    try{
+        auto pos = IntPos::extractPos(args[0]);
+        if(!pos)
+            return Local<Value>();    //Null
+        else
+        {
+            auto block = Raw_GetBlockByPos(pos);
+            if(!block)
+                return Local<Value>();    //Null
+            else
+                return BlockClass::newBlock(block);
+        }
+    }
+    CATCH("Fail in GetBlock!")
 }

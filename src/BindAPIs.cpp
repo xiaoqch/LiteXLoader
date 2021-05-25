@@ -10,14 +10,16 @@ using namespace script;
 #include "API/NbtAPI.h"
 #include "API/GuiAPI.h"
 #include "API/DbAPI.h"
+#include "API/LoggerAPI.h"
 #include "API/FileSystemAPI.h"
 #include "API/NetworkAPI.h"
 #include "API/PlayerAPI.h"
+#include "API/ServerAPI.h"
 #include "API/StaticClasses.h"
 
 void BindAPIs(std::shared_ptr<ScriptEngine> engine)
 {
-    //////////////// Base Classes ////////////////
+    //////////////// 基础类 ////////////////
 
     static ClassDefine<IntPos> IntPosBuilder =
         defineClass<IntPos>("IntPos")
@@ -37,12 +39,14 @@ void BindAPIs(std::shared_ptr<ScriptEngine> engine)
             .instanceProperty("dim", &FloatPos::getDim, &FloatPos::setDim)
             .build();
     
+
+    //////////////// 静态类 ////////////////
+
     static ClassDefine<void> McClassBuilder =
         defineClass("mc")
             .function("runcmd", &McClass::runcmd)
             .function("runcmdEx", &McClass::runcmdEx)
             .function("registerCmd", &McClass::registerCmd)
-            .function("setServerMotd", &McClass::setServerMotd)
             .function("listen", &McClass::listen)
             .function("getPlayer", &McClass::getPlayer)
             .function("getOnlinePlayers", &McClass::getOnlinePlayers)
@@ -70,14 +74,39 @@ void BindAPIs(std::shared_ptr<ScriptEngine> engine)
             .function("exists", &FileClass::exists)
             .build();
     
+    static ClassDefine<void> ServerClassBuilder =
+        defineClass("server")
+            .function("setMotd", &ServerClass::setMotd)
+            .function("setOnlinePlayer", &ServerClass::setOnlinePlayer)
+            .build();
+
+    static ClassDefine<void> LoggerClassBuilder =
+        defineClass("logger")
+            .function("log", &LoggerClass::log)
+            .function("debug", &LoggerClass::debug)
+            .function("info", &LoggerClass::info)
+            .function("warn", &LoggerClass::warn)
+            .function("error", &LoggerClass::error)
+            .function("fatal", &LoggerClass::fatal)
+
+            .function("setTitle", &LoggerClass::setTitle)
+            .function("setConsole", &LoggerClass::setConsole)
+            .function("setFile", &LoggerClass::setFile)
+            .function("setPlayer", &LoggerClass::setPlayer)
+            .function("setLogLevel", &LoggerClass::setLogLevel)
+            .build();
+    
     engine->registerNativeClass<IntPos>(IntPosBuilder);
     engine->registerNativeClass<FloatPos>(FloatPosBuilder);
     engine->registerNativeClass(McClassBuilder);
     engine->registerNativeClass(SystemClassBuilder);
     engine->registerNativeClass(FileClassBuilder);
+    engine->registerNativeClass(ServerClassBuilder);
+    engine->registerNativeClass(LoggerClassBuilder);
 
 
-    //////////////// Global Functions ////////////////
+    //////////////// 全局函数 ////////////////
+
 	engine->set("log", Function::newFunction(Log));
     engine->set("getLxlVersion",Function::newFunction(GetLxlVersion));
 
@@ -128,6 +157,7 @@ void BindAPIs(std::shared_ptr<ScriptEngine> engine)
             .instanceProperty("name", &ItemClass::getName)
             .instanceProperty("customName", &ItemClass::getCustomName)
             .instanceProperty("count", &ItemClass::getCount)
+            .instanceProperty("aux", &ItemClass::getAux)
 
             .instanceFunction("setLore", &ItemClass::setLore)
             .build();
@@ -162,7 +192,12 @@ void BindAPIs(std::shared_ptr<ScriptEngine> engine)
             .instanceFunction("kick", &PlayerClass::kick)
             .instanceFunction("tell", &PlayerClass::tell)
             .instanceFunction("getHand", &PlayerClass::getHand)
+            .instanceFunction("getPack", &PlayerClass::getPack)
             .instanceFunction("rename", &PlayerClass::rename)
+
+            .instanceFunction("setExtraData", &PlayerClass::setExtraData)
+            .instanceFunction("getExtraData", &PlayerClass::getExtraData)
+            .instanceFunction("delExtraData", &PlayerClass::delExtraData)
             .build();
     engine->registerNativeClass<PlayerClass>(PlayerClassBuilder);
 }

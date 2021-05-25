@@ -26,6 +26,7 @@ public:
 
     static Local<Object> newBlock(Block *p);
     static Local<Object> newBlock(Block *p, BlockPos *pos);
+    static Local<Object> newBlock(Block *p, BlockPos *pos, int dim);
     static Local<Object> newBlock(Block *p, BlockPos *pos, BlockSource *bs);
     static Local<Object> newBlock(WBlock p);
     static Block* extractBlock(Local<Value> v);
@@ -33,3 +34,7 @@ public:
     Local<Value> getName();
     Local<Value> getPos();
 };
+
+//////////////////// APIs ////////////////////
+
+Local<Value> GetBlock(const Arguments& args);

@@ -37,21 +37,6 @@
 */
 
 /*
-@@ LUAI_MAXCSTACK defines the maximum depth for nested calls and
-** also limits the maximum depth of other recursive algorithms in
-** the implementation, such as syntactic analysis. A value too
-** large may allow the interpreter to crash (C-stack overflow).
-** The default value seems ok for regular machines, but may be
-** too high for restricted hardware.
-** The test file 'cstack.lua' may help finding a good limit.
-** (It will crash with a limit too high.)
-*/
-#if !defined(LUAI_MAXCSTACK)
-#define LUAI_MAXCSTACK		2000
-#endif
-
-
-/*
 @@ LUA_USE_C89 controls the use of non-ISO-C89 features.
 ** Define it if you want Lua to avoid the use of a few C99 features
 ** or Windows-specific features on Windows.
@@ -222,7 +207,8 @@
 #define LUA_CPATH_DEFAULT \
 		LUA_CDIR"?.dll;" \
 		LUA_CDIR"..\\lib\\lua\\" LUA_VDIR "\\?.dll;" \
-		LUA_CDIR"loadall.dll;" ".\\?.dll"
+		LUA_CDIR"loadall.dll;" ".\\?.dll;" \
+		LUA_CDIR"?54.dll;" ".\\?54.dll"
 #endif
 
 #else			/* }{ */
@@ -240,7 +226,8 @@
 
 #if !defined(LUA_CPATH_DEFAULT)
 #define LUA_CPATH_DEFAULT \
-		LUA_CDIR"?.so;" LUA_CDIR"loadall.so;" "./?.so"
+		LUA_CDIR"?.so;" LUA_CDIR"loadall.so;" "./?.so;" \
+		LUA_CDIR"lib?54.so;" "./lib?54.so"
 #endif
 
 #endif			/* } */

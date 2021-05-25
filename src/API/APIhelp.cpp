@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <memory>
 
 #include "BaseAPI.h"
 #include "BlockAPI.h"
@@ -9,6 +10,7 @@
 #include "ItemAPI.h"
 #include "PlayerAPI.h"
 #include "../Kernel/Global.h"
+#include "EngineOwnData.h"
 using namespace script;
 
 //////////////////// APIs ////////////////////
@@ -84,15 +86,20 @@ void PrintValue(std::ostream &out, Local<Value> v)
 
 std::shared_ptr<ScriptEngine> NewEngine()
 {
+    std::shared_ptr<ScriptEngine> engine;
+
     #if !defined(SCRIPTX_BACKEND_WEBASSEMBLY)
-        return std::shared_ptr<ScriptEngine>{
+        engine = std::shared_ptr<ScriptEngine>{
             new ScriptEngineImpl(),
                 ScriptEngine::Deleter()
         };
     #else
-        return std::shared_ptr<ScriptEngine>{
+        engine = std::shared_ptr<ScriptEngine>{
             ScriptEngineImpl::instance(),
                 [](void*) {}
         };
     #endif
+
+    engine->setData(make_shared<EngineOwnData>());
+    return engine;
 }

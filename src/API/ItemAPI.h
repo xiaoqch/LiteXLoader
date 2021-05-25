@@ -3,11 +3,6 @@
 #include "ScriptX.h"
 using namespace script;
 
-//////////////////// APIs ////////////////////
-
-Local<Value> SetLore(const Arguments& args);
-
-
 //////////////////// Classes ////////////////////
 class ItemStack;
 class ItemClass : public ScriptClass
@@ -17,7 +12,7 @@ private:
 
     // Pre data
     std::string name,customName;
-    int count;
+    int count,aux;
 
 public:
 	explicit ItemClass(ItemStack *p);
@@ -33,6 +28,12 @@ public:
     Local<Value> getName();
     Local<Value> getCustomName();
     Local<Value> getCount();
+    Local<Value> getAux();
 
+    Local<Value> isNull(const Arguments& args);
     Local<Value> setLore(const Arguments& args);
 };
+
+//////////////////// APIs ////////////////////
+
+Local<Value> SetLore(const Arguments& args);

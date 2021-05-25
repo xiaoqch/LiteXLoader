@@ -35,3 +35,5 @@ void PrintValue(std::ostream &out, Local<Value> v);
 
 //创建新引擎
 std::shared_ptr<ScriptEngine> NewEngine();
+//引擎附加数据
+#define ENGINE_OWN_DATA() static_pointer_cast<EngineOwnData>(EngineScope::currentEngine()->getData())

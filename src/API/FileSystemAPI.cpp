@@ -1,4 +1,5 @@
 #include "APIhelp.h"
+#include "FileSystemAPI.h"
 #include <filesystem>
 #include <fstream>
 using namespace script;

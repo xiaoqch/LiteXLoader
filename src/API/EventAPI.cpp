@@ -20,12 +20,12 @@ using namespace script;
 enum class EVENT_TYPES : int
 {
     OnJoin=0, OnLeft, OnRespawn, OnChangeDim,
-    OnPlayerCmd, OnChat, OnAttack, OnEat,
+    OnPlayerCmd, OnChat, OnAttack, OnEat, OnMove,
     OnUseItem, OnTakeItem, OnDropItem,
     OnDestroyBlock, OnPlaceBlock,
     OnOpenChest, OnCloseChest, OnOpenBarrel, OnCloseBarrel, OnChangeSlot,
     OnMobDie, OnMobHurt, OnExplode, OnBlockExploded, OnCmdBlockExecute,
-    OnProjectileHit,
+    OnProjectileHit, OnPistonPush, OnUseRespawnAnchor,
     OnServerStarted, OnServerCmd,
     EVENT_COUNT
 };
@@ -38,6 +38,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onChat",EVENT_TYPES::OnChat},
     {"onAttack",EVENT_TYPES::OnAttack},
     {"onEat",EVENT_TYPES::OnEat},
+    {"onMove",EVENT_TYPES::OnMove},
     {"onMobDie",EVENT_TYPES::OnMobDie},
     {"onMobHurt",EVENT_TYPES::OnMobHurt},
     {"onUseItem",EVENT_TYPES::OnUseItem},
@@ -54,6 +55,8 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onChangeSlot",EVENT_TYPES::OnChangeSlot},
     {"onCmdBlockExecute",EVENT_TYPES::OnCmdBlockExecute},
     {"onProjectileHit",EVENT_TYPES::OnProjectileHit},
+    {"onPistonPush",EVENT_TYPES::OnPistonPush},
+    {"onUseRespawnAnchor",EVENT_TYPES::OnUseRespawnAnchor},
     {"onServerStarted",EVENT_TYPES::OnServerStarted},
     {"onServerCmd",EVENT_TYPES::OnServerCmd},
 };
@@ -220,6 +223,17 @@ THook(void, "?eat@Player@@QEAAXAEBVItemStack@@@Z",
         CallEvent(EVENT_TYPES::OnEat, PlayerClass::newPlayer(_this), ItemClass::newItem(eaten));
     }
     return original(_this, eaten);
+}
+
+// ===== onMove =====
+THook(void, "??0MovePlayerPacket@@QEAA@AEAVPlayer@@AEBVVec3@@@Z",
+    void *_this, Player * pl, Vec3 * to)
+{
+    IF_EXIST(EVENT_TYPES::OnMove)
+    {
+        CallEvent(EVENT_TYPES::OnMove, PlayerClass::newPlayer(pl), FloatPos::newPos(*to,WPlayer(*pl).getDimID()));
+    }
+    return original(_this, pl, to);
 }
 
 // ===== onRespawn =====
@@ -458,6 +472,42 @@ THook(void, "?onProjectileHit@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@AEBVAct
         CallEvent(EVENT_TYPES::OnProjectileHit,BlockClass::newBlock(_this,bp,bs),IntPos::newPos(*bp, Raw_GetBlockDimension(bs)),EntityClass::newEntity(actor));
     }
     return original(_this, bs, bp, actor);
+}
+
+// ===== BlockActor-Helper =====
+class BlockActor
+{
+public:
+	BlockPos* getPosition() {
+		return (BlockPos*)(this + 44);
+	}
+};
+// ===== OnPistonPush =====
+THook(bool, "?_attachedBlockWalker@PistonBlockActor@@AEAA_NAEAVBlockSource@@AEBVBlockPos@@EE@Z",
+    BlockActor* _this, BlockSource* bs, BlockPos* bp, unsigned a3, unsigned a4)
+{
+    IF_EXIST(EVENT_TYPES::OnPistonPush)
+    {
+        int dim = Raw_GetBlockDimension(bs);
+        BlockPos* pistonPos = _this->getPosition();
+
+        IntVec4 blockPos{bp->x,bp->y,bp->z,dim};
+        Block* pushedBlock = Raw_GetBlockByPos(&blockPos);
+
+        CallEventEx(EVENT_TYPES::OnPistonPush,IntPos::newPos(*pistonPos, dim),BlockClass::newBlock(pushedBlock,bp,dim));
+    }
+    return original(_this, bs, bp, a3, a4);
+}
+
+// ===== OnUseRespawnAnchor =====
+THook(bool, "?trySetSpawn@RespawnAnchorBlock@@CA_NAEAVPlayer@@AEBVBlockPos@@AEAVBlockSource@@AEAVLevel@@@Z",
+    Player* pl, BlockPos* a2, BlockSource* a3, Level* a4)
+{
+    IF_EXIST(EVENT_TYPES::OnUseRespawnAnchor)
+    {
+        CallEventEx(EVENT_TYPES::OnUseRespawnAnchor,PlayerClass::newPlayer(pl),IntPos::newPos(*a2, Raw_GetBlockDimension(a3)));
+    }
+    return original(pl, a2, a3, a4);
 }
 
 // ===== onServerCmd =====

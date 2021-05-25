@@ -2,9 +2,11 @@
 #include "BaseAPI.h"
 #include "PlayerAPI.h"
 #include "ItemAPI.h"
+#include "EngineOwnData.h"
 #include "../Kernel/Player.h"
 #include <string>
 #include <vector>
+#include <unordered_map>
 using namespace std;
 using namespace script;
 
@@ -200,6 +202,20 @@ Local<Value> PlayerClass::getHand(const Arguments& args)
     CATCH("Fail in GetHand!")
 }
 
+Local<Value> PlayerClass::getPack(const Arguments& args)
+{
+    try{
+        auto res = Raw_GetPack(player);
+        Local<Array> pack = Array::newArray();
+        for(ItemStack* item : res)
+        {
+            pack.add(ItemClass::newItem(item));
+        }
+        return pack;
+    }
+    CATCH("Fail in GetPack!")
+}
+
 Local<Value> PlayerClass::rename(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
@@ -209,4 +225,51 @@ Local<Value> PlayerClass::rename(const Arguments& args)
         return Boolean::newBoolean(Raw_RenamePlayer(player,args[0].asString().toString()));
     }
     CATCH("Fail in RenamePlayer!")
+}
+
+Local<Value> PlayerClass::setExtraData(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args,2)
+    CHECK_ARG_TYPE(args[0],ValueKind::kString)
+
+    string key = args[0].asString().toString();
+    if(key.empty())
+        return Boolean::newBoolean(false);
+    
+    ENGINE_OWN_DATA()->playerDataDB[Raw_GetPlayerName(player) + "-" + key] = args[1];
+    return Boolean::newBoolean(true);
+}
+
+Local<Value> PlayerClass::getExtraData(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args,1)
+    CHECK_ARG_TYPE(args[0],ValueKind::kString)
+
+    string key = args[0].asString().toString();
+    if(key.empty())
+        return Boolean::newBoolean(false);
+
+    try
+    {
+        return ENGINE_OWN_DATA()->playerDataDB.at(Raw_GetPlayerName(player) + "-" + key).get();
+    }
+    catch(...)
+    {
+        ERROR("Fail in getExtraData");
+        return Local<Value>();  //Null
+    }
+    
+}
+
+Local<Value> PlayerClass::delExtraData(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args,1)
+    CHECK_ARG_TYPE(args[0],ValueKind::kString)
+
+    string key = args[0].asString().toString();
+    if(key.empty())
+        return Boolean::newBoolean(false);
+    
+    ENGINE_OWN_DATA()->playerDataDB.erase(Raw_GetPlayerName(player) + "-" + key);
+    return Boolean::newBoolean(true);
 }

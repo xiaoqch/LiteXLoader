@@ -2,11 +2,6 @@
 #include "ScriptX.h"
 using namespace script;
 
-//////////////////// APIs ////////////////////
-
-Local<Value> GetPlayer(const Arguments& args);
-Local<Value> GetOnlinePlayers(const Arguments& args);
-
 //////////////////// Classes ////////////////////
 class Player;
 class PlayerClass : public ScriptClass
@@ -42,5 +37,15 @@ public:
     Local<Value> kick(const Arguments& args);
     Local<Value> tell(const Arguments& args);
     Local<Value> getHand(const Arguments& args);
+    Local<Value> getPack(const Arguments& args);
     Local<Value> rename(const Arguments& args);
+
+    Local<Value> setExtraData(const Arguments& args);
+    Local<Value> getExtraData(const Arguments& args);
+    Local<Value> delExtraData(const Arguments& args);
 };
+
+//////////////////// APIs ////////////////////
+
+Local<Value> GetPlayer(const Arguments& args);
+Local<Value> GetOnlinePlayers(const Arguments& args);

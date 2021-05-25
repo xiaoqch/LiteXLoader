@@ -14,8 +14,11 @@ bool Raw_KillPlayer(Player* player);
 int Raw_GetPlayerPermLevel(Player* player);
 bool Raw_SetPlayerPermLevel(Player* player, int permLevel);
 bool Raw_KickPlayer(Player* player, const std::string &msg);
-bool Raw_Tell(Player* player, const std::string &text, TextType type);
+bool Raw_Tell(Player* player, const std::string &text, TextType type = TextType::RAW);
 ItemStack* Raw_GetHand(Player* player);
+std::vector<ItemStack*> Raw_GetPack(Player* player);
 bool Raw_RenamePlayer(Player* player, const std::string &name);
 
 std::vector<Player*> Raw_GetOnlinePlayers();
+
+bool Raw_IsPlayerValid(Player *player);

@@ -118,8 +118,6 @@ Local<Value> Runcmd(const Arguments& args);
 Local<Value> RuncmdEx(const Arguments& args);
 Local<Value> RegisterCmd(const Arguments& args);
 
-Local<Value> SetServerMotd(const Arguments& args);
-
 Local<Value> Log(const Arguments& args);
 Local<Value> GetTimeStr(const Arguments& args);
 Local<Value> GetTimeObj(const Arguments& args);

@@ -11,6 +11,7 @@ ItemClass::ItemClass(ItemStack *p)
     name = Raw_GetItemName(item);
     customName = Raw_GetCustomName(item);
     count = Raw_GetCount(item);
+    aux = Raw_GetItemAux(item);
 }
 
 //生成函数
@@ -53,6 +54,23 @@ Local<Value> ItemClass::getCount()
         return Number::newNumber(count);
     }
     CATCH("Fail in GetCount!")
+}
+
+Local<Value> ItemClass::getAux()
+{
+    try{
+        //return Number::newNumber(Raw_GetItemAux(item));
+        return Number::newNumber(aux);
+    }
+    CATCH("Fail in GetAux!")
+}
+
+Local<Value> ItemClass::isNull(const Arguments& args)
+{
+    try{
+        return Boolean::newBoolean(Raw_IsNull(item));
+    }
+    CATCH("Fail in IsNull!")
 }
 
 Local<Value> ItemClass::setLore(const Arguments& args)

@@ -5,7 +5,7 @@
 #include "BlockAPI.h"
 #include "EntityAPI.h"
 #include "../Kernel/Base.h"
-#include <windows.h>
+#include "../Kernel/System.h"
 #include <chrono>
 #include <map>
 #include <memory>
@@ -62,16 +62,6 @@ Local<Value> RegisterCmd(const Arguments& args)
     CATCH("Fail in RegisterCmd!")
 }
 
-Local<Value> SetServerMotd(const Arguments& args)
-{
-    CHECK_ARGS_COUNT(args,1)
-
-    try{
-        return Boolean::newBoolean(Raw_SetServerMotd(args[0].asString().toString()));
-    }
-    CATCH("Fail in SetServerMotd!")
-}
-
 Local<Value> Log(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
@@ -88,11 +78,7 @@ Local<Value> Log(const Arguments& args)
 Local<Value> GetTimeStr(const Arguments& args)
 {
     try{
-        time_t t = time(NULL);
-        tm* ts = localtime(&t);
-        char buf[24]= {0};
-        strftime(buf, 24, "%Y-%m-%d %H:%M:%S", ts);
-        return String::newString(buf);
+        return String::newString(Raw_GetDateTimeStr());
     }
     CATCH("Fail in GetTimeStr!")
 }
@@ -117,8 +103,7 @@ Local<Value> GetTimeObj(const Arguments& args)
 
 Local<Value> RandomGuid(const Arguments& args)
 {
-    ///////////////////////////////// Add code here ///////////////////////////////// 
-    return String::newString(LXL_VERSION);
+    return String::newString(Raw_RandomGuid());
 }
 
 Local<Value> GetLxlVersion(const Arguments& args)

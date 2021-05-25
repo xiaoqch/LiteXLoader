@@ -7,6 +7,7 @@
 #include "../LiteLoader/headers/mc/mass.h"
 #include "../LiteLoader/headers/api/commands.h"
 #include "../LiteLoader/headers/api/types/types.h"
+#include "../LiteLoader/headers/stl/KVDB.h"
 
 class IntVec4
 {
