@@ -15,7 +15,7 @@ class McClass
 public:
     static Local<Value> runcmd(const Arguments& args) { return Runcmd(args); }
     static Local<Value> runcmdEx(const Arguments& args) { return RuncmdEx(args); }
-    static Local<Value> registerCmd(const Arguments& args) { return RegisterCmd(args); }
+    static Local<Value> registerCmd(const Arguments& args) { return RegisterPlayerCmd(args); }
 
     static Local<Value> listen(const Arguments& args) { return Listen(args); }
 
@@ -53,6 +53,8 @@ public:
 class ServerClass
 {
 public:
+    static Local<Value> registerCmd(const Arguments& args) { return RegisterConsoleCmd(args); }
+
     static Local<Value> setMotd(const Arguments& args) { return SetMotd(args); }
     static Local<Value> setOnlinePlayer(const Arguments& args) { return SetOnlinePlayer(args); }
 };

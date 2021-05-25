@@ -3,6 +3,7 @@
 #include "../Kernel/Global.h"
 #include "../Configs.h"
 #include "BaseAPI.h"
+#include <memory>
 using namespace script;
 
 // 输出
@@ -36,4 +37,4 @@ void PrintValue(std::ostream &out, Local<Value> v);
 //创建新引擎
 std::shared_ptr<ScriptEngine> NewEngine();
 //引擎附加数据
-#define ENGINE_OWN_DATA() static_pointer_cast<EngineOwnData>(EngineScope::currentEngine()->getData())
+#define ENGINE_OWN_DATA() (std::static_pointer_cast<EngineOwnData>(EngineScope::currentEngine()->getData()))

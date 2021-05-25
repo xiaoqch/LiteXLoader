@@ -167,7 +167,11 @@ Local<Value> LoggerSetFile(const Arguments& args)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
 
     string newFile = args[0].asString().toString();
-    ENGINE_OWN_DATA()->fout.open(newFile,ios::app);
+    ofstream *fout = &(ENGINE_OWN_DATA()->fout);
+    if(fout->is_open())
+        fout->close();
+    fout->clear();
+    fout->open(newFile,ios::app);
     return Boolean::newBoolean(ENGINE_OWN_DATA()->fout.is_open());
 }
 

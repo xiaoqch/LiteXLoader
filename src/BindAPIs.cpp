@@ -76,6 +76,7 @@ void BindAPIs(std::shared_ptr<ScriptEngine> engine)
     
     static ClassDefine<void> ServerClassBuilder =
         defineClass("server")
+            .function("registerCmd", &ServerClass::registerCmd)
             .function("setMotd", &ServerClass::setMotd)
             .function("setOnlinePlayer", &ServerClass::setOnlinePlayer)
             .build();

@@ -2,17 +2,20 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <string>
 #include <exception>
 #include <cstdarg>
 #include "../Kernel/Base.h"
 #include "../Kernel/Block.h"
 #include "../Kernel/Player.h"
+#include "EngineOwnData.h"
 #include "APIhelp.h"
 #include "BlockAPI.h"
 #include "ItemAPI.h"
 #include "EntityAPI.h"
 #include "PlayerAPI.h"
 #include "../Configs.h"
+using namespace std;
 using namespace script;
 
 //////////////////// Listeners ////////////////////
@@ -294,7 +297,32 @@ THook(void, "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVComma
         {   // Player Command
             auto cmd = std::string(*(std::string*)((uintptr_t)pkt + 48));
             if (cmd.front() == '/')
-                cmd = cmd.substr(1, cmd.size() - 1);
+                cmd = cmd.substr(1);
+            
+            // Register Callbacks
+            map<string,Global<Function>> *funcs = &(ENGINE_OWN_DATA()->playerCmdCallbacks);
+            if(!funcs->empty())
+                for (auto iter=funcs->begin(); iter!=funcs->end(); ++iter)
+                    if(cmd.find_first_of(iter->first) == 0)
+                    {
+                        //Matched
+                        string paras = cmd.substr(iter->first.size()+1) + " ";
+                        Local<Array> args = Array::newArray({String::newString(iter->first)});
+
+                        //Split Args
+                        int pos;
+                        int size = paras.size();
+                        for (int i = 0; i < size; i++)
+                        {
+                            pos = paras.find(" ", i);
+                            if (pos < size)
+                            {
+                                args.add(String::newString(paras.substr(i, pos - i)));
+                                i = pos;
+                            }
+                        }
+                        iter->second.get().call({},args);
+                    }
 
             CallEvent(EVENT_TYPES::OnPlayerCmd, PlayerClass::newPlayer(player), cmd);
         }
@@ -535,11 +563,12 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
     {   // Server Command
         string cmd = x->getCmd();
         if (cmd.front() == '/')
-            cmd = cmd.substr(1, cmd.size() - 1);
+            cmd = cmd.substr(1);
         
         //后台调试
         extern bool globalDebug;
         extern std::shared_ptr<ScriptEngine> debugEngine;
+        #define OUTPUT_DEBUG_SIGN() std::cout << "LiteXLoader " << LXL_SCRIPT_LANG_TYPE << ">" << std::flush
 
         if(cmd == LXL_DEBUG_CMD)
         {
@@ -547,15 +576,14 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
             {   //EndDebug
                 INFO("Debug mode ended");
                 globalDebug = false;
-                return false;
             }
             else
             {   //StartDebug
                 INFO("Debug mode begin");
                 globalDebug = true;
-                std::cout << LXL_SCRIPT_LANG_TYPE << ">" << std::flush;
-                return false;
+                OUTPUT_DEBUG_SIGN();
             }
+            return false;
         }
         if(globalDebug)
         {
@@ -568,16 +596,41 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
                 {
                     auto result = debugEngine->eval(cmd);
                     PrintValue(std::cout,result);
-                    std::cout << "\n" << LXL_SCRIPT_LANG_TYPE << ">" << std::flush;
+                    OUTPUT_DEBUG_SIGN();
                 }
             }
             catch(Exception& e)
             {
                 ERRPRINT(e);
-                std::cout << LXL_SCRIPT_LANG_TYPE << ">" << std::flush;
+                OUTPUT_DEBUG_SIGN();
             }
             return false;
         }
+
+        // Register Callbacks
+        map<string,Global<Function>> *funcs = &(ENGINE_OWN_DATA()->consoleCmdCallbacks);
+        if(!funcs->empty())
+            for (auto iter=funcs->begin(); iter!=funcs->end(); ++iter)
+                if(cmd.find_first_of(iter->first) == 0)
+                {
+                    //Matched
+                    string paras = cmd.substr(iter->first.size()+1) + " ";
+                    Local<Array> args = Array::newArray({String::newString(iter->first)});
+
+                    //Split Args
+                    int pos;
+                    int size = paras.size();
+                    for (int i = 0; i < size; i++)
+                    {
+                        pos = paras.find(" ", i);
+                        if (pos < size)
+                        {
+                            args.add(String::newString(paras.substr(i, pos - i)));
+                            i = pos;
+                        }
+                    }
+                    iter->second.get().call({},args);
+                }
 
         CallEventEx(EVENT_TYPES::OnServerCmd, cmd);
     }
