@@ -1,8 +1,14 @@
+#include "APIhelp.h"
 #include "ScriptX.h"
 #include <fstream>
 #include <string>
+#include <fstream>
 #include <map>
 #include <unordered_map>
+#include <memory>
+#include "../Nlohmann/fifo_map.hpp"
+#include "../Nlohmann/json.hpp"
+#include "../Minini/minIni.h"
 
 struct EngineOwnData_MapCmp
 {
@@ -14,15 +20,19 @@ struct EngineOwnData_MapCmp
             return a>b;
     }
 };
-
 class Player;
+
+enum GlobalConfType { json, ini };
+class minIni;
+
+#define CmdCallback_MapType std::map<std::string,script::Global<script::Function>,EngineOwnData_MapCmp>
 struct EngineOwnData
 {
     //BaseAPI
-    std::map<std::string,script::Global<Function>,EngineOwnData_MapCmp> playerCmdCallbacks;
+    CmdCallback_MapType playerCmdCallbacks;
 
     //ServerAPI
-    std::map<std::string,script::Global<Function>,EngineOwnData_MapCmp> consoleCmdCallbacks;
+    CmdCallback_MapType consoleCmdCallbacks;
 
     //LoggerAPI
     bool toConsole = true;
@@ -32,7 +42,14 @@ struct EngineOwnData
     int logLevel = 0;
 
     //PlayerAPI
-    std::unordered_map<std::string,script::Global<Value>> playerDataDB;
+    std::unordered_map<std::string,script::Global<script::Value>> playerDataDB;
+
+    //DB API
+    string confPath;
+    GlobalConfType confType = GlobalConfType::json;
+    fifo_json jsonConf;
+    minIni *iniConf;
 };
 
-#define CmdCallback_MapType std::map<std::string,script::Global<Function>,EngineOwnData_MapCmp>
+// 引擎附加数据
+#define ENGINE_OWN_DATA() (std::static_pointer_cast<EngineOwnData>(EngineScope::currentEngine()->getData()))

@@ -1,11 +1,18 @@
 ﻿#pragma once
-#include "ScriptX.h"
 #include "../Kernel/Global.h"
 #include "../Configs.h"
 #include "BaseAPI.h"
 #include <string>
-#include <memory>
+#include "ScriptX.h"
+#include "../Nlohmann/json.hpp"
+#include "../Nlohmann/fifo_map.hpp"
 using namespace script;
+using namespace nlohmann;
+
+template<class Key, class T, class dummy_compare, class Allocator>
+using workaround_fifo_map = fifo_map<Key, T, fifo_map_compare<Key>, Allocator>;
+using fifo_json = basic_json<workaround_fifo_map>;
+
 
 // 输出
 #define PREFIX "[LiteXLoader." ## LXL_SCRIPT_LANG_TYPE ## "]"
@@ -32,12 +39,14 @@ using namespace script;
     catch(Exception& e) \
     { ERROR(LOG##"\n"); ERRPRINT(e); return Local<Value>();}
 
-// 序列化 反序列化
-void PrintValue(std::ostream &out, Local<Value> v);
-Local<Value> JsonToValue(std::string jsonStr);
-std::string ValueToJson(const Local<Value> &v,int formatIndent = -1);
-
 // 创建新引擎
 std::shared_ptr<ScriptEngine> NewEngine();
-// 引擎附加数据
-#define ENGINE_OWN_DATA() (std::static_pointer_cast<EngineOwnData>(EngineScope::currentEngine()->getData()))
+
+
+// 序列化
+void PrintValue(std::ostream &out, Local<Value> v);
+
+// Json 序列化 反序列化
+Local<Value> JsonToValue(std::string jsonStr);
+Local<Value> JsonToValue(fifo_json j);
+std::string ValueToJson(Local<Value> v,int formatIndent = -1);

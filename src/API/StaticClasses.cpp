@@ -8,6 +8,7 @@
 #include "LoggerAPI.h"
 #include "ServerAPI.h"
 #include "PlayerAPI.h"
+#include "DbAPI.h"
 using namespace script;
 
 class McClass
@@ -133,4 +134,53 @@ ClassDefine<void> LoggerClassBuilder =
         .function("setFile", &LoggerClass::setFile)
         .function("setPlayer", &LoggerClass::setPlayer)
         .function("setLogLevel", &LoggerClass::setLogLevel)
+        .build();
+
+class ConfClass
+{
+public:
+    static Local<Value> init(const Arguments& args) { return ConfInit(args); }
+
+    static Local<Value> set(const Arguments& args) { return ConfJsonSet(args); }
+    static Local<Value> get(const Arguments& args) { return ConfJsonGet(args); }
+    static Local<Value> del(const Arguments& args) { return ConfJsonDelete(args); }
+
+    static Local<Value> setKey(const Arguments& args) { return ConfIniSet(args); }
+    static Local<Value> getInt(const Arguments& args) { return ConfIniGetInt(args); }
+    static Local<Value> getStr(const Arguments& args) { return ConfIniGetStr(args); }
+    static Local<Value> getFloat(const Arguments& args) { return ConfIniGetFloat(args); }
+    static Local<Value> getBool(const Arguments& args) { return ConfIniGetBool(args); }
+    static Local<Value> deleteKey(const Arguments& args) { return ConfIniDeleteKey(args); }
+    static Local<Value> deleteSec(const Arguments& args) { return ConfIniDeleteSec(args); }
+
+    static Local<Value> reload(const Arguments& args) { return ConfReload(args); }
+    static Local<Value> getPath(const Arguments& args) { return ConfGetPath(args); }
+    static Local<Value> read(const Arguments& args) { return ConfRead(args); }
+    static Local<Value> write(const Arguments& args) { return ConfWrite(args); }
+
+    static Local<Value> openDB(const Arguments& args) { return OpenDB(args); }
+};
+
+ClassDefine<void> ConfClassBuilder =
+    defineClass("conf")
+        .function("init", &ConfClass::init)
+
+        .function("set", &ConfClass::set)
+        .function("get", &ConfClass::get)
+        .function("delete", &ConfClass::del)
+
+        .function("setKey", &ConfClass::setKey)
+        .function("getInt", &ConfClass::getInt)
+        .function("getStr", &ConfClass::getStr)
+        .function("getFloat", &ConfClass::getFloat)
+        .function("getBool", &ConfClass::getBool)
+        .function("deleteKey", &ConfClass::deleteKey)
+        .function("deleteSec", &ConfClass::deleteSec)
+
+        .function("reload", &ConfClass::reload)
+        .function("getPath", &ConfClass::getPath)
+        .function("read", &ConfClass::read)
+        .function("write", &ConfClass::write)
+
+        .function("openDB", &ConfClass::openDB)
         .build();

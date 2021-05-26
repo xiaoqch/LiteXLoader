@@ -31,7 +31,95 @@ ClassDefine<FloatPos> FloatPosBuilder =
         .instanceProperty("z", &FloatPos::getZ, &FloatPos::setZ)
         .instanceProperty("dim", &FloatPos::getDim, &FloatPos::setDim)
         .build();
-        
+
+
+//////////////////// IntPos 生成函数 ////////////////////   
+
+IntPos* IntPos::create(const Arguments& args)
+{
+    if(args.size() < 3)
+        return nullptr;
+    try
+    {
+        IntPos *p = new IntPos(args.thiz());
+        p->x = args[0].asNumber().toInt64();
+        p->y = args[1].asNumber().toInt64();
+        p->z = args[2].asNumber().toInt64();
+        p->dim = args[3].asNumber().toInt32();
+        return p;
+    }
+    catch(...)
+    {
+        return nullptr;
+    }
+}
+
+Local<Object> IntPos::newPos(int x, int y, int z, int dim)
+{
+    return EngineScope::currentEngine()->newNativeClass<IntPos>(x,y,z,dim);
+}
+
+Local<Object> IntPos::newPos(const BlockPos &b, int dim)
+{
+    return IntPos::newPos(b.x, b.y, b.z, dim);
+}
+
+Local<Object> IntPos::newPos(const IntVec4 &v)
+{
+    return IntPos::newPos(v.x, v.y, v.z, v.dim);
+}
+
+IntPos* IntPos::extractPos(Local<Value> v)
+{
+    if(EngineScope::currentEngine()->isInstanceOf<IntPos>(v))
+        return EngineScope::currentEngine()->getNativeInstance<IntPos>(v);
+    else
+        return nullptr;
+}
+
+//////////////////// FloatPos 生成函数 ////////////////////
+
+FloatPos* FloatPos::create(const Arguments& args)
+{
+    if(args.size() < 3)
+        return nullptr;
+    try
+    {
+        FloatPos *p = new FloatPos(args.thiz());
+        p->x = args[0].asNumber().toFloat();
+        p->y = args[1].asNumber().toFloat();
+        p->z = args[2].asNumber().toFloat();
+        p->dim = args[3].asNumber().toInt32();
+        return p;
+    }
+    catch(...)
+    {
+        return nullptr;
+    }
+}
+
+Local<Object> FloatPos::newPos(double x, double y, double z, int dim)
+{
+    return EngineScope::currentEngine()->newNativeClass<FloatPos>(x,y,z,dim);
+}
+
+Local<Object> FloatPos::newPos(const Vec3 &v, int dim)
+{
+    return FloatPos::newPos(v.x, v.y, v.z, dim);
+}
+
+Local<Object> FloatPos::newPos(const FloatVec4 &v)
+{
+    return FloatPos::newPos(v.x, v.y, v.z, v.dim);
+}
+
+FloatPos* FloatPos::extractPos(Local<Value> v)
+{
+    if(EngineScope::currentEngine()->isInstanceOf<FloatPos>(v))
+        return EngineScope::currentEngine()->getNativeInstance<FloatPos>(v);
+    else
+        return nullptr;
+}
 
 //////////////////// APIs ////////////////////
 

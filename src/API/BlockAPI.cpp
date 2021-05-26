@@ -9,6 +9,7 @@ ClassDefine<BlockClass> BlockClassBuilder =
     defineClass<BlockClass>("Block")
         .constructor(nullptr)
         .instanceProperty("name", &BlockClass::getName)
+        .instanceProperty("pos", &BlockClass::getPos)
         .build();
 
 

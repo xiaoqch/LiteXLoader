@@ -1,5 +1,6 @@
 #include "APIhelp.h"
 #include "FileSystemAPI.h"
+#include "../Kernel/System.h"
 #include <filesystem>
 #include <fstream>
 using namespace script;
@@ -45,12 +46,11 @@ Local<Value> PathExists(const Arguments& args)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
 
     try{
-        bool result = exists(args[0].asString().toString());
-        return Boolean::newBoolean(result);
+        return Boolean::newBoolean(Raw_PathExists(args[0].asString().toString()));
     }
     catch(const filesystem_error& e)
     {
-        DEBUG("Fail to Delete "+ args[0].asString().toString() +"!\n");
+        DEBUG("Fail to Check "+ args[0].asString().toString() +"!\n");
         return Boolean::newBoolean(false);
     }
     CATCH("Fail in ExistsPath!")
@@ -117,12 +117,9 @@ Local<Value> FileReadAll(const Arguments& args)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
     
     try{
-        std::ifstream fileRead(args[0].asString().toString());
-        if(!fileRead)
-            return Local<Value>(); //Null
-        std::string texts((std::istreambuf_iterator<char>(fileRead)),
-            std::istreambuf_iterator<char>());
-        fileRead.close();
+        string texts;
+        if(!Raw_FileReadAll(args[0].asString().toString(),texts))
+            return Local<Value>();  //Null
         return String::newString(texts);
     }
     CATCH("Fail in FileReadAll!")
@@ -135,11 +132,7 @@ Local<Value> FileWriteAll(const Arguments& args)
     CHECK_ARG_TYPE(args[1],ValueKind::kString)
     
     try{
-        std::ofstream fileWrite(args[0].asString().toString(),std::ios::out);
-        if(!fileWrite)
-            return Boolean::newBoolean(false);
-        fileWrite << args[1].asString().toString();
-        return Boolean::newBoolean(fileWrite.good());
+        return Boolean::newBoolean(Raw_FileWriteAll(args[0].asString().toString(),args[1].asString().toString()));
     }
     CATCH("Fail in FileWriteAll!")
 }

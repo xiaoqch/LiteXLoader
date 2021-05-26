@@ -1,6 +1,8 @@
 #include "Server.h"
 #include <ctime>
 #include <cstdio>
+#include <fstream>
+#include <filesystem>
 #include <objbase.h>
 using namespace std;
 
@@ -27,4 +29,30 @@ string Raw_RandomGuid()
         guid.Data4[3], guid.Data4[4], guid.Data4[5],
         guid.Data4[6], guid.Data4[7]);
     return string(dst);
+}
+
+bool Raw_PathExists(const string &path)
+{
+    return filesystem::exists(path);
+}
+
+bool Raw_FileReadAll(const string &path, string & result)
+{
+    ifstream fRead(path);
+    if(!fRead)
+        return false;
+    string data((std::istreambuf_iterator<char>(fRead)),
+        std::istreambuf_iterator<char>());
+    fRead.close();
+    result = data;
+    return true;
+}
+
+bool Raw_FileWriteAll(const std::string &path, const std::string &data)
+{
+    std::ofstream fileWrite(path,std::ios::out);
+    if(!fileWrite)
+        return false;
+    fileWrite << data;
+    return fileWrite.good();
 }

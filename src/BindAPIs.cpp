@@ -18,6 +18,17 @@ using namespace script;
 
 void BindAPIs(std::shared_ptr<ScriptEngine> engine)
 {
+    
+    //////////////// 全局函数 ////////////////
+
+	engine->set("log", Function::newFunction(Log));
+    engine->set("getLxlVersion",Function::newFunction(GetLxlVersion));
+
+    engine->set("setTimeout",Function::newFunction(SetTimeout));
+    engine->set("setInterval",Function::newFunction(SetInterval));
+    engine->set("clearInterval",Function::newFunction(ClearInterval));
+
+
     //////////////// 基础类 ////////////////
 
     extern ClassDefine<IntPos> IntPosBuilder;
@@ -34,22 +45,14 @@ void BindAPIs(std::shared_ptr<ScriptEngine> engine)
     extern ClassDefine<void> FileClassBuilder;
     extern ClassDefine<void> ServerClassBuilder;
     extern ClassDefine<void> LoggerClassBuilder;
+    extern ClassDefine<void> ConfClassBuilder;
     
     engine->registerNativeClass(McClassBuilder);
     engine->registerNativeClass(SystemClassBuilder);
     engine->registerNativeClass(FileClassBuilder);
     engine->registerNativeClass(ServerClassBuilder);
     engine->registerNativeClass(LoggerClassBuilder);
-
-
-    //////////////// 全局函数 ////////////////
-
-	engine->set("log", Function::newFunction(Log));
-    engine->set("getLxlVersion",Function::newFunction(GetLxlVersion));
-
-    engine->set("setTimeout",Function::newFunction(SetTimeout));
-    engine->set("setInterval",Function::newFunction(SetInterval));
-    engine->set("clearInterval",Function::newFunction(ClearInterval));
+    engine->registerNativeClass(ConfClassBuilder);
 
 
     //////////////// BlockAPI ////////////////
@@ -59,7 +62,8 @@ void BindAPIs(std::shared_ptr<ScriptEngine> engine)
 
     //////////////// DbAPI ////////////////
 
-
+    extern ClassDefine<DbClass> DbClassBuilder;
+    engine->registerNativeClass<DbClass>(DbClassBuilder);
 
     //////////////// EntityAPI ////////////////
 

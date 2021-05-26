@@ -11,15 +11,7 @@
 #include "PlayerAPI.h"
 #include "../Kernel/Global.h"
 #include "EngineOwnData.h"
-
-#include "../Nlohmann/json.hpp"
-#include "../Nlohmann/fifo_map.hpp"
 using namespace script;
-using namespace nlohmann;
-
-template<class K, class V, class dummy_compare, class A>
-using workaround_fifo_map = fifo_map<K, V, fifo_map_compare<K>, A>;
-using fifo_json = basic_json<workaround_fifo_map>;
 
 //////////////////// APIs ////////////////////
 
@@ -177,9 +169,8 @@ void JsonToValue_Helper(Local<Array> &res, fifo_json &j)
         res.add(Local<Value>());
 }
 
-Local<Value> JsonToValue(std::string jsonStr)
+Local<Value> JsonToValue(fifo_json j)
 {
-    auto j = fifo_json::parse(jsonStr);
     Local<Value> res;
     
     if(j.is_string())
@@ -212,10 +203,16 @@ Local<Value> JsonToValue(std::string jsonStr)
     return res;
 }
 
+Local<Value> JsonToValue(std::string jsonStr)
+{
+    auto j = fifo_json::parse(jsonStr);
+    return JsonToValue(j);
+}
+
 
 ///////////////////// Value To Json /////////////////////
 
-void ValueToJson_Helper(fifo_json &res, const Local<Value> &v)
+void ValueToJson_Helper(fifo_json &res, Local<Value> &v)
 {
     switch(v.getKind())
     {
@@ -274,7 +271,7 @@ void ValueToJson_Helper(fifo_json &res, const Local<Value> &v)
     }
 }
 
-std::string ValueToJson(const Local<Value> &v,int formatIndent)
+std::string ValueToJson(Local<Value> v,int formatIndent)
 {
     fifo_json res;
     ValueToJson_Helper(res,v);
