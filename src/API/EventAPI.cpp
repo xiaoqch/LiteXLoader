@@ -300,7 +300,7 @@ THook(void, "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVComma
                 cmd = cmd.substr(1);
             
             // Register Callbacks
-            map<string,Global<Function>> *funcs = &(ENGINE_OWN_DATA()->playerCmdCallbacks);
+            CmdCallback_MapType *funcs = &(ENGINE_OWN_DATA()->playerCmdCallbacks);
             if(!funcs->empty())
                 for (auto iter=funcs->begin(); iter!=funcs->end(); ++iter)
                     if(cmd.find_first_of(iter->first) == 0)
@@ -608,7 +608,7 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
         }
 
         // Register Callbacks
-        map<string,Global<Function>> *funcs = &(ENGINE_OWN_DATA()->consoleCmdCallbacks);
+        CmdCallback_MapType *funcs = &(ENGINE_OWN_DATA()->consoleCmdCallbacks);
         if(!funcs->empty())
             for (auto iter=funcs->begin(); iter!=funcs->end(); ++iter)
                 if(cmd.find_first_of(iter->first) == 0)

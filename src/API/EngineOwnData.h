@@ -4,14 +4,25 @@
 #include <map>
 #include <unordered_map>
 
+struct EngineOwnData_MapCmp
+{
+    bool operator() (string const &a,string const &b) const
+    {
+        if(a.size()!=b.size())
+            return a.size()>b.size();
+        else
+            return a>b;
+    }
+};
+
 class Player;
 struct EngineOwnData
 {
     //BaseAPI
-    std::map<std::string,script::Global<Function>> playerCmdCallbacks;
+    std::map<std::string,script::Global<Function>,EngineOwnData_MapCmp> playerCmdCallbacks;
 
     //ServerAPI
-    std::map<std::string,script::Global<Function>> consoleCmdCallbacks;
+    std::map<std::string,script::Global<Function>,EngineOwnData_MapCmp> consoleCmdCallbacks;
 
     //LoggerAPI
     bool toConsole = true;
@@ -23,3 +34,5 @@ struct EngineOwnData
     //PlayerAPI
     std::unordered_map<std::string,script::Global<Value>> playerDataDB;
 };
+
+#define CmdCallback_MapType std::map<std::string,script::Global<Function>,EngineOwnData_MapCmp>

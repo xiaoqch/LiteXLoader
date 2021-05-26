@@ -3,6 +3,7 @@
 #include "../Kernel/Global.h"
 #include "../Configs.h"
 #include "BaseAPI.h"
+#include <string>
 #include <memory>
 using namespace script;
 
@@ -31,10 +32,12 @@ using namespace script;
     catch(Exception& e) \
     { ERROR(LOG##"\n"); ERRPRINT(e); return Local<Value>();}
 
-// 串行化
+// 序列化反序列化
 void PrintValue(std::ostream &out, Local<Value> v);
+Local<Value> JsonToValue(std::string jsonStr);
+std::string ValueToJson(const Local<Value> &v,int formatIndent = -1);
 
-//创建新引擎
+// 创建新引擎
 std::shared_ptr<ScriptEngine> NewEngine();
-//引擎附加数据
+// 引擎附加数据
 #define ENGINE_OWN_DATA() (std::static_pointer_cast<EngineOwnData>(EngineScope::currentEngine()->getData()))
