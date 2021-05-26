@@ -5,6 +5,22 @@
 #include <string>
 using namespace script;
 
+//////////////////// Class Definition ////////////////////
+
+ClassDefine<ItemClass> ItemClassBuilder =
+    defineClass<ItemClass>("Item")
+        .constructor(nullptr)
+        .instanceProperty("name", &ItemClass::getName)
+        .instanceProperty("customName", &ItemClass::getCustomName)
+        .instanceProperty("count", &ItemClass::getCount)
+        .instanceProperty("aux", &ItemClass::getAux)
+
+        .instanceFunction("setLore", &ItemClass::setLore)
+        .build();
+
+
+//////////////////// Classes ////////////////////
+
 ItemClass::ItemClass(ItemStack *p)
     :ScriptClass(ScriptClass::ConstructFromCpp<ItemClass>{}),item(p)
 {

@@ -12,6 +12,27 @@
 #include <memory>
 using namespace script;
 
+//////////////////// Class Definition ////////////////////
+
+ClassDefine<IntPos> IntPosBuilder =
+    defineClass<IntPos>("IntPos")
+        .constructor(&IntPos::create)
+        .instanceProperty("x", &IntPos::getX, &IntPos::setX)
+        .instanceProperty("y", &IntPos::getY, &IntPos::setY)
+        .instanceProperty("z", &IntPos::getZ, &IntPos::setZ)
+        .instanceProperty("dim", &IntPos::getDim, &IntPos::setDim)
+        .build();
+
+ClassDefine<FloatPos> FloatPosBuilder =
+    defineClass<FloatPos>("FloatPos")
+        .constructor(&FloatPos::create)
+        .instanceProperty("x", &FloatPos::getX, &FloatPos::setX)
+        .instanceProperty("y", &FloatPos::getY, &FloatPos::setY)
+        .instanceProperty("z", &FloatPos::getZ, &FloatPos::setZ)
+        .instanceProperty("dim", &FloatPos::getDim, &FloatPos::setDim)
+        .build();
+        
+
 //////////////////// APIs ////////////////////
 
 Local<Value> Runcmd(const Arguments& args)

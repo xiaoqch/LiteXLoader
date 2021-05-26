@@ -32,7 +32,7 @@ using namespace script;
     catch(Exception& e) \
     { ERROR(LOG##"\n"); ERRPRINT(e); return Local<Value>();}
 
-// 序列化反序列化
+// 序列化 反序列化
 void PrintValue(std::ostream &out, Local<Value> v);
 Local<Value> JsonToValue(std::string jsonStr);
 std::string ValueToJson(const Local<Value> &v,int formatIndent = -1);

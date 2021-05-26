@@ -24,6 +24,16 @@ public:
 
     static Local<Value> getBlock(const Arguments& args) { return GetBlock(args); }
 };
+ClassDefine<void> McClassBuilder =
+    defineClass("mc")
+        .function("runcmd", &McClass::runcmd)
+        .function("runcmdEx", &McClass::runcmdEx)
+        .function("registerCmd", &McClass::registerCmd)
+        .function("listen", &McClass::listen)
+        .function("getPlayer", &McClass::getPlayer)
+        .function("getOnlinePlayers", &McClass::getOnlinePlayers)
+        .build();
+
 
 class SystemClass
 {
@@ -34,6 +44,15 @@ public:
 
     static Local<Value> cmd(const Arguments& args) { return SystemCmd(args); }
 };
+
+ClassDefine<void> SystemClassBuilder =
+    defineClass("system")
+        .function("getTimeStr", &SystemClass::getTimeStr)
+        .function("getTimeObj", &SystemClass::getTimeObj)
+        .function("randomGuid", &SystemClass::randomGuid)
+        .function("cmd", &SystemClass::cmd)
+        .build();
+
 
 class FileClass
 {
@@ -50,6 +69,21 @@ public:
     static Local<Value> exists(const Arguments& args) { return PathExists(args); }
 };
 
+ClassDefine<void> FileClassBuilder =
+    defineClass("file")
+        .function("read", &FileClass::read)
+        .function("write", &FileClass::write)
+        .function("writeLine", &FileClass::writeLine)
+
+        .function("createDir", &FileClass::createDir)
+        .function("copy", &FileClass::copy)
+        .function("move", &FileClass::move)
+        .function("rename", &FileClass::rename)
+        .function("delete", &FileClass::del)
+        .function("exists", &FileClass::exists)
+        .build();
+
+
 class ServerClass
 {
 public:
@@ -58,6 +92,14 @@ public:
     static Local<Value> setMotd(const Arguments& args) { return SetMotd(args); }
     static Local<Value> setOnlinePlayer(const Arguments& args) { return SetOnlinePlayer(args); }
 };
+
+ClassDefine<void> ServerClassBuilder =
+    defineClass("server")
+        .function("registerCmd", &ServerClass::registerCmd)
+        .function("setMotd", &ServerClass::setMotd)
+        .function("setOnlinePlayer", &ServerClass::setOnlinePlayer)
+        .build();
+
 
 class LoggerClass
 {
@@ -76,3 +118,19 @@ public:
 
     static Local<Value> setLogLevel(const Arguments& args) { return SetLogLevel(args); }
 };
+
+ClassDefine<void> LoggerClassBuilder =
+    defineClass("logger")
+        .function("log", &LoggerClass::log)
+        .function("debug", &LoggerClass::debug)
+        .function("info", &LoggerClass::info)
+        .function("warn", &LoggerClass::warn)
+        .function("error", &LoggerClass::error)
+        .function("fatal", &LoggerClass::fatal)
+
+        .function("setTitle", &LoggerClass::setTitle)
+        .function("setConsole", &LoggerClass::setConsole)
+        .function("setFile", &LoggerClass::setFile)
+        .function("setPlayer", &LoggerClass::setPlayer)
+        .function("setLogLevel", &LoggerClass::setLogLevel)
+        .build();

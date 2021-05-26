@@ -26,6 +26,8 @@ public:
     Local<Value> getRealName();
     Local<Value> getXuid();
     Local<Value> getIP();
+    Local<Value> getMaxHealth();
+    Local<Value> getHealth();
 
     Local<Value> isOP(const Arguments& args);
     Local<Value> getPlayerPermLevel(const Arguments& args);

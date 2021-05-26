@@ -4,11 +4,46 @@
 #include "ItemAPI.h"
 #include "EngineOwnData.h"
 #include "../Kernel/Player.h"
+#include "../Kernel/Entity.h"
 #include <string>
 #include <vector>
 #include <unordered_map>
 using namespace std;
 using namespace script;
+
+//////////////////// Class Definition ////////////////////
+
+ClassDefine<PlayerClass> PlayerClassBuilder =
+    defineClass<PlayerClass>("Player")
+        .constructor(nullptr)
+        .instanceProperty("name", &PlayerClass::getName)
+        .instanceProperty("pos", &PlayerClass::getPos)
+        .instanceProperty("realName", &PlayerClass::getRealName)
+        .instanceProperty("xuid", &PlayerClass::getXuid)
+        .instanceProperty("ip", &PlayerClass::getIP)
+        .instanceProperty("maxHealth", &PlayerClass::getMaxHealth)
+        .instanceProperty("health", &PlayerClass::getHealth)
+
+        .instanceFunction("isOP", &PlayerClass::isOP)
+        .instanceFunction("getPlayerPermLevel", &PlayerClass::getPlayerPermLevel)
+        .instanceFunction("setPlayerPermLevel", &PlayerClass::setPlayerPermLevel)
+
+        .instanceFunction("runcmdAs", &PlayerClass::runcmdAs)
+        .instanceFunction("teleport", &PlayerClass::teleport)
+        .instanceFunction("kill", &PlayerClass::kill)
+        .instanceFunction("kick", &PlayerClass::kick)
+        .instanceFunction("tell", &PlayerClass::tell)
+        .instanceFunction("getHand", &PlayerClass::getHand)
+        .instanceFunction("getPack", &PlayerClass::getPack)
+        .instanceFunction("rename", &PlayerClass::rename)
+
+        .instanceFunction("setExtraData", &PlayerClass::setExtraData)
+        .instanceFunction("getExtraData", &PlayerClass::getExtraData)
+        .instanceFunction("delExtraData", &PlayerClass::delExtraData)
+        .build();
+
+
+//////////////////// Classes ////////////////////
 
 //生成函数
 Local<Object> PlayerClass::newPlayer(Player *p)
@@ -98,6 +133,22 @@ Local<Value> PlayerClass::getIP()
         return String::newString(Raw_GetIP(player));
     }
     CATCH("Fail in GetIP!")
+}
+
+Local<Value> PlayerClass::getMaxHealth()
+{
+    try{
+        return Number::newNumber(Raw_GetMaxHealth((Actor*)player));
+    }
+    CATCH("Fail in GetMaxHealth!")
+}
+
+Local<Value> PlayerClass::getHealth()
+{
+    try{
+        return Number::newNumber(Raw_GetHealth((Actor*)player));
+    }
+    CATCH("Fail in GetHealth!")
 }
 
 Local<Value> PlayerClass::teleport(const Arguments& args)

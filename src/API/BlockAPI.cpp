@@ -3,6 +3,17 @@
 #include "../Kernel/Block.h"
 using namespace script;
 
+//////////////////// Class Definition ////////////////////
+
+ClassDefine<BlockClass> BlockClassBuilder =
+    defineClass<BlockClass>("Block")
+        .constructor(nullptr)
+        .instanceProperty("name", &BlockClass::getName)
+        .build();
+
+
+//////////////////// Classes ////////////////////
+
 BlockClass::BlockClass(Block *p)
     :ScriptClass(ScriptClass::ConstructFromCpp<BlockClass>{}),block(p)
 {

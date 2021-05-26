@@ -23,6 +23,8 @@ public:
 
     Local<Value> getName();
     Local<Value> getPos();
+    Local<Value> getMaxHealth();
+    Local<Value> getHealth();
 
     Local<Value> teleport(const Arguments& args);
     Local<Value> kill(const Arguments& args);
