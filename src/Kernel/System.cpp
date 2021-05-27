@@ -1,8 +1,11 @@
-#include "Server.h"
+#include "System.h"
+#include <string>
 #include <ctime>
 #include <cstdio>
 #include <fstream>
 #include <filesystem>
+#include <thread>
+#include <functional>
 #include <objbase.h>
 using namespace std;
 
@@ -55,4 +58,28 @@ bool Raw_FileWriteAll(const std::string &path, const std::string &data)
         return false;
     fileWrite << data;
     return fileWrite.good();
+}
+
+std::pair<int,std::string> Raw_HttpRequestSync(const std::string &url,const std::string &method,const std::string &data)
+{
+    httplib::Client cli(url.c_str());
+    auto response = (method == "POST" || method == "Post") ? cli.Post(data.c_str()) : cli.Get(data.c_str());
+    return {response->status,response->body};
+}
+
+bool Raw_HttpRequestAsync(const string &url,const string &method,const string &data,function<void(int,std::string)> callback)
+{
+    httplib::Client *cli = new httplib::Client(url.c_str());
+    if(!cli->is_valid())
+    {
+        delete cli;
+        return false;
+    }
+    std::thread([cli,method{std::move(method)},data{std::move(data)},callback{std::move(callback)}]() {
+        auto response = (method == "POST" || method == "Post") ? cli->Post(data.c_str()) : cli->Get(data.c_str());
+        delete cli;
+        callback(response->status,response->body);
+    }).detach();
+
+    return true;
 }

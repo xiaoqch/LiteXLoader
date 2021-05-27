@@ -24,6 +24,9 @@ using fifo_json = basic_json<workaround_fifo_map>;
 #define PRINT(t)  std::cout << t << std::endl
 #define ERRPRINT(t)  std::cerr << t << std::endl
 
+//方便提取类型
+#define toStr() asString().toString()
+
 // 至少COUNT个参数
 #define CHECK_ARGS_COUNT(ARGS,COUNT) \
     if(ARGS.size()<COUNT) \

@@ -300,6 +300,7 @@ THook(void, "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVComma
                 cmd = cmd.substr(1);
             
             // Register Callbacks
+            bool passToOriginalCmdEvent = true; // not used here
             CmdCallback_MapType *funcs = &(ENGINE_OWN_DATA()->playerCmdCallbacks);
             if(!funcs->empty())
                 for (auto iter=funcs->begin(); iter!=funcs->end(); ++iter)
@@ -321,7 +322,9 @@ THook(void, "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVComma
                                 i = pos;
                             }
                         }
-                        iter->second.get().call({},args);
+                        ////////////////////////////// Engine Scope???? //////////////////////////////
+                        if(!(iter->second.get().call({},PlayerClass::newPlayer(player),args).asBoolean().value()))
+                            passToOriginalCmdEvent = false;
                     }
 
             CallEvent(EVENT_TYPES::OnPlayerCmd, PlayerClass::newPlayer(player), cmd);
@@ -608,6 +611,7 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
         }
 
         // Register Callbacks
+        bool passToOriginalCmdEvent = true;
         CmdCallback_MapType *funcs = &(ENGINE_OWN_DATA()->consoleCmdCallbacks);
         if(!funcs->empty())
             for (auto iter=funcs->begin(); iter!=funcs->end(); ++iter)
@@ -629,9 +633,13 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
                             i = pos;
                         }
                     }
-                    iter->second.get().call({},args);
+                    ////////////////////////////// Engine Scope???? //////////////////////////////
+                    if(!(iter->second.get().call({},PlayerClass::newPlayer(player),args).asBoolean().value()))
+                        passToOriginalCmdEvent = false;
                 }
-
+        if(!passToOriginalCmdEvent)
+            return false;
+        
         CallEventEx(EVENT_TYPES::OnServerCmd, cmd);
     }
     return original(_this, a2, x, a4);

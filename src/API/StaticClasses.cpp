@@ -9,6 +9,7 @@
 #include "ServerAPI.h"
 #include "PlayerAPI.h"
 #include "DbAPI.h"
+#include "NetworkAPI.h"
 using namespace script;
 
 class McClass
@@ -183,4 +184,17 @@ ClassDefine<void> ConfClassBuilder =
         .function("write", &ConfClass::write)
 
         .function("openDB", &ConfClass::openDB)
+        .build();
+
+class NetworkClass
+{
+public:
+    static Local<Value> requestSync(const Arguments& args) { return HttpRequestSync(args); }
+    static Local<Value> request(const Arguments& args) { return HttpRequestAsync(args); }
+};
+
+ClassDefine<void> NetworkClassBuilder =
+    defineClass("network")
+        .function("requestSync", &NetworkClass::requestSync)
+        .function("request", &NetworkClass::request)
         .build();

@@ -46,6 +46,7 @@ void BindAPIs(std::shared_ptr<ScriptEngine> engine)
     extern ClassDefine<void> ServerClassBuilder;
     extern ClassDefine<void> LoggerClassBuilder;
     extern ClassDefine<void> ConfClassBuilder;
+    extern ClassDefine<void> NetworkClassBuilder;
     
     engine->registerNativeClass(McClassBuilder);
     engine->registerNativeClass(SystemClassBuilder);
@@ -53,6 +54,7 @@ void BindAPIs(std::shared_ptr<ScriptEngine> engine)
     engine->registerNativeClass(ServerClassBuilder);
     engine->registerNativeClass(LoggerClassBuilder);
     engine->registerNativeClass(ConfClassBuilder);
+    engine->registerNativeClass(NetworkClassBuilder);
 
 
     //////////////// BlockAPI ////////////////
