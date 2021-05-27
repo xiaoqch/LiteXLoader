@@ -4,8 +4,7 @@
 [![Build](https://img.shields.io/badge/build-passing-brightgreen)](#)
 ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/LiteLDev/LiteXLoader?include_prereleases)
 
-简体中文 | [English](README_en.md)
-
+简体中文 | [English]()
 ## 🎨 简介
 `LiteXLoader`是一个基岩版官方服务端`Bedrock Delicated Server`（以下简称**BDS**）插件框架，提供强大的跨语言脚本插件支持能力和稳定的开发API支持。  
 由`LiteLoader`插件加载器加载并提供部分基础API。  
