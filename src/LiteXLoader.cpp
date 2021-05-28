@@ -18,7 +18,6 @@ std::shared_ptr<ScriptEngine> globalEngine;
 std::shared_ptr<ScriptEngine> debugEngine;
 bool globalDebug = false;
 
-//前置声明
 void LoadBaseLib();
 void LoadDepends();
 void LoadPlugins();
@@ -30,14 +29,10 @@ void entry()
     INFO(std::string("====== LiteXLoader Script Plugin Loader for ") + LXL_SCRIPT_LANG_TYPE +" ======");
     INFO(std::string("Version ") + LXL_VERSION);
 
-    //预加载库
     LoadBaseLib();
     LoadDepends();
 
-    //加载插件
     LoadPlugins();
-    
-    //全局初始化
     InitGlobalData();
 }
 

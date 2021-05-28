@@ -18,6 +18,10 @@ using namespace script;
 
 void BindAPIs(std::shared_ptr<ScriptEngine> engine)
 {
+    //////////////// 初始化 ////////////////
+
+    InitEventListeners();
+    
     
     //////////////// 全局函数 ////////////////
 
@@ -32,68 +36,52 @@ void BindAPIs(std::shared_ptr<ScriptEngine> engine)
     //////////////// 基础类 ////////////////
 
     extern ClassDefine<IntPos> IntPosBuilder;
-    extern ClassDefine<FloatPos> FloatPosBuilder;
-
     engine->registerNativeClass<IntPos>(IntPosBuilder);
+
+    extern ClassDefine<FloatPos> FloatPosBuilder;
     engine->registerNativeClass<FloatPos>(FloatPosBuilder);
     
 
     //////////////// 静态类 ////////////////
 
     extern ClassDefine<void> McClassBuilder;
-    extern ClassDefine<void> SystemClassBuilder;
-    extern ClassDefine<void> FileClassBuilder;
-    extern ClassDefine<void> ServerClassBuilder;
-    extern ClassDefine<void> LoggerClassBuilder;
-    extern ClassDefine<void> ConfClassBuilder;
-    extern ClassDefine<void> NetworkClassBuilder;
-    
     engine->registerNativeClass(McClassBuilder);
+
+    extern ClassDefine<void> SystemClassBuilder;
     engine->registerNativeClass(SystemClassBuilder);
+
+    extern ClassDefine<void> FileClassBuilder;
     engine->registerNativeClass(FileClassBuilder);
+
+    extern ClassDefine<void> ServerClassBuilder;
     engine->registerNativeClass(ServerClassBuilder);
+
+    extern ClassDefine<void> LoggerClassBuilder;
     engine->registerNativeClass(LoggerClassBuilder);
+
+    extern ClassDefine<void> ConfClassBuilder;
     engine->registerNativeClass(ConfClassBuilder);
+
+    extern ClassDefine<void> NetworkClassBuilder;
     engine->registerNativeClass(NetworkClassBuilder);
 
 
-    //////////////// BlockAPI ////////////////
+    //////////////// 实例类 ////////////////
 
     extern ClassDefine<BlockClass> BlockClassBuilder;
     engine->registerNativeClass<BlockClass>(BlockClassBuilder);
 
-    //////////////// DbAPI ////////////////
-
     extern ClassDefine<DbClass> DbClassBuilder;
     engine->registerNativeClass<DbClass>(DbClassBuilder);
-
-    //////////////// EntityAPI ////////////////
 
     extern ClassDefine<EntityClass> EntityClassBuilder;
     engine->registerNativeClass<EntityClass>(EntityClassBuilder);
 
-    //////////////// EventAPI ////////////////
-
-    InitEventListeners();
-
-    //////////////// GuiAPI ////////////////
-
-
-
-    //////////////// ItemAPI ////////////////
+    extern ClassDefine<FormClass> FormClassBuilder;
+    engine->registerNativeClass<FormClass>(FormClassBuilder);
 
     extern ClassDefine<ItemClass> ItemClassBuilder;
     engine->registerNativeClass<ItemClass>(ItemClassBuilder);
-
-    //////////////// NbtAPI ////////////////
-
-
-
-    //////////////// NetworkAPI ////////////////
-
-
-
-    //////////////// PlayerAPI ////////////////
 
     extern ClassDefine<PlayerClass> PlayerClassBuilder;
     engine->registerNativeClass<PlayerClass>(PlayerClassBuilder);
