@@ -12,6 +12,7 @@ void* Raw_CreatePacket(int type)
 bool Raw_SendPacket(Player *player,void *packet)
 {
     ((ServerPlayer*)player)->sendNetworkPacket(*(Packet*)packet);
+    return true;
 }
 
 int Raw_SendFormPacket(Player* player, const string &data)
