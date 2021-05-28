@@ -6,6 +6,11 @@
 #include "../LiteLoader/headers/mc/item.h"
 #include "../LiteLoader/headers/mc/mass.h"
 #include "../LiteLoader/headers/api/commands.h"
+#include "../LiteLoader/headers/api/types/types.h"
+#include "../LiteLoader/headers/stl/KVDB.h"
+#include "../LiteLoader/headers/api/gui/gui.h"
+#include "../LiteLoader/headers/httplib.h"
+#include "../LiteLoader/headers/api/myPacket.h"
 
 class IntVec4
 {

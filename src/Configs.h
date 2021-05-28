@@ -16,7 +16,6 @@
 // 配置文件
 #define LXL_DEF_LOAD_DIR "./plugins"
 #define LXL_CONFIG_PATH "./plugins/LiteXLoader/config.ini"
-#define LXL_CONFIG_MAX_LEN 1024
 
 // 基础库 & 依赖库
 #define LXL_SCRIPT_DEPENDS_DIR "./plugins/lib"

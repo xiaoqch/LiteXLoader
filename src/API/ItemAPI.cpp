@@ -5,14 +5,46 @@
 #include <string>
 using namespace script;
 
+//////////////////// Class Definition ////////////////////
+
+ClassDefine<ItemClass> ItemClassBuilder =
+    defineClass<ItemClass>("Item")
+        .constructor(nullptr)
+        .instanceProperty("name", &ItemClass::getName)
+        .instanceProperty("customName", &ItemClass::getCustomName)
+        .instanceProperty("count", &ItemClass::getCount)
+        .instanceProperty("aux", &ItemClass::getAux)
+
+        .instanceFunction("setLore", &ItemClass::setLore)
+        .build();
+
+
+//////////////////// Classes ////////////////////
+
 ItemClass::ItemClass(ItemStack *p)
     :ScriptClass(ScriptClass::ConstructFromCpp<ItemClass>{}),item(p)
 {
     name = Raw_GetItemName(item);
     customName = Raw_GetCustomName(item);
     count = Raw_GetCount(item);
+    aux = Raw_GetItemAux(item);
 }
 
+//生成函数
+Local<Object> ItemClass::newItem(ItemStack *p)
+{
+    auto newp = new ItemClass(p);
+    return newp->getScriptObject();
+}
+ItemStack* ItemClass::extractItem(Local<Value> v)
+{
+    if(EngineScope::currentEngine()->isInstanceOf<ItemClass>(v))
+        return EngineScope::currentEngine()->getNativeInstance<ItemClass>(v)->get();
+    else
+        return nullptr;
+}
+
+//成员函数
 Local<Value> ItemClass::getName()
 { 
     try{
@@ -38,6 +70,23 @@ Local<Value> ItemClass::getCount()
         return Number::newNumber(count);
     }
     CATCH("Fail in GetCount!")
+}
+
+Local<Value> ItemClass::getAux()
+{
+    try{
+        //return Number::newNumber(Raw_GetItemAux(item));
+        return Number::newNumber(aux);
+    }
+    CATCH("Fail in GetAux!")
+}
+
+Local<Value> ItemClass::isNull(const Arguments& args)
+{
+    try{
+        return Boolean::newBoolean(Raw_IsNull(item));
+    }
+    CATCH("Fail in IsNull!")
 }
 
 Local<Value> ItemClass::setLore(const Arguments& args)

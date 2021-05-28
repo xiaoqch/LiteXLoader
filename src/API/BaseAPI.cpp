@@ -4,12 +4,122 @@
 #include "ItemAPI.h"
 #include "BlockAPI.h"
 #include "EntityAPI.h"
+#include "EngineOwnData.h"
 #include "../Kernel/Base.h"
-#include <windows.h>
+#include "../Kernel/System.h"
 #include <chrono>
 #include <map>
 #include <memory>
 using namespace script;
+
+//////////////////// Class Definition ////////////////////
+
+ClassDefine<IntPos> IntPosBuilder =
+    defineClass<IntPos>("IntPos")
+        .constructor(&IntPos::create)
+        .instanceProperty("x", &IntPos::getX, &IntPos::setX)
+        .instanceProperty("y", &IntPos::getY, &IntPos::setY)
+        .instanceProperty("z", &IntPos::getZ, &IntPos::setZ)
+        .instanceProperty("dim", &IntPos::getDim, &IntPos::setDim)
+        .build();
+
+ClassDefine<FloatPos> FloatPosBuilder =
+    defineClass<FloatPos>("FloatPos")
+        .constructor(&FloatPos::create)
+        .instanceProperty("x", &FloatPos::getX, &FloatPos::setX)
+        .instanceProperty("y", &FloatPos::getY, &FloatPos::setY)
+        .instanceProperty("z", &FloatPos::getZ, &FloatPos::setZ)
+        .instanceProperty("dim", &FloatPos::getDim, &FloatPos::setDim)
+        .build();
+
+
+//////////////////// IntPos 生成函数 ////////////////////   
+
+IntPos* IntPos::create(const Arguments& args)
+{
+    if(args.size() < 3)
+        return nullptr;
+    try
+    {
+        IntPos *p = new IntPos(args.thiz());
+        p->x = args[0].asNumber().toInt64();
+        p->y = args[1].asNumber().toInt64();
+        p->z = args[2].asNumber().toInt64();
+        p->dim = args[3].asNumber().toInt32();
+        return p;
+    }
+    catch(...)
+    {
+        return nullptr;
+    }
+}
+
+Local<Object> IntPos::newPos(int x, int y, int z, int dim)
+{
+    return EngineScope::currentEngine()->newNativeClass<IntPos>(x,y,z,dim);
+}
+
+Local<Object> IntPos::newPos(const BlockPos &b, int dim)
+{
+    return IntPos::newPos(b.x, b.y, b.z, dim);
+}
+
+Local<Object> IntPos::newPos(const IntVec4 &v)
+{
+    return IntPos::newPos(v.x, v.y, v.z, v.dim);
+}
+
+IntPos* IntPos::extractPos(Local<Value> v)
+{
+    if(EngineScope::currentEngine()->isInstanceOf<IntPos>(v))
+        return EngineScope::currentEngine()->getNativeInstance<IntPos>(v);
+    else
+        return nullptr;
+}
+
+//////////////////// FloatPos 生成函数 ////////////////////
+
+FloatPos* FloatPos::create(const Arguments& args)
+{
+    if(args.size() < 3)
+        return nullptr;
+    try
+    {
+        FloatPos *p = new FloatPos(args.thiz());
+        p->x = args[0].asNumber().toFloat();
+        p->y = args[1].asNumber().toFloat();
+        p->z = args[2].asNumber().toFloat();
+        p->dim = args[3].asNumber().toInt32();
+        return p;
+    }
+    catch(...)
+    {
+        return nullptr;
+    }
+}
+
+Local<Object> FloatPos::newPos(double x, double y, double z, int dim)
+{
+    return EngineScope::currentEngine()->newNativeClass<FloatPos>(x,y,z,dim);
+}
+
+Local<Object> FloatPos::newPos(const Vec3 &v, int dim)
+{
+    return FloatPos::newPos(v.x, v.y, v.z, dim);
+}
+
+Local<Object> FloatPos::newPos(const FloatVec4 &v)
+{
+    return FloatPos::newPos(v.x, v.y, v.z, v.dim);
+}
+
+FloatPos* FloatPos::extractPos(Local<Value> v)
+{
+    if(EngineScope::currentEngine()->isInstanceOf<FloatPos>(v))
+        return EngineScope::currentEngine()->getNativeInstance<FloatPos>(v);
+    else
+        return nullptr;
+}
 
 //////////////////// APIs ////////////////////
 
@@ -39,37 +149,57 @@ Local<Value> RuncmdEx(const Arguments& args)
     CATCH("Fail in RunCmdEx!")
 }
 
-Local<Value> RegisterCmd(const Arguments& args)
+Local<Value> RegisterPlayerCmd(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,2)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
     CHECK_ARG_TYPE(args[1],ValueKind::kString)
     if(args.size() >= 3)
         CHECK_ARG_TYPE(args[2],ValueKind::kNumber)
+    if(args.size() >= 4)
+        CHECK_ARG_TYPE(args[3],ValueKind::kFunction)
 
     try{
-        int level = 4;
-        if(args.size() >= 3 && args[2].getKind() == ValueKind::kNumber)
+        string cmd = args[0].asString().toString();
+        int level = 0;
+
+        if(args.size() >= 3)
         {
             int newLevel = args[2].asNumber().toInt32();
-            if(newLevel >= 0 && newLevel <= 4)
+            if(newLevel >= 0 && newLevel <= 3)
                 level = newLevel;
         }
-        Raw_RegisterCmd(args[0].asString().toString(),args[1].asString().toString(),level);
+        if(args.size() >= 4)
+        {
+            (ENGINE_OWN_DATA()->playerCmdCallbacks)[cmd] = args[3].asFunction();
+        }
+
+        Raw_RegisterCmd(cmd,args[1].asString().toString(),level);
 
         return Boolean::newBoolean(true);
     }
-    CATCH("Fail in RegisterCmd!")
+    CATCH("Fail in RegisterPlayerCmd!")
 }
 
-Local<Value> SetServerMotd(const Arguments& args)
+Local<Value> RegisterConsoleCmd(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args,1)
+    CHECK_ARGS_COUNT(args,2)
+    CHECK_ARG_TYPE(args[0],ValueKind::kString)
+    CHECK_ARG_TYPE(args[1],ValueKind::kString)
+    if(args.size() >= 3)
+        CHECK_ARG_TYPE(args[2],ValueKind::kFunction)
 
     try{
-        return Boolean::newBoolean(Raw_SetServerMotd(args[0].asString().toString()));
+        string cmd = args[0].asString().toString();
+        if(args.size() >= 3)
+        {
+            (ENGINE_OWN_DATA()->consoleCmdCallbacks)[cmd] = args[2].asFunction();
+        }
+        Raw_RegisterCmd(cmd,args[1].asString().toString(),4);
+
+        return Boolean::newBoolean(true);
     }
-    CATCH("Fail in SetServerMotd!")
+    CATCH("Fail in RegisterConsoleCmd!")
 }
 
 Local<Value> Log(const Arguments& args)
@@ -88,11 +218,7 @@ Local<Value> Log(const Arguments& args)
 Local<Value> GetTimeStr(const Arguments& args)
 {
     try{
-        time_t t = time(NULL);
-        tm* ts = localtime(&t);
-        char buf[24]= {0};
-        strftime(buf, 24, "%Y-%m-%d %H:%M:%S", ts);
-        return String::newString(buf);
+        return String::newString(Raw_GetDateTimeStr());
     }
     CATCH("Fail in GetTimeStr!")
 }
@@ -117,8 +243,7 @@ Local<Value> GetTimeObj(const Arguments& args)
 
 Local<Value> RandomGuid(const Arguments& args)
 {
-    ///////////////////////////////// Add code here ///////////////////////////////// 
-    return String::newString(LXL_VERSION);
+    return String::newString(Raw_RandomGuid());
 }
 
 Local<Value> GetLxlVersion(const Arguments& args)

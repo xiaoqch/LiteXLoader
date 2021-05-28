@@ -2,11 +2,6 @@
 #include "ScriptX.h"
 using namespace script;
 
-//////////////////// APIs ////////////////////
-
-Local<Value> GetPlayer(const Arguments& args);
-Local<Value> GetOnlinePlayers(const Arguments& args);
-
 //////////////////// Classes ////////////////////
 class Player;
 class PlayerClass : public ScriptClass
@@ -22,11 +17,17 @@ public:
         return player;
     }
 
+    static Local<Object> newPlayer(Player *p);
+    static Local<Object> newPlayer(WPlayer p);
+    static Player* extractPlayer(Local<Value> v);
+
     Local<Value> getName();
     Local<Value> getPos();
     Local<Value> getRealName();
     Local<Value> getXuid();
     Local<Value> getIP();
+    Local<Value> getMaxHealth();
+    Local<Value> getHealth();
 
     Local<Value> isOP(const Arguments& args);
     Local<Value> getPlayerPermLevel(const Arguments& args);
@@ -38,5 +39,15 @@ public:
     Local<Value> kick(const Arguments& args);
     Local<Value> tell(const Arguments& args);
     Local<Value> getHand(const Arguments& args);
+    Local<Value> getPack(const Arguments& args);
     Local<Value> rename(const Arguments& args);
+
+    Local<Value> setExtraData(const Arguments& args);
+    Local<Value> getExtraData(const Arguments& args);
+    Local<Value> delExtraData(const Arguments& args);
 };
+
+//////////////////// APIs ////////////////////
+
+Local<Value> GetPlayer(const Arguments& args);
+Local<Value> GetOnlinePlayers(const Arguments& args);

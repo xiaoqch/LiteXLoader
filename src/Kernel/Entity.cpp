@@ -12,6 +12,16 @@ FloatVec4 Raw_GetEntityPos(Actor* actor)
     return {pos.x,pos.y,pos.z,WActor(*actor).getDimID()};
 }
 
+int Raw_GetHealth(Actor *actor)
+{
+    return SymCall("?getHealth@Actor@@QEBAHXZ", int, Actor*)(actor);
+}
+
+int Raw_GetMaxHealth(Actor *actor)
+{
+    return SymCall("?getMaxHealth@Actor@@QEBAHXZ", int, Actor*)(actor);
+}
+
 bool Raw_TeleportEntity(Actor* actor, const FloatVec4 &pos)
 {
     WActor(*actor).teleport({pos.x,pos.y,pos.z},pos.dim);

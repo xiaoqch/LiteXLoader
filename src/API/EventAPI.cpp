@@ -2,12 +2,20 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <string>
 #include <exception>
 #include <cstdarg>
 #include "../Kernel/Base.h"
+#include "../Kernel/Block.h"
+#include "../Kernel/Player.h"
+#include "EngineOwnData.h"
 #include "APIhelp.h"
+#include "BlockAPI.h"
+#include "ItemAPI.h"
+#include "EntityAPI.h"
+#include "PlayerAPI.h"
 #include "../Configs.h"
-#include "SymbolsHelper.h"
+using namespace std;
 using namespace script;
 
 //////////////////// Listeners ////////////////////
@@ -15,11 +23,12 @@ using namespace script;
 enum class EVENT_TYPES : int
 {
     OnJoin=0, OnLeft, OnRespawn, OnChangeDim,
-    OnPlayerCmd, OnChat, OnAttack,
+    OnPlayerCmd, OnChat, OnAttack, OnEat, OnMove, OnSetArmor,
     OnUseItem, OnTakeItem, OnDropItem,
     OnDestroyBlock, OnPlaceBlock,
     OnOpenChest, OnCloseChest, OnOpenBarrel, OnCloseBarrel, OnChangeSlot,
-    OnMobDie, OnMobHurt, OnExplode, OnCmdBlockExecute,
+    OnMobDie, OnMobHurt, OnExplode, OnBlockExploded, OnCmdBlockExecute,
+    OnProjectileHit, OnPistonPush, OnUseRespawnAnchor, OnFarmLandDecay,
     OnServerStarted, OnServerCmd,
     EVENT_COUNT
 };
@@ -31,6 +40,9 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onPlayerCmd",EVENT_TYPES::OnPlayerCmd},
     {"onChat",EVENT_TYPES::OnChat},
     {"onAttack",EVENT_TYPES::OnAttack},
+    {"onEat",EVENT_TYPES::OnEat},
+    {"onMove",EVENT_TYPES::OnMove},
+    {"onSetArmor",EVENT_TYPES::OnSetArmor},
     {"onMobDie",EVENT_TYPES::OnMobDie},
     {"onMobHurt",EVENT_TYPES::OnMobHurt},
     {"onUseItem",EVENT_TYPES::OnUseItem},
@@ -39,12 +51,17 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onDestroyBlock",EVENT_TYPES::OnDestroyBlock},
     {"onPlaceBlock",EVENT_TYPES::OnPlaceBlock},
     {"onExplode",EVENT_TYPES::OnExplode},
+    {"onBlockExploded",EVENT_TYPES::OnBlockExploded},
     {"onOpenChest",EVENT_TYPES::OnOpenChest},
     {"onCloseChest",EVENT_TYPES::OnCloseChest},
     {"onOpenBarrel",EVENT_TYPES::OnOpenBarrel},
     {"onCloseBarrel",EVENT_TYPES::OnCloseBarrel},
     {"onChangeSlot",EVENT_TYPES::OnChangeSlot},
     {"onCmdBlockExecute",EVENT_TYPES::OnCmdBlockExecute},
+    {"onProjectileHit",EVENT_TYPES::OnProjectileHit},
+    {"onPistonPush",EVENT_TYPES::OnPistonPush},
+    {"onUseRespawnAnchor",EVENT_TYPES::OnUseRespawnAnchor},
+    {"onFarmLandDecay",EVENT_TYPES::OnFarmLandDecay},
     {"onServerStarted",EVENT_TYPES::OnServerStarted},
     {"onServerCmd",EVENT_TYPES::OnServerCmd},
 };
@@ -131,7 +148,7 @@ void InitEventListeners()
     {
         IF_EXIST(EVENT_TYPES::OnJoin)
         {
-            CallEvent(EVENT_TYPES::OnJoin, NewPlayer(ev.Player));
+            CallEvent(EVENT_TYPES::OnJoin, PlayerClass::newPlayer(ev.Player));
         }
     });
 
@@ -140,7 +157,7 @@ void InitEventListeners()
     {
         IF_EXIST(EVENT_TYPES::OnLeft)
         {
-            CallEvent(EVENT_TYPES::OnLeft, NewPlayer(ev.Player));
+            CallEvent(EVENT_TYPES::OnLeft, PlayerClass::newPlayer(ev.Player));
         }
     });
 
@@ -149,7 +166,7 @@ void InitEventListeners()
     {
         IF_EXIST(EVENT_TYPES::OnChat)
         {
-            CallEventEx(EVENT_TYPES::OnChat, NewPlayer(ev.pl), ev.msg);
+            CallEventEx(EVENT_TYPES::OnChat, PlayerClass::newPlayer(ev.pl), ev.msg);
         }
         return true;
     });
@@ -159,7 +176,7 @@ void InitEventListeners()
     {
         IF_EXIST(EVENT_TYPES::OnChangeDim)
         {
-            CallEvent(EVENT_TYPES::OnChangeDim, NewPlayer(ev.Player));
+            CallEvent(EVENT_TYPES::OnChangeDim, PlayerClass::newPlayer(ev.Player));
         }
     });
 
@@ -168,7 +185,7 @@ void InitEventListeners()
     {
         IF_EXIST(EVENT_TYPES::OnCmdBlockExecute)
         {
-            CallEventEx(EVENT_TYPES::OnCmdBlockExecute, ev.cmd, NewPos(ev.bpos.x, ev.bpos.y, ev.bpos.z));
+            CallEventEx(EVENT_TYPES::OnCmdBlockExecute, ev.cmd, IntPos::newPos(ev.bpos.x, ev.bpos.y, ev.bpos.z));
         }
         return true;
     });
@@ -197,9 +214,42 @@ THook(bool, "?attack@Player@@UEAA_NAEAVActor@@@Z",
 {
     IF_EXIST(EVENT_TYPES::OnAttack)
     {
-        CallEventEx(EVENT_TYPES::OnAttack, NewPlayer(pl), NewEntity(ac));
+        CallEventEx(EVENT_TYPES::OnAttack, PlayerClass::newPlayer(pl), EntityClass::newEntity(ac));
     }
     return original(pl, ac);
+}
+
+// ===== onEat =====
+THook(void, "?eat@Player@@QEAAXAEBVItemStack@@@Z",
+    Player* _this, ItemStack* eaten)
+{
+    IF_EXIST(EVENT_TYPES::OnEat)
+    {
+        CallEvent(EVENT_TYPES::OnEat, PlayerClass::newPlayer(_this), ItemClass::newItem(eaten));
+    }
+    return original(_this, eaten);
+}
+
+// ===== onMove =====
+THook(void, "??0MovePlayerPacket@@QEAA@AEAVPlayer@@AEBVVec3@@@Z",
+    void *_this, Player * pl, Vec3 * to)
+{
+    IF_EXIST(EVENT_TYPES::OnMove)
+    {
+        CallEvent(EVENT_TYPES::OnMove, PlayerClass::newPlayer(pl), FloatPos::newPos(*to,WPlayer(*pl).getDimID()));
+    }
+    return original(_this, pl, to);
+}
+
+// ===== onSetArmor =====
+THook(void, "?setArmor@Player@@UEAAXW4ArmorSlot@@AEBVItemStack@@@Z",
+    Player* _this, unsigned slot, ItemStack* it)
+{
+    IF_EXIST(EVENT_TYPES::OnSetArmor)
+    {
+        CallEvent(EVENT_TYPES::OnSetArmor, PlayerClass::newPlayer(_this), Number::newNumber((int)slot), ItemClass::newItem(it));
+    }
+    return original(_this, slot, it);
 }
 
 // ===== onRespawn =====
@@ -208,7 +258,7 @@ THook(bool, "?respawn@Player@@UEAAXXZ",
 {
     IF_EXIST(EVENT_TYPES::OnRespawn)
     {
-        CallEventEx(EVENT_TYPES::OnRespawn, NewPlayer(pl));
+        CallEventEx(EVENT_TYPES::OnRespawn, PlayerClass::newPlayer(pl));
     }
     return original(pl);
 }
@@ -219,7 +269,7 @@ THook(bool, "?drop@Player@@UEAA_NAEBVItemStack@@_N@Z",
 {
     IF_EXIST(EVENT_TYPES::OnDropItem)
     {
-        CallEventEx(EVENT_TYPES::OnDropItem, NewPlayer(_this), NewItem(a2));
+        CallEventEx(EVENT_TYPES::OnDropItem, PlayerClass::newPlayer(_this), ItemClass::newItem(a2));
     }
     return original(_this, a2, a3);
 }
@@ -230,7 +280,7 @@ THook(bool, "?take@Player@@QEAA_NAEAVActor@@HH@Z",
 {
     IF_EXIST(EVENT_TYPES::OnTakeItem)
     {
-        CallEventEx(EVENT_TYPES::OnTakeItem, NewPlayer(_this), NewEntity(actor));
+        CallEventEx(EVENT_TYPES::OnTakeItem, PlayerClass::newPlayer(_this), EntityClass::newEntity(actor));
     }
     return original(_this, actor, a2, a3);
 }
@@ -247,9 +297,37 @@ THook(void, "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVComma
         {   // Player Command
             auto cmd = std::string(*(std::string*)((uintptr_t)pkt + 48));
             if (cmd.front() == '/')
-                cmd = cmd.substr(1, cmd.size() - 1);
+                cmd = cmd.substr(1);
+            
+            // Register Callbacks
+            bool passToOriginalCmdEvent = true; // not used here
+            CmdCallback_MapType *funcs = &(ENGINE_OWN_DATA()->playerCmdCallbacks);
+            if(!funcs->empty())
+                for (auto iter=funcs->begin(); iter!=funcs->end(); ++iter)
+                    if(cmd.find_first_of(iter->first) == 0)
+                    {
+                        //Matched
+                        string paras = cmd.substr(iter->first.size()+1) + " ";
+                        Local<Array> args = Array::newArray({String::newString(iter->first)});
 
-            CallEvent(EVENT_TYPES::OnPlayerCmd, NewPlayer(player), cmd);
+                        //Split Args
+                        int pos;
+                        int size = paras.size();
+                        for (int i = 0; i < size; i++)
+                        {
+                            pos = paras.find(" ", i);
+                            if (pos < size)
+                            {
+                                args.add(String::newString(paras.substr(i, pos - i)));
+                                i = pos;
+                            }
+                        }
+                        ////////////////////////////// Engine Scope???? //////////////////////////////
+                        if(!(iter->second.get().call({},PlayerClass::newPlayer(player),args).asBoolean().value()))
+                            passToOriginalCmdEvent = false;
+                    }
+
+            CallEvent(EVENT_TYPES::OnPlayerCmd, PlayerClass::newPlayer(player), cmd);
         }
     }
     return original(_this, id, pkt);
@@ -263,7 +341,7 @@ THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@
     {
         auto sp = *reinterpret_cast<Player**>(reinterpret_cast<unsigned long long>(_this) + 8);
 
-        CallEventEx(EVENT_TYPES::OnUseItem, NewPlayer(sp), NewBlock(bl), NewPos(bp->x, bp->y, bp->z));
+        CallEventEx(EVENT_TYPES::OnUseItem, PlayerClass::newPlayer(sp), BlockClass::newBlock(bl,bp), IntPos::newPos(bp->x, bp->y, bp->z,WPlayer(*sp).getDimID()));
     }
     return original(_this, item, bp, a4, a5, bl);
 }
@@ -276,21 +354,21 @@ THook(bool, "?checkBlockDestroyPermissions@BlockSource@@QEAA_NAEAVActor@@AEBVBlo
     {
         auto block = SymCall("?getBlock@BlockSource@@QEBAAEBVBlock@@AEBVBlockPos@@@Z", Block*, BlockSource*, BlockPos*)(_this, pos);
 ///////////////////////////// player? /////////////////////////////
-        CallEventEx(EVENT_TYPES::OnDestroyBlock, NewEntity(player), NewBlock(block), NewPos(pos->x, pos->y, pos->z));
+        CallEventEx(EVENT_TYPES::OnDestroyBlock, EntityClass::newEntity(player), BlockClass::newBlock(block,pos,_this), IntPos::newPos(pos->x, pos->y, pos->z,Raw_GetBlockDimension(_this)));
     }
     return original(_this, player, pos,a3, a4);
 }
 
 // ===== onPlaceBlock =====
 THook(bool, "?mayPlace@BlockSource@@QEAA_NAEBVBlock@@AEBVBlockPos@@EPEAVActor@@_N@Z",
-    BlockSource* bs, Block* bl, BlockPos* a3, unsigned __int8 a4, Actor* pl, bool a6)
+    BlockSource* bs, Block* bl, BlockPos* bp, unsigned __int8 a4, Actor* pl, bool a6)
 {
     IF_EXIST(EVENT_TYPES::OnPlaceBlock)
     {
 /////////////////////////////////// Player? ////////////////////////////////////////
-        CallEventEx(EVENT_TYPES::OnPlaceBlock, NewEntity(pl), NewBlock(bl), NewPos(a3->x, a3->y, a3->z));
+        CallEventEx(EVENT_TYPES::OnPlaceBlock, EntityClass::newEntity(pl), BlockClass::newBlock(bl,bp,bs), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetBlockDimension(bs)));
     }
-    return original(bs, bl, a3, a4, pl, a6);
+    return original(bs, bl, bp, a4, pl, a6);
 }
 
 // ===== onOpenChest =====
@@ -299,7 +377,7 @@ THook(bool, "?use@ChestBlock@@UEBA_NAEAVPlayer@@AEBVBlockPos@@E@Z",
 {
     IF_EXIST(EVENT_TYPES::OnOpenChest)
     {
-        CallEventEx(EVENT_TYPES::OnOpenChest, NewPlayer(pl), NewPos(bp->x, bp->y, bp->z));
+        CallEventEx(EVENT_TYPES::OnOpenChest, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, WPlayer(*pl).getDimID()));
     }
     return original(_this, pl, bp);
 }
@@ -312,7 +390,7 @@ THook(bool, "?stopOpen@ChestBlockActor@@UEAAXAEAVPlayer@@@Z",
     {
         auto bp = (BlockPos*)((intptr_t*)_this - 204);
 
-        CallEventEx(EVENT_TYPES::OnCloseChest, NewPlayer(pl), NewPos(bp->x, bp->y, bp->z));
+        CallEventEx(EVENT_TYPES::OnCloseChest, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, WPlayer(*pl).getDimID()));
     }
     return original(_this, pl);
 }
@@ -323,7 +401,7 @@ THook(bool, "?use@BarrelBlock@@UEBA_NAEAVPlayer@@AEBVBlockPos@@E@Z",
 {
     IF_EXIST(EVENT_TYPES::OnOpenBarrel)
     {
-        CallEventEx(EVENT_TYPES::OnOpenBarrel, NewPlayer(pl), NewPos(bp->x, bp->y, bp->z));
+        CallEventEx(EVENT_TYPES::OnOpenBarrel, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z), WPlayer(*pl).getDimID());
     }
     return original(_this, pl, bp);
 }
@@ -336,12 +414,13 @@ THook(bool, "?stopOpen@BarrelBlockActor@@UEAAXAEAVPlayer@@@Z",
     {
         auto bp = (BlockPos*)((intptr_t*)_this - 204);
 
-        CallEventEx(EVENT_TYPES::OnCloseBarrel, NewPlayer(pl), NewPos(bp->x, bp->y, bp->z));
+        CallEventEx(EVENT_TYPES::OnCloseBarrel, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, WPlayer(*pl).getDimID()));
     }
     return original(_this, pl);
 }
 
 // ===== onChangeSlot =====
+class LevelContainerModel;
 THook(void, "?containerContentChanged@LevelContainerModel@@UEAAXH@Z",
     LevelContainerModel* a1, int a2)
 {
@@ -350,8 +429,8 @@ THook(void, "?containerContentChanged@LevelContainerModel@@UEAAXH@Z",
         Actor* v3 = dAccess<Actor*, 208>(a1);
         BlockSource* bs = dAccess<BlockSource*, 840>(v3);
         //offset LevelContainerModel::_getContainer(LevelContainerModel *this) Line->BlockSource::getBlockEntity
-        BlockPos* bpos = offLevelContainerModel::getBlockPos(a1);
-        Block* pBlk = SymBlockSource::getBlock(bs, bpos);
+        BlockPos* bpos = dAccess<BlockPos*, 216>(a1);
+        Block* pBlk = SymCall("?getBlock@BlockSource@@QEBAAEBVBlock@@AEBVBlockPos@@@Z", Block*, BlockSource*, BlockPos*)(bs, bpos);
         auto v5 = (*(__int64(__fastcall**)(LevelContainerModel*))(*(uintptr_t*)a1 + 160i64))(a1);
         if (v5)
         {
@@ -366,11 +445,10 @@ THook(void, "?containerContentChanged@LevelContainerModel@@UEAAXH@Z",
             int slotNumber = a2;
             Actor* pl = v3;
 ///////////////////////////// ?pl ///////////////////////////// 
-            CallEvent(EVENT_TYPES::OnChangeSlot, NewEntity(pl), NewBlock(pBlk), slotNumber, NewPos(bpos->x, bpos->y, bpos->z), count != 0, NewItem(item));
+            CallEvent(EVENT_TYPES::OnChangeSlot, EntityClass::newEntity(pl), BlockClass::newBlock(pBlk,bpos,bs), slotNumber, IntPos::newPos(bpos->x, bpos->y, bpos->z, Raw_GetBlockDimension(bs)), count != 0, ItemClass::newItem(item));
         }
     }
-	//return original(a1, a2);
-////////////////////////////////////// 返回值？ /////////////////////////////////
+	return original(a1, a2);
 }
 
 // ===== onMobDie =====
@@ -385,7 +463,7 @@ THook(bool, "?die@Mob@@UEAAXAEBVActorDamageSource@@@Z",
         auto ac = SymCall("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z"
             , Actor*, Level*, void*, bool)(level, v6, 0);
 /////////////////////////////  ADD MOB ///////////////////////////// 
-        CallEventEx(EVENT_TYPES::OnMobDie, NewEntity(self), NewEntity(ac));
+        CallEventEx(EVENT_TYPES::OnMobDie, EntityClass::newEntity(self), EntityClass::newEntity(ac));
     }
     return original(self, ads);
 }
@@ -402,7 +480,7 @@ THook(bool, "?_hurt@Mob@@MEAA_NAEBVActorDamageSource@@H_N1@Z",
         auto ac = SymCall("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z"
             , Actor*, Level*, void*, bool)(level, v6, 0);
         
-        CallEventEx(EVENT_TYPES::OnMobHurt, NewEntity(self), NewEntity(ac));
+        CallEventEx(EVENT_TYPES::OnMobHurt, EntityClass::newEntity(self), EntityClass::newEntity(ac));
     }
     return original(self, ads, a1, a2, a3);
 }
@@ -413,9 +491,70 @@ THook(bool, "?explode@Level@@UEAAXAEAVBlockSource@@PEAVActor@@AEBVVec3@@M_N3M3@Z
 {
     IF_EXIST(EVENT_TYPES::OnExplode)
     {
-        CallEventEx(EVENT_TYPES::OnExplode, NewEntity(actor), NewPos(pos.x, pos.y, pos.z));
+        CallEventEx(EVENT_TYPES::OnExplode, EntityClass::newEntity(actor), FloatPos::newPos(pos.x, pos.y, pos.z));
     }
     return original(_this, bs, actor, pos, a5, a6, a7, a8, a9);
+}
+
+// ===== onBlockExploded =====
+THook(void, "?onExploded@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@PEAVActor@@@Z",
+    Block* _this, BlockSource *bs, BlockPos *bp, Actor * actor)
+{
+    IF_EXIST(EVENT_TYPES::OnPlayerCmd)
+    {
+        CallEvent(EVENT_TYPES::OnBlockExploded,BlockClass::newBlock(_this,bp,bs),IntPos::newPos(*bp,Raw_GetBlockDimension(bs)),EntityClass::newEntity(actor));
+    }
+    return original(_this, bs, bp, actor);
+}
+
+// ===== OnProjectileHit =====
+THook(void, "?onProjectileHit@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@AEBVActor@@@Z",
+    Block* _this, BlockSource* bs, BlockPos* bp, Actor* actor)
+{
+    IF_EXIST(EVENT_TYPES::OnProjectileHit)
+    {
+        CallEvent(EVENT_TYPES::OnProjectileHit,BlockClass::newBlock(_this,bp,bs),IntPos::newPos(*bp, Raw_GetBlockDimension(bs)),EntityClass::newEntity(actor));
+    }
+    return original(_this, bs, bp, actor);
+}
+
+// ===== OnPistonPush =====
+THook(bool, "?_attachedBlockWalker@PistonBlockActor@@AEAA_NAEAVBlockSource@@AEBVBlockPos@@EE@Z",
+    BlockActor* _this, BlockSource* bs, BlockPos* bp, unsigned a3, unsigned a4)
+{
+    IF_EXIST(EVENT_TYPES::OnPistonPush)
+    {
+        int dim = Raw_GetBlockDimension(bs);
+        BlockPos* pistonPos = dAccess<BlockPos*, 44>(_this);
+
+        IntVec4 blockPos{bp->x,bp->y,bp->z,dim};
+        Block* pushedBlock = Raw_GetBlockByPos(&blockPos);
+
+        CallEventEx(EVENT_TYPES::OnPistonPush,IntPos::newPos(*pistonPos, dim),BlockClass::newBlock(pushedBlock,bp,dim));
+    }
+    return original(_this, bs, bp, a3, a4);
+}
+
+// ===== OnUseRespawnAnchor =====
+THook(bool, "?trySetSpawn@RespawnAnchorBlock@@CA_NAEAVPlayer@@AEBVBlockPos@@AEAVBlockSource@@AEAVLevel@@@Z",
+    Player* pl, BlockPos* a2, BlockSource* a3, Level* a4)
+{
+    IF_EXIST(EVENT_TYPES::OnUseRespawnAnchor)
+    {
+        CallEventEx(EVENT_TYPES::OnUseRespawnAnchor,PlayerClass::newPlayer(pl),IntPos::newPos(*a2, Raw_GetBlockDimension(a3)));
+    }
+    return original(pl, a2, a3, a4);
+}
+
+// ===== OnFarmLandDecay =====
+THook(void, "?transformOnFall@FarmBlock@@UEBAXAEAVBlockSource@@AEBVBlockPos@@PEAVActor@@M@Z",
+    void *_this, BlockSource * bs, BlockPos * bp, Actor * ac, float a5)
+{
+    IF_EXIST(EVENT_TYPES::OnFarmLandDecay)
+    {
+        CallEvent(EVENT_TYPES::OnFarmLandDecay,IntPos::newPos(*bp, Raw_GetBlockDimension(bs)),EntityClass::newEntity(ac));
+    }
+    return original(_this,bs,bp,ac,a5);
 }
 
 // ===== onServerCmd =====
@@ -427,11 +566,12 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
     {   // Server Command
         string cmd = x->getCmd();
         if (cmd.front() == '/')
-            cmd = cmd.substr(1, cmd.size() - 1);
+            cmd = cmd.substr(1);
         
         //后台调试
         extern bool globalDebug;
         extern std::shared_ptr<ScriptEngine> debugEngine;
+        #define OUTPUT_DEBUG_SIGN() std::cout << "LiteXLoader " << LXL_SCRIPT_LANG_TYPE << ">" << std::flush
 
         if(cmd == LXL_DEBUG_CMD)
         {
@@ -439,15 +579,14 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
             {   //EndDebug
                 INFO("Debug mode ended");
                 globalDebug = false;
-                return false;
             }
             else
             {   //StartDebug
                 INFO("Debug mode begin");
                 globalDebug = true;
-                cout << LXL_SCRIPT_LANG_TYPE << ">" << flush;
-                return false;
+                OUTPUT_DEBUG_SIGN();
             }
+            return false;
         }
         if(globalDebug)
         {
@@ -459,62 +598,49 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
                 else
                 {
                     auto result = debugEngine->eval(cmd);
-                    PrintValue(cout,result);
-                    cout << "\n" << LXL_SCRIPT_LANG_TYPE << ">" << flush;
+                    PrintValue(std::cout,result);
+                    OUTPUT_DEBUG_SIGN();
                 }
             }
             catch(Exception& e)
             {
                 ERRPRINT(e);
-                cout << LXL_SCRIPT_LANG_TYPE << ">" << flush;
+                OUTPUT_DEBUG_SIGN();
             }
             return false;
         }
 
+        // Register Callbacks
+        bool passToOriginalCmdEvent = true;
+        CmdCallback_MapType *funcs = &(ENGINE_OWN_DATA()->consoleCmdCallbacks);
+        if(!funcs->empty())
+            for (auto iter=funcs->begin(); iter!=funcs->end(); ++iter)
+                if(cmd.find_first_of(iter->first) == 0)
+                {
+                    //Matched
+                    string paras = cmd.substr(iter->first.size()+1) + " ";
+                    Local<Array> args = Array::newArray({String::newString(iter->first)});
+
+                    //Split Args
+                    int pos;
+                    int size = paras.size();
+                    for (int i = 0; i < size; i++)
+                    {
+                        pos = paras.find(" ", i);
+                        if (pos < size)
+                        {
+                            args.add(String::newString(paras.substr(i, pos - i)));
+                            i = pos;
+                        }
+                    }
+                    ////////////////////////////// Engine Scope???? //////////////////////////////
+                    if(!(iter->second.get().call({},PlayerClass::newPlayer(player),args).asBoolean().value()))
+                        passToOriginalCmdEvent = false;
+                }
+        if(!passToOriginalCmdEvent)
+            return false;
+        
         CallEventEx(EVENT_TYPES::OnServerCmd, cmd);
     }
     return original(_this, a2, x, a4);
 }
-/*
-/////////////////////////// THook /////////////////////
-template <>
-struct THookTemplate<
-    do_hash("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z"),
-    do_hash2("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z")
->{
-	typedef bool (*original_type)(Player *_this, ItemStack *a2, bool a3);
-	static original_type &_original()
-	{
-		static original_type storage;
-		return storage;
-	}
-	template <typename... Params>
-	static bool original(Params &&...params) {
-        return _original()(std::forward<Params>(params)...);
-    }
-	static bool _hook(Player *_this, ItemStack *a2, bool a3);
-};
-template <>
-static THookRegister THookRegisterTemplate<
-	do_hash("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z"),
-	do_hash2("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z")
->{
-    "?drop@Player@@UEAA_NAEBVItemStack@@_N@Z",
-	&THookTemplate<do_hash("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z"),
-	do_hash2("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z")>::_hook,
-	(void **)&THookTemplate<do_hash("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z"),
-	do_hash2("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z")>::_original()
-};
-bool THookTemplate<
-	do_hash("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z"),
-	do_hash2("?drop@Player@@UEAA_NAEBVItemStack@@_N@Z")>
-    ::_hook(Player *_this, ItemStack *a2, bool a3)
-{
-	
-}
-
-/////////////////////////// Symcall /////////////////////
-__imp_Call<
-    do_hash("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z"),
-    do_hash2("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z"),
-Actor*, Level*, void*, bool>("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z")*/

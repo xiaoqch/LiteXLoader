@@ -17,8 +17,14 @@ public:
         return entity;
     }
 
+    static Local<Object> newEntity(Actor *p);
+    static Local<Object> newEntity(WActor p);
+    static Actor* extractEntity(Local<Value> v);
+
     Local<Value> getName();
     Local<Value> getPos();
+    Local<Value> getMaxHealth();
+    Local<Value> getHealth();
 
     Local<Value> teleport(const Arguments& args);
     Local<Value> kill(const Arguments& args);

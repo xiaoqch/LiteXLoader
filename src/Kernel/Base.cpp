@@ -24,9 +24,3 @@ bool Raw_RegisterCmd(const string &cmd, const string &describe, int cmdLevel)
         (CmdRegGlobal, cmd, desc, cmdLevel, 0, 0x40);
     return true;
 }
-
-bool Raw_SetServerMotd(const std::string &motd)
-{
-///////////////////////////// Add symbol ///////////////////////////// 
-    return true;
-}

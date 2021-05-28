@@ -57,8 +57,7 @@ bool  Raw_SetPlayerPermLevel(Player* player, int permLevel)
 
 bool Raw_KickPlayer(Player* player, const string &msg)
 {
-    ///////////////////////////////////////////////////// FIX HERE
-    Minecraft *mc;
+    extern Minecraft *mc;
     auto nh = mc->getServerNetworkHandler();
     NetworkIdentifier* a = offPlayer::getNetworkIdentifier(player);
     nh->disconnectClient(*(NetworkIdentifier*)a, msg, 0);
@@ -71,18 +70,43 @@ bool  Raw_Tell(Player* player, const string &text, TextType type)
     return true;
 }
 
- ItemStack* Raw_GetHand(Player* player)
+ItemStack* Raw_GetHand(Player* player)
 {
     return (ItemStack*)&(player->getSelectedItem());
 }
 
-bool  Raw_RenamePlayer(Player* player, const string &name)
+vector<ItemStack*> Raw_GetPack(Player* player)
+{
+    vector<ItemStack*> res;
+
+    auto v9 = *((uintptr_t*)player + 380);
+	auto v13 = (*(__int64(__fastcall**)(uintptr_t))(**(uintptr_t**)(v9 + 176) + 112i64))(*(uintptr_t*)(v9 + 176));
+	for (int i = 0; i < v13; ++i)
+	{
+		auto v15 = (*(__int64(__fastcall**)(uintptr_t, uintptr_t))(**(uintptr_t**)(v9 + 176) + 40i64))(
+			*(uintptr_t*)(v9 + 176),
+			(unsigned int)i);
+		res.push_back((ItemStack*)v15);
+	}
+    return res;
+}
+
+bool Raw_RenamePlayer(Player* player, const string &name)
 {
     player->setNameTag(name);
     return true;
 }
 
-vector<Player*>  Raw_GetOnlinePlayers()
+vector<Player*> Raw_GetOnlinePlayers()
 {
     return liteloader::getAllPlayers();
+}
+
+bool Raw_IsPlayerValid(Player *player)
+{
+    auto playerList = Raw_GetOnlinePlayers();
+    for(auto p : playerList)
+        if(p == player)
+            return true;
+    return false;
 }

@@ -1,6 +1,9 @@
 #include "ConfigHelp.h"
+#include "../Configs.h"
 #include <windows.h>
 #include <string>
+
+#define LXL_CONFIG_MAX_LEN 1024
 
 namespace conf
 {
@@ -9,14 +12,14 @@ namespace conf
 	{
 		char *buf = new char[LXL_CONFIG_MAX_LEN];
 		memset(buf,0,LXL_CONFIG_MAX_LEN);
-		bool isOk = GetPrivateProfileString(sec.c_str(),key.c_str(),default.c_str(),buf,LXL_CONFIG_MAX_LEN,LXL_CONFIG_PATH) > 0;
+		bool isOk = GetPrivateProfileStringA(sec.c_str(),key.c_str(),default.c_str(),buf,LXL_CONFIG_MAX_LEN,LXL_CONFIG_PATH) > 0;
 		delete buf;
 		return isOk ? std::string(buf) : default;
 	}
 
 	int getInt(const std::string &sec, const std::string &key, int default)
 	{
-		return int(GetPrivateProfileInt(sec.c_str(),key.c_str(),default,LXL_CONFIG_PATH));
+		return int(GetPrivateProfileIntA(sec.c_str(),key.c_str(),default,LXL_CONFIG_PATH));
 	}
 
 	bool getBool(const std::string &sec, const std::string &key, bool default)

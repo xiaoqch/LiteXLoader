@@ -9,24 +9,12 @@ class IntPos : public IntVec4, public ScriptClass
 {
 public:
 	explicit IntPos(const Local<Object>& scriptObj) : ScriptClass(scriptObj) {}
-    static IntPos* create(const Arguments& args)
-    {
-        if(args.size() < 3)
-            return nullptr;
-        try
-        {
-            IntPos *p = new IntPos(args.thiz());
-            p->x = args[0].asNumber().toInt64();
-            p->y = args[1].asNumber().toInt64();
-            p->z = args[2].asNumber().toInt64();
-            p->dim = args[3].asNumber().toInt32();
-            return p;
-        }
-        catch(...)
-        {
-            return nullptr;
-        }
-	}
+    static IntPos* create(const Arguments& args);
+
+    static Local<Object> newPos(int x, int y, int z, int dim=-1);
+    static Local<Object> newPos(const BlockPos &b, int dim=-1);
+    static Local<Object> newPos(const IntVec4 &v);
+    static IntPos* extractPos(Local<Value> v);
 
     Local<Value> getX() { return Number::newNumber(x); }
     Local<Value> getY() { return Number::newNumber(y); }
@@ -42,24 +30,12 @@ class FloatPos : public FloatVec4, public ScriptClass
 {
 public:
 	explicit FloatPos(const Local<Object>& scriptObj) : ScriptClass(scriptObj) {}
-    static FloatPos* create(const Arguments& args)
-    {
-        if(args.size() < 3)
-            return nullptr;
-        try
-        {
-            FloatPos *p = new FloatPos(args.thiz());
-            p->x = args[0].asNumber().toFloat();
-            p->y = args[1].asNumber().toFloat();
-            p->z = args[2].asNumber().toFloat();
-            p->dim = args[3].asNumber().toInt32();
-            return p;
-        }
-        catch(...)
-        {
-            return nullptr;
-        }
-	}
+    static FloatPos* create(const Arguments& args);
+
+    static Local<Object> newPos(double x, double y, double z, int dim=-1);
+    static Local<Object> newPos(const Vec3 &v, int dim=-1);
+    static Local<Object> newPos(const FloatVec4 &v);
+    static FloatPos* extractPos(Local<Value> v);
 
     Local<Value> getX() { return Number::newNumber(x); }
     Local<Value> getY() { return Number::newNumber(y); }
@@ -76,9 +52,8 @@ public:
 
 Local<Value> Runcmd(const Arguments& args);
 Local<Value> RuncmdEx(const Arguments& args);
-Local<Value> RegisterCmd(const Arguments& args);
-
-Local<Value> SetServerMotd(const Arguments& args);
+Local<Value> RegisterPlayerCmd(const Arguments& args);
+Local<Value> RegisterConsoleCmd(const Arguments& args);
 
 Local<Value> Log(const Arguments& args);
 Local<Value> GetTimeStr(const Arguments& args);

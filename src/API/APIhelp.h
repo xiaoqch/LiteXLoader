@@ -1,9 +1,18 @@
 ﻿#pragma once
-#include "ScriptX.h"
 #include "../Kernel/Global.h"
 #include "../Configs.h"
 #include "BaseAPI.h"
+#include <string>
+#include "ScriptX.h"
+#include "../Nlohmann/json.hpp"
+#include "../Nlohmann/fifo_map.hpp"
 using namespace script;
+using namespace nlohmann;
+
+template<class Key, class T, class dummy_compare, class Allocator>
+using workaround_fifo_map = fifo_map<Key, T, fifo_map_compare<Key>, Allocator>;
+using fifo_json = basic_json<workaround_fifo_map>;
+
 
 // 输出
 #define PREFIX "[LiteXLoader." ## LXL_SCRIPT_LANG_TYPE ## "]"
@@ -14,6 +23,9 @@ using namespace script;
 #define FATAL(t)  std::cerr << PREFIX ## "[FATAL] " << t << std::endl
 #define PRINT(t)  std::cout << t << std::endl
 #define ERRPRINT(t)  std::cerr << t << std::endl
+
+//方便提取类型
+#define toStr() asString().toString()
 
 // 至少COUNT个参数
 #define CHECK_ARGS_COUNT(ARGS,COUNT) \
@@ -30,35 +42,14 @@ using namespace script;
     catch(Exception& e) \
     { ERROR(LOG##"\n"); ERRPRINT(e); return Local<Value>();}
 
-// 串行化
-void PrintValue(std::ostream &out, Local<Value> v);
-
-//创建新引擎
+// 创建新引擎
 std::shared_ptr<ScriptEngine> NewEngine();
 
-// 通用坐标类
-Local<Object> NewPos(int x, int y, int z, int dim = -1);
-Local<Object> NewPos(const BlockPos &v, int dim = -1);
-Local<Object> NewPos(const IntVec4 &v);
-IntPos* ExtractIntPos(Local<Value> v);
 
-Local<Object> NewPos(double x, double y, double z, int dim = -1);
-Local<Object> NewPos(const Vec3 &v, int dim = -1);
-Local<Object> NewPos(const FloatVec4 &v);
-FloatPos* ExtractFloatPos(Local<Value> v);
+// 序列化
+void PrintValue(std::ostream &out, Local<Value> v);
 
-//对象指针类
-Local<Object> NewPlayer(Player *p);
-Local<Object> NewPlayer(WPlayer p);
-Player* ExtractPlayer(Local<Value> v);
-
-Local<Object> NewEntity(Actor *p);
-Local<Object> NewEntity(WActor p);
-Actor* ExtractEntity(Local<Value> v);
-
-Local<Object> NewBlock(Block *p);
-Local<Object> NewBlock(WBlock p);
-Block* ExtractBlock(Local<Value> v);
-
-Local<Object> NewItem(ItemStack *p);
-ItemStack* ExtractItem(Local<Value> v);
+// Json 序列化 反序列化
+Local<Value> JsonToValue(std::string jsonStr);
+Local<Value> JsonToValue(fifo_json j);
+std::string ValueToJson(Local<Value> v,int formatIndent = -1);
