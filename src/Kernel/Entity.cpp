@@ -21,6 +21,10 @@ int Raw_GetMaxHealth(Actor *actor)
 {
     return SymCall("?getMaxHealth@Actor@@QEBAHXZ", int, Actor*)(actor);
 }
+bool Raw_GetIsInAir(Actor *actor)
+{
+    return !(dAccess<bool,448>(actor));
+}
 
 bool Raw_TeleportEntity(Actor* actor, const FloatVec4 &pos)
 {

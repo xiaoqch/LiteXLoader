@@ -8,7 +8,7 @@
 #include <memory>
 #include "../Nlohmann/fifo_map.hpp"
 #include "../Nlohmann/json.hpp"
-#include "../Minini/minIni.h"
+#include "../Kernel/Db.h"
 
 struct EngineOwnData_MapCmp
 {
@@ -48,7 +48,7 @@ struct EngineOwnData
     string confPath;
     GlobalConfType confType = GlobalConfType::json;
     fifo_json jsonConf;
-    minIni *iniConf;
+    INI_TYPE *iniConf;
 };
 
 // 引擎附加数据

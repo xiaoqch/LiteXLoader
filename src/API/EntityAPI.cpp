@@ -12,6 +12,7 @@ ClassDefine<EntityClass> EntityClassBuilder =
         .instanceProperty("pos", &EntityClass::getPos)
         .instanceProperty("maxHealth", &EntityClass::getMaxHealth)
         .instanceProperty("health", &EntityClass::getHealth)
+        .instanceProperty("inAir", &EntityClass::getInAir)
 
         .instanceFunction("teleport", &EntityClass::teleport)
         .instanceFunction("kill", &EntityClass::kill)
@@ -69,6 +70,14 @@ Local<Value> EntityClass::getHealth()
         return Number::newNumber(Raw_GetHealth(entity));
     }
     CATCH("Fail in GetHealth!")
+}
+
+Local<Value> EntityClass::getInAir()
+{
+    try{
+        return Boolean::newBoolean(Raw_GetIsInAir(entity));
+    }
+    CATCH("Fail in getInAir!")
 }
 
 Local<Value> EntityClass::teleport(const Arguments& args)

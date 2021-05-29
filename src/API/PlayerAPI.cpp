@@ -23,6 +23,7 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceProperty("ip", &PlayerClass::getIP)
         .instanceProperty("maxHealth", &PlayerClass::getMaxHealth)
         .instanceProperty("health", &PlayerClass::getHealth)
+        .instanceProperty("inAir", &PlayerClass::getInAir)
 
         .instanceFunction("isOP", &PlayerClass::isOP)
         .instanceFunction("getPlayerPermLevel", &PlayerClass::getPlayerPermLevel)
@@ -149,6 +150,14 @@ Local<Value> PlayerClass::getHealth()
         return Number::newNumber(Raw_GetHealth((Actor*)player));
     }
     CATCH("Fail in GetHealth!")
+}
+
+Local<Value> PlayerClass::getInAir()
+{
+    try{
+        return Boolean::newBoolean(Raw_GetIsInAir((Actor*)player));
+    }
+    CATCH("Fail in GetInAir!")
 }
 
 Local<Value> PlayerClass::teleport(const Arguments& args)

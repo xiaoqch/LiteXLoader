@@ -28,6 +28,7 @@ public:
     Local<Value> getIP();
     Local<Value> getMaxHealth();
     Local<Value> getHealth();
+    Local<Value> getInAir();
 
     Local<Value> isOP(const Arguments& args);
     Local<Value> getPlayerPermLevel(const Arguments& args);

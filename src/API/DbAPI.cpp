@@ -5,7 +5,7 @@
 #include <exception>
 #include "EngineOwnData.h"
 #include "../Kernel/System.h"
-#include "../Kernel/db.h"
+#include "../Kernel/Db.h"
 using namespace script;
 using namespace std;
 
@@ -159,7 +159,7 @@ Local<Value> ConfInit(const Arguments& args)
             }
 
             //已存在
-            ENGINE_OWN_DATA()->iniConf = new minIni(path);
+            ENGINE_OWN_DATA()->iniConf = Raw_IniOpen(path);
         }
 
         return Boolean::newBoolean(true);
@@ -241,13 +241,13 @@ Local<Value> ConfIniSet(const Arguments& args)
             switch(args[1].getKind())
             {
                 case ValueKind::kString:
-                    ENGINE_OWN_DATA()->iniConf->put(args[0].asString().toString(),args[1].asString().toString(),args[2].asString().toString());
+                    Raw_IniSetString(ENGINE_OWN_DATA()->iniConf,args[0].toStr(),args[1].toStr(),args[2].toStr());
                     break;
                 case ValueKind::kNumber:
-                    ENGINE_OWN_DATA()->iniConf->put(args[0].asString().toString(),args[1].asString().toString(),(float)args[2].asNumber().toDouble());
+                    Raw_IniSetFloat(ENGINE_OWN_DATA()->iniConf,args[0].toStr(),args[1].toStr(),(float)args[2].asNumber().toDouble());
                     break;
                 case ValueKind::kBoolean:
-                    ENGINE_OWN_DATA()->iniConf->put(args[0].asString().toString(),args[1].asString().toString(),args[2].asBoolean().value());
+                    Raw_IniSetBool(ENGINE_OWN_DATA()->iniConf,args[0].toStr(),args[1].toStr(),args[2].asBoolean().value());
                     break;
                 default:
                     ERROR("Ini file don't support this type of data!");
@@ -276,8 +276,8 @@ Local<Value> ConfIniGetStr(const Arguments& args)
     try{
         if(ENGINE_OWN_DATA()->confType == GlobalConfType::ini)
         {
-            return String::newString(ENGINE_OWN_DATA()->iniConf->gets(args[0].asString().toString(),
-                args[1].asString().toString(), args.size() >= 3 ? args[2].asString().toString() : ""));
+            return String::newString(Raw_IniGetString(ENGINE_OWN_DATA()->iniConf,args[0].toStr(),
+                args[1].toStr(), args.size() >= 3 ? args[2].toStr() : ""));
         }
         else
         {
@@ -299,8 +299,8 @@ Local<Value> ConfIniGetInt(const Arguments& args)
     try{
         if(ENGINE_OWN_DATA()->confType == GlobalConfType::ini)
         {
-            return Number::newNumber(ENGINE_OWN_DATA()->iniConf->geti(args[0].asString().toString(),
-                args[1].asString().toString(), args.size() >= 3 ? args[2].asNumber().toInt32() : 0));
+            return Number::newNumber(Raw_IniGetInt(ENGINE_OWN_DATA()->iniConf,args[0].toStr(),
+                args[1].toStr(), args.size() >= 3 ? args[2].asNumber().toInt32() : 0));
         }
         else
         {
@@ -322,8 +322,8 @@ Local<Value> ConfIniGetFloat(const Arguments& args)
     try{
         if(ENGINE_OWN_DATA()->confType == GlobalConfType::ini)
         {
-            return Number::newNumber(ENGINE_OWN_DATA()->iniConf->getf(args[0].asString().toString(),
-                args[1].asString().toString(), args.size() >= 3 ? args[2].asNumber().toFloat() : 0.0));
+            return Number::newNumber(Raw_IniGetFloat(ENGINE_OWN_DATA()->iniConf,args[0].toStr(),
+                args[1].toStr(), args.size() >= 3 ? (float)args[2].asNumber().toDouble() : 0.0));
         }
         else
         {
@@ -345,8 +345,8 @@ Local<Value> ConfIniGetBool(const Arguments& args)
     try{
         if(ENGINE_OWN_DATA()->confType == GlobalConfType::ini)
         {
-            return Boolean::newBoolean(ENGINE_OWN_DATA()->iniConf->getbool(args[0].asString().toString(),
-                args[1].asString().toString(), args.size() >= 3 ? args[2].asBoolean().value() : false));
+            return Boolean::newBoolean(Raw_IniGetBool(ENGINE_OWN_DATA()->iniConf,args[0].toStr(),
+                args[1].toStr(), args.size() >= 3 ? args[2].asBoolean().value() : false));
         }
         else
         {
@@ -391,7 +391,7 @@ Local<Value> ConfIniDeleteSec(const Arguments& args)
     try{
         if(ENGINE_OWN_DATA()->confType == GlobalConfType::ini)
         {
-            return Boolean::newBoolean(ENGINE_OWN_DATA()->iniConf->del(args[0].asString().toString()));
+            return Boolean::newBoolean(Raw_IniDeleteSec(ENGINE_OWN_DATA()->iniConf,args[0].toStr()));
         }
         else
         {
@@ -411,7 +411,7 @@ Local<Value> ConfIniDeleteKey(const Arguments& args)
     try{
         if(ENGINE_OWN_DATA()->confType == GlobalConfType::ini)
         {
-            return Boolean::newBoolean(ENGINE_OWN_DATA()->iniConf->del(args[0].asString().toString(),args[1].asString().toString()));
+            return Boolean::newBoolean(Raw_IniDeleteKey(ENGINE_OWN_DATA()->iniConf,args[0].toStr(),args[1].toStr()));
         }
         else
         {
@@ -444,8 +444,8 @@ Local<Value> ConfReload(const Arguments& args)
         }
         else
         {
-            delete ENGINE_OWN_DATA()->iniConf;
-            ENGINE_OWN_DATA()->iniConf = new minIni(ENGINE_OWN_DATA()->confPath);
+            Raw_IniClose(ENGINE_OWN_DATA()->iniConf);
+            ENGINE_OWN_DATA()->iniConf = Raw_IniOpen(ENGINE_OWN_DATA()->confPath);
             return Boolean::newBoolean(true);
         }
     }
