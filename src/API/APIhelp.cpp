@@ -107,9 +107,9 @@ std::shared_ptr<ScriptEngine> NewEngine()
 
 ///////////////////// Json To Value /////////////////////
 
-void JsonToValue_Helper(Local<Array> &res, fifo_json &j);
+void JsonToValue_Helper(Local<Array> &res, JSON_VALUE &j);
 
-void JsonToValue_Helper(Local<Object> &res, const string &key, fifo_json &j)
+void JsonToValue_Helper(Local<Object> &res, const string &key, JSON_VALUE &j)
 {
     if(j.is_string())
         res.set(key, String::newString(j.get<string>()));
@@ -124,14 +124,14 @@ void JsonToValue_Helper(Local<Object> &res, const string &key, fifo_json &j)
     else if(j.is_array())
     {
         Local<Array> arrToAdd = Array::newArray();
-        for (fifo_json::iterator it = j.begin(); it != j.end(); ++it)
+        for (JSON_VALUE::iterator it = j.begin(); it != j.end(); ++it)
             JsonToValue_Helper(arrToAdd,*it);
         res.set(key, arrToAdd);
     }
     else if(j.is_object())
     {
         Local<Object> objToAdd = Object::newObject();
-        for (fifo_json::iterator it = j.begin(); it != j.end(); ++it)
+        for (JSON_VALUE::iterator it = j.begin(); it != j.end(); ++it)
             JsonToValue_Helper(objToAdd,it.key(),it.value());
         res.set(key, objToAdd);
     }
@@ -139,7 +139,7 @@ void JsonToValue_Helper(Local<Object> &res, const string &key, fifo_json &j)
         res.set(key, Local<Value>());
 }
 
-void JsonToValue_Helper(Local<Array> &res, fifo_json &j)
+void JsonToValue_Helper(Local<Array> &res, JSON_VALUE &j)
 {
     if(j.is_string())
         res.add(String::newString(j.get<string>()));
@@ -154,14 +154,14 @@ void JsonToValue_Helper(Local<Array> &res, fifo_json &j)
     else if(j.is_array())
     {
         Local<Array> arrToAdd = Array::newArray();
-        for (fifo_json::iterator it = j.begin(); it != j.end(); ++it)
+        for (JSON_VALUE::iterator it = j.begin(); it != j.end(); ++it)
             JsonToValue_Helper(arrToAdd,*it);
         res.add(arrToAdd);
     }
     else if(j.is_object())
     {
         Local<Object> objToAdd = Object::newObject();
-        for (fifo_json::iterator it = j.begin(); it != j.end(); ++it)
+        for (JSON_VALUE::iterator it = j.begin(); it != j.end(); ++it)
             JsonToValue_Helper(objToAdd,it.key(),it.value());
         res.add(objToAdd);
     }
@@ -169,7 +169,7 @@ void JsonToValue_Helper(Local<Array> &res, fifo_json &j)
         res.add(Local<Value>());
 }
 
-Local<Value> JsonToValue(fifo_json j)
+Local<Value> JsonToValue(JSON_VALUE j)
 {
     Local<Value> res;
     
@@ -186,14 +186,14 @@ Local<Value> JsonToValue(fifo_json j)
     else if(j.is_array())
     {
         Local<Array> resArr = Array::newArray();
-        for (fifo_json::iterator it = j.begin(); it != j.end(); ++it)
+        for (JSON_VALUE::iterator it = j.begin(); it != j.end(); ++it)
             JsonToValue_Helper(resArr,*it);
         res = resArr;
     }
     else if(j.is_object())
     {
         Local<Object> resObj = Object::newObject();
-        for (fifo_json::iterator it = j.begin(); it != j.end(); ++it)
+        for (JSON_VALUE::iterator it = j.begin(); it != j.end(); ++it)
             JsonToValue_Helper(resObj,it.key(),it.value());
         res = resObj;
     }
@@ -205,14 +205,14 @@ Local<Value> JsonToValue(fifo_json j)
 
 Local<Value> JsonToValue(std::string jsonStr)
 {
-    auto j = fifo_json::parse(jsonStr);
+    auto j = JSON_VALUE::parse(jsonStr);
     return JsonToValue(j);
 }
 
 
 ///////////////////// Value To Json /////////////////////
 
-void ValueToJson_Helper(fifo_json &res, Local<Value> &v)
+void ValueToJson_Helper(JSON_VALUE &res, Local<Value> &v)
 {
     switch(v.getKind())
     {
@@ -232,13 +232,13 @@ void ValueToJson_Helper(fifo_json &res, Local<Value> &v)
         {
             Local<Array> arr=v.asArray();
             if(arr.size() == 0)
-                res.push_back(fifo_json::array());
+                res.push_back(JSON_VALUE::array());
             else
             {
-                fifo_json arrToAdd = fifo_json::array();
+                JSON_VALUE arrToAdd = JSON_VALUE::array();
                 for(int i=0;i<arr.size();++i)
                 {
-                    fifo_json arrItem;
+                    JSON_VALUE arrItem;
                     ValueToJson_Helper(arrItem,arr.get(i));
                     arrToAdd.push_back(arrItem);
                 }
@@ -251,13 +251,13 @@ void ValueToJson_Helper(fifo_json &res, Local<Value> &v)
             Local<Object> obj = v.asObject();
             std::vector<std::string> keys = obj.getKeyNames();
             if(keys.empty())
-                res.push_back(fifo_json::object());
+                res.push_back(JSON_VALUE::object());
             else
             {
-                fifo_json objToAdd = fifo_json::object();
+                JSON_VALUE objToAdd = JSON_VALUE::object();
                 for(int i=0;i<keys.size();++i)
                 {
-                    fifo_json objItem;
+                    JSON_VALUE objItem;
                     ValueToJson_Helper(objItem,obj.get(keys[i]));
                     objToAdd.push_back({keys[i],objItem});
                 }
@@ -273,7 +273,7 @@ void ValueToJson_Helper(fifo_json &res, Local<Value> &v)
 
 std::string ValueToJson(Local<Value> v,int formatIndent)
 {
-    fifo_json res;
+    JSON_VALUE res;
     ValueToJson_Helper(res,v);
     return res.dump(formatIndent);
 }

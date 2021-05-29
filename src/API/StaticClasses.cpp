@@ -10,6 +10,7 @@
 #include "PlayerAPI.h"
 #include "DbAPI.h"
 #include "NetworkAPI.h"
+#include "GuiAPI.h"
 using namespace script;
 
 class McClass
@@ -23,8 +24,10 @@ public:
 
     static Local<Value> getPlayer(const Arguments& args) { return GetPlayer(args); }
     static Local<Value> getOnlinePlayers(const Arguments& args) { return GetOnlinePlayers(args); }
-
     static Local<Value> getBlock(const Arguments& args) { return GetBlock(args); }
+
+    static Local<Value> newForm(const Arguments& args) { return NewForm(args); }
+    static Local<Value> cancelForm(const Arguments& args) { return CancelForm(args); }
 };
 ClassDefine<void> McClassBuilder =
     defineClass("mc")
@@ -34,6 +37,9 @@ ClassDefine<void> McClassBuilder =
         .function("listen", &McClass::listen)
         .function("getPlayer", &McClass::getPlayer)
         .function("getOnlinePlayers", &McClass::getOnlinePlayers)
+        .function("getBlock", &McClass::getBlock)
+        .function("newForm", &McClass::newForm)
+        .function("cancelForm", &McClass::cancelForm)
         .build();
 
 

@@ -10,7 +10,7 @@ using namespace script;
 class DbClass : public ScriptClass
 {
 private:
-    DB_TYPE kvdb;
+    DB_ROOT kvdb;
 
 public:
 	explicit DbClass(const string &dir);

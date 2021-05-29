@@ -29,7 +29,7 @@ enum class EVENT_TYPES : int
     OnOpenChest, OnCloseChest, OnOpenBarrel, OnCloseBarrel, OnChangeSlot,
     OnMobDie, OnMobHurt, OnExplode, OnBlockExploded, OnCmdBlockExecute,
     OnProjectileHit, OnPistonPush, OnUseRespawnAnchor, OnFarmLandDecay,
-    OnServerStarted, OnServerCmd,
+    OnServerStarted, OnServerCmd, OnFormSelected,
     EVENT_COUNT
 };
 static const std::unordered_map<string, EVENT_TYPES> EventsMap{
@@ -64,6 +64,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onFarmLandDecay",EVENT_TYPES::OnFarmLandDecay},
     {"onServerStarted",EVENT_TYPES::OnServerStarted},
     {"onServerCmd",EVENT_TYPES::OnServerCmd},
+    {"onFormSelected",EVENT_TYPES::OnFormSelected},
 };
 struct ListenerListType
 {
@@ -301,7 +302,7 @@ THook(void, "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVComma
             
             // Register Callbacks
             bool passToOriginalCmdEvent = true; // not used here
-            CmdCallback_MapType *funcs = &(ENGINE_OWN_DATA()->playerCmdCallbacks);
+            auto funcs = &(ENGINE_OWN_DATA()->playerCmdCallbacks);
             if(!funcs->empty())
                 for (auto iter=funcs->begin(); iter!=funcs->end(); ++iter)
                     if(cmd.find_first_of(iter->first) == 0)
@@ -322,9 +323,10 @@ THook(void, "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVComma
                                 i = pos;
                             }
                         }
-                        ////////////////////////////// Engine Scope???? //////////////////////////////
-                        if(!(iter->second.get().call({},PlayerClass::newPlayer(player),args).asBoolean().value()))
-                            passToOriginalCmdEvent = false;
+
+                        EngineScope scope(iter->second.first);
+                        if(!(iter->second.second.get().call({},PlayerClass::newPlayer(player),args).asBoolean().value()))
+                            passToOriginalCmdEvent = false;  // not used here
                     }
 
             CallEvent(EVENT_TYPES::OnPlayerCmd, PlayerClass::newPlayer(player), cmd);
@@ -612,7 +614,7 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
 
         // Register Callbacks
         bool passToOriginalCmdEvent = true;
-        CmdCallback_MapType *funcs = &(ENGINE_OWN_DATA()->consoleCmdCallbacks);
+        auto funcs = &(ENGINE_OWN_DATA()->consoleCmdCallbacks);
         if(!funcs->empty())
             for (auto iter=funcs->begin(); iter!=funcs->end(); ++iter)
                 if(cmd.find_first_of(iter->first) == 0)
@@ -633,8 +635,9 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
                             i = pos;
                         }
                     }
-                    ////////////////////////////// Engine Scope???? //////////////////////////////
-                    if(!(iter->second.get().call({},PlayerClass::newPlayer(player),args).asBoolean().value()))
+                    
+                    EngineScope scope(iter->second.first);
+                    if(!(iter->second.second.get().call({},args).asBoolean().value()))
                         passToOriginalCmdEvent = false;
                 }
         if(!passToOriginalCmdEvent)
@@ -643,4 +646,34 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
         CallEventEx(EVENT_TYPES::OnServerCmd, cmd);
     }
     return original(_this, a2, x, a4);
+}
+
+// ===== onFormSelected =====
+THook(void, "?handle@?$PacketHandlerDispatcherInstance@VModalFormResponsePacket@@$0A@@@UEBAXAEBVNetworkIdentifier@@AEAVNetEventCallback@@AEAV?$shared_ptr@VPacket@@@std@@@Z",
+	void* _this, unsigned long long id, ServerNetworkHandler* handler, void* packet)
+{
+    IF_EXIST(EVENT_TYPES::OnPlayerCmd)
+    {
+        //////////////////////////////////////// ??
+        Player* p = handler->_getServerPlayer(id, *(unsigned char*)packet);
+        if (p)
+        {
+            unsigned formId = dAccess<unsigned>(packet,48);
+            string data = dAccess<string>(packet,56);
+
+            if (data.back() == '\n')
+                data.pop_back();
+            
+            // Form Callbacks
+            bool passToBDS = true; // not used here
+            auto callback = &(ENGINE_OWN_DATA()->formCallbacks[formId]);
+            
+            EngineScope scope(callback->first);
+            if(!(callback->second.get().call({},String::newString(data)).asBoolean().value()))
+                passToBDS = false;   // not used here
+            
+            // No CallEvent here
+        }
+    }
+    original(_this, id, handler, packet);
 }

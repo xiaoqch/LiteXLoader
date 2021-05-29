@@ -19,7 +19,7 @@ extern std::list<std::shared_ptr<ScriptEngine>> modules;
 void BindAPIs(std::shared_ptr<ScriptEngine> engine);
 
 // 配置文件
-extern INI_TYPE *iniConf;
+extern INI_ROOT iniConf;
 
 //读取辅助函数
 std::string ReadFileFrom(const std::string &filePath)

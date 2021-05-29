@@ -2,9 +2,11 @@
 #include "BaseAPI.h"
 #include "PlayerAPI.h"
 #include "ItemAPI.h"
+#include "GuiAPI.h"
 #include "EngineOwnData.h"
 #include "../Kernel/Player.h"
 #include "../Kernel/Entity.h"
+#include "../Kernel/Gui.h"
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -226,9 +228,12 @@ Local<Value> PlayerClass::runcmdAs(const Arguments& args)
 
 Local<Value> PlayerClass::kick(const Arguments& args)
 {
+    if(args.size() >= 1)
+        CHECK_ARG_TYPE(args[0],ValueKind::kString);
+
     try{
         string msg="正在从服务器断开连接";
-        if(args.size() >= 1 && args[0].getKind() == ValueKind::kString)
+        if(args.size() >= 1)
             msg = args[0].asString().toString();
         
         return Boolean::newBoolean(Raw_KickPlayer(player,msg));
@@ -285,6 +290,97 @@ Local<Value> PlayerClass::rename(const Arguments& args)
         return Boolean::newBoolean(Raw_RenamePlayer(player,args[0].asString().toString()));
     }
     CATCH("Fail in RenamePlayer!")
+}
+
+Local<Value> PlayerClass::sendSimpleForm(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args,4)
+    CHECK_ARG_TYPE(args[0],ValueKind::kString)
+    CHECK_ARG_TYPE(args[1],ValueKind::kString)
+    CHECK_ARG_TYPE(args[2],ValueKind::kString)
+    CHECK_ARG_TYPE(args[3],ValueKind::kFunction)
+
+    try{
+        string title,content,buttons;
+        try{
+            title = JSON_VALUE::parse(args[0].toStr()).get<string>();
+            content = JSON_VALUE::parse(args[1].toStr()).get<string>();
+            buttons = JSON_VALUE::parse(args[2].toStr()).get<string>();
+        }catch(...){ 
+            ERROR("Fail to Form currect Form string!");
+            return Local<Value>();
+        }
+        
+        int formId = Raw_SendSimpleForm(player,title,content,buttons);
+        (ENGINE_OWN_DATA()->formCallbacks)[formId] = {EngineScope::currentEngine(),args[3].asFunction()};
+
+        return Number::newNumber(formId);
+    }
+    CATCH("Fail in SendSimpleForm!")
+}
+
+Local<Value> PlayerClass::sendModelForm(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args,5)
+    CHECK_ARG_TYPE(args[0],ValueKind::kString)
+    CHECK_ARG_TYPE(args[1],ValueKind::kString)
+    CHECK_ARG_TYPE(args[2],ValueKind::kString)
+    CHECK_ARG_TYPE(args[3],ValueKind::kString)
+    CHECK_ARG_TYPE(args[4],ValueKind::kFunction)
+
+    try{
+        string title,content,button1,button2;
+        try{
+            title = JSON_VALUE::parse(args[0].toStr()).get<string>();
+            content = JSON_VALUE::parse(args[1].toStr()).get<string>();
+            button1 = JSON_VALUE::parse(args[2].toStr()).get<string>();
+            button2 = JSON_VALUE::parse(args[3].toStr()).get<string>();
+        }catch(...){ 
+            ERROR("Fail to Form currect Form string!");
+            return Local<Value>();
+        }
+        
+        int formId = Raw_SendModalForm(player,title,content,button1,button2);
+        (ENGINE_OWN_DATA()->formCallbacks)[formId] = {EngineScope::currentEngine(),args[4].asFunction()};
+        
+        return Number::newNumber(formId);
+    }
+    CATCH("Fail in sendModelForm!")
+}
+
+Local<Value> PlayerClass::sendForm(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args,2)
+    //CHECK_ARG_TYPE(args[0],ValueKind::kString)
+    CHECK_ARG_TYPE(args[1],ValueKind::kFunction)
+
+    try{
+        string data;
+        try{
+            if(args[0].getKind() == ValueKind::kString)
+            {
+                // Json格式
+                data = JSON_VALUE::parse(args[0].toStr()).get<string>();
+            }
+            else
+            {
+                // Form对象
+                auto jsonForm = FormClass::extractForm(args[0]);
+                if(jsonForm == nullptr)
+                    throw "Unknown Type of Parameter!";
+                data = jsonForm->dump();
+            }
+        }catch(...){ 
+            ERROR("Fail to Form currect Form string!");
+            return Local<Value>();
+        }
+        
+        int formId = Raw_SendCustomForm(player,data);
+        (ENGINE_OWN_DATA()->formCallbacks)[formId] = {EngineScope::currentEngine(),args[1].asFunction()};
+        
+        return Number::newNumber(formId);
+    }
+    CATCH("Fail in sendCustomForm!")
 }
 
 Local<Value> PlayerClass::setExtraData(const Arguments& args)

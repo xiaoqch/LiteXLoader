@@ -43,6 +43,10 @@ public:
     Local<Value> getPack(const Arguments& args);
     Local<Value> rename(const Arguments& args);
 
+    Local<Value> sendSimpleForm(const Arguments& args);
+    Local<Value> sendModelForm(const Arguments& args);
+    Local<Value> sendForm(const Arguments& args);
+
     Local<Value> setExtraData(const Arguments& args);
     Local<Value> getExtraData(const Arguments& args);
     Local<Value> delExtraData(const Arguments& args);

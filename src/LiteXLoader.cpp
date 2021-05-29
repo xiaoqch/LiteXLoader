@@ -18,7 +18,7 @@ std::shared_ptr<ScriptEngine> globalEngine;
 std::shared_ptr<ScriptEngine> debugEngine;
 bool globalDebug = false;
 // 配置文件
-INI_TYPE *iniConf;
+INI_ROOT iniConf;
 
 void LoadBaseLib();
 void LoadDepends();

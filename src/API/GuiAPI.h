@@ -8,10 +8,20 @@ using namespace script;
 class FormClass : public ScriptClass
 {
 private:
-    fifo_json formJson;
+    JSON_ROOT form;
 
 public:
 	FormClass();
+
+    JSON_ROOT *get()
+    {
+        return &form;
+    }
+
+    static Local<Object> newForm();
+    static JSON_ROOT* extractForm(Local<Value> v);
+
+    Local<Value> setTitle(const Arguments& args);
 
     Local<Value> addLabel(const Arguments& args);
     Local<Value> addInput(const Arguments& args);
@@ -19,12 +29,8 @@ public:
     Local<Value> addDropdown(const Arguments& args);
     Local<Value> addSlider(const Arguments& args);
     Local<Value> addStepSlider(const Arguments& args);
-
-    Local<Value> send(const Arguments& args);
 };
 
-Local<Value> SendSimpleForm(const Arguments& args);
-Local<Value> SendModelForm(const Arguments& args);
-Local<Value> GiveUpForm(const Arguments& args);
+Local<Value> CancelForm(const Arguments& args);
 
-Local<Value> CreateForm(const Arguments& args);
+Local<Value> NewForm(const Arguments& args);

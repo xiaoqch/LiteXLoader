@@ -101,7 +101,7 @@ Local<Value> ConfInit(const Arguments& args)
             path+=".json";
             ENGINE_OWN_DATA()->confPath = path;
 
-            fifo_json *jsonConf = &(ENGINE_OWN_DATA()->jsonConf);
+            JSON_ROOT *jsonConf = &(ENGINE_OWN_DATA()->jsonConf);
             if(!Raw_PathExists(path))
             {
                 //创建新的
@@ -109,17 +109,17 @@ Local<Value> ConfInit(const Arguments& args)
                 {
                     try
                     {
-                        *jsonConf = fifo_json::parse(args[2].asString().toString());
+                        *jsonConf = JSON_VALUE::parse(args[2].asString().toString());
                     }
                     catch(exception &e)
                     {
                         ERROR("Fail to parse default json content!");
                         ERRPRINT(e.what());
-                        *jsonConf = fifo_json::array();
+                        *jsonConf = JSON_VALUE::array();
                     }
                 }
                 else
-                    *jsonConf = fifo_json::array();
+                    *jsonConf = JSON_VALUE::array();
 
                 ofstream jsonFile(path);
                 if(jsonFile.is_open() && args.size() >= 3)
@@ -134,13 +134,13 @@ Local<Value> ConfInit(const Arguments& args)
                     return Boolean::newBoolean(false);
                 try
                 {
-                    *jsonConf = fifo_json::parse(jsonTexts);
+                    *jsonConf = JSON_VALUE::parse(jsonTexts);
                 }
                 catch(exception &e)
                 {
                     ERROR("Fail to parse json content in file!");
                     ERRPRINT(e.what());
-                    *jsonConf = fifo_json::array();
+                    *jsonConf = JSON_VALUE::array();
                 }
             }
         }
@@ -432,7 +432,7 @@ Local<Value> ConfReload(const Arguments& args)
                 return Boolean::newBoolean(false);
             try
             {
-                ENGINE_OWN_DATA()->jsonConf = fifo_json::parse(jsonTexts);
+                ENGINE_OWN_DATA()->jsonConf = JSON_VALUE::parse(jsonTexts);
                 return Boolean::newBoolean(true);
             }
             catch(exception &e)
