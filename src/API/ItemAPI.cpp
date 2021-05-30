@@ -24,8 +24,12 @@ ClassDefine<ItemClass> ItemClassBuilder =
 ItemClass::ItemClass(ItemStack *p)
     :ScriptClass(ScriptClass::ConstructFromCpp<ItemClass>{}),item(p)
 {
-    name = Raw_GetItemName(item);
+    name = Raw_GetItemFullName(item);
+
     customName = Raw_GetCustomName(item);
+    if(customName.empty())
+        customName = Raw_GetItemName(item);
+    
     count = Raw_GetCount(item);
     aux = Raw_GetItemAux(item);
 }

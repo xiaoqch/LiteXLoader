@@ -25,10 +25,12 @@ public:
     Local<Value> getPos();
     Local<Value> getRealName();
     Local<Value> getXuid();
+    Local<Value> getUuid();
     Local<Value> getIP();
     Local<Value> getMaxHealth();
     Local<Value> getHealth();
     Local<Value> getInAir();
+    Local<Value> getSneaking();
 
     Local<Value> isOP(const Arguments& args);
     Local<Value> getPlayerPermLevel(const Arguments& args);
@@ -40,8 +42,18 @@ public:
     Local<Value> kick(const Arguments& args);
     Local<Value> tell(const Arguments& args);
     Local<Value> getHand(const Arguments& args);
+    Local<Value> getOffHand(const Arguments& args);
     Local<Value> getPack(const Arguments& args);
     Local<Value> rename(const Arguments& args);
+
+    Local<Value> getScore(const Arguments& args);
+    Local<Value> setScore(const Arguments& args);
+    Local<Value> addScore(const Arguments& args);
+    Local<Value> removeScore(const Arguments& args);
+    Local<Value> setScoreBoard(const Arguments& args);
+    Local<Value> removeScoreBoard(const Arguments& args);
+    Local<Value> setBossBar(const Arguments& args);
+    Local<Value> removeBossBar(const Arguments& args);
 
     Local<Value> sendSimpleForm(const Arguments& args);
     Local<Value> sendModelForm(const Arguments& args);

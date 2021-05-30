@@ -20,6 +20,7 @@ using namespace script;
 
 //方便提取类型
 #define toStr() asString().toString()
+#define toInt() asNumber().toInt32()
 
 // 至少COUNT个参数
 #define CHECK_ARGS_COUNT(ARGS,COUNT) \

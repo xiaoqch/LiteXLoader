@@ -7,6 +7,7 @@
 #include <thread>
 #include <functional>
 #include <objbase.h>
+#include <windows.h>
 using namespace std;
 
 string Raw_GetDateTimeStr()
@@ -58,6 +59,11 @@ bool Raw_FileWriteAll(const std::string &path, const std::string &data)
         return false;
     fileWrite << data;
     return fileWrite.good();
+}
+
+bool Raw_SystemCmd(const std::string &cmd, std::function<void(int,std::string)> callback, int timeLimit)
+{
+    return true;
 }
 
 std::pair<int,std::string> Raw_HttpRequestSync(const std::string &url,const std::string &method,const std::string &data)

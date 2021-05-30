@@ -18,6 +18,10 @@
 using namespace std;
 using namespace script;
 
+//////////////////// Helper Funcs ////////////////////
+
+vector<string> SplitCmdParas(const string &paras);
+
 //////////////////// Listeners ////////////////////
 
 enum class EVENT_TYPES : int
@@ -308,25 +312,15 @@ THook(void, "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVComma
                     if(cmd.find_first_of(iter->first) == 0)
                     {
                         //Matched
-                        string paras = cmd.substr(iter->first.size()+1) + " ";
+                        auto paras = SplitCmdParas(cmd.substr(iter->first.size()+1) + " ");
                         Local<Array> args = Array::newArray({String::newString(iter->first)});
-
-                        //Split Args
-                        int pos;
-                        int size = paras.size();
-                        for (int i = 0; i < size; i++)
-                        {
-                            pos = paras.find(" ", i);
-                            if (pos < size)
-                            {
-                                args.add(String::newString(paras.substr(i, pos - i)));
-                                i = pos;
-                            }
-                        }
+                        for(string para : paras)
+                            args.add(String::newString(para));
 
                         EngineScope scope(iter->second.first);
                         if(!(iter->second.second.get().call({},PlayerClass::newPlayer(player),args).asBoolean().value()))
                             passToOriginalCmdEvent = false;  // not used here
+                        break;
                     }
 
             CallEvent(EVENT_TYPES::OnPlayerCmd, PlayerClass::newPlayer(player), cmd);
@@ -355,8 +349,8 @@ THook(bool, "?checkBlockDestroyPermissions@BlockSource@@QEAA_NAEAVActor@@AEBVBlo
     IF_EXIST(EVENT_TYPES::OnDestroyBlock)
     {
         auto block = SymCall("?getBlock@BlockSource@@QEBAAEBVBlock@@AEBVBlockPos@@@Z", Block*, BlockSource*, BlockPos*)(_this, pos);
-///////////////////////////// player? /////////////////////////////
-        CallEventEx(EVENT_TYPES::OnDestroyBlock, EntityClass::newEntity(player), BlockClass::newBlock(block,pos,_this), IntPos::newPos(pos->x, pos->y, pos->z,Raw_GetBlockDimension(_this)));
+
+        CallEventEx(EVENT_TYPES::OnDestroyBlock, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(block,pos,_this), IntPos::newPos(pos->x, pos->y, pos->z,Raw_GetBlockDimension(_this)));
     }
     return original(_this, player, pos,a3, a4);
 }
@@ -367,8 +361,7 @@ THook(bool, "?mayPlace@BlockSource@@QEAA_NAEBVBlock@@AEBVBlockPos@@EPEAVActor@@_
 {
     IF_EXIST(EVENT_TYPES::OnPlaceBlock)
     {
-/////////////////////////////////// Player? ////////////////////////////////////////
-        CallEventEx(EVENT_TYPES::OnPlaceBlock, EntityClass::newEntity(pl), BlockClass::newBlock(bl,bp,bs), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetBlockDimension(bs)));
+        CallEventEx(EVENT_TYPES::OnPlaceBlock, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(bl,bp,bs), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetBlockDimension(bs)));
     }
     return original(bs, bl, bp, a4, pl, a6);
 }
@@ -437,17 +430,11 @@ THook(void, "?containerContentChanged@LevelContainerModel@@UEAAXH@Z",
         if (v5)
         {
             ItemStack* item = (ItemStack*)(*(__int64(__fastcall**)(__int64, uintptr_t))(*(uintptr_t*)v5 + 40i64))(v5, a2);
-
             int count = offItemStack::getCount(item);
-            std::string name = offBlock::getFullName(pBlk);
-            //去掉前缀
-            if (name.find("minecraft:") != string::npos)
-                name = name.replace(name.find("minecraft:"), 10, "");
-            std::string itemName = item->getName();
             int slotNumber = a2;
             Actor* pl = v3;
-///////////////////////////// ?pl ///////////////////////////// 
-            CallEvent(EVENT_TYPES::OnChangeSlot, EntityClass::newEntity(pl), BlockClass::newBlock(pBlk,bpos,bs), slotNumber, IntPos::newPos(bpos->x, bpos->y, bpos->z, Raw_GetBlockDimension(bs)), count != 0, ItemClass::newItem(item));
+
+            CallEvent(EVENT_TYPES::OnChangeSlot, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(pBlk,bpos,bs), slotNumber, IntPos::newPos(bpos->x, bpos->y, bpos->z, Raw_GetBlockDimension(bs)), count != 0, ItemClass::newItem(item));
         }
     }
 	return original(a1, a2);
@@ -502,7 +489,7 @@ THook(bool, "?explode@Level@@UEAAXAEAVBlockSource@@PEAVActor@@AEBVVec3@@M_N3M3@Z
 THook(void, "?onExploded@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@PEAVActor@@@Z",
     Block* _this, BlockSource *bs, BlockPos *bp, Actor * actor)
 {
-    IF_EXIST(EVENT_TYPES::OnPlayerCmd)
+    IF_EXIST(EVENT_TYPES::OnBlockExploded)
     {
         CallEvent(EVENT_TYPES::OnBlockExploded,BlockClass::newBlock(_this,bp,bs),IntPos::newPos(*bp,Raw_GetBlockDimension(bs)),EntityClass::newEntity(actor));
     }
@@ -571,9 +558,9 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
             cmd = cmd.substr(1);
         
         //后台调试
+#define OUTPUT_DEBUG_SIGN() std::cout << "LiteXLoader " << LXL_SCRIPT_LANG_TYPE << ">" << std::flush
         extern bool globalDebug;
         extern std::shared_ptr<ScriptEngine> debugEngine;
-        #define OUTPUT_DEBUG_SIGN() std::cout << "LiteXLoader " << LXL_SCRIPT_LANG_TYPE << ">" << std::flush
 
         if(cmd == LXL_DEBUG_CMD)
         {
@@ -620,25 +607,15 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
                 if(cmd.find_first_of(iter->first) == 0)
                 {
                     //Matched
-                    string paras = cmd.substr(iter->first.size()+1) + " ";
+                    auto paras = SplitCmdParas(cmd.substr(iter->first.size()+1) + " ");
                     Local<Array> args = Array::newArray({String::newString(iter->first)});
-
-                    //Split Args
-                    int pos;
-                    int size = paras.size();
-                    for (int i = 0; i < size; i++)
-                    {
-                        pos = paras.find(" ", i);
-                        if (pos < size)
-                        {
-                            args.add(String::newString(paras.substr(i, pos - i)));
-                            i = pos;
-                        }
-                    }
+                    for(string para : paras)
+                        args.add(String::newString(para));
                     
                     EngineScope scope(iter->second.first);
                     if(!(iter->second.second.get().call({},args).asBoolean().value()))
                         passToOriginalCmdEvent = false;
+                    break;
                 }
         if(!passToOriginalCmdEvent)
             return false;
@@ -652,7 +629,7 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
 THook(void, "?handle@?$PacketHandlerDispatcherInstance@VModalFormResponsePacket@@$0A@@@UEBAXAEBVNetworkIdentifier@@AEAVNetEventCallback@@AEAV?$shared_ptr@VPacket@@@std@@@Z",
 	void* _this, unsigned long long id, ServerNetworkHandler* handler, void* packet)
 {
-    IF_EXIST(EVENT_TYPES::OnPlayerCmd)
+    IF_EXIST(EVENT_TYPES::OnFormSelected)
     {
         //////////////////////////////////////// ??
         Player* p = handler->_getServerPlayer(id, *(unsigned char*)packet);
@@ -676,4 +653,45 @@ THook(void, "?handle@?$PacketHandlerDispatcherInstance@VModalFormResponsePacket@
         }
     }
     original(_this, id, handler, packet);
+}
+
+
+//////////////////// Helper Funcs ////////////////////
+
+vector<string> SplitCmdParas(const string &paras)
+{
+    vector<string> res;
+
+    int pos;
+    int size = paras.size();
+    for (int i = 0; i < size; i++)
+    {
+        pos = paras.find(" ", i);
+        if (pos < size)
+        {
+            res.push_back(paras.substr(i, pos - i));
+            i = pos;
+
+            // 引号合并
+            int toIndex = res.size()-1;
+            if(res[toIndex].back() == '\"')
+                for(int fromIndex=toIndex-1;fromIndex>=0;--fromIndex)
+                    if(res[fromIndex][0] == '\"')
+                    {
+                        //最近匹配，合并
+                        string combined = res[fromIndex];
+                        for(int now=fromIndex+1;now<=toIndex;++now)
+                            combined+=res[now];
+                        for(int i=fromIndex+1;i<=toIndex;++i)
+                            res.pop_back();
+                        if(combined.front() == '\"')
+                            combined.erase(0,1);
+                        if(combined.back() == '\"')
+                            combined.pop_back();
+                        res[fromIndex] = combined;
+                        break;
+                    }
+        }
+    }
+    return res;
 }

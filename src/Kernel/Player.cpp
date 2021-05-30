@@ -17,6 +17,15 @@ string  Raw_GetXuid(Player* player)
     return offPlayer::getXUIDString(player);
 }
 
+std::string Raw_GetUuid(Player *player)
+{
+    string uuid;
+    void *data = (void*)(((uintptr_t)player) + 2832);
+    SymCall("?asString@UUID@mce@@QEBA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ",
+        string &, void*, string *)(data, &uuid);
+    return uuid;
+}
+
 string  Raw_GetRealName(Player* player)
 {
     return offPlayer::getRealName(player);
@@ -25,6 +34,12 @@ string  Raw_GetRealName(Player* player)
 string  Raw_GetIP(Player* player)
 {
     return liteloader::getIP(*offPlayer::getNetworkIdentifier(player));
+}
+
+bool Raw_GetSneaking(Player *player)
+{
+    return SymCall("?isSneaking@Actor@@QEBA_NXZ",
+        bool, Player*)(player);
 }
 
 bool  Raw_RuncmdAs(Player *player, const string &cmd)
@@ -75,6 +90,11 @@ ItemStack* Raw_GetHand(Player* player)
     return (ItemStack*)&(player->getSelectedItem());
 }
 
+ItemStack* Raw_GetOffHand(Player* player)
+{
+    return SymCall("?kill@Mob@@UEAAXXZ", ItemStack*, Player*)(player);
+}
+
 vector<ItemStack*> Raw_GetPack(Player* player)
 {
     vector<ItemStack*> res;
@@ -95,6 +115,46 @@ bool Raw_RenamePlayer(Player* player, const string &name)
 {
     player->setNameTag(name);
     return true;
+}
+///////////////////////// Add code here ///////////////////////////
+int Raw_GetScore(Player* player, const std::string &key)
+{
+    return 0;
+}
+
+bool Raw_SetScore(Player* player, const std::string &key, int value)
+{
+    return false;
+}
+
+bool Raw_AddScore(Player* player, const std::string &key, int value)
+{
+    return false;
+}
+
+bool Raw_RemoveScore(Player* player, const std::string &key)
+{
+    return false;
+}
+
+bool Raw_SetScoreBoard(Player *player, std::string title, const std::vector<std::pair<std::string,int>> &data)
+{
+    return false;
+}
+
+bool Raw_RemoveScoreBoard(Player *player)
+{
+    return false;
+}
+
+bool Raw_SetBossBar(Player *player, std::string title, float percent);
+{
+    return false;
+}
+
+bool Raw_RemoveBossBar(Player *player)
+{
+    return false;
 }
 
 vector<Player*> Raw_GetOnlinePlayers()

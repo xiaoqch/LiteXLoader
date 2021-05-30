@@ -4,6 +4,7 @@
 
 std::string Raw_GetItemName(ItemStack* item);
 std::string Raw_GetCustomName(ItemStack* item);
+std::string Raw_GetItemFullName(ItemStack* item);
 int Raw_GetItemAux(ItemStack* item);
 int Raw_GetCount(ItemStack* item);
 
