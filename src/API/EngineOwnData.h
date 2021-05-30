@@ -6,13 +6,13 @@
 #include <map>
 #include <unordered_map>
 #include <memory>
-#include "../Nlohmann/fifo_map.hpp"
-#include "../Nlohmann/json.hpp"
-#include "../Minini/minIni.h"
+#include "../Kernel/ThirdParty.h"
+#include "../Kernel/Db.h"
+using namespace script;
 
-struct EngineOwnData_MapCmp
+static struct EngineOwnData_MapCmp
 {
-    bool operator() (string const &a,string const &b) const
+    bool operator() (std::string const &a, std::string const &b) const
     {
         if(a.size()!=b.size())
             return a.size()>b.size();
@@ -20,35 +20,36 @@ struct EngineOwnData_MapCmp
             return a>b;
     }
 };
-class Player;
 
 enum GlobalConfType { json, ini };
-class minIni;
+class Player;
 
-#define CmdCallback_MapType std::map<std::string,script::Global<script::Function>,EngineOwnData_MapCmp>
 struct EngineOwnData
 {
     //BaseAPI
-    CmdCallback_MapType playerCmdCallbacks;
+    std::map<std::string, std::pair<ScriptEngine*,Global<Function>> ,EngineOwnData_MapCmp> playerCmdCallbacks;
 
     //ServerAPI
-    CmdCallback_MapType consoleCmdCallbacks;
+    std::map<std::string, std::pair<ScriptEngine*,Global<Function>> ,EngineOwnData_MapCmp> consoleCmdCallbacks;
 
     //LoggerAPI
     bool toConsole = true;
     std::ofstream fout;
     Player *player = nullptr;
-    string title = "";
+    std::string title = "";
     int logLevel = 0;
 
     //PlayerAPI
-    std::unordered_map<std::string,script::Global<script::Value>> playerDataDB;
+    std::unordered_map<std::string,Global<Value>> playerDataDB;
 
     //DB API
-    string confPath;
+    std::string confPath;
     GlobalConfType confType = GlobalConfType::json;
-    fifo_json jsonConf;
-    minIni *iniConf;
+    JSON_ROOT jsonConf;
+    INI_ROOT iniConf;
+
+    //GUI API
+    std::unordered_map<int, std::pair<ScriptEngine*,Global<Function>> > formCallbacks;
 };
 
 // 引擎附加数据

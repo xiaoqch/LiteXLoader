@@ -25,6 +25,7 @@ public:
     Local<Value> getPos();
     Local<Value> getMaxHealth();
     Local<Value> getHealth();
+    Local<Value> getInAir();
 
     Local<Value> teleport(const Arguments& args);
     Local<Value> kill(const Arguments& args);

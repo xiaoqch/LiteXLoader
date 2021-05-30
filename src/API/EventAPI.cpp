@@ -18,6 +18,10 @@
 using namespace std;
 using namespace script;
 
+//////////////////// Helper Funcs ////////////////////
+
+vector<string> SplitCmdParas(const string &paras);
+
 //////////////////// Listeners ////////////////////
 
 enum class EVENT_TYPES : int
@@ -29,7 +33,7 @@ enum class EVENT_TYPES : int
     OnOpenChest, OnCloseChest, OnOpenBarrel, OnCloseBarrel, OnChangeSlot,
     OnMobDie, OnMobHurt, OnExplode, OnBlockExploded, OnCmdBlockExecute,
     OnProjectileHit, OnPistonPush, OnUseRespawnAnchor, OnFarmLandDecay,
-    OnServerStarted, OnServerCmd,
+    OnServerStarted, OnServerCmd, OnFormSelected,
     EVENT_COUNT
 };
 static const std::unordered_map<string, EVENT_TYPES> EventsMap{
@@ -64,6 +68,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onFarmLandDecay",EVENT_TYPES::OnFarmLandDecay},
     {"onServerStarted",EVENT_TYPES::OnServerStarted},
     {"onServerCmd",EVENT_TYPES::OnServerCmd},
+    {"onFormSelected",EVENT_TYPES::OnFormSelected},
 };
 struct ListenerListType
 {
@@ -121,7 +126,7 @@ Local<Value> Listen(const Arguments& args)
     }
     catch(const std::logic_error& e)
     {
-        DEBUG("Event \""+ args[0].asString().toString() +"\" No Found!\n");
+        ERROR("Event \""+ args[0].asString().toString() +"\" No Found!\n");
         return Boolean::newBoolean(false);
     }
     CATCH("Fail to bind listener!")
@@ -133,7 +138,7 @@ void RegisterBuiltinCmds()
     //注册后台调试命令
     Raw_RegisterCmd(LXL_DEBUG_CMD, string(LXL_SCRIPT_LANG_TYPE) + " Engine Real-time Debugging", 4);
 
-    DEBUG("Builtin Cmds Registered.");
+    INFO("Builtin Cmds Registered.");
 }
 
 
@@ -190,6 +195,13 @@ void InitEventListeners()
         return true;
     });
 
+
+// For RegisterCmd...
+    Event::addEventListener([](RegCmdEV ev) {
+		CMDREG::SetCommandRegistry(ev.CMDRg);
+    });
+
+
 // ===== onServerStarted =====
     Event::addEventListener([](ServerStartedEV ev)
     {
@@ -200,11 +212,6 @@ void InitEventListeners()
         {
             CallEvent(EVENT_TYPES::OnServerStarted);
         }
-    });
-
-// For RegisterCmd...
-    Event::addEventListener([](RegCmdEV ev) {
-		CMDREG::SetCommandRegistry(ev.CMDRg);
     });
 }
 
@@ -301,30 +308,21 @@ THook(void, "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVComma
             
             // Register Callbacks
             bool passToOriginalCmdEvent = true; // not used here
-            CmdCallback_MapType *funcs = &(ENGINE_OWN_DATA()->playerCmdCallbacks);
+            auto funcs = &(ENGINE_OWN_DATA()->playerCmdCallbacks);
             if(!funcs->empty())
                 for (auto iter=funcs->begin(); iter!=funcs->end(); ++iter)
                     if(cmd.find_first_of(iter->first) == 0)
                     {
                         //Matched
-                        string paras = cmd.substr(iter->first.size()+1) + " ";
+                        auto paras = SplitCmdParas(cmd.substr(iter->first.size()+1) + " ");
                         Local<Array> args = Array::newArray({String::newString(iter->first)});
+                        for(string para : paras)
+                            args.add(String::newString(para));
 
-                        //Split Args
-                        int pos;
-                        int size = paras.size();
-                        for (int i = 0; i < size; i++)
-                        {
-                            pos = paras.find(" ", i);
-                            if (pos < size)
-                            {
-                                args.add(String::newString(paras.substr(i, pos - i)));
-                                i = pos;
-                            }
-                        }
-                        ////////////////////////////// Engine Scope???? //////////////////////////////
-                        if(!(iter->second.get().call({},PlayerClass::newPlayer(player),args).asBoolean().value()))
-                            passToOriginalCmdEvent = false;
+                        EngineScope scope(iter->second.first);
+                        if(!(iter->second.second.get().call({},PlayerClass::newPlayer(player),args).asBoolean().value()))
+                            passToOriginalCmdEvent = false;  // not used here
+                        break;
                     }
 
             CallEvent(EVENT_TYPES::OnPlayerCmd, PlayerClass::newPlayer(player), cmd);
@@ -348,15 +346,15 @@ THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@
 
 // ===== onDestroyBlock =====
 THook(bool, "?checkBlockDestroyPermissions@BlockSource@@QEAA_NAEAVActor@@AEBVBlockPos@@AEBVItemStackBase@@_N@Z",
-    BlockSource * _this, Actor* player, BlockPos* pos, ItemStack* a3, bool a4)
+    BlockSource * _this, Actor* pl, BlockPos* pos, ItemStack* a3, bool a4)
 {
     IF_EXIST(EVENT_TYPES::OnDestroyBlock)
     {
         auto block = SymCall("?getBlock@BlockSource@@QEBAAEBVBlock@@AEBVBlockPos@@@Z", Block*, BlockSource*, BlockPos*)(_this, pos);
-///////////////////////////// player? /////////////////////////////
-        CallEventEx(EVENT_TYPES::OnDestroyBlock, EntityClass::newEntity(player), BlockClass::newBlock(block,pos,_this), IntPos::newPos(pos->x, pos->y, pos->z,Raw_GetBlockDimension(_this)));
+
+        CallEventEx(EVENT_TYPES::OnDestroyBlock, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(block,pos,_this), IntPos::newPos(pos->x, pos->y, pos->z,Raw_GetBlockDimension(_this)));
     }
-    return original(_this, player, pos,a3, a4);
+    return original(_this, pl, pos,a3, a4);
 }
 
 // ===== onPlaceBlock =====
@@ -365,8 +363,7 @@ THook(bool, "?mayPlace@BlockSource@@QEAA_NAEBVBlock@@AEBVBlockPos@@EPEAVActor@@_
 {
     IF_EXIST(EVENT_TYPES::OnPlaceBlock)
     {
-/////////////////////////////////// Player? ////////////////////////////////////////
-        CallEventEx(EVENT_TYPES::OnPlaceBlock, EntityClass::newEntity(pl), BlockClass::newBlock(bl,bp,bs), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetBlockDimension(bs)));
+        CallEventEx(EVENT_TYPES::OnPlaceBlock, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(bl,bp,bs), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetBlockDimension(bs)));
     }
     return original(bs, bl, bp, a4, pl, a6);
 }
@@ -435,17 +432,11 @@ THook(void, "?containerContentChanged@LevelContainerModel@@UEAAXH@Z",
         if (v5)
         {
             ItemStack* item = (ItemStack*)(*(__int64(__fastcall**)(__int64, uintptr_t))(*(uintptr_t*)v5 + 40i64))(v5, a2);
-
             int count = offItemStack::getCount(item);
-            std::string name = offBlock::getFullName(pBlk);
-            //去掉前缀
-            if (name.find("minecraft:") != string::npos)
-                name = name.replace(name.find("minecraft:"), 10, "");
-            std::string itemName = item->getName();
             int slotNumber = a2;
             Actor* pl = v3;
-///////////////////////////// ?pl ///////////////////////////// 
-            CallEvent(EVENT_TYPES::OnChangeSlot, EntityClass::newEntity(pl), BlockClass::newBlock(pBlk,bpos,bs), slotNumber, IntPos::newPos(bpos->x, bpos->y, bpos->z, Raw_GetBlockDimension(bs)), count != 0, ItemClass::newItem(item));
+
+            CallEvent(EVENT_TYPES::OnChangeSlot, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(pBlk,bpos,bs), slotNumber, IntPos::newPos(bpos->x, bpos->y, bpos->z, Raw_GetBlockDimension(bs)), count != 0, ItemClass::newItem(item));
         }
     }
 	return original(a1, a2);
@@ -500,7 +491,7 @@ THook(bool, "?explode@Level@@UEAAXAEAVBlockSource@@PEAVActor@@AEBVVec3@@M_N3M3@Z
 THook(void, "?onExploded@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@PEAVActor@@@Z",
     Block* _this, BlockSource *bs, BlockPos *bp, Actor * actor)
 {
-    IF_EXIST(EVENT_TYPES::OnPlayerCmd)
+    IF_EXIST(EVENT_TYPES::OnBlockExploded)
     {
         CallEvent(EVENT_TYPES::OnBlockExploded,BlockClass::newBlock(_this,bp,bs),IntPos::newPos(*bp,Raw_GetBlockDimension(bs)),EntityClass::newEntity(actor));
     }
@@ -569,9 +560,9 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
             cmd = cmd.substr(1);
         
         //后台调试
+#define OUTPUT_DEBUG_SIGN() std::cout << "LiteXLoader " << LXL_SCRIPT_LANG_TYPE << ">" << std::flush
         extern bool globalDebug;
         extern std::shared_ptr<ScriptEngine> debugEngine;
-        #define OUTPUT_DEBUG_SIGN() std::cout << "LiteXLoader " << LXL_SCRIPT_LANG_TYPE << ">" << std::flush
 
         if(cmd == LXL_DEBUG_CMD)
         {
@@ -612,30 +603,21 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
 
         // Register Callbacks
         bool passToOriginalCmdEvent = true;
-        CmdCallback_MapType *funcs = &(ENGINE_OWN_DATA()->consoleCmdCallbacks);
+        auto funcs = &(ENGINE_OWN_DATA()->consoleCmdCallbacks);
         if(!funcs->empty())
             for (auto iter=funcs->begin(); iter!=funcs->end(); ++iter)
                 if(cmd.find_first_of(iter->first) == 0)
                 {
                     //Matched
-                    string paras = cmd.substr(iter->first.size()+1) + " ";
+                    auto paras = SplitCmdParas(cmd.substr(iter->first.size()+1) + " ");
                     Local<Array> args = Array::newArray({String::newString(iter->first)});
-
-                    //Split Args
-                    int pos;
-                    int size = paras.size();
-                    for (int i = 0; i < size; i++)
-                    {
-                        pos = paras.find(" ", i);
-                        if (pos < size)
-                        {
-                            args.add(String::newString(paras.substr(i, pos - i)));
-                            i = pos;
-                        }
-                    }
-                    ////////////////////////////// Engine Scope???? //////////////////////////////
-                    if(!(iter->second.get().call({},PlayerClass::newPlayer(player),args).asBoolean().value()))
+                    for(string para : paras)
+                        args.add(String::newString(para));
+                    
+                    EngineScope scope(iter->second.first);
+                    if(!(iter->second.second.get().call({},args).asBoolean().value()))
                         passToOriginalCmdEvent = false;
+                    break;
                 }
         if(!passToOriginalCmdEvent)
             return false;
@@ -643,4 +625,75 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
         CallEventEx(EVENT_TYPES::OnServerCmd, cmd);
     }
     return original(_this, a2, x, a4);
+}
+
+// ===== onFormSelected =====
+THook(void, "?handle@?$PacketHandlerDispatcherInstance@VModalFormResponsePacket@@$0A@@@UEBAXAEBVNetworkIdentifier@@AEAVNetEventCallback@@AEAV?$shared_ptr@VPacket@@@std@@@Z",
+	void* _this, unsigned long long id, ServerNetworkHandler* handler, void* packet)
+{
+    IF_EXIST(EVENT_TYPES::OnFormSelected)
+    {
+        //////////////////////////////////////// ??
+        Player* p = handler->_getServerPlayer(*(NetworkIdentifier*)(void*)id, *(unsigned char*)packet);
+        if (p)
+        {
+            unsigned formId = dAccess<unsigned>(packet,48);
+            string data = dAccess<string>(packet,56);
+
+            if (data.back() == '\n')
+                data.pop_back();
+            
+            // Form Callbacks
+            bool passToBDS = true; // not used here
+            auto callback = &(ENGINE_OWN_DATA()->formCallbacks[formId]);
+            
+            EngineScope scope(callback->first);
+            if(!(callback->second.get().call({},String::newString(data)).asBoolean().value()))
+                passToBDS = false;   // not used here
+            
+            // No CallEvent here
+        }
+    }
+    original(_this, id, handler, packet);
+}
+
+
+//////////////////// Helper Funcs ////////////////////
+
+vector<string> SplitCmdParas(const string &paras)
+{
+    vector<string> res;
+
+    int pos;
+    int size = paras.size();
+    for (int i = 0; i < size; i++)
+    {
+        pos = paras.find(" ", i);
+        if (pos < size)
+        {
+            res.push_back(paras.substr(i, pos - i));
+            i = pos;
+
+            // 引号合并
+            int toIndex = res.size()-1;
+            if(res[toIndex].back() == '\"')
+                for(int fromIndex=toIndex-1;fromIndex>=0;--fromIndex)
+                    if(res[fromIndex][0] == '\"')
+                    {
+                        //最近匹配，合并
+                        string combined = res[fromIndex];
+                        for(int now=fromIndex+1;now<=toIndex;++now)
+                            combined+=res[now];
+                        for(int i=fromIndex+1;i<=toIndex;++i)
+                            res.pop_back();
+                        if(combined.front() == '\"')
+                            combined.erase(0,1);
+                        if(combined.back() == '\"')
+                            combined.pop_back();
+                        res[fromIndex] = combined;
+                        break;
+                    }
+        }
+    }
+    return res;
 }

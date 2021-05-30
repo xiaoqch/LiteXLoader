@@ -10,6 +10,11 @@ string Raw_GetBlockName(Block* block)
     return string(blockname);
 }
 
+std::string Raw_GetBlockFullName(Block* block)
+{
+    return offBlock::getFullName(block);
+}
+
 //GetBlockDimension_Helper
 class AutomaticID<class Dimension, int> GetDimensionId(BlockSource *bs)
 {

@@ -1,12 +1,14 @@
 #include "ScriptX.h"
 #include "API/APIhelp.h"
-#include "Kernel/ConfigHelp.h"
+#include "API/EngineOwnData.h"
+#include "Kernel/Db.h"
 #include <list>
 #include <string>
 #include <vector>
 #include <fstream>
 #include <filesystem>
 #include <exception>
+#include <memory>
 #include "Configs.h"
 using namespace script;
 
@@ -17,6 +19,9 @@ std::vector<std::string> depends;
 //前置声明
 extern std::list<std::shared_ptr<ScriptEngine>> modules;
 void BindAPIs(std::shared_ptr<ScriptEngine> engine);
+
+// 配置文件
+extern INI_ROOT iniConf;
 
 //读取辅助函数
 std::string ReadFileFrom(const std::string &filePath)
@@ -49,7 +54,7 @@ void LoadBaseLib()
 //预加载依赖库
 void LoadDepends()
 {
-    std::filesystem::directory_iterator deps(conf::getString("Main","DependsDir",LXL_SCRIPT_DEPENDS_DIR));
+    std::filesystem::directory_iterator deps(Raw_IniGetString(iniConf,"Main","DependsDir",LXL_SCRIPT_DEPENDS_DIR));
     for (auto& i : deps) {
         if (i.is_regular_file() && i.path().extension() == LXL_PLUGINS_SUFFIX)
         {
@@ -78,6 +83,7 @@ void LoadScriptFile(const std::string& filePath)
 
     //启动引擎
     std::shared_ptr<ScriptEngine> engine = NewEngine();
+    engine->setData(std::make_shared<EngineOwnData>());
     modules.push_back(engine);
     EngineScope enter(engine.get());
 
@@ -107,7 +113,7 @@ void LoadScriptFile(const std::string& filePath)
 void LoadPlugins()
 {
     INFO("Loading plugins...");
-    std::filesystem::directory_iterator files(conf::getString("Main","PluginsDir",LXL_DEF_LOAD_DIR));
+    std::filesystem::directory_iterator files(Raw_IniGetString(iniConf,"Main","PluginsDir",LXL_DEF_LOAD_DIR));
     for (auto& i : files) {
         if (i.is_regular_file() && i.path().extension() == LXL_PLUGINS_SUFFIX)
         {

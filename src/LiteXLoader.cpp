@@ -1,7 +1,7 @@
 ﻿// Ignore error below
 #include "ScriptX.h"
 #include "API/APIhelp.h"
-#include "Kernel/ConfigHelp.h"
+#include "Kernel/Db.h"
 #include <windows.h>
 #include <string>
 #include <exception>
@@ -17,6 +17,8 @@ std::shared_ptr<ScriptEngine> globalEngine;
 //调试引擎
 std::shared_ptr<ScriptEngine> debugEngine;
 bool globalDebug = false;
+// 配置文件
+INI_ROOT iniConf;
 
 void LoadBaseLib();
 void LoadDepends();
@@ -29,11 +31,13 @@ void entry()
     INFO(std::string("====== LiteXLoader Script Plugin Loader for ") + LXL_SCRIPT_LANG_TYPE +" ======");
     INFO(std::string("Version ") + LXL_VERSION);
 
+    iniConf = Raw_IniOpen(LXL_CONFIG_PATH);
     LoadBaseLib();
     LoadDepends();
-
+    
     LoadPlugins();
     InitGlobalData();
+    Raw_IniClose(iniConf);
 }
 
 /////////////////////////////////////////////
@@ -49,7 +53,7 @@ void InitGlobalData()
 
     // GC循环
     std::thread([]() {
-        std::this_thread::sleep_for(std::chrono::seconds(conf::getInt("Advanced","GCInterval",20)));
+        std::this_thread::sleep_for(std::chrono::seconds(Raw_IniGetInt(iniConf,"Advanced","GCInterval",20)));
         for(auto engine : modules)
         {
             EngineScope enter(engine.get());

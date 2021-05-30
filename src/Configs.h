@@ -2,7 +2,7 @@
 #include "ScriptX.h"
 
 ////////////// Configs //////////////
-#define LXL_VERSION "0.0.6"
+#define LXL_VERSION "0.0.3"
 
 // 后端宏
 #if defined(SCRIPTX_LANG_JAVASCRIPT)

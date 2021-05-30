@@ -22,7 +22,7 @@ Local<Value> HttpRequestSync(const Arguments& args)
 
 Local<Value> HttpRequestAsync(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args,3)
+    CHECK_ARGS_COUNT(args,4)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
     CHECK_ARG_TYPE(args[1],ValueKind::kString)
     CHECK_ARG_TYPE(args[2],ValueKind::kString)
@@ -30,10 +30,13 @@ Local<Value> HttpRequestAsync(const Arguments& args)
 
     try{
         Global<Function> callbackFunc{args[3].asFunction()};
+        
         return Boolean::newBoolean(Raw_HttpRequestAsync(args[0].toStr(),args[1].toStr(),args[2].toStr(),
-            [callback{std::move(callbackFunc)}](int status,string data){
-                ////////////////////////////// Engine Scope???? //////////////////////////////
-                callback.get().call({},Number::newNumber(status),String::newString(data));
+            [callback{std::move(callbackFunc)},engine{EngineScope::currentEngine()}]
+                (int status,string data)
+        {
+            EngineScope scope(engine);
+            callback.get().call({},Number::newNumber(status),String::newString(data));
         }));
     }
     CATCH("Fail in HttpRequestAsync")

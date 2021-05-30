@@ -154,28 +154,24 @@ Local<Value> RegisterPlayerCmd(const Arguments& args)
     CHECK_ARGS_COUNT(args,2)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
     CHECK_ARG_TYPE(args[1],ValueKind::kString)
-    if(args.size() >= 3)
-        CHECK_ARG_TYPE(args[2],ValueKind::kNumber)
+    CHECK_ARG_TYPE(args[2],ValueKind::kFunction)
+        
     if(args.size() >= 4)
-        CHECK_ARG_TYPE(args[3],ValueKind::kFunction)
+        CHECK_ARG_TYPE(args[3],ValueKind::kNumber)
 
     try{
         string cmd = args[0].asString().toString();
         int level = 0;
+        (ENGINE_OWN_DATA()->playerCmdCallbacks)[cmd] = {EngineScope::currentEngine(),args[2].asFunction()};
 
-        if(args.size() >= 3)
+        if(args.size() >= 4)
         {
-            int newLevel = args[2].asNumber().toInt32();
+            int newLevel = args[3].asNumber().toInt32();
             if(newLevel >= 0 && newLevel <= 3)
                 level = newLevel;
         }
-        if(args.size() >= 4)
-        {
-            (ENGINE_OWN_DATA()->playerCmdCallbacks)[cmd] = args[3].asFunction();
-        }
 
         Raw_RegisterCmd(cmd,args[1].asString().toString(),level);
-
         return Boolean::newBoolean(true);
     }
     CATCH("Fail in RegisterPlayerCmd!")
@@ -186,15 +182,12 @@ Local<Value> RegisterConsoleCmd(const Arguments& args)
     CHECK_ARGS_COUNT(args,2)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
     CHECK_ARG_TYPE(args[1],ValueKind::kString)
-    if(args.size() >= 3)
-        CHECK_ARG_TYPE(args[2],ValueKind::kFunction)
+    CHECK_ARG_TYPE(args[2],ValueKind::kFunction)
 
     try{
         string cmd = args[0].asString().toString();
-        if(args.size() >= 3)
-        {
-            (ENGINE_OWN_DATA()->consoleCmdCallbacks)[cmd] = args[2].asFunction();
-        }
+        (ENGINE_OWN_DATA()->consoleCmdCallbacks)[cmd] = {EngineScope::currentEngine(),args[2].asFunction()};
+
         Raw_RegisterCmd(cmd,args[1].asString().toString(),4);
 
         return Boolean::newBoolean(true);

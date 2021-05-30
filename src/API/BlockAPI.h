@@ -12,7 +12,7 @@ private:
     Block *block;
 
     // Pre data
-    std::string name;
+    std::string name,customName;
     IntVec4 pos;
 
 public:
@@ -32,6 +32,7 @@ public:
     static Block* extractBlock(Local<Value> v);
 
     Local<Value> getName();
+    Local<Value> getCustomName();
     Local<Value> getPos();
 };
 

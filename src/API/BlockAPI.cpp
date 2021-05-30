@@ -18,14 +18,16 @@ ClassDefine<BlockClass> BlockClassBuilder =
 BlockClass::BlockClass(Block *p)
     :ScriptClass(ScriptClass::ConstructFromCpp<BlockClass>{}),block(p)
 {
-    name = Raw_GetBlockName(block);
+    name = Raw_GetBlockFullName(block);
+    customName = Raw_GetBlockName(block);
     pos = {0,0,0,-1};
 }
 
 BlockClass::BlockClass(Block *p, BlockPos bp, int dim)
     :ScriptClass(ScriptClass::ConstructFromCpp<BlockClass>{}),block(p)
 {
-    name = Raw_GetBlockName(block);
+    name = Raw_GetBlockFullName(block);
+    customName = Raw_GetBlockName(block);
     pos = {bp.x,bp.y,bp.z,dim};
 }
 
@@ -68,6 +70,15 @@ Local<Value> BlockClass::getName()
     try{
         //return String::newString(Raw_GetBlockName(block));
         return String::newString(name);
+    }
+    CATCH("Fail in GetBlockName!")
+}
+
+Local<Value> BlockClass::getCustomName()
+{
+    try{
+        //return String::newString(Raw_GetBlockName(block));
+        return String::newString(customName);
     }
     CATCH("Fail in GetBlockName!")
 }

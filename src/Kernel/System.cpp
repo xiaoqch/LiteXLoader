@@ -7,6 +7,7 @@
 #include <thread>
 #include <functional>
 #include <objbase.h>
+#include <windows.h>
 using namespace std;
 
 string Raw_GetDateTimeStr()
@@ -58,6 +59,87 @@ bool Raw_FileWriteAll(const std::string &path, const std::string &data)
         return false;
     fileWrite << data;
     return fileWrite.good();
+}
+
+/////////////////// String Helper ///////////////////
+wchar_t* str2wstr(string str)  
+{  
+    auto len = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), (int)str.size(), NULL, 0);  
+    wchar_t* buffer = new wchar_t[len + 1];
+    MultiByteToWideChar(CP_UTF8, 0, str.c_str(), (int)str.size(), buffer, len);  
+    buffer[len] = '\0';
+
+    return buffer;
+}
+string wstr2str(wstring wstr)  
+{  
+    auto len = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.size(), NULL, 0, NULL, NULL);  
+    char* buffer = new char[len + 1];  
+    WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.size(), buffer, len, NULL, NULL);  
+    buffer[len] = '\0';  
+
+    string result = string(buffer);  
+    delete[] buffer;  
+    return result;  
+}
+/////////////////// String Helper ///////////////////
+
+bool Raw_SystemCmd(const std::string &cmd, std::function<void(int,std::string)> callback, int timeLimit)
+{
+    SECURITY_ATTRIBUTES sa;
+	HANDLE hRead,hWrite;
+	sa.nLength = sizeof(SECURITY_ATTRIBUTES);
+	sa.lpSecurityDescriptor = NULL;
+	sa.bInheritHandle = TRUE;
+ 
+	if (!CreatePipe(&hRead,&hWrite,&sa,0))
+		return false;
+	STARTUPINFOW si = {0};
+	PROCESS_INFORMATION pi;
+ 
+	si.cb = sizeof(STARTUPINFO);
+	GetStartupInfoW(&si); 
+	si.hStdOutput = si.hStdError = hWrite;
+	si.dwFlags = STARTF_USESTDHANDLES;
+ 
+    auto wCmd = str2wstr(cmd);
+	if (!CreateProcessW(NULL,wCmd,NULL,NULL,TRUE,NULL,NULL,NULL,&si,&pi))
+	{
+        delete [] wCmd;
+		return false;
+	}
+	CloseHandle(hWrite);
+    CloseHandle(pi.hThread);
+ 
+    std::thread([hRead{std::move(hRead)},hProcess{std::move(pi.hProcess)},
+        callback{std::move(callback)},timeLimit{std::move(timeLimit)}, wCmd{std::move(wCmd)}] ()
+    {
+        if(timeLimit == -1)
+            WaitForSingleObject(hProcess,INFINITE);
+        else
+        {
+            WaitForSingleObject(hProcess,timeLimit);
+            TerminateProcess(hProcess,-1);
+        }
+        wchar_t buffer[4096] = {0};
+        wstring strOutput;
+        DWORD bytesRead,exitCode;
+
+        delete [] wCmd;
+        GetExitCodeProcess(hProcess,&exitCode);
+        while (true)
+        {
+            if (!ReadFile(hRead,buffer,4096,&bytesRead,NULL))
+                break;
+            strOutput.append(buffer,bytesRead);
+        }
+        CloseHandle(hRead);
+        CloseHandle(hProcess);
+
+        callback((int)exitCode,wstr2str(strOutput));
+    }).detach();
+
+    return true;
 }
 
 std::pair<int,std::string> Raw_HttpRequestSync(const std::string &url,const std::string &method,const std::string &data)
