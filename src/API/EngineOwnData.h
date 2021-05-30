@@ -50,9 +50,6 @@ struct EngineOwnData
 
     //GUI API
     std::unordered_map<int, std::pair<ScriptEngine*,Global<Function>> > formCallbacks;
-
-    //FileSystem API
-    std::unordered_map<unsigned long long, std::pair<ScriptEngine*,Global<Function>> > systemCmdCallbacks;
 };
 
 // 引擎附加数据

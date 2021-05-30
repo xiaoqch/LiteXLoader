@@ -8,4 +8,4 @@ typedef unsigned char uchar;
 #define LiteLoaderVersion "1.0.2"
 #define LiteLoaderVersionNum (unsigned short)8
 
-#define LiteLoaderVersionGithub LiteLoaderVersion"-Ci-8f92857_1620181408"
+#define LiteLoaderVersionGithub LiteLoaderVersion"-Ci-8baa443_1622373144"

@@ -17,7 +17,7 @@ Local<Value> DirCreate(const Arguments& args)
     }
     catch(const filesystem_error& e)
     {
-        DEBUG("Fail to Create Dir "+ args[0].asString().toString() +"!\n");
+        ERROR("Fail to Create Dir "+ args[0].asString().toString() +"!\n");
         return Boolean::newBoolean(false);
     }
     CATCH("Fail in CreateDir!")
@@ -34,7 +34,7 @@ Local<Value> PathDelete(const Arguments& args)
     }
     catch(const filesystem_error& e)
     {
-        DEBUG("Fail to Delete "+ args[0].asString().toString() +"!\n");
+        ERROR("Fail to Delete "+ args[0].asString().toString() +"!\n");
         return Boolean::newBoolean(false);
     }
     CATCH("Fail in DeletePath!")
@@ -50,7 +50,7 @@ Local<Value> PathExists(const Arguments& args)
     }
     catch(const filesystem_error& e)
     {
-        DEBUG("Fail to Check "+ args[0].asString().toString() +"!\n");
+        ERROR("Fail to Check "+ args[0].asString().toString() +"!\n");
         return Boolean::newBoolean(false);
     }
     CATCH("Fail in ExistsPath!")
@@ -68,7 +68,7 @@ Local<Value> PathCopy(const Arguments& args)
     }
     catch(const filesystem_error& e)
     {
-        DEBUG("Fail to Copy "+ args[0].asString().toString() +"!\n");
+        ERROR("Fail to Copy "+ args[0].asString().toString() +"!\n");
         return Boolean::newBoolean(false);
     }
     CATCH("Fail in CopyPath!")
@@ -86,7 +86,7 @@ Local<Value> PathRename(const Arguments& args)
     }
     catch(const filesystem_error& e)
     {
-        DEBUG("Fail to Rename "+ args[0].asString().toString() +"!\n");
+        ERROR("Fail to Rename "+ args[0].asString().toString() +"!\n");
         return Boolean::newBoolean(false);
     }
     CATCH("Fail in RenamePath!")
@@ -105,7 +105,7 @@ Local<Value> PathMove(const Arguments& args)
     }
     catch(const filesystem_error& e)
     {
-        DEBUG("Fail to Move "+ args[0].asString().toString() +"!\n");
+        ERROR("Fail to Move "+ args[0].asString().toString() +"!\n");
         return Boolean::newBoolean(false);
     }
     CATCH("Fail in MovePath!")
@@ -155,13 +155,23 @@ Local<Value> FileWriteLine(const Arguments& args)
 
 Local<Value> SystemCmd(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args,1)
+    CHECK_ARGS_COUNT(args,2)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
+    CHECK_ARG_TYPE(args[1],ValueKind::kFunction)
+    if(args.size() >= 3)
+        CHECK_ARG_TYPE(args[2],ValueKind::kNumber)
 
-    try
-    {
-        ///////////////////////// Add code here /////////////////////////
-        return Boolean::newBoolean(true);
+    try{
+        Global<Function> callbackFunc{args[1].asFunction()};
+        
+        return Boolean::newBoolean(Raw_SystemCmd(args[0].toStr(),
+            [callback{std::move(callbackFunc)},engine{EngineScope::currentEngine()}]
+                (int exitCode,string output)
+        {
+            EngineScope scope(engine);
+            callback.get().call({},Number::newNumber(exitCode),String::newString(output));
+        }
+        ,args.size() >= 3 ? args[2].toInt() : -1));
     }
-    CATCH("Fail in SystemCmd!")
+    CATCH("Fail in SystemCmd")
 }

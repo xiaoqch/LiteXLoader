@@ -59,12 +59,12 @@ bool Raw_KillPlayer(Player* player)
     return true;
 }
 
-int  Raw_GetPlayerPermLevel(Player* player)
+int Raw_GetPlayerPermLevel(Player* player)
 {
     return (int)WPlayer(*player).getPermLvl();
 }
 
-bool  Raw_SetPlayerPermLevel(Player* player, int permLevel)
+bool Raw_SetPlayerPermLevel(Player* player, int permLevel)
 {
     ((ServerPlayer*)player)->setPermissions((CommandPermissionLevel)permLevel);
     return true;
@@ -79,7 +79,7 @@ bool Raw_KickPlayer(Player* player, const string &msg)
     return true;
 }
 
-bool  Raw_Tell(Player* player, const string &text, TextType type)
+bool Raw_Tell(Player* player, const string &text, TextType type)
 {
     WPlayer(*player).sendText(text,type);
     return true;
@@ -92,7 +92,7 @@ ItemStack* Raw_GetHand(Player* player)
 
 ItemStack* Raw_GetOffHand(Player* player)
 {
-    return SymCall("?kill@Mob@@UEAAXXZ", ItemStack*, Player*)(player);
+    return SymCall("?getOffhandSlot@Actor@@QEBAAEBVItemStack@@XZ", ItemStack*, Player*)(player);
 }
 
 vector<ItemStack*> Raw_GetPack(Player* player)
@@ -147,7 +147,7 @@ bool Raw_RemoveScoreBoard(Player *player)
     return false;
 }
 
-bool Raw_SetBossBar(Player *player, std::string title, float percent);
+bool Raw_SetBossBar(Player *player, std::string title, float percent)
 {
     return false;
 }

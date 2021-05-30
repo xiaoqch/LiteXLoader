@@ -149,7 +149,7 @@ Local<Value> PlayerClass::getIP()
     CATCH("Fail in GetIP!")
 }
 
-Local<Value> getSneaking()
+Local<Value> PlayerClass::getSneaking()
 {
     try{
         return Boolean::newBoolean(Raw_GetSneaking(player));

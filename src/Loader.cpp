@@ -1,5 +1,6 @@
 #include "ScriptX.h"
 #include "API/APIhelp.h"
+#include "API/EngineOwnData.h"
 #include "Kernel/Db.h"
 #include <list>
 #include <string>
@@ -7,6 +8,7 @@
 #include <fstream>
 #include <filesystem>
 #include <exception>
+#include <memory>
 #include "Configs.h"
 using namespace script;
 
@@ -81,6 +83,7 @@ void LoadScriptFile(const std::string& filePath)
 
     //启动引擎
     std::shared_ptr<ScriptEngine> engine = NewEngine();
+    engine->setData(std::make_shared<EngineOwnData>());
     modules.push_back(engine);
     EngineScope enter(engine.get());
 

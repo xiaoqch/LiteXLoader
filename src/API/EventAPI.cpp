@@ -126,7 +126,7 @@ Local<Value> Listen(const Arguments& args)
     }
     catch(const std::logic_error& e)
     {
-        DEBUG("Event \""+ args[0].asString().toString() +"\" No Found!\n");
+        ERROR("Event \""+ args[0].asString().toString() +"\" No Found!\n");
         return Boolean::newBoolean(false);
     }
     CATCH("Fail to bind listener!")
@@ -138,7 +138,7 @@ void RegisterBuiltinCmds()
     //注册后台调试命令
     Raw_RegisterCmd(LXL_DEBUG_CMD, string(LXL_SCRIPT_LANG_TYPE) + " Engine Real-time Debugging", 4);
 
-    DEBUG("Builtin Cmds Registered.");
+    INFO("Builtin Cmds Registered.");
 }
 
 
@@ -195,6 +195,13 @@ void InitEventListeners()
         return true;
     });
 
+
+// For RegisterCmd...
+    Event::addEventListener([](RegCmdEV ev) {
+		CMDREG::SetCommandRegistry(ev.CMDRg);
+    });
+
+
 // ===== onServerStarted =====
     Event::addEventListener([](ServerStartedEV ev)
     {
@@ -205,11 +212,6 @@ void InitEventListeners()
         {
             CallEvent(EVENT_TYPES::OnServerStarted);
         }
-    });
-
-// For RegisterCmd...
-    Event::addEventListener([](RegCmdEV ev) {
-		CMDREG::SetCommandRegistry(ev.CMDRg);
     });
 }
 
@@ -344,7 +346,7 @@ THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@
 
 // ===== onDestroyBlock =====
 THook(bool, "?checkBlockDestroyPermissions@BlockSource@@QEAA_NAEAVActor@@AEBVBlockPos@@AEBVItemStackBase@@_N@Z",
-    BlockSource * _this, Actor* player, BlockPos* pos, ItemStack* a3, bool a4)
+    BlockSource * _this, Actor* pl, BlockPos* pos, ItemStack* a3, bool a4)
 {
     IF_EXIST(EVENT_TYPES::OnDestroyBlock)
     {
@@ -352,7 +354,7 @@ THook(bool, "?checkBlockDestroyPermissions@BlockSource@@QEAA_NAEAVActor@@AEBVBlo
 
         CallEventEx(EVENT_TYPES::OnDestroyBlock, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(block,pos,_this), IntPos::newPos(pos->x, pos->y, pos->z,Raw_GetBlockDimension(_this)));
     }
-    return original(_this, player, pos,a3, a4);
+    return original(_this, pl, pos,a3, a4);
 }
 
 // ===== onPlaceBlock =====
@@ -632,7 +634,7 @@ THook(void, "?handle@?$PacketHandlerDispatcherInstance@VModalFormResponsePacket@
     IF_EXIST(EVENT_TYPES::OnFormSelected)
     {
         //////////////////////////////////////// ??
-        Player* p = handler->_getServerPlayer(id, *(unsigned char*)packet);
+        Player* p = handler->_getServerPlayer(*(NetworkIdentifier*)(void*)id, *(unsigned char*)packet);
         if (p)
         {
             unsigned formId = dAccess<unsigned>(packet,48);
