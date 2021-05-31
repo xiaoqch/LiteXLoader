@@ -12,7 +12,7 @@ Local<Value> DirCreate(const Arguments& args)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
 
     try{
-        create_directory(args[0].asString().toString());
+        Raw_DirCreate(args[0].asString().toString());
         return Boolean::newBoolean(true);
     }
     catch(const filesystem_error& e)

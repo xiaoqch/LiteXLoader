@@ -592,7 +592,9 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
             try
             {
                 if(cmd == "stop")
+                {
                     WARN("请先退出Debug实时调试模式再使用stop！");
+                }
                 else
                 {
                     auto result = debugEngine->eval(cmd);
