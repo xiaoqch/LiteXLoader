@@ -35,6 +35,11 @@ string Raw_RandomGuid()
     return string(dst);
 }
 
+bool Raw_DirCreate(const string &path)
+{
+    return filesystem::create_directories(path);
+}
+
 bool Raw_PathExists(const string &path)
 {
     return filesystem::exists(path);

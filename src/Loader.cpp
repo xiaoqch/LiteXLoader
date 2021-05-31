@@ -131,8 +131,8 @@ void LoadPlugins()
                 EngineScope enter(lxlModules.back().get());
                 ERROR("Fail to load " + i.path().filename().string() + "!\n");
                 ERRPRINT(e);
-                //modules.pop_back();
-                //////////////////////////// FIX HERE ////////////////////////////
+                ExitEngineScope exit;
+                lxlModules.pop_back();
             }
             catch(std::exception& e)
             {
