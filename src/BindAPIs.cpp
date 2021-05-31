@@ -53,9 +53,6 @@ void BindAPIs(std::shared_ptr<ScriptEngine> engine)
     extern ClassDefine<void> FileClassBuilder;
     engine->registerNativeClass(FileClassBuilder);
 
-    extern ClassDefine<void> ServerClassBuilder;
-    engine->registerNativeClass(ServerClassBuilder);
-
     extern ClassDefine<void> LoggerClassBuilder;
     engine->registerNativeClass(LoggerClassBuilder);
 

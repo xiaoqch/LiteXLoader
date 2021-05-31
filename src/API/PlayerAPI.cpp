@@ -4,6 +4,7 @@
 #include "ItemAPI.h"
 #include "GuiAPI.h"
 #include "EngineOwnData.h"
+#include "EngineGlobalData.h"
 #include "../Kernel/Player.h"
 #include "../Kernel/Entity.h"
 #include "../Kernel/Gui.h"
@@ -443,7 +444,7 @@ Local<Value> PlayerClass::sendSimpleForm(const Arguments& args)
         }
         
         int formId = Raw_SendSimpleForm(player,title,content,buttons);
-        (ENGINE_OWN_DATA()->formCallbacks)[formId] = {EngineScope::currentEngine(),args[3].asFunction()};
+        formCallbacks[formId] = {EngineScope::currentEngine(),args[3].asFunction()};
 
         return Number::newNumber(formId);
     }
@@ -472,7 +473,7 @@ Local<Value> PlayerClass::sendModelForm(const Arguments& args)
         }
         
         int formId = Raw_SendModalForm(player,title,content,button1,button2);
-        (ENGINE_OWN_DATA()->formCallbacks)[formId] = {EngineScope::currentEngine(),args[4].asFunction()};
+        formCallbacks[formId] = {EngineScope::currentEngine(),args[4].asFunction()};
         
         return Number::newNumber(formId);
     }
@@ -507,7 +508,7 @@ Local<Value> PlayerClass::sendForm(const Arguments& args)
         }
         
         int formId = Raw_SendCustomForm(player,data);
-        (ENGINE_OWN_DATA()->formCallbacks)[formId] = {EngineScope::currentEngine(),args[1].asFunction()};
+        formCallbacks[formId] = {EngineScope::currentEngine(),args[1].asFunction()};
         
         return Number::newNumber(formId);
     }

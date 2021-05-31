@@ -1,17 +1,19 @@
 ﻿// Ignore error below
 #include "ScriptX.h"
 #include "API/APIhelp.h"
+#include "API/EngineOwnData.h"
 #include "Kernel/Db.h"
 #include <windows.h>
 #include <string>
 #include <exception>
 #include <thread>
 #include <chrono>
+#include <memory>
 #include "Configs.h"
 using namespace script;
 
 //主引擎表
-std::list<std::shared_ptr<ScriptEngine>> modules;
+std::list<std::shared_ptr<ScriptEngine>> lxlModules;
 //消息分发引擎
 std::shared_ptr<ScriptEngine> globalEngine;
 //调试引擎
@@ -54,15 +56,18 @@ void InitGlobalData()
     // GC循环
     std::thread([]() {
         std::this_thread::sleep_for(std::chrono::seconds(Raw_IniGetInt(iniConf,"Advanced","GCInterval",20)));
-        for(auto engine : modules)
+        for(auto engine : lxlModules)
         {
             EngineScope enter(engine.get());
             engine->messageQueue()->loopQueue(utils::MessageQueue::LoopType::kLoopOnce);
         }
+        globalEngine->messageQueue()->loopQueue(utils::MessageQueue::LoopType::kLoopOnce);
+        debugEngine->messageQueue()->loopQueue(utils::MessageQueue::LoopType::kLoopOnce);
     }).detach();
 
     //后台调试
     debugEngine = NewEngine();
+    debugEngine->setData(std::make_shared<EngineOwnData>());
     EngineScope enter(debugEngine.get());
     try{
         BindAPIs(debugEngine);

@@ -162,7 +162,7 @@ Local<Value> RegisterPlayerCmd(const Arguments& args)
     try{
         string cmd = args[0].asString().toString();
         int level = 0;
-        (ENGINE_OWN_DATA()->playerCmdCallbacks)[cmd] = {EngineScope::currentEngine(),args[2].asFunction()};
+        (ENGINE_OWN_DATA()->playerCmdCallbacks)[cmd] = args[2].asFunction();
 
         if(args.size() >= 4)
         {
@@ -185,10 +185,13 @@ Local<Value> RegisterConsoleCmd(const Arguments& args)
     CHECK_ARG_TYPE(args[2],ValueKind::kFunction)
 
     try{
+        DEBUG("Enter RegisterConsoleCmd API");
         string cmd = args[0].asString().toString();
-        (ENGINE_OWN_DATA()->consoleCmdCallbacks)[cmd] = {EngineScope::currentEngine(),args[2].asFunction()};
+        (ENGINE_OWN_DATA()->consoleCmdCallbacks)[cmd] = args[2].asFunction();
 
+        DEBUG("Before Raw_RegisterCmd");
         Raw_RegisterCmd(cmd,args[1].asString().toString(),4);
+        DEBUG("After Raw_RegisterCmd");
 
         return Boolean::newBoolean(true);
     }

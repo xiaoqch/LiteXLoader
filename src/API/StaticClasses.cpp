@@ -18,7 +18,7 @@ class McClass
 public:
     static Local<Value> runcmd(const Arguments& args) { return Runcmd(args); }
     static Local<Value> runcmdEx(const Arguments& args) { return RuncmdEx(args); }
-    static Local<Value> registerCmd(const Arguments& args) { return RegisterPlayerCmd(args); }
+    static Local<Value> addPlayerCmd(const Arguments& args) { return RegisterPlayerCmd(args); }
 
     static Local<Value> listen(const Arguments& args) { return Listen(args); }
 
@@ -28,18 +28,26 @@ public:
 
     static Local<Value> newForm(const Arguments& args) { return NewForm(args); }
     static Local<Value> cancelForm(const Arguments& args) { return CancelForm(args); }
+
+    static Local<Value> addConsoleCmd(const Arguments& args) { return RegisterConsoleCmd(args); }
+    static Local<Value> setMotd(const Arguments& args) { return SetMotd(args); }
+    static Local<Value> setOnlinePlayer(const Arguments& args) { return SetOnlinePlayer(args); }
 };
 ClassDefine<void> McClassBuilder =
     defineClass("mc")
         .function("runcmd", &McClass::runcmd)
         .function("runcmdEx", &McClass::runcmdEx)
-        .function("registerCmd", &McClass::registerCmd)
+        .function("addPlayerCmd", &McClass::addPlayerCmd)
         .function("listen", &McClass::listen)
         .function("getPlayer", &McClass::getPlayer)
         .function("getOnlinePlayers", &McClass::getOnlinePlayers)
         .function("getBlock", &McClass::getBlock)
         .function("newForm", &McClass::newForm)
         .function("cancelForm", &McClass::cancelForm)
+
+        .function("addConsoleCmd", &McClass::addConsoleCmd)
+        .function("setMotd", &McClass::setMotd)
+        .function("setOnlinePlayer", &McClass::setOnlinePlayer)
         .build();
 
 
@@ -90,24 +98,6 @@ ClassDefine<void> FileClassBuilder =
         .function("delete", &FileClass::del)
         .function("exists", &FileClass::exists)
         .build();
-
-
-class ServerClass
-{
-public:
-    static Local<Value> registerCmd(const Arguments& args) { return RegisterConsoleCmd(args); }
-
-    static Local<Value> setMotd(const Arguments& args) { return SetMotd(args); }
-    static Local<Value> setOnlinePlayer(const Arguments& args) { return SetOnlinePlayer(args); }
-};
-
-ClassDefine<void> ServerClassBuilder =
-    defineClass("server")
-        .function("registerCmd", &ServerClass::registerCmd)
-        .function("setMotd", &ServerClass::setMotd)
-        .function("setOnlinePlayer", &ServerClass::setOnlinePlayer)
-        .build();
-
 
 class LoggerClass
 {

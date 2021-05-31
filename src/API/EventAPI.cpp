@@ -9,6 +9,7 @@
 #include "../Kernel/Block.h"
 #include "../Kernel/Player.h"
 #include "EngineOwnData.h"
+#include "EngineGlobalData.h"
 #include "APIhelp.h"
 #include "BlockAPI.h"
 #include "ItemAPI.h"
@@ -308,22 +309,26 @@ THook(void, "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVComma
             
             // Register Callbacks
             bool passToOriginalCmdEvent = true; // not used here
-            auto funcs = &(ENGINE_OWN_DATA()->playerCmdCallbacks);
-            if(!funcs->empty())
-                for (auto iter=funcs->begin(); iter!=funcs->end(); ++iter)
-                    if(cmd.find_first_of(iter->first) == 0)
-                    {
-                        //Matched
-                        auto paras = SplitCmdParas(cmd.substr(iter->first.size()+1) + " ");
-                        Local<Array> args = Array::newArray({String::newString(iter->first)});
-                        for(string para : paras)
-                            args.add(String::newString(para));
+            
+            for(auto engine : lxlModules)
+            {
+                EngineScope enter(engine.get());
+                auto funcs = &(ENGINE_OWN_DATA()->playerCmdCallbacks);
+                if(!funcs->empty())
+                    for (auto iter=funcs->begin(); iter!=funcs->end(); ++iter)
+                        if(cmd.find_first_of(iter->first) == 0)
+                        {
+                            //Matched
+                            auto paras = SplitCmdParas(cmd.substr(iter->first.size()+1) + " ");
+                            Local<Array> args = Array::newArray({String::newString(iter->first)});
+                            for(string para : paras)
+                                args.add(String::newString(para));
 
-                        EngineScope scope(iter->second.first);
-                        if(!(iter->second.second.get().call({},PlayerClass::newPlayer(player),args).asBoolean().value()))
-                            passToOriginalCmdEvent = false;  // not used here
-                        break;
-                    }
+                            if(!(iter->second.get().call({},PlayerClass::newPlayer(player),args).asBoolean().value()))
+                                passToOriginalCmdEvent = false;  // not used here
+                            break;
+                        }
+            }
 
             CallEvent(EVENT_TYPES::OnPlayerCmd, PlayerClass::newPlayer(player), cmd);
         }
@@ -552,9 +557,11 @@ THook(void, "?transformOnFall@FarmBlock@@UEBAXAEAVBlockSource@@AEBVBlockPos@@PEA
 THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@VCommandContext@@@std@@_N@Z",
     MinecraftCommands* _this, unsigned int* a2, std::shared_ptr<CommandContext> x, char a4)
 {
+    DEBUG("On ServerCmd Begin");
     Player* player = MakeSP(x->getOrigin());
     if(!player)
     {   // Server Command
+        DEBUG("On ServerCmd Enter");
         string cmd = x->getCmd();
         if (cmd.front() == '/')
             cmd = cmd.substr(1);
@@ -600,28 +607,35 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
             }
             return false;
         }
+        DEBUG("On GlobalEngine Finished.");
 
         // Register Callbacks
         bool passToOriginalCmdEvent = true;
-        auto funcs = &(ENGINE_OWN_DATA()->consoleCmdCallbacks);
-        if(!funcs->empty())
-            for (auto iter=funcs->begin(); iter!=funcs->end(); ++iter)
-                if(cmd.find_first_of(iter->first) == 0)
-                {
-                    //Matched
-                    auto paras = SplitCmdParas(cmd.substr(iter->first.size()+1) + " ");
-                    Local<Array> args = Array::newArray({String::newString(iter->first)});
-                    for(string para : paras)
-                        args.add(String::newString(para));
-                    
-                    EngineScope scope(iter->second.first);
-                    if(!(iter->second.second.get().call({},args).asBoolean().value()))
-                        passToOriginalCmdEvent = false;
-                    break;
-                }
+
+        for(auto engine : lxlModules)
+        {
+            EngineScope enter(engine.get());
+            auto funcs = &(ENGINE_OWN_DATA()->consoleCmdCallbacks);
+            if(!funcs->empty())
+                for (auto iter=funcs->begin(); iter!=funcs->end(); ++iter)
+                    if(cmd.find_first_of(iter->first) == 0)
+                    {
+                        //Matched
+                        DEBUG("Matched!");
+                        auto paras = SplitCmdParas(cmd.substr(iter->first.size()+1) + " ");
+                        Local<Array> args = Array::newArray({String::newString(iter->first)});
+                        for(string para : paras)
+                            args.add(String::newString(para));
+                        
+                        if(!(iter->second.get().call({},args).asBoolean().value()))
+                            passToOriginalCmdEvent = false;
+                        break;
+                    }
+        }
         if(!passToOriginalCmdEvent)
             return false;
         
+        DEBUG("Before Call ServerCmd");
         CallEventEx(EVENT_TYPES::OnServerCmd, cmd);
     }
     return original(_this, a2, x, a4);
@@ -645,10 +659,10 @@ THook(void, "?handle@?$PacketHandlerDispatcherInstance@VModalFormResponsePacket@
             
             // Form Callbacks
             bool passToBDS = true; // not used here
-            auto callback = &(ENGINE_OWN_DATA()->formCallbacks[formId]);
+            auto callback = formCallbacks[formId];
             
-            EngineScope scope(callback->first);
-            if(!(callback->second.get().call({},String::newString(data)).asBoolean().value()))
+            EngineScope scope(callback.first);
+            if(!(callback.second.get().call({},String::newString(data)).asBoolean().value()))
                 passToBDS = false;   // not used here
             
             // No CallEvent here
