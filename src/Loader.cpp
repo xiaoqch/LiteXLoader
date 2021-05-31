@@ -8,6 +8,7 @@
 #include <fstream>
 #include <filesystem>
 #include <exception>
+#include <filesystem>
 #include <memory>
 #include "Configs.h"
 using namespace script;
@@ -17,7 +18,7 @@ std::string baseLib;
 std::vector<std::string> depends;
 
 //前置声明
-extern std::list<std::shared_ptr<ScriptEngine>> modules;
+extern std::list<std::shared_ptr<ScriptEngine>> lxlModules;
 void BindAPIs(std::shared_ptr<ScriptEngine> engine);
 
 // 配置文件
@@ -83,8 +84,11 @@ void LoadScriptFile(const std::string& filePath)
 
     //启动引擎
     std::shared_ptr<ScriptEngine> engine = NewEngine();
-    engine->setData(std::make_shared<EngineOwnData>());
-    modules.push_back(engine);
+    //setData
+    std::static_pointer_cast<EngineOwnData>(engine->getData())->pluginName
+        = std::filesystem::path(filePath).filename().u8string();
+    
+    lxlModules.push_back(engine);
     EngineScope enter(engine.get());
 
     //绑定API
@@ -124,7 +128,7 @@ void LoadPlugins()
             }
             catch(Exception& e)
             {
-                EngineScope enter(modules.back().get());
+                EngineScope enter(lxlModules.back().get());
                 ERROR("Fail to load " + i.path().filename().string() + "!\n");
                 ERRPRINT(e);
                 //modules.pop_back();

@@ -26,18 +26,21 @@ class Player;
 
 struct EngineOwnData
 {
+    //BaseInfo
+    std::string pluginName = "";
+
     //BaseAPI
-    std::map<std::string, std::pair<ScriptEngine*,Global<Function>> ,EngineOwnData_MapCmp> playerCmdCallbacks;
+    std::map<std::string, Global<Function> ,EngineOwnData_MapCmp> playerCmdCallbacks;
 
     //ServerAPI
-    std::map<std::string, std::pair<ScriptEngine*,Global<Function>> ,EngineOwnData_MapCmp> consoleCmdCallbacks;
+    std::map<std::string, Global<Function> ,EngineOwnData_MapCmp> consoleCmdCallbacks;
 
     //LoggerAPI
     bool toConsole = true;
     std::ofstream fout;
     Player *player = nullptr;
     std::string title = "";
-    int logLevel = 0;
+    int logLevel = 1;
 
     //PlayerAPI
     std::unordered_map<std::string,Global<Value>> playerDataDB;
@@ -47,9 +50,6 @@ struct EngineOwnData
     GlobalConfType confType = GlobalConfType::json;
     JSON_ROOT jsonConf;
     INI_ROOT iniConf;
-
-    //GUI API
-    std::unordered_map<int, std::pair<ScriptEngine*,Global<Function>> > formCallbacks;
 };
 
 // 引擎附加数据

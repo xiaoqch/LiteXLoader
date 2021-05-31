@@ -11,10 +11,12 @@
 using namespace std;
 using namespace script;
 
+////////////////// Helper //////////////////
 string inline GetTimeStrHelper()
 {
     return Raw_GetDateTimeStr();
 }
+////////////////// Helper //////////////////
 
 void inline LogDataHelper(ostream *outStream, const Arguments& args)
 {
