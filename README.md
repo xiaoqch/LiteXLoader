@@ -79,12 +79,12 @@
 
 > 没错，就这么简单 o(*￣▽￣*)ブ
 
-关于具体的**安装与使用指南** ，请👉[移步文档站](https://liteldev.github.io/LiteXLoader/#/zh_CN/Usage)👈查看
+关于具体的**安装与使用指南** ，请👉[移步文档站](https://lxl.litetitle.com/#/zh_CN/Usage)👈查看
 
 ## 💡 兼容性与可扩展性
 兼容`旧LiteLuaRunner`的大部分插件。  
 小部分API并未适配，仅为了方便用户而设计兼容层。  
-请[移步文档站](https://liteldev.github.io/LiteXLoader/#/)查看详细的分析  
+请[移步文档站](https://lxl.litetitle.com/#/)查看详细的分析  
 
 ## 📡 实时调试
 在BDS后台控制台执行
@@ -103,7 +103,7 @@
 
 ## 📕 开发文档
 
-请👉[移步文档站](https://liteldev.github.io/LiteXLoader/#/zh_CN/Development)👈查看详细的**API文档**和**插件开发教程**  
+请👉[移步文档站](https://lxl.litetitle.com/#/zh_CN/Development)👈查看详细的**API文档**和**插件开发教程**  
 如果有修订需求或者有新增API的需要，欢迎联系作者或者发布Issue  
 
 ## 🎬 参与贡献
@@ -116,7 +116,7 @@
 4. 帮助我们宣传LXL，对我们的开发给予支持
 
 ⭐⭐⭐我们欢迎你对LiteXLoader做出自己的贡献！⭐⭐⭐  
-如果你有意为LXL贡献代码，欢迎👉[移步文档站](https://liteldev.github.io/LiteXLoader/#/zh_CN/Maintance)👈查看 **项目维护与支持文档**  
+如果你有意为LXL贡献代码，欢迎👉[移步文档站](https://lxl.litetitle.com/#/zh_CN/Maintance)👈查看 **项目维护与支持文档**  
 
 有你们，LiteXLoader将变得更好~
 
@@ -143,11 +143,11 @@ So you can write plugins based on `LiteXLoader` with ANY open-source license or 
 but if you modified the framework, or write a new framework based on this framework, you MUST open-source it.
 
 ## 🏆 鸣谢
-- 开源 [ScriptX](https://github.com/Tencent/ScriptX) 项目提供的跨语言引擎支持
+- 开源 [ScriptX](https://github.com/Tencent/ScriptX) 项目提供的跨语言引擎支持
 - [LiteLoader ](https://github.com/LiteLDev/LiteLoaderBDS)项目提供的加载服务与基础API  
 - [LiteLuaLoader ](#)项目 和 [BDSPyRunner ]()项目 提供的部分底层接口实现
 
-> 特别鸣谢：[LiteLDev](https://github.com/orgs/LiteLDev/people) 各位大佬们 和 ScriptX开发者 [@LanderlYoung](https://github.com/Tencent/ScriptX/commits?author=LanderlYoung)   
+> 特别鸣谢：[LiteLDev](https://github.com/orgs/LiteLDev/people) 各位大佬们 和 ScriptX开发者 [@LanderlYoung](https://github.com/Tencent/ScriptX/commits?author=LanderlYoung)   
 > 在开发过程中给予了作者以非常大的支持。感谢他们！ 💖💖
 
 ## 📞 联系我们
