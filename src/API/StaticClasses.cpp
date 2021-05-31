@@ -11,6 +11,7 @@
 #include "DbAPI.h"
 #include "NetworkAPI.h"
 #include "GuiAPI.h"
+#include "LxlAPI.h"
 using namespace script;
 
 class McClass
@@ -193,4 +194,17 @@ ClassDefine<void> NetworkClassBuilder =
     defineClass("network")
         .function("requestSync", &NetworkClass::requestSync)
         .function("request", &NetworkClass::request)
+        .build();
+
+class LxlClass
+{
+public:
+    static Local<Value> version(const Arguments& args) { return LxlGetVersion(args); }
+    static Local<Value> loadPlugin(const Arguments& args) { return LxlLoadPlugin(args); }
+};
+
+ClassDefine<void> LxlClassBuilder =
+    defineClass("lxl")
+        .function("version", &LxlClass::version)
+        .function("loadPlugin", &LxlClass::loadPlugin)
         .build();

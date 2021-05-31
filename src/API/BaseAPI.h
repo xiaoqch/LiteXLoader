@@ -59,7 +59,6 @@ Local<Value> Log(const Arguments& args);
 Local<Value> GetTimeStr(const Arguments& args);
 Local<Value> GetTimeObj(const Arguments& args);
 Local<Value> RandomGuid(const Arguments& args);
-Local<Value> GetLxlVersion(const Arguments& args);
 
 Local<Value> SetTimeout(const Arguments& args);
 Local<Value> SetInterval(const Arguments& args);

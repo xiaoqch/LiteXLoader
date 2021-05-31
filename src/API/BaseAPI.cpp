@@ -242,11 +242,6 @@ Local<Value> RandomGuid(const Arguments& args)
     return String::newString(Raw_RandomGuid());
 }
 
-Local<Value> GetLxlVersion(const Arguments& args)
-{
-    return String::newString(LXL_VERSION);
-}
-
 
 // Time Task
 static unsigned long long nowTimeTaskId = 0;

@@ -67,7 +67,9 @@ void InitGlobalData()
 
     //后台调试
     debugEngine = NewEngine();
-    debugEngine->setData(std::make_shared<EngineOwnData>());
+    //setData
+    std::static_pointer_cast<EngineOwnData>(debugEngine->getData())->pluginName = "__DEBUGING_ENGINE__";
+    
     EngineScope enter(debugEngine.get());
     try{
         BindAPIs(debugEngine);

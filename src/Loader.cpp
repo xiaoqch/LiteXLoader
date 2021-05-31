@@ -8,6 +8,7 @@
 #include <fstream>
 #include <filesystem>
 #include <exception>
+#include <filesystem>
 #include <memory>
 #include "Configs.h"
 using namespace script;
@@ -83,7 +84,10 @@ void LoadScriptFile(const std::string& filePath)
 
     //启动引擎
     std::shared_ptr<ScriptEngine> engine = NewEngine();
-    engine->setData(std::make_shared<EngineOwnData>());
+    //setData
+    std::static_pointer_cast<EngineOwnData>(engine->getData())->pluginName
+        = std::filesystem::path(filePath).filename().u8string();
+    
     lxlModules.push_back(engine);
     EngineScope enter(engine.get());
 

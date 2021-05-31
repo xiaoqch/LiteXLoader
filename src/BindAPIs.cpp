@@ -26,7 +26,6 @@ void BindAPIs(std::shared_ptr<ScriptEngine> engine)
     //////////////// 全局函数 ////////////////
 
 	engine->set("log", Function::newFunction(Log));
-    engine->set("getLxlVersion",Function::newFunction(GetLxlVersion));
 
     engine->set("setTimeout",Function::newFunction(SetTimeout));
     engine->set("setInterval",Function::newFunction(SetInterval));
@@ -61,6 +60,9 @@ void BindAPIs(std::shared_ptr<ScriptEngine> engine)
 
     extern ClassDefine<void> NetworkClassBuilder;
     engine->registerNativeClass(NetworkClassBuilder);
+
+    extern ClassDefine<void> LxlClassBuilder;
+    engine->registerNativeClass(LxlClassBuilder);
 
 
     //////////////// 实例类 ////////////////

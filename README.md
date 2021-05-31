@@ -79,11 +79,7 @@
 
 > 没错，就这么简单 o(*￣▽￣*)ブ
 
-`LiteXLoader`的配置文件位于`BDS根目录/plugins/LiteXLoader/config.ini`，可以修改相关配置。
-
-## 📕 开发文档
-请👉[移步文档站](https://gitee.com/yqs112358/LiteXLoader-Docs/tree/main/zh-CN)👈查看详细的**API文档**和**插件开发教程**  
-如果有修订需求或者有新增API的需要，欢迎联系作者或者发布Issue  
+关于具体的**安装与使用指南** ，请👉[移步文档站](https://gitee.com/yqs112358/LiteXLoader-Docs/tree/main/zh-CN)👈查看
 
 ## 💡 兼容性与可扩展性
 兼容`旧LiteLuaRunner`的大部分插件。  
@@ -100,6 +96,15 @@
 实时调试模式下，标准输入会被当做对应类型的脚本语言执行，并实时输出结果。  
 如果发生错误，引擎将输出错误信息与堆栈跟踪信息。  
 再次输入对应的`jsdebug`或`luadebug`将退出实时调试模式。
+
+<br>
+
+------
+
+## 📕 开发文档
+
+请👉[移步文档站](https://gitee.com/yqs112358/LiteXLoader-Docs/tree/main/zh-CN)👈查看详细的**API文档**和**插件开发教程**  
+如果有修订需求或者有新增API的需要，欢迎联系作者或者发布Issue  
 
 ## 🎬 参与贡献
 
