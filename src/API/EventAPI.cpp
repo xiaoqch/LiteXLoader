@@ -567,7 +567,7 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
             cmd = cmd.substr(1);
         
         //后台调试
-#define OUTPUT_DEBUG_SIGN() std::cout << "LiteXLoader " << LXL_SCRIPT_LANG_TYPE << ">" << std::flush
+#define OUTPUT_DEBUG_SIGN() std::cout << "LiteXLoader-" << LXL_SCRIPT_LANG_TYPE << ">" << std::flush
         extern bool globalDebug;
         extern std::shared_ptr<ScriptEngine> debugEngine;
 
