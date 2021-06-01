@@ -1,6 +1,6 @@
 # LiteXLoader - LXL插件开发文档
 
-[<< 返回目录](README.md)
+[<< 返回目录](Development.md)
 
 ## ⛳  放在前面
 
@@ -132,4 +132,4 @@
 - 多角度思考**创新**  
   除了向JE已有的优秀插件学习，也欢迎大家做出自己的创新。
 
-[<< 返回目录](README.md)
+[<< 返回目录](Development.md)
