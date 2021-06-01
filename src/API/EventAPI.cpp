@@ -599,6 +599,7 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
                 {
                     auto result = debugEngine->eval(cmd);
                     PrintValue(std::cout,result);
+                    cout << endl;
                     OUTPUT_DEBUG_SIGN();
                 }
             }
@@ -609,7 +610,7 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
             }
             return false;
         }
-        DEBUG("On GlobalEngine Finished.");
+        DEBUG("On GlobalDebug Finished.");
 
         // Register Callbacks
         bool passToOriginalCmdEvent = true;

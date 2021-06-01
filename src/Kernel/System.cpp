@@ -170,3 +170,19 @@ bool Raw_HttpRequestAsync(const string &url,const string &method,const string &d
 
     return true;
 }
+
+unsigned int Raw_GetSystemThreadIdFromStdThread(std::thread::id id)
+{
+    _Thrd_t t = *(_Thrd_t*)&id;
+    return t._Id;
+}
+
+bool Raw_KillThread(DWORD id)
+{
+    HANDLE hThr = OpenThread(STANDARD_RIGHTS_REQUIRED,FALSE,(DWORD)id);
+    if(hThr == NULL || hThr == INVALID_HANDLE_VALUE)
+        return false;
+    BOOL res = TerminateThread(hThr,-1);
+    CloseHandle(hThr);
+    return res;
+}

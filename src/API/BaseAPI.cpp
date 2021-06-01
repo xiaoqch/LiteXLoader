@@ -7,9 +7,11 @@
 #include "EngineOwnData.h"
 #include "../Kernel/Base.h"
 #include "../Kernel/System.h"
+#include <windows.h>
 #include <chrono>
 #include <map>
 #include <memory>
+#include <thread>
 using namespace script;
 
 //////////////////// Class Definition ////////////////////
@@ -243,90 +245,46 @@ Local<Value> RandomGuid(const Arguments& args)
 }
 
 
-// Time Task
-static unsigned long long nowTimeTaskId = 0;
-std::map<int32_t,Global<Function>> funcMap;
-void inline RemoveFromMap(int32_t id)
-{
-    funcMap.erase(id);
-}
-
-#define TASK_ID msg.data0
-#define CODE_STR msg.ptr0
-#define CODE_FUNC msg.data2
-#define INTERVAL_WAIT msg.data1
-
-// setTimeout
-void FuncTimeout(script::utils::Message& msg)
-{
-    using namespace script::utils;
-    EngineScope enter((ScriptEngine*)(msg.tag));
-    funcMap[CODE_FUNC].get().call();
-    RemoveFromMap(CODE_FUNC);
-}
-void CodeTimeout(script::utils::Message& msg)
-{
-    using namespace script::utils;
-    ScriptEngine* engine = (ScriptEngine*)(msg.tag);
-    EngineScope enter(engine);
-    string *toEval = (string*)CODE_STR;
-    engine->eval(*toEval);
-    if(CODE_STR != nullptr)
-    {
-        delete CODE_STR;
-        CODE_STR = nullptr;
-    }
-}
+/////////////// Helper ///////////////
+std::map<unsigned int, DWORD> timeTaskMap;
 
 Local<Value> SetTimeout(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,2)
     CHECK_ARG_TYPE(args[1],ValueKind::kNumber)
 
-    using namespace script::utils;
     try{
-        bool isFunc = args[0].getKind()==ValueKind::kFunction;
-        Message msg(isFunc ? FuncTimeout : CodeTimeout, nullptr);
-        msg.tag = EngineScope::currentEngine();
-        if(isFunc)
+        bool isFunc = args[0].getKind() == ValueKind::kFunction;
+        if(!isFunc && args[0].getKind() != ValueKind::kString)
         {
-            CODE_STR = nullptr;
-            funcMap.insert_or_assign(nowTimeTaskId,args[0].asFunction());
-            CODE_FUNC = nowTimeTaskId; 
+            ERROR("Unknown type of time task!");
+            return Local<Value>();
         }
-        else
-            CODE_STR = new string(args[0].asString().toString());
-        int wait = args[1].asNumber().toInt32();
-        if(wait < 0)
-            wait = 0;
-        TASK_ID = nowTimeTaskId;
 
-        extern std::shared_ptr<ScriptEngine> globalEngine;
-        globalEngine->messageQueue()->postMessage(msg,std::chrono::milliseconds(wait));
-        return Number::newNumber((int64_t)nowTimeTaskId++);
+        Global<Value> func{args[0]};
+        int timeout = args[1].toInt();
+        if(timeout <= 0)
+            timeout = 1;
+        
+        std::thread task([engine{EngineScope::currentEngine()}, isFunc{std::move(isFunc)},
+            func{std::move(func)}, timeout{std::move(timeout)}]()
+        {
+            timeTaskMap[Raw_GetSystemThreadIdFromStdThread(std::this_thread::get_id())]
+                    = GetCurrentThreadId();
+            
+            std::this_thread::sleep_for(std::chrono::milliseconds(timeout));
+            EngineScope enter(engine);
+            if(isFunc)
+                func.get().asFunction().call();
+            else
+                engine->eval(func.get().toStr());
+        });
+
+        auto id = Raw_GetSystemThreadIdFromStdThread(task.get_id());
+        task.detach();
+        return Number::newNumber((int)id);
     }
     CATCH("Fail in SetTimeout!")
-}
-
-// setInterval
-void FuncInterval(script::utils::Message& msg)
-{
-    using namespace script::utils;
-    extern std::shared_ptr<ScriptEngine> globalEngine;
-    EngineScope enter((ScriptEngine*)(msg.tag));
-    funcMap[CODE_FUNC].get().call();
-    globalEngine->messageQueue()->postMessage(msg,std::chrono::milliseconds(INTERVAL_WAIT));
-}
-void CodeInterval(script::utils::Message& msg)
-{
-    using namespace script::utils;
-    ScriptEngine* engine = (ScriptEngine*)(msg.tag);
-    EngineScope enter(engine);
-    string *toEval = (string*)CODE_STR;
-    engine->eval(*toEval);
-
-    extern std::shared_ptr<ScriptEngine> globalEngine;
-    globalEngine->messageQueue()->postMessage(msg,std::chrono::milliseconds(INTERVAL_WAIT));
 }
 
 Local<Value> SetInterval(const Arguments& args)
@@ -334,28 +292,40 @@ Local<Value> SetInterval(const Arguments& args)
     CHECK_ARGS_COUNT(args,2)
     CHECK_ARG_TYPE(args[1],ValueKind::kNumber)
 
-    using namespace script::utils;
     try{
-        bool isFunc = args[0].getKind()==ValueKind::kFunction;
-        Message msg(isFunc ? FuncInterval : CodeInterval, nullptr);
-        msg.tag = EngineScope::currentEngine();
-        if(isFunc)
+        bool isFunc = args[0].getKind() == ValueKind::kFunction;
+        if(!isFunc && args[0].getKind() != ValueKind::kString)
         {
-            CODE_STR = nullptr;
-            funcMap.insert_or_assign(nowTimeTaskId,args[0].asFunction());
-            CODE_FUNC = nowTimeTaskId; 
+            ERROR("Unknown type of time task!");
+            return Local<Value>();
         }
-        else
-            CODE_STR = new string(args[0].asString().toString());
-        int wait = args[1].asNumber().toInt32();
-        if(wait < 0)
-            wait = 0;
-        TASK_ID = nowTimeTaskId;
-        INTERVAL_WAIT = wait;
 
-        extern std::shared_ptr<ScriptEngine> globalEngine;
-        globalEngine->messageQueue()->postMessage(msg,std::chrono::milliseconds(wait));
-        return Number::newNumber((int64_t)nowTimeTaskId++);
+        Global<Value> func{args[0]};
+        int timeout = args[1].toInt();
+        if(timeout <= 0)
+            timeout = 1;
+        
+        std::thread task([engine{EngineScope::currentEngine()}, isFunc{std::move(isFunc)},
+            func{std::move(func)}, timeout{std::move(timeout)}]()
+        {
+            timeTaskMap[Raw_GetSystemThreadIdFromStdThread(std::this_thread::get_id())]
+                    = GetCurrentThreadId();
+            auto sleepTime = std::chrono::milliseconds(timeout);
+            while(true)
+            {
+                std::this_thread::sleep_for(sleepTime);
+                EngineScope enter(engine);
+                if(isFunc)
+                    func.get().asFunction().call();
+                else
+                    engine->eval(func.get().toStr());
+                ExitEngineScope exit;
+            }
+        });
+
+        auto id = Raw_GetSystemThreadIdFromStdThread(task.get_id());
+        task.detach();
+        return Number::newNumber((int)id);
     }
     CATCH("Fail in SetInterval!")
 }
@@ -367,28 +337,13 @@ Local<Value> ClearInterval(const Arguments& args)
     CHECK_ARG_TYPE(args[0],ValueKind::kNumber)
 
     try{
-        using namespace script::utils;
-
-        extern std::shared_ptr<ScriptEngine> globalEngine;
-        bool res = globalEngine->messageQueue()->removeMessageIf(
-            [&args](Message& msg) -> MessageQueue::RemoveMessagePredReturnType
-            {
-                if(TASK_ID == args[0].asNumber().toInt64())   //IntervalID
-                {
-                    if(CODE_STR != nullptr)
-                    {
-                        delete CODE_STR;
-                        CODE_STR = nullptr;
-                    }
-                    else
-                        RemoveFromMap(CODE_FUNC);
-                    return MessageQueue::RemoveMessagePredReturnType::kRemove;
-                }
-                else
-                    return MessageQueue::RemoveMessagePredReturnType::kDontRemove;
-            }
-        );
-        return Boolean::newBoolean(true);
+        DWORD id=timeTaskMap.at((unsigned int)args[0].toInt());
+        return Boolean::newBoolean(Raw_KillThread(id));
     }
     CATCH("Fail in ClearInterval!")
+    catch(const std::out_of_range &e)
+    {
+        ERROR("Time task id no found!");
+    }
+    return Boolean::newBoolean(false);
 }

@@ -16,8 +16,6 @@ using namespace script;
 
 //主引擎表
 std::list<std::shared_ptr<ScriptEngine>> lxlModules;
-//消息分发引擎
-std::shared_ptr<ScriptEngine> globalEngine;
 //调试引擎
 std::shared_ptr<ScriptEngine> debugEngine;
 bool globalDebug = false;
@@ -52,13 +50,6 @@ void entry()
 
 void InitGlobalData()
 {
-    // 主消息循环
-    globalEngine = NewEngine();
-    std::thread([]() {
-        EngineScope enter(globalEngine.get());
-        globalEngine->messageQueue()->loopQueue(utils::MessageQueue::LoopType::kLoopAndWait);
-    }).detach();
-
     // GC循环
     std::thread([]() {
         std::this_thread::sleep_for(std::chrono::seconds(Raw_IniGetInt(iniConf,"Advanced","GCInterval",20)));
@@ -67,7 +58,6 @@ void InitGlobalData()
             EngineScope enter(engine.get());
             engine->messageQueue()->loopQueue(utils::MessageQueue::LoopType::kLoopOnce);
         }
-        globalEngine->messageQueue()->loopQueue(utils::MessageQueue::LoopType::kLoopOnce);
         debugEngine->messageQueue()->loopQueue(utils::MessageQueue::LoopType::kLoopOnce);
     }).detach();
 
