@@ -1,0 +1,10 @@
+OUTPUT_DIRECTORY       = C:/Users/yqs11/Desktop/Projects/Mods/LiteXLoader/ScriptX/ScriptX-Js-Build/build/doc_doxygen/
+INPUT                  = C:/Users/yqs11/Desktop/Projects/Mods/LiteXLoader/ScriptX/ScriptX/docs/doxygen/../../src/        \
+                           C:/Users/yqs11/Desktop/Projects/Mods/LiteXLoader/ScriptX/ScriptX/docs/doxygen/../../backend   \
+                           C:/Users/yqs11/Desktop/Projects/Mods/LiteXLoader/ScriptX/ScriptX/docs/doxygen/../../test/src  \
+                           C:/Users/yqs11/Desktop/Projects/Mods/LiteXLoader/ScriptX/ScriptX/docs/doxygen/../../README.md \
+                           C:/Users/yqs11/Desktop/Projects/Mods/LiteXLoader/ScriptX/ScriptX/docs/doxygen/../../docs
+USE_MDFILE_AS_MAINPAGE = C:/Users/yqs11/Desktop/Projects/Mods/LiteXLoader/ScriptX/ScriptX/docs/doxygen/../../README.md
+PROJECT_NAME           = "ScriptX API Reference"
+RECURSIVE              = true
+EXCLUDE_SYMBOLS        = script::*_backend,script::internal,script::test

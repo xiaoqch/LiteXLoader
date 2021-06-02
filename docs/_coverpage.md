@@ -7,5 +7,5 @@
 > BDS 脚本插件加载器
 
 [GitHub 开源项目](https://github.com/LiteLDev/LiteXLoader)
-[Get Started 点击进入](/zh_CN/README.md)
+[Read Docs 进入文档](/zh_CN/README.md)
 

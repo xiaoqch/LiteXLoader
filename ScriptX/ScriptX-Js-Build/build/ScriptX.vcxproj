@@ -1,0 +1,326 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{8DDEB87B-515D-38C5-9697-B2B400E1869C}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>x64</Platform>
+    <ProjectName>ScriptX</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\build\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ScriptX.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ScriptX</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\build\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ScriptX.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ScriptX</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\build\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">ScriptX.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">ScriptX</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\build\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">ScriptX.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">ScriptX</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\..\include\V8;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;SCRIPTX_BACKEND_TRAIT_PREFIX=../backend/V8/trait/Trait;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;SCRIPTX_BACKEND_TRAIT_PREFIX=../backend/V8/trait/Trait;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\..\include\V8;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\..\include\V8;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\..\include\V8;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;SCRIPTX_BACKEND_TRAIT_PREFIX=../backend/V8/trait/Trait;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;SCRIPTX_BACKEND_TRAIT_PREFIX=../backend/V8/trait/Trait;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\..\include\V8;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\..\include\V8;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\..\include\V8;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;SCRIPTX_BACKEND_TRAIT_PREFIX=../backend/V8/trait/Trait;CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;SCRIPTX_BACKEND_TRAIT_PREFIX=../backend/V8/trait/Trait;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\..\include\V8;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\..\include\V8;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\..\include\V8;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;SCRIPTX_BACKEND_TRAIT_PREFIX=../backend/V8/trait/Trait;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;SCRIPTX_BACKEND_TRAIT_PREFIX=../backend/V8/trait/Trait;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\..\include\V8;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\..\include\V8;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\CMakeLists.txt">
+      <StdOutEncoding>UTF-8</StdOutEncoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/Users/yqs11/Desktop/Projects/Mods/LiteXLoader/ScriptX/ScriptX-Js-Build/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/yqs11/Desktop/Projects/Mods/LiteXLoader/ScriptX/ScriptX-Js-Build -BC:/Users/yqs11/Desktop/Projects/Mods/LiteXLoader/ScriptX/ScriptX-Js-Build/build --check-stamp-file C:/Users/yqs11/Desktop/Projects/Mods/LiteXLoader/ScriptX/ScriptX-Js-Build/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\FindDoxygen.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\WindowsPaths.cmake;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\build\CMakeFiles\3.20.1\CMakeCCompiler.cmake;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\build\CMakeFiles\3.20.1\CMakeCXXCompiler.cmake;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\build\CMakeFiles\3.20.1\CMakeRCCompiler.cmake;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\build\CMakeFiles\3.20.1\CMakeSystem.cmake;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\CMakeLists.txt;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\backend\V8\CMakeLists.txt;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\docs\doxygen\CMakeLists.txt;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\docs\doxygen\Doxyfile.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/Users/yqs11/Desktop/Projects/Mods/LiteXLoader/ScriptX/ScriptX-Js-Build/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/yqs11/Desktop/Projects/Mods/LiteXLoader/ScriptX/ScriptX-Js-Build -BC:/Users/yqs11/Desktop/Projects/Mods/LiteXLoader/ScriptX/ScriptX-Js-Build/build --check-stamp-file C:/Users/yqs11/Desktop/Projects/Mods/LiteXLoader/ScriptX/ScriptX-Js-Build/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\FindDoxygen.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\WindowsPaths.cmake;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\build\CMakeFiles\3.20.1\CMakeCCompiler.cmake;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\build\CMakeFiles\3.20.1\CMakeCXXCompiler.cmake;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\build\CMakeFiles\3.20.1\CMakeRCCompiler.cmake;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\build\CMakeFiles\3.20.1\CMakeSystem.cmake;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\CMakeLists.txt;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\backend\V8\CMakeLists.txt;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\docs\doxygen\CMakeLists.txt;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\docs\doxygen\Doxyfile.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule C:/Users/yqs11/Desktop/Projects/Mods/LiteXLoader/ScriptX/ScriptX-Js-Build/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/yqs11/Desktop/Projects/Mods/LiteXLoader/ScriptX/ScriptX-Js-Build -BC:/Users/yqs11/Desktop/Projects/Mods/LiteXLoader/ScriptX/ScriptX-Js-Build/build --check-stamp-file C:/Users/yqs11/Desktop/Projects/Mods/LiteXLoader/ScriptX/ScriptX-Js-Build/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\FindDoxygen.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\WindowsPaths.cmake;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\build\CMakeFiles\3.20.1\CMakeCCompiler.cmake;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\build\CMakeFiles\3.20.1\CMakeCXXCompiler.cmake;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\build\CMakeFiles\3.20.1\CMakeRCCompiler.cmake;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\build\CMakeFiles\3.20.1\CMakeSystem.cmake;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\CMakeLists.txt;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\backend\V8\CMakeLists.txt;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\docs\doxygen\CMakeLists.txt;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\docs\doxygen\Doxyfile.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule C:/Users/yqs11/Desktop/Projects/Mods/LiteXLoader/ScriptX/ScriptX-Js-Build/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/yqs11/Desktop/Projects/Mods/LiteXLoader/ScriptX/ScriptX-Js-Build -BC:/Users/yqs11/Desktop/Projects/Mods/LiteXLoader/ScriptX/ScriptX-Js-Build/build --check-stamp-file C:/Users/yqs11/Desktop/Projects/Mods/LiteXLoader/ScriptX/ScriptX-Js-Build/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\FindDoxygen.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\Platform\WindowsPaths.cmake;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\build\CMakeFiles\3.20.1\CMakeCCompiler.cmake;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\build\CMakeFiles\3.20.1\CMakeCXXCompiler.cmake;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\build\CMakeFiles\3.20.1\CMakeRCCompiler.cmake;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\build\CMakeFiles\3.20.1\CMakeSystem.cmake;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\CMakeLists.txt;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\backend\V8\CMakeLists.txt;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\docs\doxygen\CMakeLists.txt;C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\docs\doxygen\Doxyfile.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\src\Engine.h" />
+    <ClInclude Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\src\Engine.hpp" />
+    <ClCompile Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\src\Engine.cc" />
+    <ClInclude Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\src\Reference.h" />
+    <ClCompile Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\src\Reference.cc" />
+    <ClInclude Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\src\Scope.h" />
+    <ClInclude Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\src\Value.h" />
+    <ClInclude Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\src\Exception.h" />
+    <ClInclude Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\src\Inspector.h" />
+    <ClInclude Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\src\types.h" />
+    <ClCompile Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\src\Scope.cc" />
+    <ClCompile Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\src\Utils.cc" />
+    <ClInclude Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\src\utils\GlobalWeakBookkeeping.hpp" />
+    <ClInclude Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\src\utils\Helper.hpp" />
+    <ClCompile Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\src\utils\Helper.cc" />
+    <ClInclude Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\src\utils\MemoryPool.hpp" />
+    <ClCompile Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\src\utils\MessageQueue.cc" />
+    <ClCompile Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\src\utils\ThreadPool.cc" />
+    <ClInclude Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\src\utils\TypeInformation.h" />
+    <ClCompile Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\backend\V8\V8Engine.cc" />
+    <ClCompile Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\backend\V8\V8Platform.cc" />
+    <ClCompile Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\backend\V8\V8Scope.cc" />
+    <ClCompile Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\backend\V8\V8Helper.cc" />
+    <ClCompile Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\backend\V8\V8Value.cc" />
+    <ClCompile Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\backend\V8\V8LocalReference.cc" />
+    <ClCompile Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\backend\V8\V8Exception.cc" />
+    <ClCompile Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\backend\V8\V8Native.cc" />
+    <ClCompile Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\backend\V8\V8Utils.cc" />
+    <ClInclude Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\backend\V8\V8Engine.h" />
+    <ClInclude Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\backend\V8\V8Engine.hpp" />
+    <ClInclude Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\backend\V8\V8Helper.h" />
+    <ClInclude Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\backend\V8\V8Helper.hpp" />
+    <ClInclude Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\backend\V8\V8Platform.h" />
+    <ClInclude Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\backend\V8\V8Reference.hpp" />
+    <ClInclude Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\backend\V8\V8Scope.h" />
+    <ClInclude Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\backend\V8\V8Scope.hpp" />
+    <ClInclude Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\backend\V8\V8Native.hpp" />
+    <ClInclude Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\backend\V8\trait\TraitReference.h" />
+    <ClInclude Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\backend\V8\trait\TraitScope.h" />
+    <ClInclude Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\backend\V8\trait\TraitEngine.h" />
+    <ClInclude Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\backend\V8\trait\TraitException.h" />
+    <ClInclude Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX\backend\V8\trait\TraitIncludes.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\build\ZERO_CHECK.vcxproj">
+      <Project>{3D886E97-DFEB-3DCB-906A-4BF84216CB52}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

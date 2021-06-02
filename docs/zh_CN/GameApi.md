@@ -50,7 +50,7 @@
 
 ### 注册一个新的玩家命令  
 
-`mc.addPlayerCmd(cmd,description,callback[,level])`
+`mc.regPlayerCmd(cmd,description,callback[,level])`
 
 - 参数：
   - cmd : `String`  
@@ -78,7 +78,7 @@
 
 ### 注册一个新的后台控制台命令  
 
-`mc.addConsoleCmd(cmd,description,callback)`
+`mc.regConsoleCmd(cmd,description,callback)`
 
 - 参数：
   - cmd : `String`  
@@ -106,7 +106,7 @@
 设置了回调函数之后，在你注册的这个命令被执行的时候，回调函数就会被调用。  
 在调用之前，LXL会自动帮你把命令参数分割成数组。  
 
-以Js语言为例：执行注册`mc.registerCmd("land buy", "购买领地", 0, function(args){ .... } );` 之后，  
+以Js语言为例：执行注册`mc.regPlayerCmd("land buy", "购买领地", 0, function(args){ .... } );` 之后，  
 当你使用命令`/land buy abcde 12345`的时候，这个回调函数就会被调用。  
 回调函数的参数args被传入一个数组：[ "land buy", "abcde" , "12345" ]  
 正如所见，`args[0]`为注册的这个命令本身，后面按顺序是被分割好的参数。  

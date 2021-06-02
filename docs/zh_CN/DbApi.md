@@ -190,20 +190,6 @@ ini格式相对**简单直观**，他人修改起来比较轻松，不过储存�
 
 <br>
 
-#### 删除配置键
-
-`conf.deleteSec(section)`
-
-- 参数：
-  - section : `String`  
-    配置项键名
-- 返回值：是否删除成功
-- 返回值类型：`Boolean`
-
-如果这个配置键你不需要了，你可以将它整个删除
-
-<br>
-
 #### 删除配置项
 
 `conf.deleteKey(section,name)`
