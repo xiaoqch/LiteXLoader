@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\API\APIhelp.cpp" />
+    <ClCompile Include="..\src\API\BaseAPI.cpp" />
+    <ClCompile Include="..\src\API\BlockAPI.cpp" />
+    <ClCompile Include="..\src\API\DbAPI.cpp" />
+    <ClCompile Include="..\src\API\EngineGlobalData.cpp" />
+    <ClCompile Include="..\src\API\EntityAPI.cpp" />
+    <ClCompile Include="..\src\API\EventAPI.cpp" />
+    <ClCompile Include="..\src\API\FileSystemAPI.cpp" />
+    <ClCompile Include="..\src\API\GuiAPI.cpp" />
+    <ClCompile Include="..\src\API\ItemAPI.cpp" />
+    <ClCompile Include="..\src\API\LoggerAPI.cpp" />
+    <ClCompile Include="..\src\API\LxlAPI.cpp" />
+    <ClCompile Include="..\src\API\NbtAPI.cpp" />
+    <ClCompile Include="..\src\API\NetworkAPI.cpp" />
+    <ClCompile Include="..\src\API\PlayerAPI.cpp" />
+    <ClCompile Include="..\src\API\ServerAPI.cpp" />
+    <ClCompile Include="..\src\API\StaticClasses.cpp" />
+    <ClCompile Include="..\src\BindAPIs.cpp" />
+    <ClCompile Include="..\src\dllmain.cpp" />
+    <ClCompile Include="..\src\Kernel\Base.cpp" />
+    <ClCompile Include="..\src\Kernel\Block.cpp" />
+    <ClCompile Include="..\src\Kernel\Db.cpp" />
+    <ClCompile Include="..\src\Kernel\Entity.cpp" />
+    <ClCompile Include="..\src\Kernel\Event.cpp" />
+    <ClCompile Include="..\src\Kernel\Gui.cpp" />
+    <ClCompile Include="..\src\Kernel\Item.cpp" />
+    <ClCompile Include="..\src\Kernel\NBT.cpp" />
+    <ClCompile Include="..\src\Kernel\Packet.cpp" />
+    <ClCompile Include="..\src\Kernel\Player.cpp" />
+    <ClCompile Include="..\src\Kernel\Server.cpp" />
+    <ClCompile Include="..\src\Kernel\System.cpp" />
+    <ClCompile Include="..\src\LiteXLoader.cpp" />
+    <ClCompile Include="..\src\Loader.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\API\APIhelp.h" />
+    <ClInclude Include="..\src\API\BaseAPI.h" />
+    <ClInclude Include="..\src\API\BlockAPI.h" />
+    <ClInclude Include="..\src\API\DbAPI.h" />
+    <ClInclude Include="..\src\API\EngineGlobalData.h" />
+    <ClInclude Include="..\src\API\EngineOwnData.h" />
+    <ClInclude Include="..\src\API\EntityAPI.h" />
+    <ClInclude Include="..\src\API\EventAPI.h" />
+    <ClInclude Include="..\src\API\FileSystemAPI.h" />
+    <ClInclude Include="..\src\API\GuiAPI.h" />
+    <ClInclude Include="..\src\API\ItemAPI.h" />
+    <ClInclude Include="..\src\API\LoggerAPI.h" />
+    <ClInclude Include="..\src\API\LxlAPI.h" />
+    <ClInclude Include="..\src\API\NbtAPI.h" />
+    <ClInclude Include="..\src\API\NetworkAPI.h" />
+    <ClInclude Include="..\src\API\PlayerAPI.h" />
+    <ClInclude Include="..\src\API\ServerAPI.h" />
+    <ClInclude Include="..\src\Configs.h" />
+    <ClInclude Include="..\src\Kernel\Base.h" />
+    <ClInclude Include="..\src\Kernel\Block.h" />
+    <ClInclude Include="..\src\Kernel\Db.h" />
+    <ClInclude Include="..\src\Kernel\Entity.h" />
+    <ClInclude Include="..\src\Kernel\Event.h" />
+    <ClInclude Include="..\src\Kernel\Global.h" />
+    <ClInclude Include="..\src\Kernel\Gui.h" />
+    <ClInclude Include="..\src\Kernel\Item.h" />
+    <ClInclude Include="..\src\Kernel\NBT.h" />
+    <ClInclude Include="..\src\Kernel\Packet.h" />
+    <ClInclude Include="..\src\Kernel\Player.h" />
+    <ClInclude Include="..\src\Kernel\Server.h" />
+    <ClInclude Include="..\src\Kernel\System.h" />
+    <ClInclude Include="..\src\Kernel\ThirdParty.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\engine\Lua\lib\Lua54.lib" />
+    <Library Include="..\lib\LiteLoader.lib" />
+    <Library Include="..\lib\ScriptX-Lua.lib" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{bde1339e-d853-4869-b03e-4cec77654122}</ProjectGuid>
+    <RootNamespace>LiteXLoader_Lua</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>..\include\;include\ScriptX\src\include\ScriptX\;include\ScriptX\src\include\;include\;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;SCRIPTX_BACKEND_TRAIT_PREFIX=../backend/Lua/trait/Trait;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)include\ScriptX\src\include\ScriptX;$(SolutionDir)include\ScriptX\src\include;$(SolutionDir)include\LiteLoader;$(SolutionDir)include;$(SolutionDir)src;$(SolutionDir)engine\Lua\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
