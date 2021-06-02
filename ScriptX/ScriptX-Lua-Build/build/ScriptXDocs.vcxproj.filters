@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Lua-Build\build\CMakeFiles\c6b9267d0cf7bf039a056dcc571ec2b7\ScriptXDocs.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Lua-Build\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Lua-Build\build\CMakeFiles\ScriptXDocs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{B852AD2C-352F-32A2-8E08-0AAED587F56E}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

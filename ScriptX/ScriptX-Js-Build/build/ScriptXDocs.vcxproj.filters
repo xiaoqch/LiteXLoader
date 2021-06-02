@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\build\CMakeFiles\ef6dcea781b11125990d91b811f3b426\ScriptXDocs.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\yqs11\Desktop\Projects\Mods\LiteXLoader\ScriptX\ScriptX-Js-Build\build\CMakeFiles\ScriptXDocs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{DE59E2FE-B8E5-3267-B23B-341BBE20A92E}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
