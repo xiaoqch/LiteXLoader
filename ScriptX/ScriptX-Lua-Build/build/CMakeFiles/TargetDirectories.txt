@@ -1,4 +1,0 @@
-C:/Users/yqs11/Desktop/Projects/Mods/LiteXLoader/ScriptX/ScriptX-Lua-Build/build/CMakeFiles/ScriptX.dir
-C:/Users/yqs11/Desktop/Projects/Mods/LiteXLoader/ScriptX/ScriptX-Lua-Build/build/CMakeFiles/ScriptXDocs.dir
-C:/Users/yqs11/Desktop/Projects/Mods/LiteXLoader/ScriptX/ScriptX-Lua-Build/build/CMakeFiles/ALL_BUILD.dir
-C:/Users/yqs11/Desktop/Projects/Mods/LiteXLoader/ScriptX/ScriptX-Lua-Build/build/CMakeFiles/ZERO_CHECK.dir
