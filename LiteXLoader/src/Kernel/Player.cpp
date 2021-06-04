@@ -93,11 +93,12 @@ ItemStack* Raw_GetHand(Player* player)
 ItemStack* Raw_GetOffHand(Player* player)
 {
     return SymCall("?getOffhandSlot@Actor@@QEBAAEBVItemStack@@XZ", ItemStack*, Player*)(player);
+    //############## 崩服 ##############
 }
 
 vector<ItemStack*> Raw_GetPack(Player* player)
 {
-    vector<ItemStack*> res;
+    vector<ItemStack*> res;     //############## 崩服 ##############
 
     auto v9 = *((uintptr_t*)player + 380);
 	auto v13 = (*(__int64(__fastcall**)(uintptr_t))(**(uintptr_t**)(v9 + 176) + 112i64))(*(uintptr_t*)(v9 + 176));

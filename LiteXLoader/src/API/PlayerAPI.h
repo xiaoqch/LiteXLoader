@@ -33,10 +33,10 @@ public:
     Local<Value> getSneaking();
 
     Local<Value> isOP(const Arguments& args);
-    Local<Value> getPlayerPermLevel(const Arguments& args);
-    Local<Value> setPlayerPermLevel(const Arguments& args);
+    Local<Value> getPermLevel(const Arguments& args);
+    Local<Value> setPermLevel(const Arguments& args);
 
-    Local<Value> runcmdAs(const Arguments& args);
+    Local<Value> runcmd(const Arguments& args);
     Local<Value> teleport(const Arguments& args);
     Local<Value> kill(const Arguments& args);
     Local<Value> kick(const Arguments& args);
@@ -56,7 +56,7 @@ public:
     Local<Value> removeBossBar(const Arguments& args);
 
     Local<Value> sendSimpleForm(const Arguments& args);
-    Local<Value> sendModelForm(const Arguments& args);
+    Local<Value> sendModalForm(const Arguments& args);
     Local<Value> sendForm(const Arguments& args);
 
     Local<Value> setExtraData(const Arguments& args);

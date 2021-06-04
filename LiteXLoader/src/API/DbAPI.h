@@ -1,9 +1,10 @@
 #pragma once
 #include <ScriptX/ScriptX.h>
+using namespace script;
+#include <Kernel/Db.h>
+
 #include <string>
 #include <memory>
-#include <Kernel/Db.h>
-using namespace script;
 
 //////////////////// Classes ////////////////////
 
@@ -44,3 +45,11 @@ Local<Value> ConfRead(const Arguments& args);
 Local<Value> ConfWrite(const Arguments& args);
 
 Local<Value> OpenDB(const Arguments& args);
+
+Local<Value> MoneySet(const Arguments& args);
+Local<Value> MoneyGet(const Arguments& args);
+Local<Value> MoneyAdd(const Arguments& args);
+Local<Value> MoneyReduce(const Arguments& args);
+Local<Value> MoneyTrans(const Arguments& args);
+Local<Value> MoneyGetHintory(const Arguments& args);
+Local<Value> MoneyClearHistory(const Arguments& args);

@@ -1,243 +1,231 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="源文件">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="头文件">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="资源文件">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="API">
       <UniqueIdentifier>{2ffc71f3-f140-445c-a964-5eb48b90fc50}</UniqueIdentifier>
     </Filter>
     <Filter Include="Kernel">
       <UniqueIdentifier>{b3f49dbe-3a2c-4e91-bf58-0c4b932dc587}</UniqueIdentifier>
     </Filter>
-    <Filter Include="API\源文件">
-      <UniqueIdentifier>{2f262873-0a77-4de8-acfd-ab47a27f872b}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="Main">
+      <UniqueIdentifier>{17dad0e7-9abf-4760-977f-73c8f2c6805d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="API\头文件">
-      <UniqueIdentifier>{89d8f7b3-0044-4e22-8e6b-7011e80530f7}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    <Filter Include="Lib">
+      <UniqueIdentifier>{8f49f2df-52d1-48f8-8693-0eba890cefd7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kernel\源文件">
-      <UniqueIdentifier>{b8573a01-8a71-4089-a318-a8510d1cd6af}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Kernel\头文件">
-      <UniqueIdentifier>{0c370994-8df4-4a8d-aa70-d994901023ce}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\BindAPIs.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\dllmain.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\LiteXLoader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Loader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\API\APIhelp.cpp">
-      <Filter>API\源文件</Filter>
+      <Filter>API</Filter>
     </ClCompile>
     <ClCompile Include="..\src\API\BaseAPI.cpp">
-      <Filter>API\源文件</Filter>
+      <Filter>API</Filter>
     </ClCompile>
     <ClCompile Include="..\src\API\BlockAPI.cpp">
-      <Filter>API\源文件</Filter>
+      <Filter>API</Filter>
     </ClCompile>
     <ClCompile Include="..\src\API\DbAPI.cpp">
-      <Filter>API\源文件</Filter>
+      <Filter>API</Filter>
     </ClCompile>
     <ClCompile Include="..\src\API\EngineGlobalData.cpp">
-      <Filter>API\源文件</Filter>
+      <Filter>API</Filter>
     </ClCompile>
     <ClCompile Include="..\src\API\EntityAPI.cpp">
-      <Filter>API\源文件</Filter>
+      <Filter>API</Filter>
     </ClCompile>
     <ClCompile Include="..\src\API\EventAPI.cpp">
-      <Filter>API\源文件</Filter>
+      <Filter>API</Filter>
     </ClCompile>
     <ClCompile Include="..\src\API\FileSystemAPI.cpp">
-      <Filter>API\源文件</Filter>
+      <Filter>API</Filter>
     </ClCompile>
     <ClCompile Include="..\src\API\GuiAPI.cpp">
-      <Filter>API\源文件</Filter>
+      <Filter>API</Filter>
     </ClCompile>
     <ClCompile Include="..\src\API\ItemAPI.cpp">
-      <Filter>API\源文件</Filter>
+      <Filter>API</Filter>
     </ClCompile>
     <ClCompile Include="..\src\API\LoggerAPI.cpp">
-      <Filter>API\源文件</Filter>
+      <Filter>API</Filter>
     </ClCompile>
     <ClCompile Include="..\src\API\LxlAPI.cpp">
-      <Filter>API\源文件</Filter>
+      <Filter>API</Filter>
     </ClCompile>
     <ClCompile Include="..\src\API\NbtAPI.cpp">
-      <Filter>API\源文件</Filter>
+      <Filter>API</Filter>
     </ClCompile>
     <ClCompile Include="..\src\API\NetworkAPI.cpp">
-      <Filter>API\源文件</Filter>
+      <Filter>API</Filter>
     </ClCompile>
     <ClCompile Include="..\src\API\PlayerAPI.cpp">
-      <Filter>API\源文件</Filter>
+      <Filter>API</Filter>
     </ClCompile>
     <ClCompile Include="..\src\API\ServerAPI.cpp">
-      <Filter>API\源文件</Filter>
+      <Filter>API</Filter>
     </ClCompile>
     <ClCompile Include="..\src\API\StaticClasses.cpp">
-      <Filter>API\源文件</Filter>
+      <Filter>API</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Kernel\Base.cpp">
-      <Filter>Kernel\源文件</Filter>
+      <Filter>Kernel</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Kernel\Block.cpp">
-      <Filter>Kernel\源文件</Filter>
+      <Filter>Kernel</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Kernel\Db.cpp">
-      <Filter>Kernel\源文件</Filter>
+      <Filter>Kernel</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Kernel\Entity.cpp">
-      <Filter>Kernel\源文件</Filter>
+      <Filter>Kernel</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Kernel\Event.cpp">
-      <Filter>Kernel\源文件</Filter>
+      <Filter>Kernel</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Kernel\Gui.cpp">
-      <Filter>Kernel\源文件</Filter>
+      <Filter>Kernel</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Kernel\Item.cpp">
-      <Filter>Kernel\源文件</Filter>
+      <Filter>Kernel</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Kernel\NBT.cpp">
-      <Filter>Kernel\源文件</Filter>
+      <Filter>Kernel</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Kernel\Packet.cpp">
-      <Filter>Kernel\源文件</Filter>
+      <Filter>Kernel</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Kernel\Player.cpp">
-      <Filter>Kernel\源文件</Filter>
+      <Filter>Kernel</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Kernel\Server.cpp">
-      <Filter>Kernel\源文件</Filter>
+      <Filter>Kernel</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Kernel\System.cpp">
-      <Filter>Kernel\源文件</Filter>
+      <Filter>Kernel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\BindAPIs.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dllmain.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\LiteXLoader.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Loader.cpp">
+      <Filter>Main</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\Configs.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\API\APIhelp.h">
-      <Filter>API\头文件</Filter>
+      <Filter>API</Filter>
     </ClInclude>
     <ClInclude Include="..\src\API\BaseAPI.h">
-      <Filter>API\头文件</Filter>
+      <Filter>API</Filter>
     </ClInclude>
     <ClInclude Include="..\src\API\BlockAPI.h">
-      <Filter>API\头文件</Filter>
+      <Filter>API</Filter>
     </ClInclude>
     <ClInclude Include="..\src\API\DbAPI.h">
-      <Filter>API\头文件</Filter>
+      <Filter>API</Filter>
     </ClInclude>
     <ClInclude Include="..\src\API\EngineGlobalData.h">
-      <Filter>API\头文件</Filter>
+      <Filter>API</Filter>
     </ClInclude>
     <ClInclude Include="..\src\API\EngineOwnData.h">
-      <Filter>API\头文件</Filter>
+      <Filter>API</Filter>
     </ClInclude>
     <ClInclude Include="..\src\API\EntityAPI.h">
-      <Filter>API\头文件</Filter>
+      <Filter>API</Filter>
     </ClInclude>
     <ClInclude Include="..\src\API\EventAPI.h">
-      <Filter>API\头文件</Filter>
+      <Filter>API</Filter>
     </ClInclude>
     <ClInclude Include="..\src\API\FileSystemAPI.h">
-      <Filter>API\头文件</Filter>
+      <Filter>API</Filter>
     </ClInclude>
     <ClInclude Include="..\src\API\GuiAPI.h">
-      <Filter>API\头文件</Filter>
+      <Filter>API</Filter>
     </ClInclude>
     <ClInclude Include="..\src\API\ItemAPI.h">
-      <Filter>API\头文件</Filter>
+      <Filter>API</Filter>
     </ClInclude>
     <ClInclude Include="..\src\API\LoggerAPI.h">
-      <Filter>API\头文件</Filter>
+      <Filter>API</Filter>
     </ClInclude>
     <ClInclude Include="..\src\API\LxlAPI.h">
-      <Filter>API\头文件</Filter>
+      <Filter>API</Filter>
     </ClInclude>
     <ClInclude Include="..\src\API\NbtAPI.h">
-      <Filter>API\头文件</Filter>
+      <Filter>API</Filter>
     </ClInclude>
     <ClInclude Include="..\src\API\NetworkAPI.h">
-      <Filter>API\头文件</Filter>
+      <Filter>API</Filter>
     </ClInclude>
     <ClInclude Include="..\src\API\PlayerAPI.h">
-      <Filter>API\头文件</Filter>
+      <Filter>API</Filter>
     </ClInclude>
     <ClInclude Include="..\src\API\ServerAPI.h">
-      <Filter>API\头文件</Filter>
+      <Filter>API</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Kernel\Base.h">
-      <Filter>Kernel\头文件</Filter>
+      <Filter>Kernel</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Kernel\Block.h">
-      <Filter>Kernel\头文件</Filter>
+      <Filter>Kernel</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Kernel\Db.h">
-      <Filter>Kernel\头文件</Filter>
+      <Filter>Kernel</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Kernel\Entity.h">
-      <Filter>Kernel\头文件</Filter>
+      <Filter>Kernel</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Kernel\Event.h">
-      <Filter>Kernel\头文件</Filter>
+      <Filter>Kernel</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Kernel\Global.h">
-      <Filter>Kernel\头文件</Filter>
+      <Filter>Kernel</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Kernel\Gui.h">
-      <Filter>Kernel\头文件</Filter>
+      <Filter>Kernel</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Kernel\Item.h">
-      <Filter>Kernel\头文件</Filter>
+      <Filter>Kernel</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Kernel\NBT.h">
-      <Filter>Kernel\头文件</Filter>
+      <Filter>Kernel</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Kernel\Packet.h">
-      <Filter>Kernel\头文件</Filter>
+      <Filter>Kernel</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Kernel\Player.h">
-      <Filter>Kernel\头文件</Filter>
+      <Filter>Kernel</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Kernel\Server.h">
-      <Filter>Kernel\头文件</Filter>
+      <Filter>Kernel</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Kernel\System.h">
-      <Filter>Kernel\头文件</Filter>
+      <Filter>Kernel</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Kernel\ThirdParty.h">
-      <Filter>Kernel\头文件</Filter>
+      <Filter>Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Configs.h">
+      <Filter>Main</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\lib\LiteLoader.lib" />
-    <Library Include="..\lib\ScriptX-Lua.lib" />
-    <Library Include="..\engine\Lua\lib\Lua54.lib" />
+    <Library Include="..\lib\LiteLoader.lib">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="..\engine\Lua\lib\Lua54.lib">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="..\lib\ScriptX-Lua.lib">
+      <Filter>Lib</Filter>
+    </Library>
   </ItemGroup>
 </Project>

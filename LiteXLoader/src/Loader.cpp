@@ -17,6 +17,10 @@ using namespace script;
 std::string baseLib;
 std::vector<std::string> depends;
 
+//调试引擎
+std::shared_ptr<ScriptEngine> debugEngine;
+bool globalDebug = false;
+
 //前置声明
 extern std::list<std::shared_ptr<ScriptEngine>> lxlModules;
 void BindAPIs(std::shared_ptr<ScriptEngine> engine);
@@ -111,6 +115,36 @@ void LoadScriptFile(const std::string& filePath)
     
     //加载脚本
     engine->eval(scripts);
+}
+
+//加载调试引擎
+void LoadDebugEngine()
+{
+    //启动引擎
+    debugEngine = NewEngine();
+    //setData
+    std::static_pointer_cast<EngineOwnData>(debugEngine->getData())->pluginName = "__DEBUG_ENGINE__";
+
+    lxlModules.push_back(debugEngine);
+    EngineScope enter(debugEngine.get());
+
+    //绑定API
+    try {
+        BindAPIs(debugEngine);
+    }
+    catch (Exception& e)
+    {
+        ERROR("Fail in binding Debug Engine!\n");
+        throw;
+    }
+
+    //加载基础库
+    debugEngine->eval(baseLib);
+
+    //加载libs依赖库
+    for (auto& i : depends) {
+        debugEngine->eval(i);
+    }
 }
 
 //主加载

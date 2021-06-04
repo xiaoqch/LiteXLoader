@@ -15,6 +15,7 @@ ClassDefine<ItemClass> ItemClassBuilder =
         .instanceProperty("count", &ItemClass::getCount)
         .instanceProperty("aux", &ItemClass::getAux)
 
+        .instanceFunction("isNull", &ItemClass::isNull)
         .instanceFunction("setLore", &ItemClass::setLore)
         .build();
 

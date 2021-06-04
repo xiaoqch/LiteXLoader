@@ -3,6 +3,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <sstream>
 #include <exception>
 #include <cstdarg>
 #include <Kernel/Base.h>
@@ -324,8 +325,9 @@ THook(void, "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVComma
                             for(string para : paras)
                                 args.add(String::newString(para));
 
-                            if(!(iter->second.get().call({},PlayerClass::newPlayer(player),args).asBoolean().value()))
-                                passToOriginalCmdEvent = false;  // not used here
+                            auto res = iter->second.get().call({}, PlayerClass::newPlayer(player), args);
+                            if (res.isBoolean() && res.asBoolean().value() == false)
+                                passToOriginalCmdEvent = false; // not used here
                             break;
                         }
             }
@@ -557,11 +559,10 @@ THook(void, "?transformOnFall@FarmBlock@@UEBAXAEAVBlockSource@@AEBVBlockPos@@PEA
 THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@VCommandContext@@@std@@_N@Z",
     MinecraftCommands* _this, unsigned int* a2, std::shared_ptr<CommandContext> x, char a4)
 {
-    DEBUG("On ServerCmd Begin");
     Player* player = MakeSP(x->getOrigin());
     if(!player)
-    {   // Server Command
-        DEBUG("On ServerCmd Enter");
+    {   
+        // Server Command
         string cmd = x->getCmd();
         if (cmd.front() == '/')
             cmd = cmd.substr(1);
@@ -610,7 +611,6 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
             }
             return false;
         }
-        DEBUG("On GlobalDebug Finished.");
 
         // Register Callbacks
         bool passToOriginalCmdEvent = true;
@@ -624,13 +624,13 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
                     if(cmd.find_first_of(iter->first) == 0)
                     {
                         //Matched
-                        DEBUG("Matched!");
-                        auto paras = SplitCmdParas(cmd.substr(iter->first.size()+1) + " ");
+                        auto paras = SplitCmdParas(cmd.substr(iter->first.size()+1));
                         Local<Array> args = Array::newArray({String::newString(iter->first)});
                         for(string para : paras)
                             args.add(String::newString(para));
                         
-                        if(!(iter->second.get().call({},args).asBoolean().value()))
+                        auto res = iter->second.get().call({}, args);
+                        if(res.isBoolean() && res.asBoolean().value() == false)
                             passToOriginalCmdEvent = false;
                         break;
                     }
@@ -638,7 +638,6 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
         if(!passToOriginalCmdEvent)
             return false;
         
-        DEBUG("Before Call ServerCmd");
         CallEventEx(EVENT_TYPES::OnServerCmd, cmd);
     }
     return original(_this, a2, x, a4);
@@ -663,11 +662,13 @@ THook(void, "?handle@?$PacketHandlerDispatcherInstance@VModalFormResponsePacket@
             // Form Callbacks
             bool passToBDS = true; // not used here
             auto callback = formCallbacks[formId];
-            
+
             EngineScope scope(callback.first);
-            if(!(callback.second.get().call({},String::newString(data)).asBoolean().value()))
+            auto res = callback.second.get().call({}, String::newString(data));
+            if (res.isBoolean() && res.asBoolean().value() == false)
                 passToBDS = false;   // not used here
             
+            //########### 修 没监听器也要跑，还有前面的反过来 ########### 
             // No CallEvent here
         }
     }
@@ -677,40 +678,36 @@ THook(void, "?handle@?$PacketHandlerDispatcherInstance@VModalFormResponsePacket@
 
 //////////////////// Helper Funcs ////////////////////
 
-vector<string> SplitCmdParas(const string &paras)
+vector<string> SplitCmdParas(const string& paras)
 {
     vector<string> res;
-
-    int pos;
-    int size = paras.size();
-    for (int i = 0; i < size; i++)
+    string now, strInQuote = "";
+    istringstream strIn(paras);
+    while (strIn >> now)
     {
-        pos = paras.find(" ", i);
-        if (pos < size)
+        if (!strInQuote.empty())
         {
-            res.push_back(paras.substr(i, pos - i));
-            i = pos;
-
-            // 引号合并
-            int toIndex = res.size()-1;
-            if(res[toIndex].back() == '\"')
-                for(int fromIndex=toIndex-1;fromIndex>=0;--fromIndex)
-                    if(res[fromIndex][0] == '\"')
-                    {
-                        //最近匹配，合并
-                        string combined = res[fromIndex];
-                        for(int now=fromIndex+1;now<=toIndex;++now)
-                            combined+=res[now];
-                        for(int i=fromIndex+1;i<=toIndex;++i)
-                            res.pop_back();
-                        if(combined.front() == '\"')
-                            combined.erase(0,1);
-                        if(combined.back() == '\"')
-                            combined.pop_back();
-                        res[fromIndex] = combined;
-                        break;
-                    }
+            strInQuote = strInQuote + " " + now;
+            if (now.back() == '\"')
+            {
+                strInQuote.pop_back();
+                res.push_back(strInQuote.erase(0, 1));
+                strInQuote = "";
+            }
         }
+        else
+        {
+            if (now.front() == '\"')
+                strInQuote = now;
+            else
+                res.push_back(now);
+        }
+    }
+    if (!strInQuote.empty())
+    {
+        istringstream leftIn(strInQuote);
+        while (leftIn >> now)
+            res.push_back(now);
     }
     return res;
 }

@@ -29,8 +29,8 @@ int Raw_GetItemAux(ItemStack* item)
 
 int Raw_GetCount(ItemStack* item)
 {
-    ///////////////////////////////////////////////////// FIX HERE
-    return WItem(*item).getCount();
+    //############## 数量不对 ##############
+    return WItem(*item).getCount(); 
 }
 
 bool Raw_IsNull(ItemStack* item)
@@ -40,7 +40,7 @@ bool Raw_IsNull(ItemStack* item)
 
 bool Raw_SetLore(ItemStack* item, vector<string> lores)
 {
-    ///////////////////////////////////////////////////// FIX HERE ?
+    //############## 不工作？ ##############
     SymCall("?setCustomLore@ItemStackBase@@QEAAXAEBV?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@@Z",
 		void, void*, vector<string>)(item, lores);
     return true;

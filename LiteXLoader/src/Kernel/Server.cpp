@@ -3,7 +3,7 @@ using namespace std;
 
 bool Raw_SetServerMotd(const std::string &motd)
 {
-///////////////////////////// Add symbol ///////////////////////////// 
+	//################# 没做呢 #################
     return true;
 }
 

@@ -16,19 +16,16 @@ using namespace script;
 
 //主引擎表
 std::list<std::shared_ptr<ScriptEngine>> lxlModules;
-//调试引擎
-std::shared_ptr<ScriptEngine> debugEngine;
-bool globalDebug = false;
 // 配置文件
 INI_ROOT iniConf;
 // 日志等级
 int lxlLogLevel = 1;
 
-void LoadBaseLib();
-void LoadDepends();
-void LoadPlugins();
-void BindAPIs(std::shared_ptr<ScriptEngine> engine);
-void InitGlobalData();
+extern void LoadBaseLib();
+extern void LoadDepends();
+extern void LoadPlugins();
+extern void BindAPIs(std::shared_ptr<ScriptEngine> engine);
+extern void LoadDebugEngine();
 
 void entry()
 {
@@ -37,42 +34,29 @@ void entry()
 
     Raw_DirCreate(std::filesystem::path(LXL_CONFIG_PATH).remove_filename().u8string());
     iniConf = Raw_IniOpen(LXL_CONFIG_PATH);
+    if (!iniConf)
+        ERROR("Failed in loading configs of LXL!");
     lxlLogLevel = Raw_IniGetInt(iniConf,"Main","LxlLogLevel",1);
+
+    //预加载库
     LoadBaseLib();
     LoadDepends();
     
+    //加载插件
     LoadPlugins();
-    InitGlobalData();
-    Raw_IniClose(iniConf);
-}
 
-/////////////////////////////////////////////
+    //注册后台调试
+    LoadDebugEngine();
 
-void InitGlobalData()
-{
-    // GC循环
+    //GC循环
     std::thread([]() {
-        std::this_thread::sleep_for(std::chrono::seconds(Raw_IniGetInt(iniConf,"Advanced","GCInterval",20)));
-        for(auto engine : lxlModules)
+        std::this_thread::sleep_for(std::chrono::seconds(Raw_IniGetInt(iniConf, "Advanced", "GCInterval", 20)));
+        for (auto engine : lxlModules)
         {
             EngineScope enter(engine.get());
             engine->messageQueue()->loopQueue(utils::MessageQueue::LoopType::kLoopOnce);
         }
-        debugEngine->messageQueue()->loopQueue(utils::MessageQueue::LoopType::kLoopOnce);
-    }).detach();
+    }).detach();    //############## loadPlugin加锁 ################
 
-    //后台调试
-    debugEngine = NewEngine();
-    //setData
-    std::static_pointer_cast<EngineOwnData>(debugEngine->getData())->pluginName = "__DEBUGING_ENGINE__";
-    
-    EngineScope enter(debugEngine.get());
-    try{
-        BindAPIs(debugEngine);
-    }
-    catch(Exception& e)
-    {
-        ERROR("Fail in starting Debug Engine!\n");
-        throw;
-    }
+    Raw_IniClose(iniConf);
 }
