@@ -276,6 +276,6 @@ void ValueToJson_Helper(JSON_VALUE &res, Local<Value> &v)
 std::string ValueToJson(Local<Value> v,int formatIndent)
 {
     JSON_VALUE res;
-    ValueToJson_Helper(res,v);
+    ValueToJson_Helper(res, v);
     return res.dump(formatIndent);
 }

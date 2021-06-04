@@ -141,7 +141,7 @@ Local<Value> RuncmdEx(const Arguments& args)
     CHECK_ARGS_COUNT(args,1)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
 
-    try{
+    try{        //############ 没执行 ############
         std::pair<bool, string> result = Raw_RuncmdEx(args[0].asString().toString());
         Local<Object> resObj = Object::newObject();
         resObj.set("result",result.first);
@@ -153,7 +153,7 @@ Local<Value> RuncmdEx(const Arguments& args)
 
 Local<Value> RegisterPlayerCmd(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args,2)
+    CHECK_ARGS_COUNT(args,3)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
     CHECK_ARG_TYPE(args[1],ValueKind::kString)
     CHECK_ARG_TYPE(args[2],ValueKind::kFunction)
@@ -181,7 +181,7 @@ Local<Value> RegisterPlayerCmd(const Arguments& args)
 
 Local<Value> RegisterConsoleCmd(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args,2)
+    CHECK_ARGS_COUNT(args,3)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
     CHECK_ARG_TYPE(args[1],ValueKind::kString)
     CHECK_ARG_TYPE(args[2],ValueKind::kFunction)
@@ -337,7 +337,7 @@ Local<Value> ClearInterval(const Arguments& args)
     CHECK_ARG_TYPE(args[0],ValueKind::kNumber)
 
     try{
-        DWORD id=timeTaskMap.at((unsigned int)args[0].toInt());
+        DWORD id=timeTaskMap.at((unsigned int)args[0].toInt());     //########### ID no found ? ###########
         return Boolean::newBoolean(Raw_KillThread(id));
     }
     CATCH("Fail in ClearInterval!")

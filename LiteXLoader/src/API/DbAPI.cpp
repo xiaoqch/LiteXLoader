@@ -469,3 +469,97 @@ Local<Value> OpenDB(const Arguments& args)
         return Local<Value>();
     }
 }
+
+Local<Value> MoneySet(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 2)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARG_TYPE(args[1],ValueKind::kNumber)
+
+    try
+    {
+        return Boolean::newBoolean(Raw_SetMoney(stoull(args[0].toStr()), args[1].asNumber().toInt64()));
+    }
+    CATCH("Fail in MoneySet!")
+}
+
+Local<Value> MoneyGet(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+
+    try
+    {
+        return Number::newNumber(Raw_GetMoney(stoull(args[0].toStr())));
+    }
+    CATCH("Fail in MoneyGet!")
+}
+
+Local<Value> MoneyAdd(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 2)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARG_TYPE(args[1], ValueKind::kNumber)
+
+    try
+    {
+        return Boolean::newBoolean(Raw_AddMoney(stoull(args[0].toStr()), args[1].asNumber().toInt64()));
+    }
+    CATCH("Fail in MoneyAdd!")
+}
+
+Local<Value> MoneyReduce(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 2)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARG_TYPE(args[1], ValueKind::kNumber)
+
+    try
+    {
+        return Boolean::newBoolean(Raw_ReduceMoney(stoull(args[0].toStr()), args[1].asNumber().toInt64()));
+    }
+    CATCH("Fail in MoneyReduce!")
+}
+
+Local<Value> MoneyTrans(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 3)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARG_TYPE(args[1], ValueKind::kString)
+    CHECK_ARG_TYPE(args[2], ValueKind::kNumber)
+
+    try
+    {
+        string note = "";
+        if (args.size() >= 4 && args[3].getKind() == ValueKind::kString)
+            note = args[3].toStr();
+        return Boolean::newBoolean(Raw_TransMoney(stoull(args[0].toStr()), stoull(args[1].toStr()),
+                args[2].asNumber().toInt64(), note));
+    }
+    CATCH("Fail in MoneyTrans!")
+}
+
+Local<Value> MoneyGetHintory(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 2)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARG_TYPE(args[1], ValueKind::kNumber)
+
+    try
+    {
+        return String::newString(Raw_GetMoneyHist(stoull(args[0].toStr()), args[1].asNumber().toInt64()));
+    }
+    CATCH("Fail in MoneyGetHintory!")
+}
+
+Local<Value> MoneyClearHistory(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kNumber)
+
+    try
+    {
+        return Boolean::newBoolean(Raw_ClearMoneyHist(args[0].asNumber().toInt64()));
+    }
+    CATCH("Fail in MoneyClearHistory!")
+}

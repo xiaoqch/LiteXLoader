@@ -31,10 +31,10 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceProperty("sneaking", &PlayerClass::getSneaking)
 
         .instanceFunction("isOP", &PlayerClass::isOP)
-        .instanceFunction("getPlayerPermLevel", &PlayerClass::getPlayerPermLevel)
-        .instanceFunction("setPlayerPermLevel", &PlayerClass::setPlayerPermLevel)
+        .instanceFunction("getPermLevel", &PlayerClass::getPermLevel)
+        .instanceFunction("setPermLevel", &PlayerClass::setPermLevel)
 
-        .instanceFunction("runcmdAs", &PlayerClass::runcmdAs)
+        .instanceFunction("runcmd", &PlayerClass::runcmd)
         .instanceFunction("teleport", &PlayerClass::teleport)
         .instanceFunction("kill", &PlayerClass::kill)
         .instanceFunction("kick", &PlayerClass::kick)
@@ -43,6 +43,10 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceFunction("getOffHand", &PlayerClass::getOffHand)
         .instanceFunction("getPack", &PlayerClass::getPack)
         .instanceFunction("rename", &PlayerClass::rename)
+
+        .instanceFunction("sendSimpleForm", &PlayerClass::sendSimpleForm)
+        .instanceFunction("sendModalForm", &PlayerClass::sendModalForm)
+        .instanceFunction("sendForm", &PlayerClass::sendForm)
 
         .instanceFunction("setExtraData", &PlayerClass::setExtraData)
         .instanceFunction("getExtraData", &PlayerClass::getExtraData)
@@ -212,7 +216,7 @@ Local<Value> PlayerClass::isOP(const Arguments& args)
     CATCH("Fail in IsOP!")
 }
 
-Local<Value> PlayerClass::getPlayerPermLevel(const Arguments& args)
+Local<Value> PlayerClass::getPermLevel(const Arguments& args)
 {
     try{
         return Number::newNumber(Raw_GetPlayerPermLevel(player));
@@ -220,7 +224,7 @@ Local<Value> PlayerClass::getPlayerPermLevel(const Arguments& args)
     CATCH("Fail in GetPlayerPermLevel!")
 }
 
-Local<Value> PlayerClass::setPlayerPermLevel(const Arguments& args)
+Local<Value> PlayerClass::setPermLevel(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
     CHECK_ARG_TYPE(args[0],ValueKind::kNumber)
@@ -235,7 +239,7 @@ Local<Value> PlayerClass::setPlayerPermLevel(const Arguments& args)
     CATCH("Fail in SetPlayerPermLevel!")
 }
 
-Local<Value> PlayerClass::runcmdAs(const Arguments& args)
+Local<Value> PlayerClass::runcmd(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
@@ -243,7 +247,7 @@ Local<Value> PlayerClass::runcmdAs(const Arguments& args)
     try{
         return Boolean::newBoolean(Raw_RuncmdAs(player,args[0].toStr()));
     }
-    CATCH("Fail in RunCmdAs!")
+    CATCH("Fail in runcmd!")
 }
 
 Local<Value> PlayerClass::kick(const Arguments& args)
@@ -268,13 +272,13 @@ Local<Value> PlayerClass::tell(const Arguments& args)
 
     try{
         TextType type = TextType::RAW;
-        if(args.size() >= 2 && args[1].getKind() == ValueKind::kNumber)
+        if(args.size() >= 2 && args[1].isNumber())
         {
             int newType = args[1].asNumber().toInt32();
             if(newType >= 0 && newType <= 9)
                 type = (TextType)newType;
         }
-        return Boolean::newBoolean(Raw_Tell(player,args[1].toStr(),type));
+        return Boolean::newBoolean(Raw_Tell(player,args[0].toStr(),type));
     }
     CATCH("Fail in Tell!")
 }
@@ -429,21 +433,11 @@ Local<Value> PlayerClass::sendSimpleForm(const Arguments& args)
     CHECK_ARGS_COUNT(args,4)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
     CHECK_ARG_TYPE(args[1],ValueKind::kString)
-    CHECK_ARG_TYPE(args[2],ValueKind::kString)
+    CHECK_ARG_TYPE(args[2],ValueKind::kArray)
     CHECK_ARG_TYPE(args[3],ValueKind::kFunction)
 
-    try{
-        string title,content,buttons;
-        try{
-            title = JSON_VALUE::parse(args[0].toStr()).get<string>();
-            content = JSON_VALUE::parse(args[1].toStr()).get<string>();
-            buttons = JSON_VALUE::parse(args[2].toStr()).get<string>();
-        }catch(...){ 
-            ERROR("Fail to Form currect Form string!");
-            return Local<Value>();
-        }
-        
-        int formId = Raw_SendSimpleForm(player,title,content,buttons);
+    try{    
+        int formId = Raw_SendSimpleForm(player, args[0].toStr(), args[1].toStr(), ValueToJson(args[2].asArray()));
         formCallbacks[formId] = {EngineScope::currentEngine(),args[3].asFunction()};
 
         return Number::newNumber(formId);
@@ -451,7 +445,7 @@ Local<Value> PlayerClass::sendSimpleForm(const Arguments& args)
     CATCH("Fail in SendSimpleForm!")
 }
 
-Local<Value> PlayerClass::sendModelForm(const Arguments& args)
+Local<Value> PlayerClass::sendModalForm(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,5)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
@@ -461,23 +455,12 @@ Local<Value> PlayerClass::sendModelForm(const Arguments& args)
     CHECK_ARG_TYPE(args[4],ValueKind::kFunction)
 
     try{
-        string title,content,button1,button2;
-        try{
-            title = JSON_VALUE::parse(args[0].toStr()).get<string>();
-            content = JSON_VALUE::parse(args[1].toStr()).get<string>();
-            button1 = JSON_VALUE::parse(args[2].toStr()).get<string>();
-            button2 = JSON_VALUE::parse(args[3].toStr()).get<string>();
-        }catch(...){ 
-            ERROR("Fail to Form currect Form string!");
-            return Local<Value>();
-        }
-        
-        int formId = Raw_SendModalForm(player,title,content,button1,button2);
+        int formId = Raw_SendModalForm(player, args[0].toStr(), args[1].toStr(), args[2].toStr(), args[3].toStr());
         formCallbacks[formId] = {EngineScope::currentEngine(),args[4].asFunction()};
         
         return Number::newNumber(formId);
     }
-    CATCH("Fail in sendModelForm!")
+    CATCH("Fail in sendModalForm!")
 }
 
 Local<Value> PlayerClass::sendForm(const Arguments& args)
@@ -503,7 +486,7 @@ Local<Value> PlayerClass::sendForm(const Arguments& args)
                 data = jsonForm->dump();
             }
         }catch(...){ 
-            ERROR("Fail to Form currect Form string!");
+            ERROR("Fail to parse Json string in sendForm!");
             return Local<Value>();
         }
         
@@ -543,7 +526,6 @@ Local<Value> PlayerClass::getExtraData(const Arguments& args)
     }
     catch(...)
     {
-        ERROR("Fail in getExtraData");
         return Local<Value>();  //Null
     }
     

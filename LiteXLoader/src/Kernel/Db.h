@@ -32,3 +32,18 @@ std::string Raw_IniGetString(INI_ROOT ini, const std::string & sec, const std::s
 bool Raw_IniGetBool(INI_ROOT ini, const std::string & sec, const std::string & key, bool def = false);
 
 bool Raw_IniDeleteKey(INI_ROOT ini, const std::string & sec, const std::string & key);
+
+
+//LLMoney
+bool Raw_InitEcnonmicSystem();
+
+typedef long long money_t;
+typedef unsigned long long xuid_t;
+
+money_t Raw_GetMoney(xuid_t player);
+bool Raw_SetMoney(xuid_t player, money_t money);
+bool Raw_AddMoney(xuid_t player, money_t money);
+bool Raw_ReduceMoney(xuid_t player, money_t money);
+bool Raw_TransMoney(xuid_t player1, xuid_t player2, money_t money, string const& notes);
+std::string Raw_GetMoneyHist(xuid_t player, int time);
+bool Raw_ClearMoneyHist(int time);

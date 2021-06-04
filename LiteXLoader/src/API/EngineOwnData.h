@@ -1,14 +1,13 @@
 #include "APIhelp.h"
-#include <ScriptX/ScriptX.h>
+#include <Kernel/ThirdParty.h>
+#include <Kernel/Db.h>
+
 #include <fstream>
 #include <string>
 #include <fstream>
 #include <map>
 #include <unordered_map>
 #include <memory>
-#include <Kernel/ThirdParty.h>
-#include <Kernel/Db.h>
-using namespace script;
 
 static struct EngineOwnData_MapCmp
 {

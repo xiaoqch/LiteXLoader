@@ -48,22 +48,8 @@
 ## 🔨 Compiling
 1. Install newest **Microsoft Visual Studio** with standard C++ building suite
 2. Install the newest version of **Windows SDK**
-3. Install **CMake** and add it to `PATH`
-4. Run the building batch below  
-
-#### Build & Link
-- `build/BuildJs.bat`&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Build LiteXRunner for Js
-- `build/BuildLua.bat`&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Build LiteLuaRunner for Lua
-- `build/BuildAll.bat`&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Build All targets above
-
-#### Clean everything generated & Rebuild & Link
-- `build/ReBuildJs.bat`&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;ReBuild LiteXRunner for Js
-- `build/ReBuildLua.bat`&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;ReBuild LiteXRunner for Lua
-- `build/ReBuildAll.bat`&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;ReBuild All targets above
-
-##### After building, DLLs will generate at `Release` directory.    
-
-##### If you want to get the release zip pack, run `build/PackRelease.bat` and it will generate at `Release` directory.    
+3. 打开 LiteXLoader 目录下的 `LiteXLoader.sln` 项目文件，点击 **生成解决方案** 按钮
+4. 编译生成成功之后，在同目录下 `Release` 文件夹中的几个DLL文件即是生成的 LiteXLoader 加载器程序
 
 ## 💻 安装
 项目主要发布于**MineBBS**，请[移步MineBBS](https://www.minebbs.com/)下载

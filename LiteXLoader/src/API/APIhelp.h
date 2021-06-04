@@ -11,12 +11,12 @@ using namespace script;
 
 // 输出
 extern int lxlLogLevel;
-#define PREFIX "[LiteXLoader." ## LXL_SCRIPT_LANG_TYPE ## "]"
-#define DEBUG(t) { if(lxlLogLevel <= 0) std::cout << PREFIX ## "[Debug] " << (t) << std::endl; }
-#define INFO(t)  { if(lxlLogLevel <= 1) std::cout << PREFIX ## "[Info] " << (t) << std::endl; }
-#define WARN(t)  { if(lxlLogLevel <= 2) std::cout << PREFIX ## "[Warning] " << (t) << std::endl; }
-#define ERROR(t)  { if(lxlLogLevel <= 3) std::cerr << PREFIX ## "[Error] " << (t) << std::endl; }
-#define FATAL(t)  { if(lxlLogLevel <= 4) std::cerr << PREFIX ## "[FATAL] " << (t) << std::endl; }
+#define PREFIX "[LiteXLoader." LXL_SCRIPT_LANG_TYPE "]" 
+#define DEBUG(t) { if(lxlLogLevel <= 0) std::cout << PREFIX "[Debug] " << (t) << std::endl; }
+#define INFO(t)  { if(lxlLogLevel <= 1) std::cout << PREFIX "[Info] " << (t) << std::endl; }
+#define WARN(t)  { if(lxlLogLevel <= 2) std::cout << PREFIX "[Warning] " << (t) << std::endl; }
+#define ERROR(t)  { if(lxlLogLevel <= 3) std::cerr << PREFIX "[Error] " << (t) << std::endl; }
+#define FATAL(t)  { if(lxlLogLevel <= 4) std::cerr << PREFIX "[FATAL] " << (t) << std::endl; }
 #define PRINT(t)  { std::cout << t << std::endl; }
 #define ERRPRINT(t)  { if(lxlLogLevel <= 3) std::cerr << t << std::endl; }
 

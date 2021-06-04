@@ -120,7 +120,7 @@ bool Raw_SystemCmd(const std::string &cmd, std::function<void(int,std::string)> 
         callback{std::move(callback)},timeLimit{std::move(timeLimit)}, wCmd{std::move(wCmd)}] ()
     {
         if(timeLimit == -1)
-            WaitForSingleObject(hProcess,INFINITE);
+            WaitForSingleObject(hProcess,INFINITE);     //################## 句柄表！##################
         else
         {
             WaitForSingleObject(hProcess,timeLimit);
@@ -149,14 +149,14 @@ bool Raw_SystemCmd(const std::string &cmd, std::function<void(int,std::string)> 
 
 std::pair<int,std::string> Raw_HttpRequestSync(const std::string &url,const std::string &method,const std::string &data)
 {
-    httplib::Client cli(url.c_str());
+    httplib::Client cli(url.c_str());       //############## Crash ##############
     auto response = (method == "POST" || method == "Post") ? cli.Post(data.c_str()) : cli.Get(data.c_str());
     return {response->status,response->body};
 }
 
 bool Raw_HttpRequestAsync(const string &url,const string &method,const string &data,function<void(int,std::string)> callback)
 {
-    httplib::Client *cli = new httplib::Client(url.c_str());
+    httplib::Client *cli = new httplib::Client(url.c_str());    //############## Crash ##############
     if(!cli->is_valid())
     {
         delete cli;

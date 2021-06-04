@@ -19,7 +19,7 @@ class McClass
 public:
     static Local<Value> runcmd(const Arguments& args) { return Runcmd(args); }
     static Local<Value> runcmdEx(const Arguments& args) { return RuncmdEx(args); }
-    static Local<Value> addPlayerCmd(const Arguments& args) { return RegisterPlayerCmd(args); }
+    static Local<Value> regPlayerCmd(const Arguments& args) { return RegisterPlayerCmd(args); }
 
     static Local<Value> listen(const Arguments& args) { return Listen(args); }
 
@@ -30,7 +30,7 @@ public:
     static Local<Value> newForm(const Arguments& args) { return NewForm(args); }
     static Local<Value> cancelForm(const Arguments& args) { return CancelForm(args); }
 
-    static Local<Value> addConsoleCmd(const Arguments& args) { return RegisterConsoleCmd(args); }
+    static Local<Value> regConsoleCmd(const Arguments& args) { return RegisterConsoleCmd(args); }
     static Local<Value> setMotd(const Arguments& args) { return SetMotd(args); }
     static Local<Value> setOnlinePlayer(const Arguments& args) { return SetOnlinePlayer(args); }
 };
@@ -38,7 +38,7 @@ ClassDefine<void> McClassBuilder =
     defineClass("mc")
         .function("runcmd", &McClass::runcmd)
         .function("runcmdEx", &McClass::runcmdEx)
-        .function("addPlayerCmd", &McClass::addPlayerCmd)
+        .function("regPlayerCmd", &McClass::regPlayerCmd)
         .function("listen", &McClass::listen)
         .function("getPlayer", &McClass::getPlayer)
         .function("getOnlinePlayers", &McClass::getOnlinePlayers)
@@ -46,7 +46,7 @@ ClassDefine<void> McClassBuilder =
         .function("newForm", &McClass::newForm)
         .function("cancelForm", &McClass::cancelForm)
 
-        .function("addConsoleCmd", &McClass::addConsoleCmd)
+        .function("regConsoleCmd", &McClass::regConsoleCmd)
         .function("setMotd", &McClass::setMotd)
         .function("setOnlinePlayer", &McClass::setOnlinePlayer)
         .build();
@@ -179,6 +179,29 @@ ClassDefine<void> ConfClassBuilder =
         .function("write", &ConfClass::write)
 
         .function("openDB", &ConfClass::openDB)
+        .build();
+
+class MoneyClass
+{
+public:
+    static Local<Value> set(const Arguments& args) { return MoneySet(args); }
+    static Local<Value> get(const Arguments& args) { return MoneyGet(args); }
+    static Local<Value> add(const Arguments& args) { return MoneyAdd(args); }
+    static Local<Value> reduce(const Arguments& args) { return MoneyReduce(args); }
+    static Local<Value> trans(const Arguments& args) { return MoneyTrans(args); }
+    static Local<Value> getHistory(const Arguments& args) { return MoneyGetHintory(args); }
+    static Local<Value> clearHistory(const Arguments& args) { return MoneyClearHistory(args); }
+};
+
+ClassDefine<void> MoneyClassBuilder =
+    defineClass("money")
+        .function("set", &MoneyClass::set)
+        .function("get", &MoneyClass::get)
+        .function("add", &MoneyClass::add)
+        .function("reduce", &MoneyClass::reduce)
+        .function("trans", &MoneyClass::trans)
+        .function("getHistory", &MoneyClass::getHistory)
+        .function("clearHistory", &MoneyClass::clearHistory)
         .build();
 
 class NetworkClass

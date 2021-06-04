@@ -10,6 +10,7 @@ int Raw_SendSimpleForm(Player* player,const string &title,const string &content,
     model = model.replace(model.find("%s"),2, buttons);
 
     return Raw_SendFormPacket(player,model);
+    //############## 中文乱码？？ ##############
 }
 
 int Raw_SendModalForm(Player* player,const string &title,const string &content,const string &button1,const string &button2)
