@@ -42,8 +42,8 @@ enum class EVENT_TYPES : int
     EVENT_COUNT
 };
 static const std::unordered_map<string, EVENT_TYPES> EventsMap{
-    {"onPlayerJoin",EVENT_TYPES::OnJoin},
-    {"onPlayerLeft",EVENT_TYPES::OnLeft},
+    {"onJoin",EVENT_TYPES::OnJoin},
+    {"onLeft",EVENT_TYPES::OnLeft},
     {"onRespawn",EVENT_TYPES::OnRespawn},
     {"onChangeDimension",EVENT_TYPES::OnChangeDim},
     {"onPlayerCmd",EVENT_TYPES::OnPlayerCmd},
@@ -96,6 +96,7 @@ static std::vector<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)]
             ERRPRINT(e.message()); \
         } \
     }
+
 #define CallEventEx(TYPE,...) \
     std::vector<ListenerListType> &nowList = listenerList[int(TYPE)]; \
     bool passToBDS = true; \
@@ -137,13 +138,16 @@ Local<Value> Listen(const Arguments& args)
     CATCH("Fail to bind listener!")
 }
 
-
+//注册后台调试命令
 void RegisterBuiltinCmds()
 {
-    //注册后台调试命令
-    Raw_RegisterCmd(LXL_DEBUG_CMD, string(LXL_SCRIPT_LANG_TYPE) + " Engine Real-time Debugging", 4);
-
-    INFO("Builtin Cmds Registered.");
+    static bool hasDone = false;
+    if (!hasDone)
+    {
+        Raw_RegisterCmd(LXL_DEBUG_CMD, string(LXL_SCRIPT_LANG_TYPE) + " Engine Real-time Debugging", 4);
+        DEBUG("Builtin Cmds Registered.");
+        hasDone = true;
+    }
 }
 
 
@@ -328,7 +332,8 @@ THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@
     {
         auto sp = *reinterpret_cast<Player**>(reinterpret_cast<unsigned long long>(_this) + 8);
 
-        CallEventEx(EVENT_TYPES::OnUseItem, PlayerClass::newPlayer(sp), BlockClass::newBlock(bl,bp), IntPos::newPos(bp->x, bp->y, bp->z,WPlayer(*sp).getDimID()));
+        CallEventEx(EVENT_TYPES::OnUseItem, PlayerClass::newPlayer(sp), ItemClass::newItem(item),
+            BlockClass::newBlock(bl,bp), IntPos::newPos(bp->x, bp->y, bp->z, WPlayer(*sp).getDimID()));
     }
     return original(_this, item, bp, a4, a5, bl);
 }
@@ -341,7 +346,8 @@ THook(bool, "?checkBlockDestroyPermissions@BlockSource@@QEAA_NAEAVActor@@AEBVBlo
     {
         auto block = SymCall("?getBlock@BlockSource@@QEBAAEBVBlock@@AEBVBlockPos@@@Z", Block*, BlockSource*, BlockPos*)(_this, pos);
 
-        CallEventEx(EVENT_TYPES::OnDestroyBlock, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(block,pos,_this), IntPos::newPos(pos->x, pos->y, pos->z,Raw_GetBlockDimension(_this)));
+        CallEventEx(EVENT_TYPES::OnDestroyBlock, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(block,pos,_this),
+            IntPos::newPos(pos->x, pos->y, pos->z,Raw_GetBlockDimension(_this)));
     }
     return original(_this, pl, pos,a3, a4);
 }
@@ -541,17 +547,20 @@ THook(void, "?transformOnFall@FarmBlock@@UEBAXAEAVBlockSource@@AEBVBlockPos@@PEA
 THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@VCommandContext@@@std@@_N@Z",
     MinecraftCommands* _this, unsigned int* a2, std::shared_ptr<CommandContext> x, char a4)
 {
-    IF_EXIST(EVENT_TYPES::OnServerCmd)
+    Player* player = MakeSP(x->getOrigin());
+    if (!player)
     {
-        Player* player = MakeSP(x->getOrigin());
-        if (!player)
-        {
-            // Server Command
-            string cmd = x->getCmd();
-            if (cmd.front() == '/')
-                cmd = cmd.substr(1);
+        // Server Command
+        string cmd = x->getCmd();
+        if (cmd.front() == '/')
+            cmd = cmd.substr(1);
 
-            if (!ProcessDebugEngine(cmd) || !CallServerCmdCallback(cmd))
+        if (!ProcessDebugEngine(cmd))
+            return false;
+
+        IF_EXIST(EVENT_TYPES::OnServerCmd)
+        {
+            if (!CallServerCmdCallback(cmd))
                 return false;
             CallEventEx(EVENT_TYPES::OnServerCmd, cmd);
         }
