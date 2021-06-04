@@ -1,0 +1,47 @@
+name: Build LiteXLoader
+
+on: [push]
+
+env:
+  SOLUTION_FILE_PATH: .
+  BUILD_CONFIGURATION: Release
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: Build LiteXLoader
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: MSBuild.exe ./LiteXLoader/LiteXLoader.sln -property:Configuration=Release
+      shell: bash
+      
+    - name: MkDirs
+      run: |
+        mkdir D:/build
+        mkdir D:/dev
+      shell: bash
+      
+    - name: Copy Files
+      run: |
+        cp -a ./LiteXLoader/Release/*.lib D:/dev
+        cp -a ./LiteXLoader/Release/*.pdb D:/dev
+        cp -a ./LiteXLoader/Release/*.dll D:/build
+      shell: bash
+    
+    - name: Upload BuildFiles
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: build
+        path: D:/build
+    
+    - name: Upload DevFiles
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: dev
+        path: D:/dev
