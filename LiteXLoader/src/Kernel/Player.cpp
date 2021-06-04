@@ -117,7 +117,8 @@ bool Raw_RenamePlayer(Player* player, const string &name)
     player->setNameTag(name);
     return true;
 }
-///////////////////////// Add code here ///////////////////////////
+
+//#################### Add code here ####################
 int Raw_GetScore(Player* player, const std::string &key)
 {
     return 0;

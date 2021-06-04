@@ -13,7 +13,7 @@ std::pair<bool, string> Raw_RuncmdEx(const string &cmd)
 
 bool Raw_RegisterCmd(const string &cmd, const string &describe, int cmdLevel)
 {
-///////////////////////////// FIX HERE ///////////////////////////// 
+    //############ FIX HERE ############
     char *desc = new (std::nothrow) char[describe.size()+1];
     if(!desc)
         return false;
