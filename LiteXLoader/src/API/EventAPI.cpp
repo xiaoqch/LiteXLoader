@@ -22,7 +22,10 @@ using namespace script;
 
 //////////////////// Helper Funcs ////////////////////
 
-vector<string> SplitCmdParas(const string &paras);
+bool ProcessDebugEngine(const string& cmd);
+bool CallPlayerCmdCallback(Player *player, const string& cmd);
+bool CallServerCmdCallback(const string& cmd);
+bool CallFormCallback(int formId, const string& data);
 
 //////////////////// Listeners ////////////////////
 
@@ -303,35 +306,14 @@ THook(void, "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVComma
         auto player = SymCall("?_getServerPlayer@ServerNetworkHandler@@AEAAPEAVServerPlayer@@AEBVNetworkIdentifier@@E@Z",
             Player*, void*, void*, char)(_this, id, *(char*)((uintptr_t)pkt + 16));
         if (player)
-        {   // Player Command
+        {   
+            // Player Command
             auto cmd = std::string(*(std::string*)((uintptr_t)pkt + 48));
             if (cmd.front() == '/')
                 cmd = cmd.substr(1);
             
-            // Register Callbacks
-            bool passToOriginalCmdEvent = true; // not used here
-            
-            for(auto engine : lxlModules)
-            {
-                EngineScope enter(engine.get());
-                auto funcs = &(ENGINE_OWN_DATA()->playerCmdCallbacks);
-                if(!funcs->empty())
-                    for (auto iter=funcs->begin(); iter!=funcs->end(); ++iter)
-                        if(cmd.find_first_of(iter->first) == 0)
-                        {
-                            //Matched
-                            auto paras = SplitCmdParas(cmd.substr(iter->first.size()+1) + " ");
-                            Local<Array> args = Array::newArray({String::newString(iter->first)});
-                            for(string para : paras)
-                                args.add(String::newString(para));
-
-                            auto res = iter->second.get().call({}, PlayerClass::newPlayer(player), args);
-                            if (res.isBoolean() && res.asBoolean().value() == false)
-                                passToOriginalCmdEvent = false; // not used here
-                            break;
-                        }
-            }
-
+            if (!CallPlayerCmdCallback(player,cmd))
+                return;
             CallEvent(EVENT_TYPES::OnPlayerCmd, PlayerClass::newPlayer(player), cmd);
         }
     }
@@ -460,7 +442,7 @@ THook(bool, "?die@Mob@@UEAAXAEBVActorDamageSource@@@Z",
         auto level = offPlayer::getLevel(self);
         auto ac = SymCall("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z"
             , Actor*, Level*, void*, bool)(level, v6, 0);
-/////////////////////////////  ADD MOB ///////////////////////////// 
+
         CallEventEx(EVENT_TYPES::OnMobDie, EntityClass::newEntity(self), EntityClass::newEntity(ac));
     }
     return original(self, ads);
@@ -559,86 +541,20 @@ THook(void, "?transformOnFall@FarmBlock@@UEBAXAEAVBlockSource@@AEBVBlockPos@@PEA
 THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@VCommandContext@@@std@@_N@Z",
     MinecraftCommands* _this, unsigned int* a2, std::shared_ptr<CommandContext> x, char a4)
 {
-    Player* player = MakeSP(x->getOrigin());
-    if(!player)
-    {   
-        // Server Command
-        string cmd = x->getCmd();
-        if (cmd.front() == '/')
-            cmd = cmd.substr(1);
-        
-        //后台调试
-#define OUTPUT_DEBUG_SIGN() std::cout << "LiteXLoader-" << LXL_SCRIPT_LANG_TYPE << ">" << std::flush
-        extern bool globalDebug;
-        extern std::shared_ptr<ScriptEngine> debugEngine;
-
-        if(cmd == LXL_DEBUG_CMD)
+    IF_EXIST(EVENT_TYPES::OnServerCmd)
+    {
+        Player* player = MakeSP(x->getOrigin());
+        if (!player)
         {
-            if(globalDebug)
-            {   //EndDebug
-                INFO("Debug mode ended");
-                globalDebug = false;
-            }
-            else
-            {   //StartDebug
-                INFO("Debug mode begin");
-                globalDebug = true;
-                OUTPUT_DEBUG_SIGN();
-            }
-            return false;
-        }
-        if(globalDebug)
-        {
-            EngineScope enter(debugEngine.get());
-            try
-            {
-                if(cmd == "stop")
-                {
-                    WARN("请先退出Debug实时调试模式再使用stop！");
-                }
-                else
-                {
-                    auto result = debugEngine->eval(cmd);
-                    PrintValue(std::cout,result);
-                    cout << endl;
-                    OUTPUT_DEBUG_SIGN();
-                }
-            }
-            catch(Exception& e)
-            {
-                ERRPRINT(e);
-                OUTPUT_DEBUG_SIGN();
-            }
-            return false;
-        }
+            // Server Command
+            string cmd = x->getCmd();
+            if (cmd.front() == '/')
+                cmd = cmd.substr(1);
 
-        // Register Callbacks
-        bool passToOriginalCmdEvent = true;
-
-        for(auto engine : lxlModules)
-        {
-            EngineScope enter(engine.get());
-            auto funcs = &(ENGINE_OWN_DATA()->consoleCmdCallbacks);
-            if(!funcs->empty())
-                for (auto iter=funcs->begin(); iter!=funcs->end(); ++iter)
-                    if(cmd.find_first_of(iter->first) == 0)
-                    {
-                        //Matched
-                        auto paras = SplitCmdParas(cmd.substr(iter->first.size()+1));
-                        Local<Array> args = Array::newArray({String::newString(iter->first)});
-                        for(string para : paras)
-                            args.add(String::newString(para));
-                        
-                        auto res = iter->second.get().call({}, args);
-                        if(res.isBoolean() && res.asBoolean().value() == false)
-                            passToOriginalCmdEvent = false;
-                        break;
-                    }
+            if (!ProcessDebugEngine(cmd) || !CallServerCmdCallback(cmd))
+                return false;
+            CallEventEx(EVENT_TYPES::OnServerCmd, cmd);
         }
-        if(!passToOriginalCmdEvent)
-            return false;
-        
-        CallEventEx(EVENT_TYPES::OnServerCmd, cmd);
     }
     return original(_this, a2, x, a4);
 }
@@ -647,31 +563,21 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
 THook(void, "?handle@?$PacketHandlerDispatcherInstance@VModalFormResponsePacket@@$0A@@@UEBAXAEBVNetworkIdentifier@@AEAVNetEventCallback@@AEAV?$shared_ptr@VPacket@@@std@@@Z",
 	void* _this, unsigned long long id, ServerNetworkHandler* handler, void* packet)
 {
-    IF_EXIST(EVENT_TYPES::OnFormSelected)
+    //IF_EXIST(EVENT_TYPES::OnFormSelected)
+
+    Player* p = handler->_getServerPlayer(*(NetworkIdentifier*)(void*)id, *(unsigned char*)packet);
+    if (p)
     {
-        //////////////////////////////////////// ??
-        Player* p = handler->_getServerPlayer(*(NetworkIdentifier*)(void*)id, *(unsigned char*)packet);
-        if (p)
-        {
-            unsigned formId = dAccess<unsigned>(packet,48);
-            string data = dAccess<string>(packet,56);
+        unsigned formId = dAccess<unsigned>(packet,48);
+        string data = dAccess<string>(packet,56);
 
-            if (data.back() == '\n')
-                data.pop_back();
+        if (data.back() == '\n')
+            data.pop_back();
             
-            // Form Callbacks
-            bool passToBDS = true; // not used here
-            auto callback = formCallbacks[formId];
-
-            EngineScope scope(callback.first);
-            auto res = callback.second.get().call({}, String::newString(data));
-            if (res.isBoolean() && res.asBoolean().value() == false)
-                passToBDS = false;   // not used here
-            
-            //########### 修 没监听器也要跑，还有前面的反过来 ########### 
-            // No CallEvent here
-        }
+        CallFormCallback(formId, data);
+        // No CallEvent here
     }
+
     original(_this, id, handler, packet);
 }
 
@@ -710,4 +616,121 @@ vector<string> SplitCmdParas(const string& paras)
             res.push_back(now);
     }
     return res;
+}
+
+bool ProcessDebugEngine(const string& cmd)
+{
+    #define OUTPUT_DEBUG_SIGN() std::cout << "LiteXLoader-" << LXL_SCRIPT_LANG_TYPE << ">" << std::flush
+    extern bool globalDebug;
+    extern std::shared_ptr<ScriptEngine> debugEngine;
+
+    if (cmd == LXL_DEBUG_CMD)
+    {
+        if (globalDebug)
+        {   
+            //EndDebug
+            INFO("Debug mode ended");
+            globalDebug = false;
+        }
+        else
+        {   
+            //StartDebug
+            INFO("Debug mode begin");
+            globalDebug = true;
+            OUTPUT_DEBUG_SIGN();
+        }
+        return false;
+    }
+    if (globalDebug)
+    {
+        EngineScope enter(debugEngine.get());
+        try
+        {
+            if (cmd == "stop")
+            {
+                WARN("请先退出Debug实时调试模式再使用stop！");
+            }
+            else
+            {
+                auto result = debugEngine->eval(cmd);
+                PrintValue(std::cout, result);
+                cout << endl;
+                OUTPUT_DEBUG_SIGN();
+            }
+        }
+        catch (Exception& e)
+        {
+            ERRPRINT(e);
+            OUTPUT_DEBUG_SIGN();
+        }
+        return false;
+    }
+    return true;
+}
+
+bool CallPlayerCmdCallback(Player* player, const string& cmd)
+{
+    bool passToOriginalCmdEvent = true;
+
+    for (auto engine : lxlModules)
+    {
+        EngineScope enter(engine.get());
+        auto funcs = &(ENGINE_OWN_DATA()->playerCmdCallbacks);
+        if (!funcs->empty())
+            for (auto iter = funcs->begin(); iter != funcs->end(); ++iter)
+                if (cmd.find_first_of(iter->first) == 0)
+                {
+                    //Matched
+                    auto paras = SplitCmdParas(cmd.substr(iter->first.size() + 1) + " ");
+                    Local<Array> args = Array::newArray({ String::newString(iter->first) });
+                    for (string para : paras)
+                        args.add(String::newString(para));
+
+                    auto res = iter->second.get().call({}, PlayerClass::newPlayer(player), args);
+                    if (res.isBoolean() && res.asBoolean().value() == false)
+                        passToOriginalCmdEvent = false;
+                    break;
+                }
+    }
+    return passToOriginalCmdEvent;
+}
+
+bool CallServerCmdCallback(const string& cmd)
+{
+    bool passToOriginalCmdEvent = true;
+
+    for (auto engine : lxlModules)
+    {
+        EngineScope enter(engine.get());
+        auto funcs = &(ENGINE_OWN_DATA()->consoleCmdCallbacks);
+        if (!funcs->empty())
+            for (auto iter = funcs->begin(); iter != funcs->end(); ++iter)
+                if (cmd.find_first_of(iter->first) == 0)
+                {
+                    //Matched
+                    auto paras = SplitCmdParas(cmd.substr(iter->first.size() + 1));
+                    Local<Array> args = Array::newArray({ String::newString(iter->first) });
+                    for (string para : paras)
+                        args.add(String::newString(para));
+
+                    auto res = iter->second.get().call({}, args);
+                    if (res.isBoolean() && res.asBoolean().value() == false)
+                        passToOriginalCmdEvent = false;
+                    break;
+                }
+    }
+    return passToOriginalCmdEvent;
+}
+
+bool CallFormCallback(int formId, const string& data)
+{
+    bool passToBDS = true;
+    auto callback = formCallbacks[formId];
+
+    EngineScope scope(callback.first);
+    auto res = callback.second.get().call({}, String::newString(data));
+    if (res.isBoolean() && res.asBoolean().value() == false)
+        passToBDS = false;
+
+    return passToBDS;
 }

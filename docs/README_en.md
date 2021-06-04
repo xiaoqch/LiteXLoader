@@ -26,6 +26,7 @@
 2. **功能强大，设施完备** ⭐
 
     - 提供众多的游戏API支持、游戏事件监听，为你发挥创意打好技术基础
+
     - 配备大量基础设施，如统一配置文件接口、统一日志接口、文件系统接口、数据库接口等等  
       让你专注于业务代码实现，而非各种琐碎的技术细节
 3. **兼容性强** ⭐
@@ -39,6 +40,7 @@
 4. **模块化，高性能** ⭐
    
      - 使用C++开发，底层性能优越。借助ScriptX的高效率通用接口，让脚本插件也可以做到高效运行。
+     
      - 底层仅有一套统一的C++ API，维护和适配都比较方便，新版本适配速度快。  
 5. **开源 & 永久免费** ⭐ 
    
@@ -48,13 +50,27 @@
 ## 🔨 Compiling
 1. Install newest **Microsoft Visual Studio** with standard C++ building suite
 2. Install the newest version of **Windows SDK**
-3. 打开 LiteXLoader 目录下的 `LiteXLoader.sln` 项目文件，点击 **生成解决方案** 按钮
-4. 编译生成成功之后，在同目录下 `Release` 文件夹中的几个DLL文件即是生成的 LiteXLoader 加载器
+3. Install **CMake** and add it to `PATH`
+4. Run the building batch below  
+
+#### Build & Link
+- `build/BuildJs.bat`&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Build LiteXRunner for Js
+- `build/BuildLua.bat`&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Build LiteLuaRunner for Lua
+- `build/BuildAll.bat`&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Build All targets above
+
+#### Clean everything generated & Rebuild & Link
+- `build/ReBuildJs.bat`&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;ReBuild LiteXRunner for Js
+- `build/ReBuildLua.bat`&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;ReBuild LiteXRunner for Lua
+- `build/ReBuildAll.bat`&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;ReBuild All targets above
+
+##### After building, DLLs will generate at `Release` directory.    
+
+##### If you want to get the release zip pack, run `build/PackRelease.bat` and it will generate at `Release` directory.    
 
 ## 💻 安装
 项目主要发布于**MineBBS**，请[移步MineBBS](https://www.minebbs.com/)下载
 1. 正确安装`LiteLoader`插件加载器
-2. 下载`LiteXLoader`，解压，把全部内容复制到 **BDS** 的`plugins`目录中。如果有冲突，选择覆盖即可。
+2. 下载`LiteXLoader`，解压，把全部内容复制到 **BDS **的`plugins`目录中。如果有冲突，选择覆盖即可。
 3. 开服
 
 ## 🎯 加载插件
@@ -63,12 +79,12 @@
 
 > 没错，就这么简单 o(*￣▽￣*)ブ
 
-关于具体的**安装与使用指南** ，请👉[移步文档站](https://lxl.litetitle.com/#/zh_CN/Usage)👈查看
+关于具体的**安装与使用指南** ，请👉[移步文档站](https://liteldev.github.io/LiteXLoader/#/zh_CN/Usage)👈查看
 
 ## 💡 兼容性与可扩展性
 兼容`旧LiteLuaRunner`的大部分插件。  
 小部分API并未适配，仅为了方便用户而设计兼容层。  
-请[移步文档站](https://lxl.litetitle.com/#/)查看详细的分析  
+请[移步文档站](https://liteldev.github.io/LiteXLoader/#/)查看详细的分析  
 
 ## 📡 实时调试
 在BDS后台控制台执行
@@ -87,7 +103,7 @@
 
 ## 📕 开发文档
 
-请👉[移步文档站](https://lxl.litetitle.com/#/zh_CN/Development)👈查看详细的**API文档**和**插件开发教程**  
+请👉[移步文档站](https://liteldev.github.io/LiteXLoader/#/zh_CN/Development)👈查看详细的**API文档**和**插件开发教程**  
 如果有修订需求或者有新增API的需要，欢迎联系作者或者发布Issue  
 
 ## 🎬 参与贡献
@@ -100,7 +116,7 @@
 4. 帮助我们宣传LXL，对我们的开发给予支持
 
 ⭐⭐⭐我们欢迎你对LiteXLoader做出自己的贡献！⭐⭐⭐  
-如果你有意为LXL贡献代码，欢迎👉[移步文档站](https://lxl.litetitle.com/#/zh_CN/Maintance)👈查看 **项目维护与支持文档**  
+如果你有意为LXL贡献代码，欢迎👉[移步文档站](https://liteldev.github.io/LiteXLoader/#/zh_CN/Maintance)👈查看 **项目维护与支持文档**  
 
 有你们，LiteXLoader将变得更好~
 
@@ -127,11 +143,11 @@ So you can write plugins based on `LiteXLoader` with ANY open-source license or 
 but if you modified the framework, or write a new framework based on this framework, you MUST open-source it.
 
 ## 🏆 鸣谢
-- 开源 [ScriptX](https://github.com/Tencent/ScriptX) 项目提供的跨语言引擎支持
+- 开源 [ScriptX](https://github.com/Tencent/ScriptX) 项目提供的跨语言引擎支持
 - [LiteLoader ](https://github.com/LiteLDev/LiteLoaderBDS)项目提供的加载服务与基础API  
 - [LiteLuaLoader ](#)项目 和 [BDSPyRunner ]()项目 提供的部分底层接口实现
 
-> 特别鸣谢：[LiteLDev](https://github.com/orgs/LiteLDev/people) 各位大佬们 和 ScriptX开发者 [@LanderlYoung](https://github.com/Tencent/ScriptX/commits?author=LanderlYoung)   
+> 特别鸣谢：[LiteLDev](https://github.com/orgs/LiteLDev/people) 各位大佬们 和 ScriptX开发者 [@LanderlYoung](https://github.com/Tencent/ScriptX/commits?author=LanderlYoung)   
 > 在开发过程中给予了作者以非常大的支持。感谢他们！ 💖💖
 
 ## 📞 联系我们

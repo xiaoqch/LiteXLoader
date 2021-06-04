@@ -4,12 +4,14 @@
 [![Build](https://img.shields.io/badge/build-passing-brightgreen)](#)
 ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/LiteLDev/LiteXLoader?include_prereleases)
 
-## 🎨 简介
-`LiteXLoader`是一个基岩版官方服务端`Bedrock Delicated Server`（以下简称**BDS**）插件框架，提供强大的跨语言脚本插件支持能力和稳定的开发API支持。  
+## 🎨 项目简介
+`LiteXLoader`是一个基岩版官方服务端`Bedrock Delicated Server`（以下简称**BDS**）插件框架，提供强大的跨语言脚本插件支持能力和稳定的开发API支持。
+
+👉[点击此处](https://lxl.litetitle.com/#/?id=main)👈 查看对LXL项目更详细的解释说明  
 
 <br>
 
-## 🔨 LXL安装指南 & 插件安装指南
+## 🔨 加载器安装指南 & 插件安装指南
 
 这里介绍了如何为BDS服务端安装`LiteXLoader`加载器，以及如何安装LXL插件  
 
