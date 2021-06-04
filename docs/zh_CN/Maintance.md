@@ -54,27 +54,20 @@ LXL最重要的思想，就是将各重要功能模块化，方便于后续的�
 上述的架构落实到实际项目中，项目目录结构如图所示：
 
 ```
-├───build			- 构建脚本所在地
-├───engine			- 各脚本引擎的头文件和静态库
-│   ├───Lua
-│   └───V8
-├───libs			- 底层加载器库
-│   └───LiteLoader
-├───LiteXLoader.Js		- 构建中间目录，cmake在里面 
-├───LiteXLoader.Lua		- 构建中间目录，cmake在里面 
-├───Release			- 构建最终产物目录，包括DLL和各依赖库
-│   ├───RuntimesLibs		- 脚本引擎依赖库 
-│   │   └───Js
-│   └───ScriptBaseLibs		- LXL脚本基础库
-├───src				- LXL源码目录
-│   ├───API			- APIs接口层
-│   ├───Kernel			- Kernel内核抽象层
-│   ├───LiteLoader		- 底层加载器头文件
-│   │   └───headers
-│   ├───Minini			- 第三方ini解析库
-│   ├───Nlohmann		- 第三方json解析库
-│   └───ScriptX			- ScriptX项目目录
-└───test
+├───docs				# 文档目录
+├───LiteXLoader
+│   ├───engine			# 脚本引擎库目录
+│   ├───include			# 头文件包含目录
+│   ├───lib				# 依赖库目录
+│   ├───LiteXLoader.Js	# Js项目目录（无源码）
+│   ├───LiteXLoader.Lua	# Lua项目目录（无源码）
+│   ├───Release			# DLL生成目录
+│   ├───src				# [核心]源码目录
+│   │   ├───API			# API接口层
+│   │   └───Kernel		# 核心抽象层
+│   └───test			# 测试
+├───RELEASE				# 发布目录（用于GitHub Action）
+└───ScriptX				# ScriptX源码目录
 ```
 
 <br>

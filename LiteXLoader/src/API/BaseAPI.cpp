@@ -141,7 +141,7 @@ Local<Value> RuncmdEx(const Arguments& args)
     CHECK_ARGS_COUNT(args,1)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
 
-    try{        //############ 没执行 ############
+    try{
         std::pair<bool, string> result = Raw_RuncmdEx(args[0].asString().toString());
         Local<Object> resObj = Object::newObject();
         resObj.set("result",result.first);
@@ -282,7 +282,7 @@ Local<Value> SetTimeout(const Arguments& args)
 
         auto id = Raw_GetSystemThreadIdFromStdThread(task.get_id());
         task.detach();
-        return Number::newNumber((int)id);
+        return Number::newNumber((long long)id);
     }
     CATCH("Fail in SetTimeout!")
 }
@@ -325,7 +325,7 @@ Local<Value> SetInterval(const Arguments& args)
 
         auto id = Raw_GetSystemThreadIdFromStdThread(task.get_id());
         task.detach();
-        return Number::newNumber((int)id);
+        return Number::newNumber((long long)id);
     }
     CATCH("Fail in SetInterval!")
 }
@@ -337,7 +337,7 @@ Local<Value> ClearInterval(const Arguments& args)
     CHECK_ARG_TYPE(args[0],ValueKind::kNumber)
 
     try{
-        DWORD id=timeTaskMap.at((unsigned int)args[0].toInt());     //########### ID no found ? ###########
+        DWORD id=timeTaskMap.at((unsigned int)args[0].asNumber().toInt64());     //########### ID no found ? ###########
         return Boolean::newBoolean(Raw_KillThread(id));
     }
     CATCH("Fail in ClearInterval!")

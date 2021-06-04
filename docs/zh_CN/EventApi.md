@@ -130,18 +130,21 @@
 
 <br>
 
-#### `"onUseItem"` - 玩家使用物品
+#### `"onUseItem"` - 玩家使用物品（右键）
 - 监听函数原型
-  `function(player,item)`
+  `function(player,item,block,pos)`
 - 参数：
     - player : `Player`  
       使用物品的玩家对象
-
     - item : `Item`  
       被使用的物品对象
+    - block : `Block`  
+      被点击到的方块对象
+    - pos : `IntPos`  
+      被点击到方块坐标
 - 拦截事件：函数返回`false`
 
-注：Win10客户端玩家单次右键，会在服务端多次激发这个事件，请开发者注意这种情况
+注：Win10客户端玩家单次右键，会在服务端多次激发这个事件，请注意这种情况
 
 <br>
 
@@ -207,7 +210,7 @@
 
 #### `"onPlaceBlock"` - 玩家放置方块
 - 监听函数原型
-`function(player,block)`
+`function(player,block,pos)`
 - 参数：
     - player : `Player`  
       放置方块的玩家对象
@@ -437,21 +440,6 @@
 
 <br>
 
-#### `"onProjectileHit"` - 方块被弹射物击中
-
-- 监听函数原型
-  `function(block,pos,source)`
-- 参数：
-  - block : `Block`  
-    被击中的方块对象
-  - pos : `IntPos`  
-    被击中的方块坐标
-  - source : `Entity`  
-    弹射物来源的实体对象
-- 拦截事件：不可以拦截
-
-<br>
-
 #### `"onHopperSearchItem"` - 漏斗检测可否吸取物品
 
 <br>
@@ -489,7 +477,7 @@
 - 监听函数原型
   `function()`
 - 参数：
-  - 无
+  - 
 - 拦截事件：不可以拦截
 
 <br>

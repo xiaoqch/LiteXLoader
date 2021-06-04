@@ -233,7 +233,7 @@ Local<Value> FormClass::addStepSlider(const Arguments& args)
 
 Local<Value> CancelForm(const Arguments& args)
 {
-    ////////////////////////////// FIX HERE //////////////////////////////
+    //############### FIX HERE ###############
     return Boolean::newBoolean(true);
 }
 
