@@ -20,6 +20,7 @@ public:
     static Local<Value> runcmd(const Arguments& args) { return Runcmd(args); }
     static Local<Value> runcmdEx(const Arguments& args) { return RuncmdEx(args); }
     static Local<Value> regPlayerCmd(const Arguments& args) { return RegisterPlayerCmd(args); }
+    static Local<Value> broadcast(const Arguments& args) { return Broadcast(args); }
 
     static Local<Value> listen(const Arguments& args) { return Listen(args); }
 
@@ -40,6 +41,7 @@ ClassDefine<void> McClassBuilder =
         .function("runcmd", &McClass::runcmd)
         .function("runcmdEx", &McClass::runcmdEx)
         .function("regPlayerCmd", &McClass::regPlayerCmd)
+        .function("broadcast", &McClass::broadcast)
         .function("listen", &McClass::listen)
         .function("getPlayer", &McClass::getPlayer)
         .function("getOnlinePlayers", &McClass::getOnlinePlayers)

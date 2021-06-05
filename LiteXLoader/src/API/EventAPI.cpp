@@ -336,9 +336,11 @@ THook(void, "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVComma
             if (cmd.front() == '/')
                 cmd = cmd.substr(1);
             
-            if (!CallPlayerCmdCallback(player,cmd))
-                return;
+            bool callbackRes = CallServerCmdCallback(cmd);
+            
             CallEvent(EVENT_TYPES::OnPlayerCmd, PlayerClass::newPlayer(player), cmd);
+            if (!callbackRes)
+                return;
         }
     }
     return original(_this, id, pkt);
@@ -464,7 +466,7 @@ THook(void, "?containerContentChanged@LevelContainerModel@@UEAAXH@Z",
 THook(bool, "?die@Mob@@UEAAXAEBVActorDamageSource@@@Z",
     Mob* self, void* ads)
 {
-    IF_EXIST(EVENT_TYPES::OnMobDie)     //################ mob坏了？################
+    IF_EXIST(EVENT_TYPES::OnMobDie)
     {
         char v83;
         auto v6 = *(void**)(*(__int64(__fastcall**)(void*, char*))(*(intptr_t*)ads + 64i64))(ads, &v83);
@@ -481,7 +483,7 @@ THook(bool, "?die@Mob@@UEAAXAEBVActorDamageSource@@@Z",
 THook(bool, "?_hurt@Mob@@MEAA_NAEBVActorDamageSource@@H_N1@Z",
     Mob* self, void* ads, int a1, bool a2, bool a3)
 {
-    IF_EXIST(EVENT_TYPES::OnMobHurt)    //################ mob坏了？################
+    IF_EXIST(EVENT_TYPES::OnMobHurt)
     {
         char v83;
         auto v6 = *(void**)(*(__int64(__fastcall**)(void*, char*))(*(intptr_t*)ads + 64i64))(ads, &v83);
@@ -498,7 +500,7 @@ THook(bool, "?_hurt@Mob@@MEAA_NAEBVActorDamageSource@@H_N1@Z",
 THook(bool, "?explode@Level@@UEAAXAEAVBlockSource@@PEAVActor@@AEBVVec3@@M_N3M3@Z",
     Level* _this, BlockSource* bs, Actor* actor, Vec3 pos, float a5, bool a6, bool a7, float a8, bool a9)
 {
-    IF_EXIST(EVENT_TYPES::OnExplode)        //################### Actor坏了？ ###################
+    IF_EXIST(EVENT_TYPES::OnExplode)
     {
         CallEventEx(EVENT_TYPES::OnExplode, EntityClass::newEntity(actor), FloatPos::newPos(pos.x, pos.y, pos.z));
     }
@@ -594,9 +596,11 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
 
         IF_EXIST(EVENT_TYPES::OnServerCmd)
         {
-            if (!CallServerCmdCallback(cmd))
-                return false;
+            bool callbackRes = CallServerCmdCallback(cmd);
+
             CallEventEx(EVENT_TYPES::OnServerCmd, cmd);
+            if(!callbackRes)
+                return false;
         }
     }
     return original(_this, a2, x, a4);
@@ -741,7 +745,7 @@ bool CallPlayerCmdCallback(Player* player, const string& cmd)
                         args.add(String::newString(para));
 
                     auto res = iter->second.get().call({}, PlayerClass::newPlayer(player), args);
-                    if (res.isBoolean() && res.asBoolean().value() == false)
+                    if (res.isNull() || (res.isBoolean() && res.asBoolean().value() == false))
                         passToOriginalCmdEvent = false;
                     break;
                 }
@@ -768,7 +772,7 @@ bool CallServerCmdCallback(const string& cmd)
                         args.add(String::newString(para));
 
                     auto res = iter->second.get().call({}, args);
-                    if (res.isBoolean() && res.asBoolean().value() == false)
+                    if (res.isNull() || (res.isBoolean() && res.asBoolean().value() == false))
                         passToOriginalCmdEvent = false;
                     break;
                 }

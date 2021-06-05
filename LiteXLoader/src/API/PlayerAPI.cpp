@@ -105,6 +105,24 @@ Local<Value> GetOnlinePlayers(const Arguments& args)
     CATCH("Fail in GetOnlinePlayers!")
 }
 
+Local<Value> Broadcast(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+
+    try {
+        TextType type = TextType::RAW;
+        if (args.size() >= 2 && args[1].isNumber())
+        {
+            int newType = args[1].asNumber().toInt32();
+            if (newType >= 0 && newType <= 9)
+                type = (TextType)newType;
+        }
+        return Boolean::newBoolean(Raw_Broadcast(args[0].toStr(), type));
+    }
+    CATCH("Fail in Broadcast!")
+}
+
 //成员函数
 Local<Value> PlayerClass::getName()
 { 
@@ -322,6 +340,29 @@ Local<Value> PlayerClass::rename(const Arguments& args)
         return Boolean::newBoolean(Raw_RenamePlayer(player,args[0].toStr()));
     }
     CATCH("Fail in RenamePlayer!")
+}
+
+Local<Value> PlayerClass::addLevel(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kNumber)
+
+    try {
+        return Boolean::newBoolean(Raw_AddLevel(player, args[0].toInt()));
+    }
+    CATCH("Fail in addLevel!")
+}
+
+Local<Value> PlayerClass::transServer(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 2)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARG_TYPE(args[1], ValueKind::kNumber)
+
+    try {
+        return Boolean::newBoolean(Raw_TransServer(player, args[0].toStr(), (short) args[1].toInt()));
+    }
+    CATCH("Fail in transServer!")
 }
 
 Local<Value> PlayerClass::getScore(const Arguments& args)
