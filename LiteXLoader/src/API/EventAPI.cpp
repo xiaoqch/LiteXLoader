@@ -37,8 +37,8 @@ enum class EVENT_TYPES : int
     OnDestroyBlock, OnPlaceBlock,
     OnOpenChest, OnCloseChest, OnOpenBarrel, OnCloseBarrel, OnChangeSlot,
     OnMobDie, OnMobHurt, OnExplode, OnBlockExploded, OnCmdBlockExecute,
-    OnProjectileHit, OnPistonPush, OnUseRespawnAnchor, OnFarmLandDecay,
-    OnServerStarted, OnServerCmd, OnFormSelected,
+    OnProjectileHit, OnInteractdWith, OnPistonPush, OnUseRespawnAnchor, OnFarmLandDecay,
+    OnServerStarted, OnServerCmd, OnFormSelected, OnConsoleOutput,
     EVENT_COUNT
 };
 static const std::unordered_map<string, EVENT_TYPES> EventsMap{
@@ -68,11 +68,13 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onChangeSlot",EVENT_TYPES::OnChangeSlot},
     {"onCmdBlockExecute",EVENT_TYPES::OnCmdBlockExecute},
     {"onProjectileHit",EVENT_TYPES::OnProjectileHit},
+    {"onInteractdWith",EVENT_TYPES::OnInteractdWith},
     {"onPistonPush",EVENT_TYPES::OnPistonPush},
     {"onUseRespawnAnchor",EVENT_TYPES::OnUseRespawnAnchor},
     {"onFarmLandDecay",EVENT_TYPES::OnFarmLandDecay},
     {"onServerStarted",EVENT_TYPES::OnServerStarted},
     {"onServerCmd",EVENT_TYPES::OnServerCmd},
+    {"onConsoleOutput",EVENT_TYPES::OnConsoleOutput},
     {"onFormSelected",EVENT_TYPES::OnFormSelected},
 };
 struct ListenerListType
@@ -114,6 +116,24 @@ static std::vector<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)]
         } \
     }\
     if(!passToBDS) { return false; }
+
+#define CallEventRtn(TYPE,RETURN_VALUE,...) \
+    std::vector<ListenerListType> &nowList = listenerList[int(TYPE)]; \
+    bool passToBDS = true; \
+    for(int i = 0; i < nowList.size(); ++i) { \
+        EngineScope enter(nowList[i].engine); \
+        try{ \
+            auto result = nowList[i].func.get().call({},__VA_ARGS__); \
+            if(result.isBoolean() && result.asBoolean().value() == false) \
+                passToBDS = false; \
+        } \
+        catch(const Exception& e) \
+        { \
+            ERROR("Event Callback Failed!"); \
+            ERRPRINT(e.message()); \
+        } \
+    }\
+    if(!passToBDS) { return RETURN_VALUE; }
 
 
 //////////////////// APIs ////////////////////
@@ -252,7 +272,7 @@ THook(void, "??0MovePlayerPacket@@QEAA@AEAVPlayer@@AEBVVec3@@@Z",
 {
     IF_EXIST(EVENT_TYPES::OnMove)
     {
-        CallEvent(EVENT_TYPES::OnMove, PlayerClass::newPlayer(pl), FloatPos::newPos(*to,WPlayer(*pl).getDimID()));
+        CallEvent(EVENT_TYPES::OnMove, PlayerClass::newPlayer(pl), FloatPos::newPos(*to, Raw_GetPlayerDimId(pl)));
     }
     return original(_this, pl, to);
 }
@@ -294,7 +314,7 @@ THook(bool, "?drop@Player@@UEAA_NAEBVItemStack@@_N@Z",
 THook(bool, "?take@Player@@QEAA_NAEAVActor@@HH@Z",
     Player* _this, Actor* actor, int a2, int a3)
 {
-    IF_EXIST(EVENT_TYPES::OnTakeItem)
+    IF_EXIST(EVENT_TYPES::OnTakeItem)       //################### 有无办法改成获取item ###################
     {
         CallEventEx(EVENT_TYPES::OnTakeItem, PlayerClass::newPlayer(_this), EntityClass::newEntity(actor));
     }
@@ -316,9 +336,11 @@ THook(void, "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVComma
             if (cmd.front() == '/')
                 cmd = cmd.substr(1);
             
-            if (!CallPlayerCmdCallback(player,cmd))
-                return;
+            bool callbackRes = CallServerCmdCallback(cmd);
+            
             CallEvent(EVENT_TYPES::OnPlayerCmd, PlayerClass::newPlayer(player), cmd);
+            if (!callbackRes)
+                return;
         }
     }
     return original(_this, id, pkt);
@@ -369,7 +391,7 @@ THook(bool, "?use@ChestBlock@@UEBA_NAEAVPlayer@@AEBVBlockPos@@E@Z",
 {
     IF_EXIST(EVENT_TYPES::OnOpenChest)
     {
-        CallEventEx(EVENT_TYPES::OnOpenChest, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, WPlayer(*pl).getDimID()));
+        CallEventEx(EVENT_TYPES::OnOpenChest, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetPlayerDimId(pl)));
     }
     return original(_this, pl, bp);
 }
@@ -380,9 +402,11 @@ THook(bool, "?stopOpen@ChestBlockActor@@UEAAXAEAVPlayer@@@Z",
 {
     IF_EXIST(EVENT_TYPES::OnCloseChest)
     {
-        auto bp = (BlockPos*)((intptr_t*)_this - 204);
+        //auto bp = (BlockPos*)((intptr_t*)_this - 204);
+        auto bp = SymCall("?getPosition@BlockActor@@QEBAAEBVBlockPos@@XZ", BlockPos*, BlockActor*)((BlockActor*)_this);
+        //################### 坐标错误 ###################
 
-        CallEventEx(EVENT_TYPES::OnCloseChest, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, WPlayer(*pl).getDimID()));
+        CallEventEx(EVENT_TYPES::OnCloseChest, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetPlayerDimId(pl)));
     }
     return original(_this, pl);
 }
@@ -393,7 +417,7 @@ THook(bool, "?use@BarrelBlock@@UEBA_NAEAVPlayer@@AEBVBlockPos@@E@Z",
 {
     IF_EXIST(EVENT_TYPES::OnOpenBarrel)
     {
-        CallEventEx(EVENT_TYPES::OnOpenBarrel, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z), WPlayer(*pl).getDimID());
+        CallEventEx(EVENT_TYPES::OnOpenBarrel, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetPlayerDimId(pl)));
     }
     return original(_this, pl, bp);
 }
@@ -406,7 +430,8 @@ THook(bool, "?stopOpen@BarrelBlockActor@@UEAAXAEAVPlayer@@@Z",
     {
         auto bp = (BlockPos*)((intptr_t*)_this - 204);
 
-        CallEventEx(EVENT_TYPES::OnCloseBarrel, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, WPlayer(*pl).getDimID()));
+        CallEventEx(EVENT_TYPES::OnCloseBarrel, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetPlayerDimId(pl)));
+        //################### 坐标错误 ###################
     }
     return original(_this, pl);
 }
@@ -416,7 +441,7 @@ class LevelContainerModel;
 THook(void, "?containerContentChanged@LevelContainerModel@@UEAAXH@Z",
     LevelContainerModel* a1, int a2)
 {
-    IF_EXIST(EVENT_TYPES::OnChangeSlot)
+    IF_EXIST(EVENT_TYPES::OnChangeSlot)     //############## 崩服 ##############
     {
         Actor* v3 = dAccess<Actor*, 208>(a1);
         BlockSource* bs = dAccess<BlockSource*, 840>(v3);
@@ -504,11 +529,22 @@ THook(void, "?onProjectileHit@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@AEBVAct
     return original(_this, bs, bp, actor);
 }
 
+// ===== OnInteractdWith =====
+THook(unsigned short, "?onBlockInteractedWith@VanillaServerGameplayEventListener@@UEAA?AW4EventResult@@AEAVPlayer@@AEBVBlockPos@@@Z",
+    void* _this, Player* pl, BlockPos* bp)
+{
+    IF_EXIST(EVENT_TYPES::OnProjectileHit)
+    {
+        CallEventRtn(EVENT_TYPES::OnInteractdWith, 0, PlayerClass::newPlayer(pl), IntPos::newPos(*bp, Raw_GetPlayerDimId(pl)));
+    }
+    return original(_this, pl, bp);
+}
+
 // ===== OnPistonPush =====
 THook(bool, "?_attachedBlockWalker@PistonBlockActor@@AEAA_NAEAVBlockSource@@AEBVBlockPos@@EE@Z",
     BlockActor* _this, BlockSource* bs, BlockPos* bp, unsigned a3, unsigned a4)
 {
-    IF_EXIST(EVENT_TYPES::OnPistonPush)
+    IF_EXIST(EVENT_TYPES::OnPistonPush)         //############## 崩服 ##############
     {
         int dim = Raw_GetBlockDimension(bs);
         BlockPos* pistonPos = dAccess<BlockPos*, 44>(_this);
@@ -560,9 +596,11 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
 
         IF_EXIST(EVENT_TYPES::OnServerCmd)
         {
-            if (!CallServerCmdCallback(cmd))
-                return false;
+            bool callbackRes = CallServerCmdCallback(cmd);
+
             CallEventEx(EVENT_TYPES::OnServerCmd, cmd);
+            if(!callbackRes)
+                return false;
         }
     }
     return original(_this, a2, x, a4);
@@ -588,6 +626,17 @@ THook(void, "?handle@?$PacketHandlerDispatcherInstance@VModalFormResponsePacket@
     }
 
     original(_this, id, handler, packet);
+}
+
+// ===== onConsoleOutput =====
+THook(ostream&, "??$_Insert_string@DU?$char_traits@D@std@@_K@std@@YAAEAV?$basic_ostream@DU?$char_traits@D@std@@@0@AEAV10@QEBD_K@Z",
+    ostream& _this, const char* str, unsigned size)
+{
+    IF_EXIST(EVENT_TYPES::OnConsoleOutput)
+    {
+        CallEventRtn(EVENT_TYPES::OnConsoleOutput, _this, String::newString(string(str)));
+    }
+    return original(_this, str, size);
 }
 
 
@@ -696,7 +745,7 @@ bool CallPlayerCmdCallback(Player* player, const string& cmd)
                         args.add(String::newString(para));
 
                     auto res = iter->second.get().call({}, PlayerClass::newPlayer(player), args);
-                    if (res.isBoolean() && res.asBoolean().value() == false)
+                    if (res.isNull() || (res.isBoolean() && res.asBoolean().value() == false))
                         passToOriginalCmdEvent = false;
                     break;
                 }
@@ -723,7 +772,7 @@ bool CallServerCmdCallback(const string& cmd)
                         args.add(String::newString(para));
 
                     auto res = iter->second.get().call({}, args);
-                    if (res.isBoolean() && res.asBoolean().value() == false)
+                    if (res.isNull() || (res.isBoolean() && res.asBoolean().value() == false))
                         passToOriginalCmdEvent = false;
                     break;
                 }

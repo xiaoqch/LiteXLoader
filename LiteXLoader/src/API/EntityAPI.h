@@ -22,6 +22,7 @@ public:
     static Actor* extractEntity(Local<Value> v);
 
     Local<Value> getName();
+    Local<Value> getType();
     Local<Value> getPos();
     Local<Value> getMaxHealth();
     Local<Value> getHealth();

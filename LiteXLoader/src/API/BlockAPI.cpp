@@ -9,7 +9,7 @@ ClassDefine<BlockClass> BlockClassBuilder =
     defineClass<BlockClass>("Block")
         .constructor(nullptr)
         .instanceProperty("name", &BlockClass::getName)
-        .instanceProperty("customName", &BlockClass::getCustomName)
+        .instanceProperty("type", &BlockClass::getType)
         .instanceProperty("pos", &BlockClass::getPos)
         .build();
 
@@ -19,16 +19,16 @@ ClassDefine<BlockClass> BlockClassBuilder =
 BlockClass::BlockClass(Block *p)
     :ScriptClass(ScriptClass::ConstructFromCpp<BlockClass>{}),block(p)
 {
-    name = Raw_GetBlockFullName(block);
-    customName = Raw_GetBlockName(block);
+    name = Raw_GetBlockName(block);
+    type = Raw_GetBlockFullName(block);
     pos = {0,0,0,-1};
 }
 
 BlockClass::BlockClass(Block *p, BlockPos bp, int dim)
     :ScriptClass(ScriptClass::ConstructFromCpp<BlockClass>{}),block(p)
 {
-    name = Raw_GetBlockFullName(block);
-    customName = Raw_GetBlockName(block);
+    name = Raw_GetBlockName(block);
+    type = Raw_GetBlockFullName(block);
     pos = {bp.x,bp.y,bp.z,dim};
 }
 
@@ -69,24 +69,25 @@ Block* BlockClass::extractBlock(Local<Value> v)
 Local<Value> BlockClass::getName()
 {
     try{
-        //return String::newString(Raw_GetBlockName(block));
+        // 已预加载
         return String::newString(name);
     }
     CATCH("Fail in GetBlockName!")
 }
 
-Local<Value> BlockClass::getCustomName()
+Local<Value> BlockClass::getType()
 {
     try{
-        //return String::newString(Raw_GetBlockName(block));
-        return String::newString(customName);
+        // 已预加载
+        return String::newString(type);
     }
-    CATCH("Fail in GetBlockName!")
+    CATCH("Fail in GetBlockType!")
 }
 
 Local<Value> BlockClass::getPos()
 {
     try{
+        // 已预加载
         return IntPos::newPos(pos);
     }
     CATCH("Fail in GetBlockPos!")

@@ -440,6 +440,24 @@
 
 <br>
 
+#### `"onInteractdWith"` - 方块接受玩家互动
+
+- 监听函数原型
+  `function(player,pos)`
+- 参数：
+  - player : `Player`  
+    与方块互动的玩家对象
+
+  - pos : `IntPos`  
+    被互动的方块坐标
+
+- 拦截事件：函数返回`false`
+
+只有可以被互动的方块才会触发此事件，如木桶、信标、制图台、磨石等  
+拦截事件对箱子、潜影盒、工作台无效
+
+<br>
+
 #### `"onHopperSearchItem"` - 漏斗检测可否吸取物品
 
 <br>
@@ -497,6 +515,18 @@
 - 参数：
     - cmd : `String`  
       执行的后台命令
+
+- 拦截事件：函数返回`false`
+
+<br>
+
+#### `"onConsoleOutput"` - 控制台产生命令输出
+
+- 监听函数原型
+  `function(cmd)`
+- 参数：
+  - cmd : `String`  
+    输出的命令结果信息
 
 - 拦截事件：函数返回`false`
 

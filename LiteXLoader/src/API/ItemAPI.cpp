@@ -11,7 +11,7 @@ ClassDefine<ItemClass> ItemClassBuilder =
     defineClass<ItemClass>("Item")
         .constructor(nullptr)
         .instanceProperty("name", &ItemClass::getName)
-        .instanceProperty("customName", &ItemClass::getCustomName)
+        .instanceProperty("type", &ItemClass::getType)
         .instanceProperty("count", &ItemClass::getCount)
         .instanceProperty("aux", &ItemClass::getAux)
 
@@ -25,11 +25,11 @@ ClassDefine<ItemClass> ItemClassBuilder =
 ItemClass::ItemClass(ItemStack *p)
     :ScriptClass(ScriptClass::ConstructFromCpp<ItemClass>{}),item(p)
 {
-    name = Raw_GetItemFullName(item);
+    name = Raw_GetCustomName(item);
+    if(name.empty())
+        name = Raw_GetItemName(item);
 
-    customName = Raw_GetCustomName(item);
-    if(customName.empty())
-        customName = Raw_GetItemName(item);
+    type = Raw_GetItemTypeName(item);
     
     count = Raw_GetCount(item);
     aux = Raw_GetItemAux(item);
@@ -53,25 +53,25 @@ ItemStack* ItemClass::extractItem(Local<Value> v)
 Local<Value> ItemClass::getName()
 { 
     try{
-        //return String::newString(Raw_GetItemName(item));
+        //已预加载
         return String::newString(name);
     }
     CATCH("Fail in GetItemName!")
 }
 
-Local<Value> ItemClass::getCustomName()
+Local<Value> ItemClass::getType()
 {
     try{
-        //return String::newString(Raw_GetCustomName(item));
-        return String::newString(customName);
+        //已预加载
+        return String::newString(type);
     }
-    CATCH("Fail in GetCustomName!")
+    CATCH("Fail in GetType!")
 }
 
 Local<Value> ItemClass::getCount()
 {
     try{
-        //return Number::newNumber(Raw_GetCount(item));
+        //已预加载
         return Number::newNumber(count);
     }
     CATCH("Fail in GetCount!")
@@ -80,7 +80,7 @@ Local<Value> ItemClass::getCount()
 Local<Value> ItemClass::getAux()
 {
     try{
-        //return Number::newNumber(Raw_GetItemAux(item));
+        //已预加载
         return Number::newNumber(aux);
     }
     CATCH("Fail in GetAux!")

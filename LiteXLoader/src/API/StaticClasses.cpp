@@ -20,6 +20,7 @@ public:
     static Local<Value> runcmd(const Arguments& args) { return Runcmd(args); }
     static Local<Value> runcmdEx(const Arguments& args) { return RuncmdEx(args); }
     static Local<Value> regPlayerCmd(const Arguments& args) { return RegisterPlayerCmd(args); }
+    static Local<Value> broadcast(const Arguments& args) { return Broadcast(args); }
 
     static Local<Value> listen(const Arguments& args) { return Listen(args); }
 
@@ -33,12 +34,14 @@ public:
     static Local<Value> regConsoleCmd(const Arguments& args) { return RegisterConsoleCmd(args); }
     static Local<Value> setMotd(const Arguments& args) { return SetMotd(args); }
     static Local<Value> setOnlinePlayer(const Arguments& args) { return SetOnlinePlayer(args); }
+    static Local<Value> sendCmdOutput(const Arguments& args) { return SendCmdOutput(args); }
 };
 ClassDefine<void> McClassBuilder =
     defineClass("mc")
         .function("runcmd", &McClass::runcmd)
         .function("runcmdEx", &McClass::runcmdEx)
         .function("regPlayerCmd", &McClass::regPlayerCmd)
+        .function("broadcast", &McClass::broadcast)
         .function("listen", &McClass::listen)
         .function("getPlayer", &McClass::getPlayer)
         .function("getOnlinePlayers", &McClass::getOnlinePlayers)
@@ -49,6 +52,7 @@ ClassDefine<void> McClassBuilder =
         .function("regConsoleCmd", &McClass::regConsoleCmd)
         .function("setMotd", &McClass::setMotd)
         .function("setOnlinePlayer", &McClass::setOnlinePlayer)
+        .function("sendCmdOutput", &McClass::sendCmdOutput)
         .build();
 
 

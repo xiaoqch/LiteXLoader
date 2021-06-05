@@ -187,17 +187,25 @@ Local<Value> RegisterConsoleCmd(const Arguments& args)
     CHECK_ARG_TYPE(args[2],ValueKind::kFunction)
 
     try{
-        DEBUG("Enter RegisterConsoleCmd API");
         string cmd = args[0].asString().toString();
         (ENGINE_OWN_DATA()->consoleCmdCallbacks)[cmd] = args[2].asFunction();
 
-        DEBUG("Before Raw_RegisterCmd");
         Raw_RegisterCmd(cmd,args[1].asString().toString(),4);
-        DEBUG("After Raw_RegisterCmd");
 
         return Boolean::newBoolean(true);
     }
     CATCH("Fail in RegisterConsoleCmd!")
+}
+
+Local<Value> SendCmdOutput(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+
+    try {
+        return Boolean::newBoolean(Raw_SendCmdOutput(args[0].toStr()));
+    }
+    CATCH("Fail in SendCmdOutput!")
 }
 
 Local<Value> Log(const Arguments& args)

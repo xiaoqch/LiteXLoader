@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Packet.h"
 using namespace std;
 
 string  Raw_GetPlayerName(Player* player)
@@ -85,6 +86,13 @@ bool Raw_Tell(Player* player, const string &text, TextType type)
     return true;
 }
 
+bool Raw_Broadcast(const std::string& text, TextType type)
+{
+    auto playerList = Raw_GetOnlinePlayers();
+    for (auto player : playerList)
+        Raw_Tell(player, text, type);
+}
+
 ItemStack* Raw_GetHand(Player* player)
 {
     return (ItemStack*)&(player->getSelectedItem());
@@ -93,7 +101,6 @@ ItemStack* Raw_GetHand(Player* player)
 ItemStack* Raw_GetOffHand(Player* player)
 {
     return SymCall("?getOffhandSlot@Actor@@QEBAAEBVItemStack@@XZ", ItemStack*, Player*)(player);
-    //############## 崩服 ##############
 }
 
 vector<ItemStack*> Raw_GetPack(Player* player)
@@ -116,6 +123,17 @@ bool Raw_RenamePlayer(Player* player, const string &name)
 {
     player->setNameTag(name);
     return true;
+}
+
+bool Raw_AddLevel(Player* player, int level)
+{
+    SymCall("?addLevels@Player@@UEAAXH@Z", void, Player*, int)(player, level);
+    return true;
+}
+
+bool Raw_TransServer(Player* player, const std::string& server, short port)
+{
+    return Raw_SendTransferPacket(player, server, port);
 }
 
 //#################### Add code here ####################
@@ -171,4 +189,9 @@ bool Raw_IsPlayerValid(Player *player)
         if(p == player)
             return true;
     return false;
+}
+
+int Raw_GetPlayerDimId(Player* player)
+{
+    return WPlayer(*player).getDimID();
 }

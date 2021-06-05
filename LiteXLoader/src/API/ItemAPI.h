@@ -11,7 +11,7 @@ private:
     ItemStack *item;
 
     // Pre data
-    std::string name,customName;
+    std::string name,type;
     int count,aux;
 
 public:
@@ -26,7 +26,7 @@ public:
     static ItemStack* extractItem(Local<Value> v);
 
     Local<Value> getName();
-    Local<Value> getCustomName();
+    Local<Value> getType();
     Local<Value> getCount();
     Local<Value> getAux();
 

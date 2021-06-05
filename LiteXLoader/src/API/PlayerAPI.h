@@ -45,6 +45,8 @@ public:
     Local<Value> getOffHand(const Arguments& args);
     Local<Value> getPack(const Arguments& args);
     Local<Value> rename(const Arguments& args);
+    Local<Value> addLevel(const Arguments& args);
+    Local<Value> transServer(const Arguments& args);
 
     Local<Value> getScore(const Arguments& args);
     Local<Value> setScore(const Arguments& args);
@@ -65,6 +67,8 @@ public:
 };
 
 //////////////////// APIs ////////////////////
+
+Local<Value> Broadcast(const Arguments& args);
 
 Local<Value> GetPlayer(const Arguments& args);
 Local<Value> GetOnlinePlayers(const Arguments& args);
