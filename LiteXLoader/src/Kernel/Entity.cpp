@@ -7,6 +7,11 @@ string Raw_GetEntityName(Actor* actor)
     return actor->getNameTag();
 }
 
+std::string Raw_GetEntityTypeName(Actor* actor)
+{
+    return SymCall("?EntityTypeToString@@YA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@W4ActorType@@W4ActorTypeNamespaceRules@@@Z", string, int, int)(actor->getEntityTypeId(), 1);
+}
+
 FloatVec4 Raw_GetEntityPos(Actor* actor)
 {
     auto pos = actor->getPos();

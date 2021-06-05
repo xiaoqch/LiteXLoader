@@ -1,8 +1,8 @@
 #pragma once
 #include <ScriptX/ScriptX.h>
-using namespace script;
 #include <Kernel/Global.h>
 #include <string>
+using namespace script;
 
 //////////////////// Classes ////////////////////
 class IntPos : public IntVec4, public ScriptClass
@@ -54,6 +54,7 @@ Local<Value> Runcmd(const Arguments& args);
 Local<Value> RuncmdEx(const Arguments& args);
 Local<Value> RegisterPlayerCmd(const Arguments& args);
 Local<Value> RegisterConsoleCmd(const Arguments& args);
+Local<Value> SendCmdOutput(const Arguments& args);
 
 Local<Value> Log(const Arguments& args);
 Local<Value> GetTimeStr(const Arguments& args);

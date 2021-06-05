@@ -5,7 +5,7 @@ using namespace std;
 
 string Raw_GetItemName(ItemStack* item)
 {
-    ///////////////////////////// May Have better API /////////////////////////////
+    //########## 更好的API ##########
     return item->getName();
 }
 
@@ -14,7 +14,7 @@ string Raw_GetCustomName(ItemStack* item)
     return item->getCustomName();
 }
 
-std::string Raw_GetItemFullName(ItemStack* item)
+std::string Raw_GetItemTypeName(ItemStack* item)
 {
     string fullName;
     SymCall("?getSerializedName@Item@@QEBA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ",
@@ -29,8 +29,7 @@ int Raw_GetItemAux(ItemStack* item)
 
 int Raw_GetCount(ItemStack* item)
 {
-    //############## 数量不对 ##############
-    return WItem(*item).getCount(); 
+    return offItemStack::getCount(item);
 }
 
 bool Raw_IsNull(ItemStack* item)

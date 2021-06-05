@@ -502,4 +502,16 @@
 
 <br>
 
+#### `"onConsoleOutput"` - 控制台产生命令输出
+
+- 监听函数原型
+  `function(cmd)`
+- 参数：
+  - cmd : `String`  
+    输出的命令结果信息
+
+- 拦截事件：函数返回`false`
+
+<br>
+
 [<< 返回目录](Development.md)

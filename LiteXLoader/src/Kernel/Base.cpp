@@ -1,4 +1,5 @@
 #include "Base.h"
+#include <iostream>
 using namespace std;
 
 bool Raw_Runcmd(const string &cmd)
@@ -22,4 +23,11 @@ bool Raw_RegisterCmd(const string &cmd, const string &describe, int cmdLevel)
         void, void*, std::string const&, char const*, char, char, char)
         (CmdRegGlobal, cmd, desc, cmdLevel, 0, 0x40);
     return true;
+}
+
+bool Raw_SendCmdOutput(const std::string& output)
+{
+    SymCall("??$_Insert_string@DU?$char_traits@D@std@@_K@std@@YAAEAV?$basic_ostream@DU?$char_traits@D@std@@@0@AEAV10@QEBD_K@Z",
+        ostream& , ostream&, const char*, unsigned)
+        (cout, output.c_str(), output.size());
 }

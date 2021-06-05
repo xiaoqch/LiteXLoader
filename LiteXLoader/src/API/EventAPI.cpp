@@ -38,7 +38,7 @@ enum class EVENT_TYPES : int
     OnOpenChest, OnCloseChest, OnOpenBarrel, OnCloseBarrel, OnChangeSlot,
     OnMobDie, OnMobHurt, OnExplode, OnBlockExploded, OnCmdBlockExecute,
     OnProjectileHit, OnPistonPush, OnUseRespawnAnchor, OnFarmLandDecay,
-    OnServerStarted, OnServerCmd, OnFormSelected,
+    OnServerStarted, OnServerCmd, OnFormSelected, OnConsoleOutput,
     EVENT_COUNT
 };
 static const std::unordered_map<string, EVENT_TYPES> EventsMap{
@@ -73,6 +73,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onFarmLandDecay",EVENT_TYPES::OnFarmLandDecay},
     {"onServerStarted",EVENT_TYPES::OnServerStarted},
     {"onServerCmd",EVENT_TYPES::OnServerCmd},
+    {"onConsoleOutput",EVENT_TYPES::OnConsoleOutput},
     {"onFormSelected",EVENT_TYPES::OnFormSelected},
 };
 struct ListenerListType
@@ -114,6 +115,24 @@ static std::vector<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)]
         } \
     }\
     if(!passToBDS) { return false; }
+
+#define CallEventRtn(TYPE,RETURN_VALUE,...) \
+    std::vector<ListenerListType> &nowList = listenerList[int(TYPE)]; \
+    bool passToBDS = true; \
+    for(int i = 0; i < nowList.size(); ++i) { \
+        EngineScope enter(nowList[i].engine); \
+        try{ \
+            auto result = nowList[i].func.get().call({},__VA_ARGS__); \
+            if(result.isBoolean() && result.asBoolean().value() == false) \
+                passToBDS = false; \
+        } \
+        catch(const Exception& e) \
+        { \
+            ERROR("Event Callback Failed!"); \
+            ERRPRINT(e.message()); \
+        } \
+    }\
+    if(!passToBDS) { return RETURN_VALUE; }
 
 
 //////////////////// APIs ////////////////////
@@ -588,6 +607,17 @@ THook(void, "?handle@?$PacketHandlerDispatcherInstance@VModalFormResponsePacket@
     }
 
     original(_this, id, handler, packet);
+}
+
+// ===== onConsoleOutput =====
+THook(ostream&, "??$_Insert_string@DU?$char_traits@D@std@@_K@std@@YAAEAV?$basic_ostream@DU?$char_traits@D@std@@@0@AEAV10@QEBD_K@Z",
+    ostream& _this, const char* str, unsigned size)
+{
+    IF_EXIST(EVENT_TYPES::OnConsoleOutput)
+    {
+        CallEventRtn(EVENT_TYPES::OnConsoleOutput, _this, String::newString(string(str)));
+    }
+    return original(_this, str, size);
 }
 
 

@@ -9,6 +9,7 @@ ClassDefine<EntityClass> EntityClassBuilder =
     defineClass<EntityClass>("Entity")
         .constructor(nullptr)
         .instanceProperty("name", &EntityClass::getName)
+        .instanceProperty("type", &EntityClass::getType)
         .instanceProperty("pos", &EntityClass::getPos)
         .instanceProperty("maxHealth", &EntityClass::getMaxHealth)
         .instanceProperty("health", &EntityClass::getHealth)
@@ -45,7 +46,15 @@ Local<Value> EntityClass::getName()
     try{
         return String::newString(Raw_GetEntityName(entity));
     }
-    CATCH("Fail in GetEntityName!")
+    CATCH("Fail in getEntityName!")
+}
+
+Local<Value> EntityClass::getType()
+{
+    try {
+        return String::newString(Raw_GetEntityTypeName(entity));
+    }
+    CATCH("Fail in getEntityType!")
 }
 
 Local<Value> EntityClass::getPos()
