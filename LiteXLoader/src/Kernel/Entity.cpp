@@ -3,13 +3,15 @@ using namespace std;
 
 string Raw_GetEntityName(Actor* actor)
 {
-    //################# 名字为空 #################
-    return actor->getNameTag();
+    string name = actor->getNameTag();
+    return name.empty() ? Raw_GetEntityTypeName(actor) : name;
 }
 
 std::string Raw_GetEntityTypeName(Actor* actor)
 {
-    return SymCall("?EntityTypeToString@@YA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@W4ActorType@@W4ActorTypeNamespaceRules@@@Z", string, int, int)(actor->getEntityTypeId(), 1);
+    return SymCall("?EntityTypeToString@@YA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@W4ActorType@@W4ActorTypeNamespaceRules@@@Z",
+        string, int, int)
+        (actor->getEntityTypeId(), 1);
 }
 
 FloatVec4 Raw_GetEntityPos(Actor* actor)

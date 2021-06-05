@@ -33,3 +33,5 @@ bool Raw_RemoveBossBar(Player *player);
 
 std::vector<Player*> Raw_GetOnlinePlayers();
 bool Raw_IsPlayerValid(Player *player);
+
+int Raw_GetPlayerDimId(Player* player);

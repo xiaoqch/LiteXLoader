@@ -37,7 +37,7 @@ enum class EVENT_TYPES : int
     OnDestroyBlock, OnPlaceBlock,
     OnOpenChest, OnCloseChest, OnOpenBarrel, OnCloseBarrel, OnChangeSlot,
     OnMobDie, OnMobHurt, OnExplode, OnBlockExploded, OnCmdBlockExecute,
-    OnProjectileHit, OnPistonPush, OnUseRespawnAnchor, OnFarmLandDecay,
+    OnProjectileHit, OnInteractdWith, OnPistonPush, OnUseRespawnAnchor, OnFarmLandDecay,
     OnServerStarted, OnServerCmd, OnFormSelected, OnConsoleOutput,
     EVENT_COUNT
 };
@@ -68,6 +68,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onChangeSlot",EVENT_TYPES::OnChangeSlot},
     {"onCmdBlockExecute",EVENT_TYPES::OnCmdBlockExecute},
     {"onProjectileHit",EVENT_TYPES::OnProjectileHit},
+    {"onInteractdWith",EVENT_TYPES::OnInteractdWith},
     {"onPistonPush",EVENT_TYPES::OnPistonPush},
     {"onUseRespawnAnchor",EVENT_TYPES::OnUseRespawnAnchor},
     {"onFarmLandDecay",EVENT_TYPES::OnFarmLandDecay},
@@ -271,7 +272,7 @@ THook(void, "??0MovePlayerPacket@@QEAA@AEAVPlayer@@AEBVVec3@@@Z",
 {
     IF_EXIST(EVENT_TYPES::OnMove)
     {
-        CallEvent(EVENT_TYPES::OnMove, PlayerClass::newPlayer(pl), FloatPos::newPos(*to,WPlayer(*pl).getDimID()));
+        CallEvent(EVENT_TYPES::OnMove, PlayerClass::newPlayer(pl), FloatPos::newPos(*to, Raw_GetPlayerDimId(pl)));
     }
     return original(_this, pl, to);
 }
@@ -313,7 +314,7 @@ THook(bool, "?drop@Player@@UEAA_NAEBVItemStack@@_N@Z",
 THook(bool, "?take@Player@@QEAA_NAEAVActor@@HH@Z",
     Player* _this, Actor* actor, int a2, int a3)
 {
-    IF_EXIST(EVENT_TYPES::OnTakeItem)
+    IF_EXIST(EVENT_TYPES::OnTakeItem)       //################### 有无办法改成获取item ###################
     {
         CallEventEx(EVENT_TYPES::OnTakeItem, PlayerClass::newPlayer(_this), EntityClass::newEntity(actor));
     }
@@ -388,7 +389,7 @@ THook(bool, "?use@ChestBlock@@UEBA_NAEAVPlayer@@AEBVBlockPos@@E@Z",
 {
     IF_EXIST(EVENT_TYPES::OnOpenChest)
     {
-        CallEventEx(EVENT_TYPES::OnOpenChest, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, WPlayer(*pl).getDimID()));
+        CallEventEx(EVENT_TYPES::OnOpenChest, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetPlayerDimId(pl)));
     }
     return original(_this, pl, bp);
 }
@@ -399,9 +400,11 @@ THook(bool, "?stopOpen@ChestBlockActor@@UEAAXAEAVPlayer@@@Z",
 {
     IF_EXIST(EVENT_TYPES::OnCloseChest)
     {
-        auto bp = (BlockPos*)((intptr_t*)_this - 204);
+        //auto bp = (BlockPos*)((intptr_t*)_this - 204);
+        auto bp = SymCall("?getPosition@BlockActor@@QEBAAEBVBlockPos@@XZ", BlockPos*, BlockActor*)((BlockActor*)_this);
+        //################### 坐标错误 ###################
 
-        CallEventEx(EVENT_TYPES::OnCloseChest, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, WPlayer(*pl).getDimID()));
+        CallEventEx(EVENT_TYPES::OnCloseChest, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetPlayerDimId(pl)));
     }
     return original(_this, pl);
 }
@@ -412,7 +415,7 @@ THook(bool, "?use@BarrelBlock@@UEBA_NAEAVPlayer@@AEBVBlockPos@@E@Z",
 {
     IF_EXIST(EVENT_TYPES::OnOpenBarrel)
     {
-        CallEventEx(EVENT_TYPES::OnOpenBarrel, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z), WPlayer(*pl).getDimID());
+        CallEventEx(EVENT_TYPES::OnOpenBarrel, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetPlayerDimId(pl)));
     }
     return original(_this, pl, bp);
 }
@@ -425,7 +428,8 @@ THook(bool, "?stopOpen@BarrelBlockActor@@UEAAXAEAVPlayer@@@Z",
     {
         auto bp = (BlockPos*)((intptr_t*)_this - 204);
 
-        CallEventEx(EVENT_TYPES::OnCloseBarrel, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, WPlayer(*pl).getDimID()));
+        CallEventEx(EVENT_TYPES::OnCloseBarrel, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetPlayerDimId(pl)));
+        //################### 坐标错误 ###################
     }
     return original(_this, pl);
 }
@@ -435,7 +439,7 @@ class LevelContainerModel;
 THook(void, "?containerContentChanged@LevelContainerModel@@UEAAXH@Z",
     LevelContainerModel* a1, int a2)
 {
-    IF_EXIST(EVENT_TYPES::OnChangeSlot)
+    IF_EXIST(EVENT_TYPES::OnChangeSlot)     //############## 崩服 ##############
     {
         Actor* v3 = dAccess<Actor*, 208>(a1);
         BlockSource* bs = dAccess<BlockSource*, 840>(v3);
@@ -460,7 +464,7 @@ THook(void, "?containerContentChanged@LevelContainerModel@@UEAAXH@Z",
 THook(bool, "?die@Mob@@UEAAXAEBVActorDamageSource@@@Z",
     Mob* self, void* ads)
 {
-    IF_EXIST(EVENT_TYPES::OnMobDie)
+    IF_EXIST(EVENT_TYPES::OnMobDie)     //################ mob坏了？################
     {
         char v83;
         auto v6 = *(void**)(*(__int64(__fastcall**)(void*, char*))(*(intptr_t*)ads + 64i64))(ads, &v83);
@@ -477,7 +481,7 @@ THook(bool, "?die@Mob@@UEAAXAEBVActorDamageSource@@@Z",
 THook(bool, "?_hurt@Mob@@MEAA_NAEBVActorDamageSource@@H_N1@Z",
     Mob* self, void* ads, int a1, bool a2, bool a3)
 {
-    IF_EXIST(EVENT_TYPES::OnMobHurt)
+    IF_EXIST(EVENT_TYPES::OnMobHurt)    //################ mob坏了？################
     {
         char v83;
         auto v6 = *(void**)(*(__int64(__fastcall**)(void*, char*))(*(intptr_t*)ads + 64i64))(ads, &v83);
@@ -494,7 +498,7 @@ THook(bool, "?_hurt@Mob@@MEAA_NAEBVActorDamageSource@@H_N1@Z",
 THook(bool, "?explode@Level@@UEAAXAEAVBlockSource@@PEAVActor@@AEBVVec3@@M_N3M3@Z",
     Level* _this, BlockSource* bs, Actor* actor, Vec3 pos, float a5, bool a6, bool a7, float a8, bool a9)
 {
-    IF_EXIST(EVENT_TYPES::OnExplode)
+    IF_EXIST(EVENT_TYPES::OnExplode)        //################### Actor坏了？ ###################
     {
         CallEventEx(EVENT_TYPES::OnExplode, EntityClass::newEntity(actor), FloatPos::newPos(pos.x, pos.y, pos.z));
     }
@@ -523,11 +527,22 @@ THook(void, "?onProjectileHit@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@AEBVAct
     return original(_this, bs, bp, actor);
 }
 
+// ===== OnInteractdWith =====
+THook(unsigned short, "?onBlockInteractedWith@VanillaServerGameplayEventListener@@UEAA?AW4EventResult@@AEAVPlayer@@AEBVBlockPos@@@Z",
+    void* _this, Player* pl, BlockPos* bp)
+{
+    IF_EXIST(EVENT_TYPES::OnProjectileHit)
+    {
+        CallEventRtn(EVENT_TYPES::OnInteractdWith, 0, PlayerClass::newPlayer(pl), IntPos::newPos(*bp, Raw_GetPlayerDimId(pl)));
+    }
+    return original(_this, pl, bp);
+}
+
 // ===== OnPistonPush =====
 THook(bool, "?_attachedBlockWalker@PistonBlockActor@@AEAA_NAEAVBlockSource@@AEBVBlockPos@@EE@Z",
     BlockActor* _this, BlockSource* bs, BlockPos* bp, unsigned a3, unsigned a4)
 {
-    IF_EXIST(EVENT_TYPES::OnPistonPush)
+    IF_EXIST(EVENT_TYPES::OnPistonPush)         //############## 崩服 ##############
     {
         int dim = Raw_GetBlockDimension(bs);
         BlockPos* pistonPos = dAccess<BlockPos*, 44>(_this);

@@ -17,8 +17,8 @@ bool Raw_SendPacket(Player *player,void *packet)
 
 int Raw_SendFormPacket(Player* player, const string &data)
 {
-    static int id = 0;
-	id = 255 + id * 127;    //############## ???? ##############
+    static int id = 1;
+	++id;
 
     void *packet = Raw_CreatePacket(100);   // Form Packet
     dAccess<unsigned,48>(packet) = id;

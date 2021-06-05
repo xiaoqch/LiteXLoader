@@ -172,3 +172,8 @@ bool Raw_IsPlayerValid(Player *player)
             return true;
     return false;
 }
+
+int Raw_GetPlayerDimId(Player* player)
+{
+    return WPlayer(*player).getDimID();
+}

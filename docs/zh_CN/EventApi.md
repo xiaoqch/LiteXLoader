@@ -440,6 +440,24 @@
 
 <br>
 
+#### `"onInteractdWith"` - 方块接受玩家互动
+
+- 监听函数原型
+  `function(player,pos)`
+- 参数：
+  - player : `Player`  
+    与方块互动的玩家对象
+
+  - pos : `IntPos`  
+    被互动的方块坐标
+
+- 拦截事件：函数返回`false`
+
+只有可以被互动的方块才会触发此事件，如木桶、信标、制图台、磨石等  
+拦截事件对箱子、潜影盒、工作台无效
+
+<br>
+
 #### `"onHopperSearchItem"` - 漏斗检测可否吸取物品
 
 <br>
