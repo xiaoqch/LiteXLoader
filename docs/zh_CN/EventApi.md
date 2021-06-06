@@ -77,6 +77,36 @@
 
 <br>
 
+#### `"onPlayerCmd"` - 玩家执行命令
+
+- 监听函数原型
+  `function(player,cmd)`
+- 参数：
+  - player : `Player`  
+    执行命令的玩家对象
+
+  - cmd : `String`  
+    执行的命令
+
+- 拦截事件：函数返回`false`
+
+<br>
+
+#### `"onChat"` - 玩家发送聊天信息
+
+- 监听函数原型
+  `function(player,msg)`
+- 参数：
+  - player : `Player`  
+    发送聊天信息的玩家对象
+
+  - msg : `String`  
+    发送的聊天消息
+
+- 拦截事件：函数返回`false`
+
+<br>
+
 #### `"onChangeDim"` - 玩家切换维度
 - 监听函数原型
 `function(player)`
@@ -88,31 +118,29 @@
 
 <br>
 
-#### `"onPlayerCmd"` - 玩家执行命令
+#### `"onJump"` - 玩家跳跃
+
 - 监听函数原型
-`function(player,cmd)`
+  `function(player)`
 - 参数：
-    - player : `Player`  
-      执行命令的玩家对象
+  - player : `Player`  
+    跳跃的玩家对象
 
-    - cmd : `String`  
-      执行的命令
-
-- 拦截事件：函数返回`false`
+- 拦截事件：不可以拦截
 
 <br>
 
-#### `"onChat"` - 玩家发送聊天信息
+#### `"onSneak"` - 玩家切换潜行状态
+
 - 监听函数原型
-`function(player,msg)`
+  `function(player,isSneaking)`
 - 参数：
-    - player : `Player`  
-      发送聊天信息的玩家对象
+  - player : `Player`  
+    切换潜行状态的玩家对象
+  - isSneaking : `Boolean`  
+    `True`表示玩家进入潜行状态，`False`表示玩家退出潜行状态
 
-    - msg : `String`  
-      发送的聊天消息
-
-- 拦截事件：函数返回`false`
+- 拦截事件：不可以拦截
 
 <br>
 
@@ -144,7 +172,7 @@
       被点击到方块坐标
 - 拦截事件：函数返回`false`
 
-注：Win10客户端玩家右键会在服务端连续多次激发这个事件，请注意这种情况
+注：Win10客户端玩家右键会在服务端连续多次激发这个事件
 
 <br>
 
@@ -204,7 +232,7 @@
 
 - 拦截事件：不可以拦截
 
-注：在破坏方块的过程中，会在服务端反复多次激发这个事件，请注意这种情况
+注：在破坏方块的过程中，会在服务端反复多次激发这个事件
 
 <br>
 
@@ -333,8 +361,9 @@
     正在移动的玩家对象
   - pos : `FloatPos`  
     这个玩家当前的位置
-
 - 拦截事件：不可以拦截
+
+注：在玩家移动的过程中，会在服务端反复不断触发这个事件
 
 <br>
 
@@ -475,7 +504,28 @@
 
 <br>
 
-#### `"onHopperSearchItem"` - 漏斗检测可否吸取物品
+#### `"onHopperSearchItem"` - 漏斗（漏斗矿车）检测可否吸取物品
+
+- 监听函数原型
+  `function(pos)`
+- 参数：
+  - pos : `FloatPos`  
+    漏斗（漏斗矿车）所在的位置
+- 拦截事件：函数返回`false`
+
+注：在放置漏斗之后，会在服务端反复不断触发这个事件  
+当你拦截事件之后，漏斗就会无法吸取这个物品
+
+<br>
+
+#### `"onHopperPushOut"` - 漏斗（漏斗矿车）输出物品
+
+- 监听函数原型
+  `function(pos)`
+- 参数：
+  - pos : `FloatPos`  
+    漏斗（漏斗矿车）所在的位置
+- 拦截事件：函数返回`false`
 
 <br>
 

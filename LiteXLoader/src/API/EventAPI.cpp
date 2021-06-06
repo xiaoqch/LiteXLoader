@@ -31,23 +31,26 @@ bool CallFormCallback(int formId, const string& data);
 
 enum class EVENT_TYPES : int
 {
-    OnJoin=0, OnLeft, OnRespawn, OnChangeDim,
-    OnPlayerCmd, OnChat, OnAttack, OnEat, OnMove, OnSetArmor,
+    OnJoin=0, OnLeft, OnPlayerCmd, OnChat, 
+    OnRespawn, OnChangeDim, OnJump, OnSneak, OnAttack, OnEat, OnMove, OnSetArmor,
     OnUseItem, OnTakeItem, OnDropItem,
     OnDestroyingBlock, OnDestroyBlock, OnPlaceBlock,
     OnOpenChest, OnCloseChest, OnOpenBarrel, OnCloseBarrel, OnChangeSlot,
     OnMobDie, OnMobHurt, OnExplode, OnBlockExploded, OnCmdBlockExecute,
-    OnProjectileHit, OnInteractdWith, OnPistonPush, OnUseRespawnAnchor, OnFarmLandDecay,
+    OnProjectileHit, OnInteractdWith, OnUseRespawnAnchor, OnFarmLandDecay,
+    OnPistonPush, OnHopperSearchItem, OnHopperPushOut,
     OnServerStarted, OnServerCmd, OnFormSelected, OnConsoleOutput,
     EVENT_COUNT
 };
 static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onJoin",EVENT_TYPES::OnJoin},
     {"onLeft",EVENT_TYPES::OnLeft},
-    {"onRespawn",EVENT_TYPES::OnRespawn},
-    {"onChangeDimension",EVENT_TYPES::OnChangeDim},
     {"onPlayerCmd",EVENT_TYPES::OnPlayerCmd},
     {"onChat",EVENT_TYPES::OnChat},
+    {"onRespawn",EVENT_TYPES::OnRespawn},
+    {"onChangeDim",EVENT_TYPES::OnChangeDim},
+    {"onJump",EVENT_TYPES::OnJump},
+    {"onSneak",EVENT_TYPES::OnSneak},
     {"onAttack",EVENT_TYPES::OnAttack},
     {"onEat",EVENT_TYPES::OnEat},
     {"onMove",EVENT_TYPES::OnMove},
@@ -70,9 +73,11 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onCmdBlockExecute",EVENT_TYPES::OnCmdBlockExecute},
     {"onProjectileHit",EVENT_TYPES::OnProjectileHit},
     {"onInteractdWith",EVENT_TYPES::OnInteractdWith},
-    {"onPistonPush",EVENT_TYPES::OnPistonPush},
     {"onUseRespawnAnchor",EVENT_TYPES::OnUseRespawnAnchor},
     {"onFarmLandDecay",EVENT_TYPES::OnFarmLandDecay},
+    {"onPistonPush",EVENT_TYPES::OnPistonPush},
+    {"onHopperSearchItem",EVENT_TYPES::OnHopperSearchItem},
+    {"onHopperPushOut",EVENT_TYPES::OnHopperPushOut},
     {"onServerStarted",EVENT_TYPES::OnServerStarted},
     {"onServerCmd",EVENT_TYPES::OnServerCmd},
     {"onConsoleOutput",EVENT_TYPES::OnConsoleOutput},
@@ -300,6 +305,28 @@ THook(bool, "?respawn@Player@@UEAAXXZ",
     return original(pl);
 }
 
+// ===== onJump =====
+THook(void, "?jumpFromGround@Player@@UEAAXXZ",
+    Player* pl)
+{
+    IF_EXIST(EVENT_TYPES::OnJump)
+    {
+        CallEvent(EVENT_TYPES::OnJump, PlayerClass::newPlayer(pl));
+    }
+    return original(pl);
+}
+
+// ===== onSneak =====
+THook(void, "?sendActorSneakChanged@ActorEventCoordinator@@QEAAXAEAVActor@@_N@Z",
+    void* _this, Actor* ac, bool isSneaking)
+{
+    IF_EXIST(EVENT_TYPES::OnSneak)
+    {
+        CallEvent(EVENT_TYPES::OnSneak, PlayerClass::newPlayer((Player*)ac), Boolean::newBoolean(isSneaking));
+    }
+    return original(_this, ac, isSneaking);
+}
+
 // ===== onDropItem =====
 THook(bool, "?drop@Player@@UEAA_NAEBVItemStack@@_N@Z",
     Player* _this, ItemStack* a2, bool a3)
@@ -440,7 +467,8 @@ THook(bool, "?stopOpen@BarrelBlockActor@@UEAAXAEAVPlayer@@@Z",
 {
     IF_EXIST(EVENT_TYPES::OnCloseBarrel)
     {
-        auto bp = (BlockPos*)((intptr_t*)_this - 204);
+        //auto bp = (BlockPos*)((intptr_t*)_this - 204);
+        auto bp = SymCall("?getPosition@BlockActor@@QEBAAEBVBlockPos@@XZ", BlockPos*, BlockActor*)((BlockActor*)_this);
 
         CallEventEx(EVENT_TYPES::OnCloseBarrel, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetPlayerDimId(pl)));
         //################### 坐标错误 ###################
@@ -552,23 +580,6 @@ THook(unsigned short, "?onBlockInteractedWith@VanillaServerGameplayEventListener
     return original(_this, pl, bp);
 }
 
-// ===== OnPistonPush =====
-THook(bool, "?_attachedBlockWalker@PistonBlockActor@@AEAA_NAEAVBlockSource@@AEBVBlockPos@@EE@Z",
-    BlockActor* _this, BlockSource* bs, BlockPos* bp, unsigned a3, unsigned a4)
-{
-    IF_EXIST(EVENT_TYPES::OnPistonPush)         //############## 崩服 ##############
-    {
-        int dim = Raw_GetBlockDimension(bs);
-        BlockPos* pistonPos = dAccess<BlockPos*, 44>(_this);
-
-        IntVec4 blockPos{bp->x,bp->y,bp->z,dim};
-        Block* pushedBlock = Raw_GetBlockByPos(&blockPos);
-
-        CallEventEx(EVENT_TYPES::OnPistonPush,IntPos::newPos(*pistonPos, dim),BlockClass::newBlock(pushedBlock,bp,dim));
-    }
-    return original(_this, bs, bp, a3, a4);
-}
-
 // ===== OnUseRespawnAnchor =====
 THook(bool, "?trySetSpawn@RespawnAnchorBlock@@CA_NAEAVPlayer@@AEBVBlockPos@@AEAVBlockSource@@AEAVLevel@@@Z",
     Player* pl, BlockPos* a2, BlockSource* a3, Level* a4)
@@ -589,6 +600,45 @@ THook(void, "?transformOnFall@FarmBlock@@UEBAXAEAVBlockSource@@AEBVBlockPos@@PEA
         CallEvent(EVENT_TYPES::OnFarmLandDecay,IntPos::newPos(*bp, Raw_GetBlockDimension(bs)),EntityClass::newEntity(ac));
     }
     return original(_this,bs,bp,ac,a5);
+}
+
+// ===== OnPistonPush =====
+THook(bool, "?_attachedBlockWalker@PistonBlockActor@@AEAA_NAEAVBlockSource@@AEBVBlockPos@@EE@Z",
+    BlockActor* _this, BlockSource* bs, BlockPos* bp, unsigned a3, unsigned a4)
+{
+    IF_EXIST(EVENT_TYPES::OnPistonPush)         //############## 崩服 ##############
+    {
+        int dim = Raw_GetBlockDimension(bs);
+        BlockPos* pistonPos = dAccess<BlockPos*, 44>(_this);
+
+        IntVec4 blockPos{ bp->x,bp->y,bp->z,dim };
+        Block* pushedBlock = Raw_GetBlockByPos(&blockPos);
+
+        CallEventEx(EVENT_TYPES::OnPistonPush, IntPos::newPos(*pistonPos, dim), BlockClass::newBlock(pushedBlock, bp, dim));
+    }
+    return original(_this, bs, bp, a3, a4);
+}
+
+// ===== OnHopperSearchItem =====
+THook(bool, "?_tryPullInItemsFromAboveContainer@Hopper@@IEAA_NAEAVBlockSource@@AEAVContainer@@AEBVVec3@@@Z",
+    void* _this, BlockSource* bs, void* container, Vec3* pos)
+{
+    IF_EXIST(EVENT_TYPES::OnHopperSearchItem)
+    {
+        CallEventEx(EVENT_TYPES::OnHopperSearchItem, FloatPos::newPos(*pos, Raw_GetBlockDimension(bs)));
+    }
+    return original(_this, bs, container, pos);
+}
+
+// ===== OnHopperPushOut =====
+THook(bool, "?_pushOutItems@Hopper@@IEAA_NAEAVBlockSource@@AEAVContainer@@AEBVVec3@@H@Z",
+    void* _this, BlockSource* bs, void* container, Vec3* pos, int a5)
+{
+    IF_EXIST(EVENT_TYPES::OnHopperPushOut)
+    {
+        CallEventEx(EVENT_TYPES::OnHopperPushOut, FloatPos::newPos(*pos, Raw_GetBlockDimension(bs)));
+    }
+    return original(_this, bs, container, pos, a5);
 }
 
 // ===== onServerCmd =====
