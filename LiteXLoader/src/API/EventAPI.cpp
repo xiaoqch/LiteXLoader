@@ -34,7 +34,7 @@ enum class EVENT_TYPES : int
     OnJoin=0, OnLeft, OnRespawn, OnChangeDim,
     OnPlayerCmd, OnChat, OnAttack, OnEat, OnMove, OnSetArmor,
     OnUseItem, OnTakeItem, OnDropItem,
-    OnDestroyBlock, OnPlaceBlock,
+    OnDestroyingBlock, OnDestroyBlock, OnPlaceBlock,
     OnOpenChest, OnCloseChest, OnOpenBarrel, OnCloseBarrel, OnChangeSlot,
     OnMobDie, OnMobHurt, OnExplode, OnBlockExploded, OnCmdBlockExecute,
     OnProjectileHit, OnInteractdWith, OnPistonPush, OnUseRespawnAnchor, OnFarmLandDecay,
@@ -57,6 +57,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onUseItem",EVENT_TYPES::OnUseItem},
     {"onTakeItem",EVENT_TYPES::OnTakeItem},
     {"onDropItem",EVENT_TYPES::OnDropItem},
+    {"onDestroyingBlock",EVENT_TYPES::OnDestroyingBlock},
     {"onDestroyBlock",EVENT_TYPES::OnDestroyBlock},
     {"onPlaceBlock",EVENT_TYPES::OnPlaceBlock},
     {"onExplode",EVENT_TYPES::OnExplode},
@@ -358,6 +359,17 @@ THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@
             BlockClass::newBlock(bl,bp), IntPos::newPos(bp->x, bp->y, bp->z, WPlayer(*sp).getDimID()));
     }
     return original(_this, item, bp, a4, a5, bl);
+}
+
+// ===== onDestroyingBlock =====
+THook(float, "?getDestroySpeed@Player@@QEBAMAEBVBlock@@@Z",
+    Player* _this, Block* bl)
+{
+    IF_EXIST(EVENT_TYPES::OnDestroyingBlock)
+    {
+        CallEvent(EVENT_TYPES::OnDestroyingBlock, PlayerClass::newPlayer(_this), BlockClass::newBlock(bl));
+    }
+    return original(_this, bl);
 }
 
 // ===== onDestroyBlock =====

@@ -53,3 +53,6 @@ Local<Value> MoneyReduce(const Arguments& args);
 Local<Value> MoneyTrans(const Arguments& args);
 Local<Value> MoneyGetHintory(const Arguments& args);
 Local<Value> MoneyClearHistory(const Arguments& args);
+
+Local<Value> ToJson(const Arguments& args);
+Local<Value> FromJson(const Arguments& args);

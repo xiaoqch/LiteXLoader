@@ -130,7 +130,7 @@
 
 <br>
 
-#### `"onUseItem"` - 玩家使用物品（右键）
+#### `"onUseItem"` - 玩家使用物品 / 点击右键
 - 监听函数原型
   `function(player,item,block,pos)`
 - 参数：
@@ -144,7 +144,7 @@
       被点击到方块坐标
 - 拦截事件：函数返回`false`
 
-注：Win10客户端玩家单次右键，会在服务端多次激发这个事件，请注意这种情况
+注：Win10客户端玩家右键会在服务端连续多次激发这个事件，请注意这种情况
 
 <br>
 
@@ -191,7 +191,24 @@
 
 <br>
 
-#### `"onDestroyBlock"` - 玩家破坏方块
+#### `"onDestroyingBlock"` - 玩家正在破坏方块  / 点击左键
+
+- 监听函数原型
+  `function(player,block,pos)`
+- 参数：
+  - player : `Player`  
+    破坏方块的玩家对象
+
+  - block : `Block`  
+    被破坏的方块对象
+
+- 拦截事件：不可以拦截
+
+注：在破坏方块的过程中，会在服务端反复多次激发这个事件，请注意这种情况
+
+<br>
+
+#### `"onDestroyBlock"` - 玩家破坏方块完成
 - 监听函数原型
 `function(player,block,pos)`
 - 参数：
