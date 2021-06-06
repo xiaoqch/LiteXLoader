@@ -57,8 +57,8 @@ ini格式相对**简单直观**，他人修改起来比较轻松，不过储存�
 - 参数：
   - name : `String`  
     配置项名字
-  - data : `任意类型`  
-    要写入的配置数据。允许的配置数据类型有：  
+  - data : `指定类型`  
+    要写入的配置数据。允许的数据类型有：  
     `Integer` `Float` `String` `Boolean` `Array` `Object`  
     其中，`Array` 和 `Object` 内部仅能嵌套上面这些元素
 
@@ -110,8 +110,8 @@ ini格式相对**简单直观**，他人修改起来比较轻松，不过储存�
     配置项键名
   - name : `String`  
     配置项名字
-  - data : `任意类型`  
-    要写入的配置数据。允许的配置数据类型有：  
+  - data : `指定类型`  
+    要写入的配置数据。允许的数据类型有：  
     `Integer` `Float` `String` `Boolean`
 
 - 返回值：是否写入成功
@@ -270,7 +270,7 @@ LXL提供统一数据库接口来完成这个任务。
 一个leveldb数据库是由多个文件组成的，所以你需要传入一个目录的路径，数据库文件会被储存于这个目录当中。  
 如果这个目录已含有一个数据库，LXL会将它打开，否则会新建一个。
 
-`conf.openDB(dir)`
+`data.openDB(dir)`
 
 - 参数：
   - dir : `String`  
@@ -291,14 +291,12 @@ LXL提供统一数据库接口来完成这个任务。
 - 参数：
   - name : `String`  
     数据项名字
-  - data : `任意类型`  
-    要写入的数据，可以是任意类型。  
+  - data : `指定类型`  
+    要写入的数据。允许使用的数据类型有：   
+    `Integer` `Float` `String` `Boolean` `Array` `Object `  
+    其中，`Array` 和 `Object` 内部仅能嵌套上面出现的这些元素
 - 返回值：是否写入成功
 - 返回值类型：`Boolean`
-
-注：允许使用数据库储存的数据类型有：   
-`Integer` `Float` `String` `Boolean` `Array` `Object `  
-其中，`Array` 和 `Object` 内部仅能嵌套上面出现的这些元素
 
 <br>
 
@@ -439,6 +437,44 @@ LLMoney除了拥有传统经济系统的能力之外，还有查询金额变动�
     删除从现在开始往前time秒的记录
 - 返回值：是否删除成功
 - 返回值类型：`Boolean`
+
+<br>
+
+------
+
+## 🧰 其他数据处理 API
+
+提供一些其他的简单数据处理接口。你可以自行使用并拓展。
+
+### 变量转换为Json字符串
+
+`data.toJson(var[,space])`
+
+- 参数：
+  - var : `指定类型`  
+    要转换为Json字符串的变量。允许进行转换的数据类型有：   
+    `Integer` `Float` `String` `Boolean` `Array` `Object `  
+    其中，`Array` 和 `Object` 内部仅能嵌套上面出现的这些元素
+  - space : `Integer`  
+    （可选参数）如果要格式化输出的字符串，则传入此参数  
+    代表每个缩进的空格数量，这样输出的Json串更适合人阅读  
+    此参数默认为0，即不对输出字符串进行格式化
+- 返回值：转换成的Json字符串
+- 返回值类型：`String`
+  - 如果返回值为`Null`，则表示转换失败
+
+<br>
+
+### Json字符串解析为变量
+
+`data.fromJson(json)`
+
+- 参数：
+  - json : `String`  
+    要转换为变量的Json字符串
+- 返回值：转换成的变量
+- 返回值类型：`任意类型`，以Json具体包含的数据类型为准
+  - 如返回值为 `Null` 则表示转换失败
 
 <br>
 

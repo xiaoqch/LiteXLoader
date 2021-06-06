@@ -44,9 +44,9 @@ IntPos* IntPos::create(const Arguments& args)
     try
     {
         IntPos *p = new IntPos(args.thiz());
-        p->x = args[0].asNumber().toInt64();
-        p->y = args[1].asNumber().toInt64();
-        p->z = args[2].asNumber().toInt64();
+        p->x = args[0].asNumber().toInt32();
+        p->y = args[1].asNumber().toInt32();
+        p->z = args[2].asNumber().toInt32();
         p->dim = args[3].asNumber().toInt32();
         return p;
     }

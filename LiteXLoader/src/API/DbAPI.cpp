@@ -563,3 +563,51 @@ Local<Value> MoneyClearHistory(const Arguments& args)
     }
     CATCH("Fail in MoneyClearHistory!")
 }
+
+Local<Value> ToJson(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1)
+    if (args.size() >= 2)
+    CHECK_ARG_TYPE(args[1], ValueKind::kNumber)
+
+    try
+    {
+        int spaces = -1;
+        if (args.size() >= 2)
+        {
+            int newSpaces = args[1].toInt();
+            if (newSpaces > 0)
+                spaces = newSpaces;
+        }
+        try
+        {
+            return String::newString(ValueToJson(args[0],spaces));
+        }
+        catch (...)
+        {
+            ERROR("Failed to transform into Json.");
+            return Local<Value>();
+        }
+    }
+    CATCH("Fail in ToJson!")
+}
+
+Local<Value> FromJson(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+
+    try
+    {
+        try
+        {
+            return JsonToValue(args[0].toStr());
+        }
+        catch (...)
+        {
+            ERROR("Failed to parse from Json.");
+            return Local<Value>();
+        }
+    }
+    CATCH("Fail in FromJson!")
+}

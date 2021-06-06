@@ -158,8 +158,6 @@ public:
     static Local<Value> getPath(const Arguments& args) { return ConfGetPath(args); }
     static Local<Value> read(const Arguments& args) { return ConfRead(args); }
     static Local<Value> write(const Arguments& args) { return ConfWrite(args); }
-
-    static Local<Value> openDB(const Arguments& args) { return OpenDB(args); }
 };
 
 ClassDefine<void> ConfClassBuilder =
@@ -181,8 +179,23 @@ ClassDefine<void> ConfClassBuilder =
         .function("getPath", &ConfClass::getPath)
         .function("read", &ConfClass::read)
         .function("write", &ConfClass::write)
+        .build();
 
-        .function("openDB", &ConfClass::openDB)
+class DataClass
+{
+public:
+    static Local<Value> openDB(const Arguments& args) { return OpenDB(args); }
+
+    static Local<Value> fromJson(const Arguments& args) { return FromJson(args); }
+    static Local<Value> toJson(const Arguments& args) { return ToJson(args); }
+};
+
+ClassDefine<void> DataClassBuilder =
+    defineClass("data")
+        .function("openDB", &DataClass::openDB)
+
+        .function("fromJson", &DataClass::fromJson)
+        .function("toJson", &DataClass::toJson)
         .build();
 
 class MoneyClass
