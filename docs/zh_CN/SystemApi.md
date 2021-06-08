@@ -284,8 +284,6 @@
 - result : `String`  
   返回的具体数据
 
-如果在回调函数中返回`false`，等同于拦截这个命令的执行。
-
 <br>
 
 [<< 返回目录](Development.md)

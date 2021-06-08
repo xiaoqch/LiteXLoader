@@ -43,6 +43,7 @@
     <ClCompile Include="..\src\Kernel\Db.cpp" />
     <ClCompile Include="..\src\Kernel\Entity.cpp" />
     <ClCompile Include="..\src\Kernel\Event.cpp" />
+    <ClCompile Include="..\src\Kernel\Global.cpp" />
     <ClCompile Include="..\src\Kernel\Gui.cpp" />
     <ClCompile Include="..\src\Kernel\Item.cpp" />
     <ClCompile Include="..\src\Kernel\NBT.cpp" />
@@ -84,6 +85,7 @@
     <ClInclude Include="..\src\Kernel\Packet.h" />
     <ClInclude Include="..\src\Kernel\Player.h" />
     <ClInclude Include="..\src\Kernel\Server.h" />
+    <ClInclude Include="..\src\Kernel\SymbolHelper.h" />
     <ClInclude Include="..\src\Kernel\System.h" />
     <ClInclude Include="..\src\Kernel\ThirdParty.h" />
   </ItemGroup>

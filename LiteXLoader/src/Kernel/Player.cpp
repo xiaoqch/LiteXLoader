@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "Packet.h"
+#include "SymbolHelper.h"
 using namespace std;
 
 string  Raw_GetPlayerName(Player* player)
@@ -13,7 +14,7 @@ FloatVec4 Raw_GetPlayerPos(Player* player)
     return {pos.x,pos.y,pos.z,WPlayer(*player).getDimID()};
 }
 
-string  Raw_GetXuid(Player* player)
+string Raw_GetXuid(Player* player)
 {
     return offPlayer::getXUIDString(player);
 }
@@ -136,45 +137,84 @@ bool Raw_TransServer(Player* player, const std::string& server, short port)
     return Raw_SendTransferPacket(player, server, port);
 }
 
-//#################### Add code here ####################
 int Raw_GetScore(Player* player, const std::string &key)
 {
+    Objective* obj = g_scoreboard->getObjective(key);
+    if (obj)
+    {
+        auto id = g_scoreboard->getScoreboardId(*(Actor*)player);
+        auto score = obj->getPlayerScore(id);
+        return score.getCount();
+    }
     return 0;
 }
 
 bool Raw_SetScore(Player* player, const std::string &key, int value)
 {
+    Objective* obj = g_scoreboard->getObjective(key);
+    if (obj)
+    {
+        bool a1 = true;
+        bool &pa = a1;
+        g_scoreboard->modifyPlayerScore(pa,g_scoreboard->getScoreboardId(*(Actor*)player), *obj, value, 0);   //Set
+        return true;
+    }
     return false;
 }
 
 bool Raw_AddScore(Player* player, const std::string &key, int value)
 {
+    Objective* obj = g_scoreboard->getObjective(key);
+    if (obj)
+    {
+        bool a1 = true;
+        bool& pa = a1;
+        g_scoreboard->modifyPlayerScore(pa, g_scoreboard->getScoreboardId(*(Actor*)player), *obj, value, 1);   //Add
+        return true;
+    }
     return false;
 }
 
 bool Raw_RemoveScore(Player* player, const std::string &key)
 {
+    Objective* obj = g_scoreboard->getObjective(key);
+    if (obj)
+    {
+        bool a1 = true;
+        bool& pa = a1;
+        g_scoreboard->modifyPlayerScore(pa, g_scoreboard->getScoreboardId(*(Actor*)player), *obj, 0, 2);   //Remove
+        return true;
+    }
     return false;
 }
 
-bool Raw_SetScoreBoard(Player *player, std::string title, const std::vector<std::pair<std::string,int>> &data)
+bool Raw_SetSidebar(Player *player, std::string title, const std::vector<std::pair<std::string,int>> &data)
 {
-    return false;
+    Raw_SendSetDisplayObjectivePacket(player, title, "name");
+
+    vector<ScorePacketInfo> info;
+    for (auto& x : data)
+    {
+        ScorePacketInfo i(g_scoreboard->createScoreboardId(x.first),x.second,x.first);
+        info.push_back(i);
+    }
+
+    return Raw_SendSetScorePacket(player, 0, info);    //set
 }
 
-bool Raw_RemoveScoreBoard(Player *player)
+bool Raw_RemoveSidebar(Player *player)
 {
-    return false;
+    return Raw_SendSetDisplayObjectivePacket(player, "", "");
 }
 
 bool Raw_SetBossBar(Player *player, std::string title, float percent)
 {
-    return false;
+    return Raw_SendBossEventPacket(player, title, percent, 0);
 }
 
 bool Raw_RemoveBossBar(Player *player)
 {
-    return false;
+    return Raw_SendBossEventPacket(player, "", 0, 2);;
 }
 
 vector<Player*> Raw_GetOnlinePlayers()

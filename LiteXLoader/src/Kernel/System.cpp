@@ -149,14 +149,14 @@ bool Raw_SystemCmd(const std::string &cmd, std::function<void(int,std::string)> 
 
 std::pair<int,std::string> Raw_HttpRequestSync(const std::string &url,const std::string &method,const std::string &data)
 {
-    httplib::Client cli(url.c_str());       //############## Crash ##############
+    httplib::Client cli(url.c_str());       //############## 崩服 ##############
     auto response = (method == "POST" || method == "Post") ? cli.Post(data.c_str()) : cli.Get(data.c_str());
     return {response->status,response->body};
 }
 
 bool Raw_HttpRequestAsync(const string &url,const string &method,const string &data,function<void(int,std::string)> callback)
 {
-    httplib::Client *cli = new httplib::Client(url.c_str());    //############## Crash ##############
+    httplib::Client *cli = new httplib::Client(url.c_str());    //############## 崩服 ##############
     if(!cli->is_valid())
     {
         delete cli;

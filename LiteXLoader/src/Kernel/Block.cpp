@@ -1,4 +1,5 @@
 #include "Block.h"
+#include "SymbolHelper.h"
 using namespace std;
 
 string Raw_GetBlockName(Block* block)
@@ -30,7 +31,6 @@ int Raw_GetBlockDimension(BlockSource *bs)
 
 Block* Raw_GetBlockByPos(IntVec4 *pos)
 {
-    extern Minecraft *mc;
 	auto dim = SymCall("?getDimension@Level@@UEBAPEAVDimension@@V?$AutomaticID@VDimension@@H@@@Z",
 	      uintptr_t, void*, int)(mc->getLevel(), pos->dim);
 	auto bs = (BlockSource*)(dim + 88);

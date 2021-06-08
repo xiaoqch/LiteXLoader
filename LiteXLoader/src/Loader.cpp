@@ -25,7 +25,7 @@ bool globalDebug = false;
 extern std::list<std::shared_ptr<ScriptEngine>> lxlModules;
 void BindAPIs(std::shared_ptr<ScriptEngine> engine);
 
-// 配置文件
+//配置文件
 extern INI_ROOT iniConf;
 
 //读取辅助函数
@@ -41,6 +41,27 @@ std::string ReadFileFrom(const std::string &filePath)
         std::istreambuf_iterator<char>());
     fRead.close();
     return data;
+}
+
+//创建新引擎
+std::shared_ptr<ScriptEngine> NewEngine()
+{
+    std::shared_ptr<ScriptEngine> engine;
+
+#if !defined(SCRIPTX_BACKEND_WEBASSEMBLY)
+    engine = std::shared_ptr<ScriptEngine>{
+        new ScriptEngineImpl(),
+            ScriptEngine::Deleter()
+    };
+#else
+    engine = std::shared_ptr<ScriptEngine>{
+        ScriptEngineImpl::instance(),
+            [](void*) {}
+    };
+#endif
+
+    engine->setData(make_shared<EngineOwnData>());
+    return engine;
 }
 
 //预加载基础库
@@ -166,7 +187,8 @@ void LoadPlugins()
                 ERROR("Fail to load " + i.path().filename().string() + "!\n");
                 ERRPRINT(e);
                 ExitEngineScope exit;
-                lxlModules.pop_back();
+                //###### Js delete v8崩溃
+                //lxlModules.pop_back();
             }
             catch(std::exception& e)
             {

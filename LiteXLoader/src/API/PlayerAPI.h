@@ -52,8 +52,8 @@ public:
     Local<Value> setScore(const Arguments& args);
     Local<Value> addScore(const Arguments& args);
     Local<Value> removeScore(const Arguments& args);
-    Local<Value> setScoreBoard(const Arguments& args);
-    Local<Value> removeScoreBoard(const Arguments& args);
+    Local<Value> setSidebar(const Arguments& args);
+    Local<Value> removeSidebar(const Arguments& args);
     Local<Value> setBossBar(const Arguments& args);
     Local<Value> removeBossBar(const Arguments& args);
 
