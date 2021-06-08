@@ -43,6 +43,17 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceFunction("getOffHand", &PlayerClass::getOffHand)
         .instanceFunction("getPack", &PlayerClass::getPack)
         .instanceFunction("rename", &PlayerClass::rename)
+        .instanceFunction("addLevel", &PlayerClass::addLevel)
+        .instanceFunction("transServer", &PlayerClass::transServer)
+
+        .instanceFunction("getScore", &PlayerClass::getScore)
+        .instanceFunction("setScore", &PlayerClass::setScore)
+        .instanceFunction("addScore", &PlayerClass::addScore)
+        .instanceFunction("removeScore", &PlayerClass::removeScore)
+        .instanceFunction("setSidebar", &PlayerClass::setSidebar)
+        .instanceFunction("removeSidebar", &PlayerClass::removeSidebar)
+        .instanceFunction("setBossBar", &PlayerClass::setBossBar)
+        .instanceFunction("removeBossBar", &PlayerClass::removeBossBar)
 
         .instanceFunction("sendSimpleForm", &PlayerClass::sendSimpleForm)
         .instanceFunction("sendModalForm", &PlayerClass::sendModalForm)
@@ -411,7 +422,7 @@ Local<Value> PlayerClass::removeScore(const Arguments& args)
     CATCH("Fail in removeScore!")
 }
 
-Local<Value> PlayerClass::setScoreBoard(const Arguments& args)
+Local<Value> PlayerClass::setSidebar(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,2)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
@@ -428,17 +439,17 @@ Local<Value> PlayerClass::setScoreBoard(const Arguments& args)
             data.push_back({obj.get("title").toStr(), obj.get("value").toInt()});
         }
 
-        return Boolean::newBoolean(Raw_SetScoreBoard(player,args[0].toStr(),data));
+        return Boolean::newBoolean(Raw_SetSidebar(player,args[0].toStr(),data));
     }
-    CATCH("Fail in setScoreBoard!")
+    CATCH("Fail in setSidebar!")
 }
 
-Local<Value> PlayerClass::removeScoreBoard(const Arguments& args)
+Local<Value> PlayerClass::removeSidebar(const Arguments& args)
 {
     try{
-        return Boolean::newBoolean(Raw_RemoveScoreBoard(player));
+        return Boolean::newBoolean(Raw_RemoveSidebar(player));
     }
-    CATCH("Fail in removeScoreBoard!")
+    CATCH("Fail in removeSidebar!")
 }
 
 Local<Value> PlayerClass::setBossBar(const Arguments& args)

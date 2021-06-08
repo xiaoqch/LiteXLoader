@@ -84,26 +84,6 @@ void PrintValue(std::ostream &out, Local<Value> v)
     }
 }
 
-std::shared_ptr<ScriptEngine> NewEngine()
-{
-    std::shared_ptr<ScriptEngine> engine;
-
-    #if !defined(SCRIPTX_BACKEND_WEBASSEMBLY)
-        engine = std::shared_ptr<ScriptEngine>{
-            new ScriptEngineImpl(),
-                ScriptEngine::Deleter()
-        };
-    #else
-        engine = std::shared_ptr<ScriptEngine>{
-            ScriptEngineImpl::instance(),
-                [](void*) {}
-        };
-    #endif
-
-    engine->setData(make_shared<EngineOwnData>());
-    return engine;
-}
-
 
 ///////////////////// Json To Value /////////////////////
 

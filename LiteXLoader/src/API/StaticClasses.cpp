@@ -245,6 +245,6 @@ public:
 ClassDefine<void> LxlClassBuilder =
     defineClass("lxl")
         .function("version", &LxlClass::version)
-        .function("loadPlugin", &LxlClass::loadPlugin)
-        .function("listPlugins", &LxlClass::listPlugins)
+        //.function("loadPlugin", &LxlClass::loadPlugin)
+        //.function("listPlugins", &LxlClass::listPlugins)
         .build();

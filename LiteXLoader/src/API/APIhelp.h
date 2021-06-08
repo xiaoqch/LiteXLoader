@@ -39,9 +39,6 @@ extern int lxlLogLevel;
     catch(Exception& e) \
     { ERROR(LOG##"\n"); ERRPRINT(e); return Local<Value>();}
 
-// 创建新引擎
-std::shared_ptr<ScriptEngine> NewEngine();
-
 
 // 序列化
 void PrintValue(std::ostream &out, Local<Value> v);

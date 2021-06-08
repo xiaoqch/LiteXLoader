@@ -118,6 +118,9 @@
     <ClCompile Include="..\src\Loader.cpp">
       <Filter>Main</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Kernel\Global.cpp">
+      <Filter>Kernel</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\API\APIhelp.h">
@@ -215,6 +218,9 @@
     </ClInclude>
     <ClInclude Include="..\src\Configs.h">
       <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Kernel\SymbolHelper.h">
+      <Filter>Kernel</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
