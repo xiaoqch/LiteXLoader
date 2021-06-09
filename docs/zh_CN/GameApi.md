@@ -21,6 +21,11 @@
 - 返回值：是否执行成功
 - 返回值类型： `Boolean`
 
+```javascript
+[Js] mc.runcmd("say Hello!");
+[Lua] mc.runcmd("say Hello!")
+```
+
 <br>
 
 ### 执行一条后台命令（强化版）  
