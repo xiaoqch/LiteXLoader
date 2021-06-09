@@ -16,6 +16,19 @@ string inline GetTimeStrHelper()
 {
     return Raw_GetDateTimeStr();
 }
+
+string& StrReplace(string& str, const string& to_replaced, const string& new_str)
+{
+    for (string::size_type pos(0); pos != string::npos; pos += new_str.length())
+    {
+        pos = str.find(to_replaced, pos);
+        if (pos != string::npos)
+            str.replace(pos, to_replaced.length(), new_str);
+        else
+            break;
+    }
+    return str;
+}
 ////////////////// Helper //////////////////
 
 void inline LogDataHelper(ostream *outStream, const Arguments& args)
@@ -26,25 +39,29 @@ void inline LogDataHelper(ostream *outStream, const Arguments& args)
 }
 
 void LogToEachTarget(shared_ptr<EngineOwnData> globalConf,
-    const string &preString, const Arguments& args)
+    const string &preString, const Arguments& args, int level)
 {
-    if(globalConf->toConsole)
+    if(globalConf->toConsole && globalConf->consoleLogLevel <= level)
     {
         if(!preString.empty())
             cout << preString;
         LogDataHelper(&cout, args);
     }
-    if(globalConf->fout)
+    if(globalConf->fout && globalConf->fileLogLevel <= level)
     {
         if(!preString.empty())
             globalConf->fout << preString;
         LogDataHelper(&(globalConf->fout), args);
     }
-    if(globalConf->player && Raw_IsPlayerValid(globalConf->player))
+    if(globalConf->player && globalConf->playerLogLevel <= level && Raw_IsPlayerValid(globalConf->player))
     {
         ostringstream ostr;
         LogDataHelper(&ostr, args);
-        Raw_Tell(globalConf->player,preString + ostr.str());
+
+        string sendStr{ preString + ostr.str() };
+        StrReplace(sendStr, "[", "<");
+        StrReplace(sendStr, "]", ">");
+        Raw_Tell(globalConf->player, sendStr);
     }
 }
 
@@ -54,7 +71,7 @@ Local<Value> LoggerLog(const Arguments& args)
 
     try{
         auto globalConf = ENGINE_OWN_DATA();
-        LogToEachTarget(globalConf,"",args);
+        LogToEachTarget(globalConf, "", args, 2147483647);
         return Boolean::newBoolean(true);
     }
     CATCH("Fail in LoggerLog!")
@@ -65,15 +82,15 @@ Local<Value> LoggerDebug(const Arguments& args)
     CHECK_ARGS_COUNT(args,1)
 
     auto globalConf = ENGINE_OWN_DATA();
-    if(globalConf->logLevel > 0)
-        return Boolean::newBoolean(true);
+    if (globalConf->minLogLevel <= 0)
+    {
+        string preString{ globalConf->title };
+        if (!preString.empty())
+            preString = "[" + preString + "] ";
+        preString = preString + "[" + GetTimeStrHelper() + " Debug] ";
 
-    string preString{globalConf->title};
-    if(!preString.empty())
-        preString = "[" + preString + "] ";
-    preString = preString + "[" + GetTimeStrHelper() + " Debug] ";
-
-    LogToEachTarget(globalConf,preString,args);
+        LogToEachTarget(globalConf, preString, args, 0);
+    }
     return Boolean::newBoolean(true);
 }
 
@@ -82,15 +99,15 @@ Local<Value> LoggerInfo(const Arguments& args)
     CHECK_ARGS_COUNT(args,1)
     
     auto globalConf = ENGINE_OWN_DATA();
-    if(globalConf->logLevel > 1)
-        return Boolean::newBoolean(true);
+    if (globalConf->minLogLevel <= 1)
+    {
+        string preString{ globalConf->title };
+        if (!preString.empty())
+            preString = "[" + preString + "] ";
+        preString = preString + "[" + GetTimeStrHelper() + " Info] ";
 
-    string preString{globalConf->title};
-    if(!preString.empty())
-        preString = "[" + preString + "] ";
-    preString = preString + "[" + GetTimeStrHelper() + " Info] ";
-
-    LogToEachTarget(globalConf,preString,args);
+        LogToEachTarget(globalConf, preString, args, 1);
+    }
     return Boolean::newBoolean(true);
 }
 
@@ -99,15 +116,15 @@ Local<Value> LoggerWarn(const Arguments& args)
     CHECK_ARGS_COUNT(args,1)
     
     auto globalConf = ENGINE_OWN_DATA();
-    if(globalConf->logLevel > 2)
-        return Boolean::newBoolean(true);
+    if (globalConf->minLogLevel <= 2)
+    {
+        string preString{ globalConf->title };
+        if (!preString.empty())
+            preString = "[" + preString + "] ";
+        preString = preString + "[" + GetTimeStrHelper() + " Warning] ";
 
-    string preString{globalConf->title};
-    if(!preString.empty())
-        preString = "[" + preString + "] ";
-    preString = preString + "[" + GetTimeStrHelper() + " Warning] ";
-
-    LogToEachTarget(globalConf,preString,args);
+        LogToEachTarget(globalConf, preString, args, 2);
+    }
     return Boolean::newBoolean(true);
 }
 
@@ -116,15 +133,15 @@ Local<Value> LoggerError(const Arguments& args)
     CHECK_ARGS_COUNT(args,1)
     
     auto globalConf = ENGINE_OWN_DATA();
-    if(globalConf->logLevel > 3)
-        return Boolean::newBoolean(true);
+    if (globalConf->minLogLevel <= 3)
+    {
+        string preString{ globalConf->title };
+        if (!preString.empty())
+            preString = "[" + preString + "] ";
+        preString = preString + "[" + GetTimeStrHelper() + " Error] ";
 
-    string preString{globalConf->title};
-    if(!preString.empty())
-        preString = "[" + preString + "] ";
-    preString = preString + "[" + GetTimeStrHelper() + " Error] ";
-
-    LogToEachTarget(globalConf,preString,args);
+        LogToEachTarget(globalConf, preString, args, 3);
+    }
     return Boolean::newBoolean(true);
 }
 
@@ -133,15 +150,15 @@ Local<Value> LoggerFatal(const Arguments& args)
     CHECK_ARGS_COUNT(args,1)
     
     auto globalConf = ENGINE_OWN_DATA();
-    if(globalConf->logLevel > 4)
-        return Boolean::newBoolean(true);
+    if (globalConf->minLogLevel <= 4)
+    {
+        string preString{ globalConf->title };
+        if (!preString.empty())
+            preString = "[" + preString + "] ";
+        preString = preString + "[" + GetTimeStrHelper() + " FATAL] ";
 
-    string preString{globalConf->title};
-    if(!preString.empty())
-        preString = "[" + preString + "] ";
-    preString = preString + "[" + GetTimeStrHelper() + " FATAL] ";
-
-    LogToEachTarget(globalConf,preString,args);
+        LogToEachTarget(globalConf, preString, args, 4);
+    }
     return Boolean::newBoolean(true);
 }
 
@@ -154,12 +171,31 @@ Local<Value> LoggerSetTitle(const Arguments& args)
     return Boolean::newBoolean(true);
 }
 
+///////////////// Helper /////////////////
+void UpdateMinLogLevel()
+{
+    auto data = ENGINE_OWN_DATA();
+    data->minLogLevel = data->consoleLogLevel;
+    if (data->minLogLevel > data->fileLogLevel)
+        data->minLogLevel = data->fileLogLevel;
+    if (data->minLogLevel > data->playerLogLevel)
+        data->minLogLevel = data->playerLogLevel;
+}
+///////////////// Helper /////////////////
+
 Local<Value> LoggerSetConsole(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
     CHECK_ARG_TYPE(args[0],ValueKind::kBoolean)
+    if(args.size() >= 2)
+        CHECK_ARG_TYPE(args[1], ValueKind::kNumber)
 
     ENGINE_OWN_DATA()->toConsole = args[0].asBoolean().value();
+    if (args.size() >= 2)
+    {
+        ENGINE_OWN_DATA()->consoleLogLevel = args[1].toInt();
+        UpdateMinLogLevel();
+    }
     return Boolean::newBoolean(true);
 }
 
@@ -167,6 +203,8 @@ Local<Value> LoggerSetFile(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
+    if (args.size() >= 2)
+        CHECK_ARG_TYPE(args[1], ValueKind::kNumber)
 
     string newFile = args[0].asString().toString();
     ofstream *fout = &(ENGINE_OWN_DATA()->fout);
@@ -174,23 +212,38 @@ Local<Value> LoggerSetFile(const Arguments& args)
         fout->close();
     fout->clear();
     fout->open(newFile,ios::app);
+
+    if (args.size() >= 2)
+    {
+        ENGINE_OWN_DATA()->fileLogLevel = args[1].toInt();
+        UpdateMinLogLevel();
+    }
     return Boolean::newBoolean(ENGINE_OWN_DATA()->fout.is_open());
 }
 
 Local<Value> LoggerSetPlayer(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
+    if (args.size() >= 2)
+        CHECK_ARG_TYPE(args[1], ValueKind::kNumber)
 
     Player *p = PlayerClass::extractPlayer(args[0]);
     ENGINE_OWN_DATA()->player = p;
+
+    if (args.size() >= 2)
+    {
+        ENGINE_OWN_DATA()->playerLogLevel = args[1].toInt();
+        UpdateMinLogLevel();
+    }
     return Boolean::newBoolean(true);
 }
 
 Local<Value> SetLogLevel(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args,1)
-    CHECK_ARG_TYPE(args[0],ValueKind::kNumber)
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kNumber)
 
-    ENGINE_OWN_DATA()->logLevel = args[0].asNumber().toInt32();
+    auto conf = ENGINE_OWN_DATA();
+    conf->minLogLevel = conf->consoleLogLevel = conf->fileLogLevel = conf->playerLogLevel = args[0].toInt();
     return Boolean::newBoolean(true);
 }
