@@ -300,7 +300,7 @@
 
 在前置插件设置过函数的导出名称之后，你就可以用这个函数来调用它里面的函数了。
 
-`lxl.remoteCall(func,para1,para2,...)`
+`lxl.call(func,para1,para2,...)`
 
 - 参数：
   - func : `String`  

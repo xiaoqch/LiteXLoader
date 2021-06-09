@@ -22,38 +22,23 @@
 虽然脚本语言通常是弱类型的，不需要关注具体的数据类型，但由于LXL支持多种不同的脚本语言，为了方便对接API，下面定义一些通用的数据类型。
 
 - `Null` - 空（未定义，不存在,无返回值等等）
-
 - `Integer` - 整数
-
 - `Float` - 浮点数（小数，实数）
-
 - `String` - 字符串
-
 - `Boolean` - 布尔型
-
 - `Function` - 函数（方法）
-
 - `Array` - 数组（列表）
-
 - `Object` - 对象（映射，字典，表）
-
 - \----------------------------
-
 - `IntPos` - 整数位置 坐标对象（详解见下）
-
 - `FloatPos` - 浮点数位置 坐标对象（详解见下）
-
 - `Player` - 玩家对象（详见 Game API）
-
 - `Entity` - 实体对象（详见 Game API）
-
 - `Block` - 方块对象（详见 Game API）
-
 - `Item` - 物品栏物品对象（详见 Game API）
-
 - `Form` - 表单对象（详见 GUI API）
-
-- `DB` - 数据库对象（详见 DB API）
+- `Conf` - 配置文件对象（详见 Data API）
+- `DB` - 数据库对象（详见 Data API）
 
 <br>
 

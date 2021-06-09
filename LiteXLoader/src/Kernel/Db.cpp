@@ -1,8 +1,8 @@
-#include "Db.h"
 #include "Global.h"
-#include <API/APIhelp.h>
-#include <filesystem>
+#include "Db.h"
+#include "System.h"
 #include "ThirdParty.h"
+#include <filesystem>
 using namespace std;
 
 DB_ROOT Raw_NewDB(const string &dir)
@@ -39,13 +39,10 @@ bool Raw_DBDel(DB_ROOT &db, const string & key)
     return true;
 }
 
-
-vector<string> keyList;
-
 vector<string> Raw_DBListKey(DB_ROOT db)
 {
-    keyList.clear();
-    db->iter([](const string_view& key)
+    vector<string> keyList;
+    db->iter([&](const string_view& key)
     {
         keyList.push_back(string(key));
         return true;
@@ -53,8 +50,65 @@ vector<string> Raw_DBListKey(DB_ROOT db)
     return keyList;
 }
 
-INI_ROOT Raw_IniOpen(const string &path)
+JSON_ROOT Raw_JsonOpen(const std::string& path, const std::string& defContent)
 {
+    JSON_ROOT jsonConf;
+    if (!Raw_PathExists(path))
+    {
+        //创建新的
+        if (defContent != "")
+        {
+            try
+            {
+                jsonConf = JSON_VALUE::parse(defContent);
+            }
+            catch (exception& e)
+            {
+                ERROR("Fail to parse default json content!");
+                ERRPRINT(e.what());
+                jsonConf = JSON_VALUE::array();
+            }
+        }
+        else
+            jsonConf = JSON_VALUE::array();
+
+        ofstream jsonFile(path);
+        if (jsonFile.is_open() && defContent != "")
+            jsonFile << jsonConf.dump(4);
+        jsonFile.close();
+    }
+    else
+    {
+        //已存在
+        string jsonTexts;
+        if (!Raw_FileReadAll(path, jsonTexts))
+            jsonTexts = "";
+        try
+        {
+            jsonConf = JSON_VALUE::parse(jsonTexts);
+        }
+        catch (exception& e)
+        {
+            ERROR("Fail to parse json content in file!");
+            ERRPRINT(e.what());
+            jsonConf = JSON_VALUE::array();
+        }
+    }
+    return jsonConf;
+}
+
+INI_ROOT Raw_IniOpen(const string &path, const std::string& defContent)
+{
+    if (!Raw_PathExists(path))
+    {
+        //创建新的
+        ofstream iniFile(path);
+        if (iniFile.is_open() && defContent != "")
+            iniFile << defContent;
+        iniFile.close();
+    }
+
+    //已存在
     auto root = new SimpleIni;
     root->SetUnicode(true);
     auto res = root->LoadFile(path.c_str());

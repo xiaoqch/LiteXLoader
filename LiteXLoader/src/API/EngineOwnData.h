@@ -46,12 +46,6 @@ struct EngineOwnData
 
     //PlayerAPI
     std::unordered_map<std::string,Global<Value>> playerDataDB;
-
-    //Data API
-    std::string confPath;
-    GlobalConfType confType = GlobalConfType::json;
-    JSON_ROOT jsonConf;
-    INI_ROOT iniConf;
 };
 
 // 引擎附加数据

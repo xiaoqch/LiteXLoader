@@ -16,9 +16,11 @@ bool Raw_DBSet(DB_ROOT &db, const std::string & key, const std::string & val);
 bool Raw_DBDel(DB_ROOT &db, const std::string & key);
 std::vector<std::string> Raw_DBListKey(DB_ROOT db);
 
+//Json
+JSON_ROOT Raw_JsonOpen(const std::string& path, const std::string& defContent = "");
 
 //Ini
-INI_ROOT Raw_IniOpen(const std::string &path);
+INI_ROOT Raw_IniOpen(const std::string &path, const std::string& defContent = "");
 bool Raw_IniClose(INI_ROOT ini);
 
 bool Raw_IniSetInt(INI_ROOT ini, const std::string & sec, const std::string & key, int value);
