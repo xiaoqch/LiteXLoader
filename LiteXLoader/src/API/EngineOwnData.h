@@ -39,16 +39,13 @@ struct EngineOwnData
     std::ofstream fout;
     Player *player = nullptr;
     std::string title = "";
-    int logLevel = 1;
+    int minLogLevel = 1;
+    int consoleLogLevel = 1;
+    int fileLogLevel = 1;
+    int playerLogLevel = 1;
 
     //PlayerAPI
     std::unordered_map<std::string,Global<Value>> playerDataDB;
-
-    //DB API
-    std::string confPath;
-    GlobalConfType confType = GlobalConfType::json;
-    JSON_ROOT jsonConf;
-    INI_ROOT iniConf;
 };
 
 // 引擎附加数据

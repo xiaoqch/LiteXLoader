@@ -88,9 +88,10 @@ struct ListenerListType
     ScriptEngine *engine;
     Global<Function> func;
 };
+//监听器表
 static std::vector<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)];
 
-// Call Event
+//调用事件监听函数
 #define CallEvent(TYPE,...) \
     std::vector<ListenerListType> &nowList = listenerList[int(TYPE)]; \
     for(int i = 0; i < nowList.size(); ++i) { \
@@ -105,6 +106,7 @@ static std::vector<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)]
         } \
     }
 
+//调用事件监听函数，拦截返回false
 #define CallEventEx(TYPE,...) \
     std::vector<ListenerListType> &nowList = listenerList[int(TYPE)]; \
     bool passToBDS = true; \
@@ -123,6 +125,7 @@ static std::vector<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)]
     }\
     if(!passToBDS) { return false; }
 
+//调用事件监听函数，拦截返回RETURN_VALUE
 #define CallEventRtn(TYPE,RETURN_VALUE,...) \
     std::vector<ListenerListType> &nowList = listenerList[int(TYPE)]; \
     bool passToBDS = true; \
@@ -179,14 +182,14 @@ void RegisterBuiltinCmds()
 
 //////////////////// Hook ////////////////////
 
-#define IF_EXIST(EVENT) if(!listenerList[int(EVENT)].empty())
+#define IF_LISTENED(EVENT) if(!listenerList[int(EVENT)].empty())
 
 void InitEventListeners()
 {
 // ===== onPlayerJoin =====
     Event::addEventListener([](JoinEV ev)
     {
-        IF_EXIST(EVENT_TYPES::OnJoin)
+        IF_LISTENED(EVENT_TYPES::OnJoin)
         {
             CallEvent(EVENT_TYPES::OnJoin, PlayerClass::newPlayer(ev.Player));
         }
@@ -195,7 +198,7 @@ void InitEventListeners()
 // ===== onPlayerLeft =====
     Event::addEventListener([](LeftEV ev)
     {
-        IF_EXIST(EVENT_TYPES::OnLeft)
+        IF_LISTENED(EVENT_TYPES::OnLeft)
         {
             CallEvent(EVENT_TYPES::OnLeft, PlayerClass::newPlayer(ev.Player));
         }
@@ -204,7 +207,7 @@ void InitEventListeners()
 // ===== onChat =====
     Event::addEventListener([](ChatEV ev)
     {
-        IF_EXIST(EVENT_TYPES::OnChat)
+        IF_LISTENED(EVENT_TYPES::OnChat)
         {
             CallEventEx(EVENT_TYPES::OnChat, PlayerClass::newPlayer(ev.pl), ev.msg);
         }
@@ -214,7 +217,7 @@ void InitEventListeners()
 // ===== onChangeDimension =====
     Event::addEventListener([](ChangeDimEV ev)
     {
-        IF_EXIST(EVENT_TYPES::OnChangeDim)
+        IF_LISTENED(EVENT_TYPES::OnChangeDim)
         {
             CallEvent(EVENT_TYPES::OnChangeDim, PlayerClass::newPlayer(ev.Player));
         }
@@ -223,7 +226,7 @@ void InitEventListeners()
 // ===== onCmdBlockExecute =====
     Event::addEventListener([](CmdBlockExeEV ev)
     {
-        IF_EXIST(EVENT_TYPES::OnCmdBlockExecute)
+        IF_LISTENED(EVENT_TYPES::OnCmdBlockExecute)
         {
             CallEventEx(EVENT_TYPES::OnCmdBlockExecute, ev.cmd, IntPos::newPos(ev.bpos.x, ev.bpos.y, ev.bpos.z));
         }
@@ -243,7 +246,7 @@ void InitEventListeners()
         //注册预置命令
         RegisterBuiltinCmds();
 
-        IF_EXIST(EVENT_TYPES::OnServerStarted)
+        IF_LISTENED(EVENT_TYPES::OnServerStarted)
         {
             CallEvent(EVENT_TYPES::OnServerStarted);
         }
@@ -254,7 +257,7 @@ void InitEventListeners()
 THook(bool, "?attack@Player@@UEAA_NAEAVActor@@@Z",
     Player* pl,  Actor* ac)
 {
-    IF_EXIST(EVENT_TYPES::OnAttack)
+    IF_LISTENED(EVENT_TYPES::OnAttack)
     {
         CallEventEx(EVENT_TYPES::OnAttack, PlayerClass::newPlayer(pl), EntityClass::newEntity(ac));
     }
@@ -265,7 +268,7 @@ THook(bool, "?attack@Player@@UEAA_NAEAVActor@@@Z",
 THook(void, "?eat@Player@@QEAAXAEBVItemStack@@@Z",
     Player* _this, ItemStack* eaten)
 {
-    IF_EXIST(EVENT_TYPES::OnEat)
+    IF_LISTENED(EVENT_TYPES::OnEat)
     {
         CallEvent(EVENT_TYPES::OnEat, PlayerClass::newPlayer(_this), ItemClass::newItem(eaten));
     }
@@ -276,7 +279,7 @@ THook(void, "?eat@Player@@QEAAXAEBVItemStack@@@Z",
 THook(void, "??0MovePlayerPacket@@QEAA@AEAVPlayer@@AEBVVec3@@@Z",
     void *_this, Player * pl, Vec3 * to)
 {
-    IF_EXIST(EVENT_TYPES::OnMove)
+    IF_LISTENED(EVENT_TYPES::OnMove)
     {
         CallEvent(EVENT_TYPES::OnMove, PlayerClass::newPlayer(pl), FloatPos::newPos(*to, Raw_GetPlayerDimId(pl)));
     }
@@ -287,7 +290,7 @@ THook(void, "??0MovePlayerPacket@@QEAA@AEAVPlayer@@AEBVVec3@@@Z",
 THook(void, "?setArmor@Player@@UEAAXW4ArmorSlot@@AEBVItemStack@@@Z",
     Player* _this, unsigned slot, ItemStack* it)
 {
-    IF_EXIST(EVENT_TYPES::OnSetArmor)
+    IF_LISTENED(EVENT_TYPES::OnSetArmor)
     {
         CallEvent(EVENT_TYPES::OnSetArmor, PlayerClass::newPlayer(_this), Number::newNumber((int)slot), ItemClass::newItem(it));
     }
@@ -298,7 +301,7 @@ THook(void, "?setArmor@Player@@UEAAXW4ArmorSlot@@AEBVItemStack@@@Z",
 THook(bool, "?respawn@Player@@UEAAXXZ",
     Player* pl)
 {
-    IF_EXIST(EVENT_TYPES::OnRespawn)
+    IF_LISTENED(EVENT_TYPES::OnRespawn)
     {
         CallEventEx(EVENT_TYPES::OnRespawn, PlayerClass::newPlayer(pl));
     }
@@ -309,7 +312,7 @@ THook(bool, "?respawn@Player@@UEAAXXZ",
 THook(void, "?jumpFromGround@Player@@UEAAXXZ",
     Player* pl)
 {
-    IF_EXIST(EVENT_TYPES::OnJump)
+    IF_LISTENED(EVENT_TYPES::OnJump)
     {
         CallEvent(EVENT_TYPES::OnJump, PlayerClass::newPlayer(pl));
     }
@@ -320,7 +323,7 @@ THook(void, "?jumpFromGround@Player@@UEAAXXZ",
 THook(void, "?sendActorSneakChanged@ActorEventCoordinator@@QEAAXAEAVActor@@_N@Z",
     void* _this, Actor* ac, bool isSneaking)
 {
-    IF_EXIST(EVENT_TYPES::OnSneak)
+    IF_LISTENED(EVENT_TYPES::OnSneak)
     {
         CallEvent(EVENT_TYPES::OnSneak, PlayerClass::newPlayer((Player*)ac), Boolean::newBoolean(isSneaking));
     }
@@ -331,7 +334,7 @@ THook(void, "?sendActorSneakChanged@ActorEventCoordinator@@QEAAXAEAVActor@@_N@Z"
 THook(bool, "?drop@Player@@UEAA_NAEBVItemStack@@_N@Z",
     Player* _this, ItemStack* a2, bool a3)
 {
-    IF_EXIST(EVENT_TYPES::OnDropItem)
+    IF_LISTENED(EVENT_TYPES::OnDropItem)
     {
         CallEventEx(EVENT_TYPES::OnDropItem, PlayerClass::newPlayer(_this), ItemClass::newItem(a2));
     }
@@ -342,7 +345,7 @@ THook(bool, "?drop@Player@@UEAA_NAEBVItemStack@@_N@Z",
 THook(bool, "?take@Player@@QEAA_NAEAVActor@@HH@Z",
     Player* _this, Actor* actor, int a2, int a3)
 {
-    IF_EXIST(EVENT_TYPES::OnTakeItem)       //################### 有无办法改成获取item ###################
+    IF_LISTENED(EVENT_TYPES::OnTakeItem)       //################### 有无办法改成获取item ###################
     {
         CallEventEx(EVENT_TYPES::OnTakeItem, PlayerClass::newPlayer(_this), EntityClass::newEntity(actor));
     }
@@ -353,7 +356,7 @@ THook(bool, "?take@Player@@QEAA_NAEAVActor@@HH@Z",
 THook(void, "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVCommandRequestPacket@@@Z",
     ServerNetworkHandler* _this, NetworkIdentifier* id, void* pkt)
 {
-    IF_EXIST(EVENT_TYPES::OnPlayerCmd)
+    IF_LISTENED(EVENT_TYPES::OnPlayerCmd)
     {
         auto player = SymCall("?_getServerPlayer@ServerNetworkHandler@@AEAAPEAVServerPlayer@@AEBVNetworkIdentifier@@E@Z",
             Player*, void*, void*, char)(_this, id, *(char*)((uintptr_t)pkt + 16));
@@ -378,7 +381,7 @@ THook(void, "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVComma
 THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@PEBVBlock@@@Z",
     void* _this,  ItemStack* item, BlockPos* bp, unsigned __int8 a4, Vec3* a5,  Block* bl)
 {
-    IF_EXIST(EVENT_TYPES::OnUseItem)
+    IF_LISTENED(EVENT_TYPES::OnUseItem)
     {
         auto sp = *reinterpret_cast<Player**>(reinterpret_cast<unsigned long long>(_this) + 8);
 
@@ -392,7 +395,7 @@ THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@
 THook(float, "?getDestroySpeed@Player@@QEBAMAEBVBlock@@@Z",
     Player* _this, Block* bl)
 {
-    IF_EXIST(EVENT_TYPES::OnDestroyingBlock)
+    IF_LISTENED(EVENT_TYPES::OnDestroyingBlock)
     {
         CallEvent(EVENT_TYPES::OnDestroyingBlock, PlayerClass::newPlayer(_this), BlockClass::newBlock(bl));
     }
@@ -403,7 +406,7 @@ THook(float, "?getDestroySpeed@Player@@QEBAMAEBVBlock@@@Z",
 THook(bool, "?checkBlockDestroyPermissions@BlockSource@@QEAA_NAEAVActor@@AEBVBlockPos@@AEBVItemStackBase@@_N@Z",
     BlockSource * _this, Actor* pl, BlockPos* pos, ItemStack* a3, bool a4)
 {
-    IF_EXIST(EVENT_TYPES::OnDestroyBlock)
+    IF_LISTENED(EVENT_TYPES::OnDestroyBlock)
     {
         auto block = SymCall("?getBlock@BlockSource@@QEBAAEBVBlock@@AEBVBlockPos@@@Z", Block*, BlockSource*, BlockPos*)(_this, pos);
 
@@ -417,7 +420,7 @@ THook(bool, "?checkBlockDestroyPermissions@BlockSource@@QEAA_NAEAVActor@@AEBVBlo
 THook(bool, "?mayPlace@BlockSource@@QEAA_NAEBVBlock@@AEBVBlockPos@@EPEAVActor@@_N@Z",
     BlockSource* bs, Block* bl, BlockPos* bp, unsigned __int8 a4, Actor* pl, bool a6)
 {
-    IF_EXIST(EVENT_TYPES::OnPlaceBlock)
+    IF_LISTENED(EVENT_TYPES::OnPlaceBlock)
     {
         CallEventEx(EVENT_TYPES::OnPlaceBlock, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(bl,bp,bs), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetBlockDimension(bs)));
     }
@@ -428,7 +431,7 @@ THook(bool, "?mayPlace@BlockSource@@QEAA_NAEBVBlock@@AEBVBlockPos@@EPEAVActor@@_
 THook(bool, "?use@ChestBlock@@UEBA_NAEAVPlayer@@AEBVBlockPos@@E@Z",
     void* _this, Player* pl , BlockPos* bp)
 {
-    IF_EXIST(EVENT_TYPES::OnOpenChest)
+    IF_LISTENED(EVENT_TYPES::OnOpenChest)
     {
         CallEventEx(EVENT_TYPES::OnOpenChest, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetPlayerDimId(pl)));
     }
@@ -439,7 +442,7 @@ THook(bool, "?use@ChestBlock@@UEBA_NAEAVPlayer@@AEBVBlockPos@@E@Z",
 THook(bool, "?stopOpen@ChestBlockActor@@UEAAXAEAVPlayer@@@Z",
     void* _this, Player* pl)
 {
-    IF_EXIST(EVENT_TYPES::OnCloseChest)
+    IF_LISTENED(EVENT_TYPES::OnCloseChest)
     {
         //auto bp = (BlockPos*)((intptr_t*)_this - 204);
         auto bp = SymCall("?getPosition@BlockActor@@QEBAAEBVBlockPos@@XZ", BlockPos*, BlockActor*)((BlockActor*)_this);
@@ -454,7 +457,7 @@ THook(bool, "?stopOpen@ChestBlockActor@@UEAAXAEAVPlayer@@@Z",
 THook(bool, "?use@BarrelBlock@@UEBA_NAEAVPlayer@@AEBVBlockPos@@E@Z",
     void* _this, Player* pl, BlockPos* bp)
 {
-    IF_EXIST(EVENT_TYPES::OnOpenBarrel)
+    IF_LISTENED(EVENT_TYPES::OnOpenBarrel)
     {
         CallEventEx(EVENT_TYPES::OnOpenBarrel, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetPlayerDimId(pl)));
     }
@@ -465,7 +468,7 @@ THook(bool, "?use@BarrelBlock@@UEBA_NAEAVPlayer@@AEBVBlockPos@@E@Z",
 THook(bool, "?stopOpen@BarrelBlockActor@@UEAAXAEAVPlayer@@@Z",
     void* _this, Player* pl)
 {
-    IF_EXIST(EVENT_TYPES::OnCloseBarrel)
+    IF_LISTENED(EVENT_TYPES::OnCloseBarrel)
     {
         //auto bp = (BlockPos*)((intptr_t*)_this - 204);
         auto bp = SymCall("?getPosition@BlockActor@@QEBAAEBVBlockPos@@XZ", BlockPos*, BlockActor*)((BlockActor*)_this);
@@ -481,7 +484,7 @@ class LevelContainerModel;
 THook(void, "?containerContentChanged@LevelContainerModel@@UEAAXH@Z",
     LevelContainerModel* a1, int a2)
 {
-    IF_EXIST(EVENT_TYPES::OnChangeSlot)     //############## 崩服 ##############
+    IF_LISTENED(EVENT_TYPES::OnChangeSlot)     //############## 崩服 ##############
     {
         Actor* v3 = dAccess<Actor*, 208>(a1);
         BlockSource* bs = dAccess<BlockSource*, 840>(v3);
@@ -506,7 +509,7 @@ THook(void, "?containerContentChanged@LevelContainerModel@@UEAAXH@Z",
 THook(bool, "?die@Mob@@UEAAXAEBVActorDamageSource@@@Z",
     Mob* self, void* ads)
 {
-    IF_EXIST(EVENT_TYPES::OnMobDie)
+    IF_LISTENED(EVENT_TYPES::OnMobDie)
     {
         char v83;
         auto v6 = *(void**)(*(__int64(__fastcall**)(void*, char*))(*(intptr_t*)ads + 64i64))(ads, &v83);
@@ -523,7 +526,7 @@ THook(bool, "?die@Mob@@UEAAXAEBVActorDamageSource@@@Z",
 THook(bool, "?_hurt@Mob@@MEAA_NAEBVActorDamageSource@@H_N1@Z",
     Mob* self, void* ads, int a1, bool a2, bool a3)
 {
-    IF_EXIST(EVENT_TYPES::OnMobHurt)
+    IF_LISTENED(EVENT_TYPES::OnMobHurt)
     {
         char v83;
         auto v6 = *(void**)(*(__int64(__fastcall**)(void*, char*))(*(intptr_t*)ads + 64i64))(ads, &v83);
@@ -540,7 +543,7 @@ THook(bool, "?_hurt@Mob@@MEAA_NAEBVActorDamageSource@@H_N1@Z",
 THook(bool, "?explode@Level@@UEAAXAEAVBlockSource@@PEAVActor@@AEBVVec3@@M_N3M3@Z",
     Level* _this, BlockSource* bs, Actor* actor, Vec3 pos, float a5, bool a6, bool a7, float a8, bool a9)
 {
-    IF_EXIST(EVENT_TYPES::OnExplode)
+    IF_LISTENED(EVENT_TYPES::OnExplode)
     {
         CallEventEx(EVENT_TYPES::OnExplode, EntityClass::newEntity(actor), FloatPos::newPos(pos.x, pos.y, pos.z));
     }
@@ -551,7 +554,7 @@ THook(bool, "?explode@Level@@UEAAXAEAVBlockSource@@PEAVActor@@AEBVVec3@@M_N3M3@Z
 THook(void, "?onExploded@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@PEAVActor@@@Z",
     Block* _this, BlockSource *bs, BlockPos *bp, Actor * actor)
 {
-    IF_EXIST(EVENT_TYPES::OnBlockExploded)
+    IF_LISTENED(EVENT_TYPES::OnBlockExploded)
     {
         CallEvent(EVENT_TYPES::OnBlockExploded,BlockClass::newBlock(_this,bp,bs),IntPos::newPos(*bp,Raw_GetBlockDimension(bs)),EntityClass::newEntity(actor));
     }
@@ -562,7 +565,7 @@ THook(void, "?onExploded@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@PEAVActor@@@
 THook(void, "?onProjectileHit@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@AEBVActor@@@Z",
     Block* _this, BlockSource* bs, BlockPos* bp, Actor* actor)
 {
-    IF_EXIST(EVENT_TYPES::OnProjectileHit)
+    IF_LISTENED(EVENT_TYPES::OnProjectileHit)
     {
         CallEvent(EVENT_TYPES::OnProjectileHit,BlockClass::newBlock(_this,bp,bs),IntPos::newPos(*bp, Raw_GetBlockDimension(bs)),EntityClass::newEntity(actor));
     }
@@ -573,7 +576,7 @@ THook(void, "?onProjectileHit@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@AEBVAct
 THook(unsigned short, "?onBlockInteractedWith@VanillaServerGameplayEventListener@@UEAA?AW4EventResult@@AEAVPlayer@@AEBVBlockPos@@@Z",
     void* _this, Player* pl, BlockPos* bp)
 {
-    IF_EXIST(EVENT_TYPES::OnProjectileHit)
+    IF_LISTENED(EVENT_TYPES::OnProjectileHit)
     {
         CallEventRtn(EVENT_TYPES::OnInteractdWith, 0, PlayerClass::newPlayer(pl), IntPos::newPos(*bp, Raw_GetPlayerDimId(pl)));
     }
@@ -584,7 +587,7 @@ THook(unsigned short, "?onBlockInteractedWith@VanillaServerGameplayEventListener
 THook(bool, "?trySetSpawn@RespawnAnchorBlock@@CA_NAEAVPlayer@@AEBVBlockPos@@AEAVBlockSource@@AEAVLevel@@@Z",
     Player* pl, BlockPos* a2, BlockSource* a3, Level* a4)
 {
-    IF_EXIST(EVENT_TYPES::OnUseRespawnAnchor)
+    IF_LISTENED(EVENT_TYPES::OnUseRespawnAnchor)
     {
         CallEventEx(EVENT_TYPES::OnUseRespawnAnchor,PlayerClass::newPlayer(pl),IntPos::newPos(*a2, Raw_GetBlockDimension(a3)));
     }
@@ -595,7 +598,7 @@ THook(bool, "?trySetSpawn@RespawnAnchorBlock@@CA_NAEAVPlayer@@AEBVBlockPos@@AEAV
 THook(void, "?transformOnFall@FarmBlock@@UEBAXAEAVBlockSource@@AEBVBlockPos@@PEAVActor@@M@Z",
     void *_this, BlockSource * bs, BlockPos * bp, Actor * ac, float a5)
 {
-    IF_EXIST(EVENT_TYPES::OnFarmLandDecay)
+    IF_LISTENED(EVENT_TYPES::OnFarmLandDecay)
     {
         CallEvent(EVENT_TYPES::OnFarmLandDecay,IntPos::newPos(*bp, Raw_GetBlockDimension(bs)),EntityClass::newEntity(ac));
     }
@@ -606,7 +609,7 @@ THook(void, "?transformOnFall@FarmBlock@@UEBAXAEAVBlockSource@@AEBVBlockPos@@PEA
 THook(bool, "?_attachedBlockWalker@PistonBlockActor@@AEAA_NAEAVBlockSource@@AEBVBlockPos@@EE@Z",
     BlockActor* _this, BlockSource* bs, BlockPos* bp, unsigned a3, unsigned a4)
 {
-    IF_EXIST(EVENT_TYPES::OnPistonPush)         //############## 崩服 ##############
+    IF_LISTENED(EVENT_TYPES::OnPistonPush)         //############## 崩服 ##############
     {
         int dim = Raw_GetBlockDimension(bs);
         BlockPos* pistonPos = dAccess<BlockPos*, 44>(_this);
@@ -623,7 +626,7 @@ THook(bool, "?_attachedBlockWalker@PistonBlockActor@@AEAA_NAEAVBlockSource@@AEBV
 THook(bool, "?_tryPullInItemsFromAboveContainer@Hopper@@IEAA_NAEAVBlockSource@@AEAVContainer@@AEBVVec3@@@Z",
     void* _this, BlockSource* bs, void* container, Vec3* pos)
 {
-    IF_EXIST(EVENT_TYPES::OnHopperSearchItem)
+    IF_LISTENED(EVENT_TYPES::OnHopperSearchItem)
     {
         CallEventEx(EVENT_TYPES::OnHopperSearchItem, FloatPos::newPos(*pos, Raw_GetBlockDimension(bs)));
     }
@@ -634,7 +637,7 @@ THook(bool, "?_tryPullInItemsFromAboveContainer@Hopper@@IEAA_NAEAVBlockSource@@A
 THook(bool, "?_pushOutItems@Hopper@@IEAA_NAEAVBlockSource@@AEAVContainer@@AEBVVec3@@H@Z",
     void* _this, BlockSource* bs, void* container, Vec3* pos, int a5)
 {
-    IF_EXIST(EVENT_TYPES::OnHopperPushOut)
+    IF_LISTENED(EVENT_TYPES::OnHopperPushOut)
     {
         CallEventEx(EVENT_TYPES::OnHopperPushOut, FloatPos::newPos(*pos, Raw_GetBlockDimension(bs)));
     }
@@ -656,7 +659,7 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
         if (!ProcessDebugEngine(cmd))
             return false;
 
-        IF_EXIST(EVENT_TYPES::OnServerCmd)
+        IF_LISTENED(EVENT_TYPES::OnServerCmd)
         {
             bool callbackRes = CallServerCmdCallback(cmd);
 
@@ -672,7 +675,7 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
 THook(void, "?handle@?$PacketHandlerDispatcherInstance@VModalFormResponsePacket@@$0A@@@UEBAXAEBVNetworkIdentifier@@AEAVNetEventCallback@@AEAV?$shared_ptr@VPacket@@@std@@@Z",
 	void* _this, unsigned long long id, ServerNetworkHandler* handler, void* packet)
 {
-    //IF_EXIST(EVENT_TYPES::OnFormSelected)
+    //IF_LISTENED(EVENT_TYPES::OnFormSelected)
 
     Player* p = handler->_getServerPlayer(*(NetworkIdentifier*)(void*)id, *(unsigned char*)packet);
     if (p)
@@ -694,7 +697,7 @@ THook(void, "?handle@?$PacketHandlerDispatcherInstance@VModalFormResponsePacket@
 THook(ostream&, "??$_Insert_string@DU?$char_traits@D@std@@_K@std@@YAAEAV?$basic_ostream@DU?$char_traits@D@std@@@0@AEAV10@QEBD_K@Z",
     ostream& _this, const char* str, unsigned size)
 {
-    IF_EXIST(EVENT_TYPES::OnConsoleOutput)
+    IF_LISTENED(EVENT_TYPES::OnConsoleOutput)
     {
         CallEventRtn(EVENT_TYPES::OnConsoleOutput, _this, String::newString(string(str)));
     }

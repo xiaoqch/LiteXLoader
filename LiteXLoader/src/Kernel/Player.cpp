@@ -22,7 +22,7 @@ string Raw_GetXuid(Player* player)
 std::string Raw_GetUuid(Player *player)
 {
     string uuid;
-    void *data = (void*)(((uintptr_t)player) + 2832);
+    void* data = dAccess<void*>(player, 3000);
     SymCall("?asString@UUID@mce@@QEBA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ",
         string &, void*, string *)(data, &uuid);
     return uuid;

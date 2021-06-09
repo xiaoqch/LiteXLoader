@@ -55,9 +55,6 @@ void BindAPIs(std::shared_ptr<ScriptEngine> engine)
     extern ClassDefine<void> LoggerClassBuilder;
     engine->registerNativeClass(LoggerClassBuilder);
 
-    extern ClassDefine<void> ConfClassBuilder;
-    engine->registerNativeClass(ConfClassBuilder);
-
     extern ClassDefine<void> DataClassBuilder;
     engine->registerNativeClass(DataClassBuilder);
 
@@ -78,6 +75,12 @@ void BindAPIs(std::shared_ptr<ScriptEngine> engine)
 
     extern ClassDefine<DbClass> DbClassBuilder;
     engine->registerNativeClass<DbClass>(DbClassBuilder);
+
+    extern ClassDefine<ConfJsonClass> ConfJsonClassBuilder;
+    engine->registerNativeClass<ConfJsonClass>(ConfJsonClassBuilder);
+
+    extern ClassDefine<ConfIniClass> ConfIniClassBuilder;
+    engine->registerNativeClass<ConfIniClass>(ConfIniClassBuilder);
 
     extern ClassDefine<EntityClass> EntityClassBuilder;
     engine->registerNativeClass<EntityClass>(EntityClassBuilder);

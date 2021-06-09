@@ -27,12 +27,12 @@ extern int lxlLogLevel;
 // 至少COUNT个参数
 #define CHECK_ARGS_COUNT(ARGS,COUNT) \
     if(ARGS.size()<COUNT) \
-    {return Local<Value>();}
+    {ERROR("Too Few arguments!"); return Local<Value>();}
 
 // 检查是否TYPE类型 
 #define CHECK_ARG_TYPE(ARG,TYPE) \
     if(ARG.getKind() != TYPE) \
-    {return Local<Value>();}
+    {ERROR("Wrong type of argument!"); return Local<Value>();}
 
 // 截获引擎异常
 #define CATCH(LOG) \

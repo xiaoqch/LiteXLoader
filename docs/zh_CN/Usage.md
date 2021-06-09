@@ -11,8 +11,9 @@
 `LiteXLoader` 主要发布于**MineBBS**。在安装 `LiteXLoader` 之前，你需要先配置好他依赖的 `LiteLoader` 加载器环境。
 
 - 请[移步MineBBS](https://www.minebbs.com/)下载对应版本的 `LiteLoader` ，按要求解压之后运行rodb.exe生成相关数据
+- 如果有插件需要使用 **LXL** 的内置经济系统，还需要下载 `LLMoney` 经济插件，并将其放置在插件目录 `plugins` 中
 
-在完成上述操作，并确认安装成功后，接下来安装`LiteXLoader` 
+在完成上述操作，并确认成功后，接下来安装`LiteXLoader` ：
 
 1. [移步MineBBS](https://www.minebbs.com/)下载对应版本的`LiteXLoader`，解压
 2. 把全部内容复制到 **BDS** 的`plugins`目录中。如果复制时提示文件有冲突，选择覆盖即可。
@@ -46,7 +47,7 @@ GCInterval=20				# 引擎垃圾回收周期，默认为20秒
 
 ## 📡 实时调试
 
-成功安装 **LXL** 之后，在 **BDS** 后台控制台执行
+成功安装 **LXL** 之后，在 **BDS** 后台控制台执行
 
 - `jsdebug`  
   进入Js实时调试模式

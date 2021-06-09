@@ -20,8 +20,49 @@ ClassDefine<DbClass> DbClassBuilder =
         .instanceFunction("delete", &DbClass::del)
         .build();
 
+ClassDefine<ConfJsonClass> ConfJsonClassBuilder =
+    defineClass<ConfJsonClass>("ConfJson")
+        .constructor(nullptr)
+        .instanceFunction("get", &ConfJsonClass::get)
+        .instanceFunction("set", &ConfJsonClass::set)
+        .instanceFunction("delete", &ConfJsonClass::del)
+        .instanceFunction("reload", &ConfJsonClass::reload)
+        .instanceFunction("getPath", &ConfJsonClass::getPath)
+        .instanceFunction("read", &ConfJsonClass::read)
+        .instanceFunction("write", &ConfJsonClass::write)
+        .build();
 
-//////////////////// Classes ////////////////////
+ClassDefine<ConfIniClass> ConfIniClassBuilder =
+    defineClass<ConfIniClass>("ConfIni")
+        .constructor(nullptr)
+        .instanceFunction("set", &ConfIniClass::set)
+        .instanceFunction("getStr", &ConfIniClass::getStr)
+        .instanceFunction("getInt", &ConfIniClass::getInt)
+        .instanceFunction("getFloat", &ConfIniClass::getFloat)
+        .instanceFunction("getBool", &ConfIniClass::getBool)
+        .instanceFunction("delete", &ConfIniClass::del)
+        .instanceFunction("reload", &ConfIniClass::reload)
+        .instanceFunction("getPath", &ConfIniClass::getPath)
+        .instanceFunction("read", &ConfIniClass::read)
+        .instanceFunction("write", &ConfIniClass::write)
+        .build();
+
+
+//////////////////// Classes Db ////////////////////
+
+//生成函数
+Local<Value> DbClass::newDb(const string& dir)
+{
+    auto newp = new DbClass(dir);
+
+    if (newp->isValid())
+        return newp->getScriptObject();
+    else
+    {
+        delete newp;
+        return Local<Value>();
+    }
+}
 
 DbClass::DbClass(const string &dir)
     :ScriptClass(ScriptClass::ConstructFromCpp<DbClass>{})
@@ -34,7 +75,8 @@ Local<Value> DbClass::get(const Arguments& args)
     CHECK_ARGS_COUNT(args,1)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
 
-    try{
+    try
+    {
         string res;
         if(!Raw_DBGet(kvdb,args[0].asString().toString(),res))
             return Local<Value>();
@@ -49,7 +91,8 @@ Local<Value> DbClass::set(const Arguments& args)
     CHECK_ARGS_COUNT(args,2)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
 
-    try{
+    try
+    {
         return Boolean::newBoolean(Raw_DBSet(kvdb,args[0].asString().toString(),ValueToJson(args[1])));
     }
     CATCH("Fail in DbSet!")
@@ -60,16 +103,288 @@ Local<Value> DbClass::del(const Arguments& args)
     CHECK_ARGS_COUNT(args,1)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
 
-    try{
+    try
+    {
         return Boolean::newBoolean(Raw_DBDel(kvdb,args[0].asString().toString()));
     }
     CATCH("Fail in DbDel!")
 }
 
 
+//////////////////// Classes ConfBase ////////////////////
+
+ConfBaseClass::ConfBaseClass(const string& dir)
+    :ScriptClass(ScriptClass::ConstructFromCpp<ConfBaseClass>{}), confPath(dir)
+{ }
+
+Local<Value> ConfBaseClass::getPath(const Arguments& args)
+{
+    try
+    {
+        return String::newString(confPath);
+    }
+    CATCH("Fail in confGetPath!")
+}
+
+Local<Value> ConfBaseClass::read(const Arguments& args)
+{
+    try
+    {
+        string content;
+        if (!Raw_FileReadAll(confPath, content))
+            return Local<Value>();
+        else
+            return String::newString(content);
+    }
+    CATCH("Fail in confRead!")
+}
+
+Local<Value> ConfBaseClass::write(const Arguments& args)
+{
+    try
+    {
+        CHECK_ARGS_COUNT(args, 1)
+        CHECK_ARG_TYPE(args[0], ValueKind::kString)
+
+        return Boolean::newBoolean(Raw_FileWriteAll(confPath, args[0].toStr()));
+    }
+    CATCH("Fail in confWrite!")
+}
+
+//////////////////// Classes ConfJson ////////////////////
+
+//生成函数
+Local<Value> ConfJsonClass::newConf(const string& path, const string& defContent)
+{
+    auto newp = new ConfJsonClass(path,defContent);
+    return newp->getScriptObject();
+}
+
+ConfJsonClass::ConfJsonClass(const string& path, const string& defContent)
+    :ConfBaseClass(path)
+{
+    jsonConf = Raw_JsonOpen(path, defContent);
+}
+
+Local<Value> ConfJsonClass::get(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+
+    try
+    {
+        return JsonToValue(jsonConf.at(args[0].toStr()));
+    }
+    catch (exception& e)
+    {
+        return args.size() >= 2 ? args[1] : Local<Value>();
+    }
+    CATCH("Fail in confJsonGet!")
+}
+
+Local<Value> ConfJsonClass::set(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 2)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+
+    try
+    {
+        jsonConf[args[0].toStr()] = ValueToJson(args[1]);
+        //写回文件
+        ofstream jsonFile(confPath);
+        if (jsonFile.is_open())
+        {
+            jsonFile << jsonConf.dump(4);
+            jsonFile.close();
+            return Boolean::newBoolean(true);
+        }
+        else
+            return Boolean::newBoolean(false);
+    }
+    catch (exception& e)
+    {
+        return args.size() >= 2 ? args[1] : Local<Value>();
+    }
+    CATCH("Fail in confJsonSet!")
+}
+
+Local<Value> ConfJsonClass::del(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+
+    try
+    {
+        return Boolean::newBoolean(jsonConf.erase(args[0].toStr()) > 0);
+    }
+    catch (exception& e)
+    {
+        return args.size() >= 2 ? args[1] : Local<Value>();
+    }
+    CATCH("Fail in confJsonDelete!")
+}
+
+Local<Value> ConfJsonClass::reload(const Arguments& args)
+{
+    try
+    {
+        string jsonTexts;
+        if (!Raw_FileReadAll(confPath, jsonTexts))
+            return Boolean::newBoolean(false);
+    
+        jsonConf = JSON_VALUE::parse(jsonTexts);
+        return Boolean::newBoolean(true);
+    }
+    catch (exception& e)
+    {
+        ERROR("Fail to parse json content in file!");
+        ERRPRINT(e.what());
+        return Boolean::newBoolean(false);
+    }
+    CATCH("Fail in confJsonReload!")
+}
+
+
+//////////////////// Classes ConfIni ////////////////////
+
+//生成函数
+Local<Value> ConfIniClass::newConf(const string& path, const string& defContent)
+{
+    auto newp = new ConfIniClass(path,defContent);
+    if (newp)
+        return newp->getScriptObject();
+    else
+        return Local<Value>();
+}
+
+ConfIniClass::ConfIniClass(const string& path, const string& defContent)
+    :ConfBaseClass(path)
+{
+    iniConf = Raw_IniOpen(path, defContent);
+}
+
+Local<Value> ConfIniClass::set(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 3)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARG_TYPE(args[1], ValueKind::kString)
+
+    try
+    {
+        switch (args[1].getKind())
+        {
+        case ValueKind::kString:
+            Raw_IniSetString(iniConf, args[0].toStr(), args[1].toStr(), args[2].toStr());
+            break;
+        case ValueKind::kNumber:
+            Raw_IniSetFloat(iniConf, args[0].toStr(), args[1].toStr(), (float)args[2].asNumber().toDouble());
+            break;
+        case ValueKind::kBoolean:
+            Raw_IniSetBool(iniConf, args[0].toStr(), args[1].toStr(), args[2].asBoolean().value());
+            break;
+        default:
+            ERROR("Ini file don't support this type of data!");
+            return Boolean::newBoolean(false);
+            break;
+        }
+        return Boolean::newBoolean(true);
+    }
+    CATCH("Fail in confIniSet!")
+}
+
+Local<Value> ConfIniClass::getStr(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 2)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARG_TYPE(args[1], ValueKind::kString)
+    if (args.size() >= 3)
+        CHECK_ARG_TYPE(args[2], ValueKind::kString)
+
+    try
+    {
+        return String::newString(Raw_IniGetString(iniConf, args[0].toStr(), args[1].toStr(), 
+            args.size() >= 3 ? args[2].toStr() : ""));
+    }
+    CATCH("Fail in confIniGetStr!")
+}
+
+Local<Value> ConfIniClass::getInt(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 2)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARG_TYPE(args[1], ValueKind::kString)
+    if (args.size() >= 3)
+        CHECK_ARG_TYPE(args[2], ValueKind::kNumber)
+
+    try
+    {
+        return Number::newNumber(Raw_IniGetInt(iniConf, args[0].toStr(), args[1].toStr(), 
+            args.size() >= 3 ? args[2].asNumber().toInt32() : 0));
+    }
+    CATCH("Fail in ConfIniGetInt!")
+}
+
+Local<Value> ConfIniClass::getFloat(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 2)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARG_TYPE(args[1], ValueKind::kString)
+    if (args.size() >= 3)
+        CHECK_ARG_TYPE(args[2], ValueKind::kNumber)
+
+    try
+    {
+        return Number::newNumber(Raw_IniGetFloat(iniConf, args[0].toStr(), args[1].toStr(), 
+            args.size() >= 3 ? (float)args[2].asNumber().toDouble() : 0.0));
+    }
+    CATCH("Fail in ConfIniGetFloat!")
+}
+
+Local<Value> ConfIniClass::getBool(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 2)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARG_TYPE(args[1], ValueKind::kString)
+    if (args.size() >= 3)
+        CHECK_ARG_TYPE(args[2], ValueKind::kBoolean)
+
+    try
+    {
+        return Boolean::newBoolean(Raw_IniGetBool(iniConf, args[0].toStr(), args[1].toStr(), 
+            args.size() >= 3 ? args[2].asBoolean().value() : false));
+    }
+    CATCH("Fail in ConfIniGetBool")
+}
+
+Local<Value> ConfIniClass::del(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 2)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARG_TYPE(args[1], ValueKind::kString)
+
+    try
+    {
+        return Boolean::newBoolean(Raw_IniDeleteKey(iniConf, args[0].toStr(), args[1].toStr()));
+    }
+    CATCH("Fail in confIniDelete!")
+}
+
+Local<Value> ConfIniClass::reload(const Arguments& args)
+{
+    try
+    {
+        Raw_IniClose(iniConf);
+        iniConf = Raw_IniOpen(confPath);
+        return Boolean::newBoolean(true);
+    }
+    CATCH("Fail in confReload!")
+}
+
+
+
 //////////////////// APIs ////////////////////
 
-Local<Value> ConfInit(const Arguments& args)
+Local<Value> OpenConfig(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
@@ -79,395 +394,43 @@ Local<Value> ConfInit(const Arguments& args)
         CHECK_ARG_TYPE(args[3],ValueKind::kString)
 
     try{
-        string path = args[0].asString().toString();
-        string fileType = args[1].asString().toString();
-        GlobalConfType confType = GlobalConfType::json;
+        string path = args[0].toStr();
+        string fileType = args[1].toStr();
+        GlobalConfType confType = GlobalConfType::ini;
 
         if(path.empty())
-            return Boolean::newBoolean(false);
-        path = "./plugins/" + path + "/config";
-        
+            return Boolean::newBoolean(false);        
 
         if(args.size() >= 2)
         {
-            if(fileType == "ini")
-                ENGINE_OWN_DATA()->confType = confType = GlobalConfType::ini;
-            else if(fileType != "json")
-                return Boolean::newBoolean(false);
+            if(fileType == "json" || fileType == "Json")
+                confType = GlobalConfType::json;
         }
         
-        if(confType == GlobalConfType::json)
+        if(confType == GlobalConfType::ini)
         {
-            path+=".json";
-            ENGINE_OWN_DATA()->confPath = path;
-
-            JSON_ROOT *jsonConf = &(ENGINE_OWN_DATA()->jsonConf);
-            if(!Raw_PathExists(path))
-            {
-                //创建新的
-                if(args.size() >= 3)
-                {
-                    try
-                    {
-                        *jsonConf = JSON_VALUE::parse(args[2].asString().toString());
-                    }
-                    catch(exception &e)
-                    {
-                        ERROR("Fail to parse default json content!");
-                        ERRPRINT(e.what());
-                        *jsonConf = JSON_VALUE::array();
-                    }
-                }
-                else
-                    *jsonConf = JSON_VALUE::array();
-
-                ofstream jsonFile(path);
-                if(jsonFile.is_open() && args.size() >= 3)
-                    jsonFile << jsonConf->dump(4);
-                jsonFile.close();
-            }
+            if (args.size() >= 3)
+                return ConfIniClass::newConf(path, args[2].toStr());
             else
-            {
-                //已存在
-                string jsonTexts;
-                if(!Raw_FileReadAll(path,jsonTexts))
-                    return Boolean::newBoolean(false);
-                try
-                {
-                    *jsonConf = JSON_VALUE::parse(jsonTexts);
-                }
-                catch(exception &e)
-                {
-                    ERROR("Fail to parse json content in file!");
-                    ERRPRINT(e.what());
-                    *jsonConf = JSON_VALUE::array();
-                }
-            }
+                return ConfIniClass::newConf(path);
         }
-        else
+        else    //json
         {
-            path+=".ini";
-            ENGINE_OWN_DATA()->confPath = path;
-
-            if(!Raw_PathExists(path))
-            {
-                //创建新的
-                ofstream iniFile(path);
-                if(iniFile.is_open() && args.size() >= 3)
-                    iniFile << args[2].asString().toString();
-                iniFile.close();
-            }
-
-            //已存在
-            ENGINE_OWN_DATA()->iniConf = Raw_IniOpen(path);
-        }
-
-        return Boolean::newBoolean(true);
-    }
-    CATCH("Fail in ConfInit!")
-}
-
-Local<Value> ConfJsonGet(const Arguments& args)
-{
-    CHECK_ARGS_COUNT(args,1)
-    CHECK_ARG_TYPE(args[0],ValueKind::kString)
-
-    try{
-        if(ENGINE_OWN_DATA()->confType == GlobalConfType::json)
-        {
-            try
-            {
-                return JsonToValue(ENGINE_OWN_DATA()->jsonConf.at(args[0].asString().toString()));
-            }
-            catch(exception &e)
-            {
-                return args.size() >= 2 ? args[1] : Local<Value>();
-            }
-        }
-        else
-        {
-            ERROR("Wrong type of config file!");
-            return Local<Value>();
+            if (args.size() >= 3)
+                return ConfIniClass::newConf(path, args[2].toStr());
+            else
+                return ConfIniClass::newConf(path);
         }
     }
-    CATCH("Fail in ConfJsonGet!")
-}
-
-Local<Value> ConfJsonSet(const Arguments& args)
-{
-    CHECK_ARGS_COUNT(args,2)
-    CHECK_ARG_TYPE(args[0],ValueKind::kString)
-
-    try{
-        if(ENGINE_OWN_DATA()->confType == GlobalConfType::json)
-        {
-            try
-            {
-                ENGINE_OWN_DATA()->jsonConf[args[0].asString().toString()] = ValueToJson(args[1]);
-                //写回文件
-                ofstream jsonFile(ENGINE_OWN_DATA()->confPath);
-                if(jsonFile.is_open())
-                {
-                    jsonFile << ENGINE_OWN_DATA()->jsonConf.dump(4);
-                    jsonFile.close();
-                    return Boolean::newBoolean(true);
-                }
-                else
-                    return Boolean::newBoolean(false);
-            }
-            catch(exception &e)
-            {
-                return args.size() >= 2 ? args[1] : Local<Value>();
-            }
-        }
-        else
-        {
-            ERROR("Wrong type of config file!");
-            return Local<Value>();
-        }
-    }
-    CATCH("Fail in ConfJsonSet!")
-}
-
-Local<Value> ConfIniSet(const Arguments& args)
-{
-    CHECK_ARGS_COUNT(args,3)
-    CHECK_ARG_TYPE(args[0],ValueKind::kString)
-    CHECK_ARG_TYPE(args[1],ValueKind::kString)
-
-    try{
-        if(ENGINE_OWN_DATA()->confType == GlobalConfType::ini)
-        {
-            switch(args[1].getKind())
-            {
-                case ValueKind::kString:
-                    Raw_IniSetString(ENGINE_OWN_DATA()->iniConf,args[0].toStr(),args[1].toStr(),args[2].toStr());
-                    break;
-                case ValueKind::kNumber:
-                    Raw_IniSetFloat(ENGINE_OWN_DATA()->iniConf,args[0].toStr(),args[1].toStr(),(float)args[2].asNumber().toDouble());
-                    break;
-                case ValueKind::kBoolean:
-                    Raw_IniSetBool(ENGINE_OWN_DATA()->iniConf,args[0].toStr(),args[1].toStr(),args[2].asBoolean().value());
-                    break;
-                default:
-                    ERROR("Ini file don't support this type of data!");
-                    return Boolean::newBoolean(false);
-                    break;
-            }
-            return Boolean::newBoolean(true);
-        }
-        else
-        {
-            ERROR("Wrong type of config file!");
-            return Local<Value>();
-        }
-    }
-    CATCH("Fail in ConfIniSet!")
-}
-
-Local<Value> ConfIniGetStr(const Arguments& args)
-{
-    CHECK_ARGS_COUNT(args,2)
-    CHECK_ARG_TYPE(args[0],ValueKind::kString)
-    CHECK_ARG_TYPE(args[1],ValueKind::kString)
-    if(args.size() >= 3)
-        CHECK_ARG_TYPE(args[2],ValueKind::kString)
-
-    try{
-        if(ENGINE_OWN_DATA()->confType == GlobalConfType::ini)
-        {
-            return String::newString(Raw_IniGetString(ENGINE_OWN_DATA()->iniConf,args[0].toStr(),
-                args[1].toStr(), args.size() >= 3 ? args[2].toStr() : ""));
-        }
-        else
-        {
-            ERROR("Wrong type of config file!");
-            return Local<Value>();
-        }
-    }
-    CATCH("Fail in ConfIniGetStr!")
-}
-
-Local<Value> ConfIniGetInt(const Arguments& args)
-{
-    CHECK_ARGS_COUNT(args,2)
-    CHECK_ARG_TYPE(args[0],ValueKind::kString)
-    CHECK_ARG_TYPE(args[1],ValueKind::kString)
-    if(args.size() >= 3)
-        CHECK_ARG_TYPE(args[2],ValueKind::kNumber)
-
-    try{
-        if(ENGINE_OWN_DATA()->confType == GlobalConfType::ini)
-        {
-            return Number::newNumber(Raw_IniGetInt(ENGINE_OWN_DATA()->iniConf,args[0].toStr(),
-                args[1].toStr(), args.size() >= 3 ? args[2].asNumber().toInt32() : 0));
-        }
-        else
-        {
-            ERROR("Wrong type of config file!");
-            return Local<Value>();
-        }
-    }
-    CATCH("Fail in ConfIniGetInt!")
-}
-
-Local<Value> ConfIniGetFloat(const Arguments& args)
-{
-    CHECK_ARGS_COUNT(args,2)
-    CHECK_ARG_TYPE(args[0],ValueKind::kString)
-    CHECK_ARG_TYPE(args[1],ValueKind::kString)
-    if(args.size() >= 3)
-        CHECK_ARG_TYPE(args[2],ValueKind::kNumber)
-
-    try{
-        if(ENGINE_OWN_DATA()->confType == GlobalConfType::ini)
-        {
-            return Number::newNumber(Raw_IniGetFloat(ENGINE_OWN_DATA()->iniConf,args[0].toStr(),
-                args[1].toStr(), args.size() >= 3 ? (float)args[2].asNumber().toDouble() : 0.0));
-        }
-        else
-        {
-            ERROR("Wrong type of config file!");
-            return Local<Value>();
-        }
-    }
-    CATCH("Fail in ConfIniGetFloat!")
-}
-
-Local<Value> ConfIniGetBool(const Arguments& args)
-{
-    CHECK_ARGS_COUNT(args,2)
-    CHECK_ARG_TYPE(args[0],ValueKind::kString)
-    CHECK_ARG_TYPE(args[1],ValueKind::kString)
-    if(args.size() >= 3)
-        CHECK_ARG_TYPE(args[2],ValueKind::kBoolean)
-
-    try{
-        if(ENGINE_OWN_DATA()->confType == GlobalConfType::ini)
-        {
-            return Boolean::newBoolean(Raw_IniGetBool(ENGINE_OWN_DATA()->iniConf,args[0].toStr(),
-                args[1].toStr(), args.size() >= 3 ? args[2].asBoolean().value() : false));
-        }
-        else
-        {
-            ERROR("Wrong type of config file!");
-            return Local<Value>();
-        }
-    }
-    CATCH("Fail in ConfIniGetBool")
-}
-
-Local<Value> ConfJsonDelete(const Arguments& args)
-{
-    CHECK_ARGS_COUNT(args,1)
-    CHECK_ARG_TYPE(args[0],ValueKind::kString)
-
-    try{
-        if(ENGINE_OWN_DATA()->confType == GlobalConfType::json)
-        {
-            try
-            {
-                return Boolean::newBoolean(ENGINE_OWN_DATA()->jsonConf.erase(args[0].asString().toString()) > 0);
-            }
-            catch(exception &e)
-            {
-                return args.size() >= 2 ? args[1] : Local<Value>();
-            }
-        }
-        else
-        {
-            ERROR("Wrong type of config file!");
-            return Local<Value>();
-        }
-    }
-    CATCH("Fail in ConfJsonDelete!")
-}
-
-Local<Value> ConfIniDeleteKey(const Arguments& args)
-{
-    CHECK_ARGS_COUNT(args,2)
-    CHECK_ARG_TYPE(args[0],ValueKind::kString)
-    CHECK_ARG_TYPE(args[1],ValueKind::kString)
-
-    try{
-        if(ENGINE_OWN_DATA()->confType == GlobalConfType::ini)
-        {
-            return Boolean::newBoolean(Raw_IniDeleteKey(ENGINE_OWN_DATA()->iniConf,args[0].toStr(),args[1].toStr()));
-        }
-        else
-        {
-            ERROR("Wrong type of config file!");
-            return Local<Value>();
-        }
-    }
-    CATCH("Fail in ConfIniDeleteKey!")
-}
-
-Local<Value> ConfReload(const Arguments& args)
-{
-    try{
-        if(ENGINE_OWN_DATA()->confType == GlobalConfType::json)
-        {
-            string jsonTexts;
-            if(!Raw_FileReadAll(ENGINE_OWN_DATA()->confPath,jsonTexts))
-                return Boolean::newBoolean(false);
-            try
-            {
-                ENGINE_OWN_DATA()->jsonConf = JSON_VALUE::parse(jsonTexts);
-                return Boolean::newBoolean(true);
-            }
-            catch(exception &e)
-            {
-                ERROR("Fail to parse json content in file!");
-                ERRPRINT(e.what());
-            }
-            return Boolean::newBoolean(false);
-        }
-        else
-        {
-            Raw_IniClose(ENGINE_OWN_DATA()->iniConf);
-            ENGINE_OWN_DATA()->iniConf = Raw_IniOpen(ENGINE_OWN_DATA()->confPath);
-            return Boolean::newBoolean(true);
-        }
-    }
-    CATCH("Fail in ConfReload!")
-}
-
-Local<Value> ConfGetPath(const Arguments& args)
-{
-    return String::newString(ENGINE_OWN_DATA()->confPath);
-}
-
-Local<Value> ConfRead(const Arguments& args)
-{
-    string content;
-    if(!Raw_FileReadAll(ENGINE_OWN_DATA()->confPath,content))
-        return Local<Value>();
-    else
-        return String::newString(content);
-}
-
-Local<Value> ConfWrite(const Arguments& args)
-{
-    CHECK_ARGS_COUNT(args,1)
-    CHECK_ARG_TYPE(args[0],ValueKind::kString)
-
-    return Boolean::newBoolean(Raw_FileWriteAll(ENGINE_OWN_DATA()->confPath,args[0].asString().toString()));
+    CATCH("Fail in OpenConfig!")
 }
 
 Local<Value> OpenDB(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args,1)
-    CHECK_ARG_TYPE(args[0],ValueKind::kString)
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
 
-    auto newp = new DbClass(args[0].asString().toString());
-    if(newp->isValid())
-        return newp->getScriptObject();
-    else
-    {
-        delete newp;
-        return Local<Value>();
-    }
+    return DbClass::newDb(args[0].toStr());
 }
 
 Local<Value> MoneySet(const Arguments& args)

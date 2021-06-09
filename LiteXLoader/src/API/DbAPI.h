@@ -22,27 +22,65 @@ public:
     Local<Value> get(const Arguments& args);
     Local<Value> set(const Arguments& args);
     Local<Value> del(const Arguments& args);
+
+    static Local<Value> newDb(const string& dir);
+};
+
+
+class ConfBaseClass : public ScriptClass
+{
+protected:
+    std::string confPath;
+
+public:
+    explicit ConfBaseClass(const string& dir);
+
+    virtual Local<Value> reload(const Arguments& args) = 0;
+    Local<Value> getPath(const Arguments& args);
+    Local<Value> read(const Arguments& args);
+    Local<Value> write(const Arguments& args);
+};
+
+
+class ConfJsonClass : public ConfBaseClass
+{
+private:
+    JSON_ROOT jsonConf;
+
+public:
+    explicit ConfJsonClass(const string& path, const string& defContent);
+
+    Local<Value> get(const Arguments& args);
+    Local<Value> set(const Arguments& args);
+    Local<Value> del(const Arguments& args);
+    virtual Local<Value> reload(const Arguments& args) override;
+
+    static Local<Value> newConf(const string& path, const string& defContent = "");
+};
+
+
+class ConfIniClass : public ConfBaseClass
+{
+private:
+    INI_ROOT iniConf;
+
+public:
+    explicit ConfIniClass(const string& path, const string& defContent);
+
+    Local<Value> set(const Arguments& args);
+    Local<Value> getStr(const Arguments& args);
+    Local<Value> getInt(const Arguments& args);
+    Local<Value> getFloat(const Arguments& args);
+    Local<Value> getBool(const Arguments& args);
+    Local<Value> del(const Arguments& args);
+    virtual Local<Value> reload(const Arguments& args) override;
+
+    static Local<Value> newConf(const string& path, const string& defContent = "");
 };
 
 //////////////////// APIs ////////////////////
 
-Local<Value> ConfInit(const Arguments& args);
-
-Local<Value> ConfJsonSet(const Arguments& args);
-Local<Value> ConfJsonGet(const Arguments& args);
-Local<Value> ConfJsonDelete(const Arguments& args);
-
-Local<Value> ConfIniSet(const Arguments& args);
-Local<Value> ConfIniGetStr(const Arguments& args);
-Local<Value> ConfIniGetInt(const Arguments& args);
-Local<Value> ConfIniGetFloat(const Arguments& args);
-Local<Value> ConfIniGetBool(const Arguments& args);
-Local<Value> ConfIniDeleteKey(const Arguments& args);
-
-Local<Value> ConfReload(const Arguments& args);
-Local<Value> ConfGetPath(const Arguments& args);
-Local<Value> ConfRead(const Arguments& args);
-Local<Value> ConfWrite(const Arguments& args);
+Local<Value> OpenConfig(const Arguments& args);
 
 Local<Value> OpenDB(const Arguments& args);
 
