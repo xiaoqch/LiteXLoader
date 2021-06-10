@@ -14,14 +14,18 @@ std::pair<bool, string> Raw_RuncmdEx(const string &cmd)
 
 bool Raw_RegisterCmd(const string &cmd, const string &describe, int cmdLevel)
 {
-    char *desc = new (std::nothrow) char[describe.size()+1];
-    if(!desc)
-        return false;
-    describe.copy(desc, std::string::npos);
-
-    SymCall("?registerCommand@CommandRegistry@@QEAAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PEBDW4CommandPermissionLevel@@UCommandFlag@@3@Z",
-        void, void*, std::string const&, char const*, char, char, char)
-        (CmdRegGlobal, cmd, desc, cmdLevel, 0, 0x40);
+    extern CommandRegistry* CmdReg;
+    if (CmdReg)
+    {
+        SymCall("?registerCommand@CommandRegistry@@QEAAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PEBDW4CommandPermissionLevel@@UCommandFlag@@3@Z",
+            void, void*, const string&, const char*, char, char, char)
+            (CmdReg, cmd, describe.c_str(), cmdLevel, 0, 0x40);
+    }
+    else
+    {
+        extern std::vector<tuple<string, string, int>> toRegCmdQueue;
+        toRegCmdQueue.push_back({ cmd,describe,cmdLevel });
+    }
     return true;
 }
 
