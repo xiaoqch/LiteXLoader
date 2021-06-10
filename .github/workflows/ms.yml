@@ -34,13 +34,15 @@ jobs:
       run: |
         cp -a ./LiteXLoader/Release/*.lib D:/dev
         cp -a ./LiteXLoader/Release/*.pdb D:/dev
+        cp -rf ./RELEASE D:/build
         cp -a ./LiteXLoader/Release/*.dll D:/build
+        rm -f D:/build/.gitignore
       shell: bash
     
     - name: Upload BuildFiles
       uses: actions/upload-artifact@v1.0.0
       with:
-        name: build
+        name: LiteXLoader
         path: D:/build
     
     - name: Upload DevFiles
