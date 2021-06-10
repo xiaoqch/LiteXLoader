@@ -436,7 +436,7 @@ Local<Value> PlayerClass::setSidebar(const Arguments& args)
         for(int i=0;i<arr.size();++i)
         {
             auto obj = arr.get(i).asObject();
-            data.push_back({obj.get("title").toStr(), obj.get("value").toInt()});
+            data.push_back({obj.get("name").toStr(), obj.get("value").toInt()});
         }
 
         return Boolean::newBoolean(Raw_SetSidebar(player,args[0].toStr(),data));

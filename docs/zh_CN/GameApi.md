@@ -7,7 +7,7 @@
 
 <br>
 
-## 🎯 命令注册 API
+## 🎯 命令相关 API
 
 下面这些API提供了在游戏中注册、监听自定义命令的接口
 
@@ -21,12 +21,12 @@
 - 返回值：是否执行成功
 - 返回值类型： `Boolean`
 
-```javascript
-[Js] mc.runcmd("say Hello!");
-[Lua] mc.runcmd("say Hello!")
+```clike
+[Js]
+mc.runcmd("say Hello!");
+[Lua]
+mc.runcmd("say Hello!")
 ```
-
-<br>
 
 ### 执行一条后台命令（强化版）  
 
@@ -51,7 +51,12 @@
 
 > 注：runcmdEx 与普通 runcmd 实现区别非常大，在于 Ex 版本拥有**隐藏执行**的机制，执行结果不会输出至控制台，因此如果有需要，要手动用 log 函数将结果输出
 
-<br>
+```clike
+[Js]
+var result = mc.runcmdEx("say Hello!");
+log(result.output);
+[Lua] 
+```
 
 ### 注册一个新的玩家命令  
 
@@ -77,9 +82,15 @@
 - args : `Array<String,String...>`    
   按空格为分界分割，得到的命令字符串数组
 
-如果在回调函数中返回`false`，等同于拦截这个命令的执行。
+```clike
+[Js]
+mc.regPlayerCmd("fly on","Turn on the fly mode",function(pl,args){
+    pl.tell("Flying enabled.");
+    //......
+});
+[Lua]
 
-<br>
+```
 
 ### 注册一个新的后台控制台命令  
 
@@ -102,9 +113,15 @@
 - args : `Array<String,String...>`    
   按空格为分界分割，得到的命令字符串数组
 
-如果在回调函数中返回`false`，等同于拦截这个命令的执行。
+```clike
+[Js]
+mc.regConsoleCmd("backup","Start the backup",function(args){
+    log("ID of this backup is:",args[0]);
+    //......
+},1);
+[Lua]
 
-<br>
+```
 
 ### 命令注册相关说明
 
@@ -135,7 +152,12 @@
 
 模拟产生一个命令输出到控制台，输出可以被`onConsoleOutput`事件监听器拦截
 
-<br>
+```clike
+[Js]
+mc.sendCmdOutput("output");
+[Lua]
+mc.sendCmdOutput("output")
+```
 
 ------
 
@@ -208,7 +230,13 @@
 - 返回值：玩家是否为OP
 - 返回值类型：`Boolean`  
 
-<br>
+```clike
+[Js]
+//对于一个玩家对象pl
+var open = pl.isOP();
+[Lua]
+
+```
 
 #### 断开玩家连接  
 
@@ -221,7 +249,13 @@
 - 返回值：是否成功断开连接
 - 返回值类型：`Boolean`
 
-<br>
+```clike
+[Js]
+//对于一个玩家对象pl
+pl.kick();
+[Lua]
+
+```
 
 #### 发送一个文本消息给玩家  
 
@@ -246,7 +280,13 @@
 
 - 返回值类型：`Boolean`
 
-<br>
+```clike
+[Js]
+//对于一个玩家对象pl
+pl.tell("Welcome back ~ ",5);
+[Lua]
+
+```
 
 #### 广播一个文本消息给所有玩家  
 
@@ -271,7 +311,12 @@
 
 - 返回值类型：`Boolean`
 
-<br>
+```clike
+[Js]
+mc.broadcast("Hello everyone ~ ");
+[Lua]
+
+```
 
 #### 以这个玩家身份执行一条命令 
 
@@ -283,7 +328,13 @@
 - 返回值：是否执行成功
 - 返回值类型： `Boolean`   
 
-<br>
+```clike
+[Js]
+//对于一个玩家对象pl
+var open = pl.runcmd("tp ~ ~+50 ~");
+[Lua]
+
+```
 
 #### 传送玩家至指定位置  
 
@@ -295,7 +346,13 @@
 - 返回值：是否成功传送
 - 返回值类型：`Boolean`
 
-<br>
+```clike
+[Js]
+//对于一个玩家对象pl，一个位置坐标对象pos
+pl.teleport(pos);
+[Lua]
+
+```
 
 #### 杀死玩家  
 
@@ -304,7 +361,13 @@
 - 返回值：是否成功执行
 - 返回值类型：`Boolean`
 
-<br>
+```clike
+[Js]
+//对于一个玩家对象pl
+pl.kill();
+[Lua]
+
+```
 
 #### 重命名玩家  
 
@@ -316,7 +379,13 @@
 - 返回值：是否重命名成功
 - 返回值类型：`Boolean`
 
-<br>
+```clike
+[Js]
+//对于一个玩家对象pl
+pl.rename("newname");
+[Lua]
+
+```
 
 #### 查询玩家背包  
 
@@ -326,7 +395,14 @@
 - 返回值类型：`Array<Item,Item,...>`
   - 返回值数组中物品对象的排列顺序和背包中的顺序一致
 
-<br>
+```clike
+[Js]
+//对于一个玩家对象pl
+var pack = pl.getPack();
+log(pack[0].name);
+[Lua]
+
+```
 
 #### 获取玩家主手物品  
 
@@ -335,7 +411,14 @@
 - 返回值：玩家当前主手持有的物品对象
 - 返回值类型：`Item`
 
-<br>
+```clike
+[Js]
+//对于一个玩家对象pl
+var hand = pl.getHand();
+log(hand.name);
+[Lua]
+
+```
 
 #### 获取玩家副手物品  
 
@@ -344,7 +427,14 @@
 - 返回值：玩家当前副手持有的物品对象
 - 返回值类型：`Item`
 
-<br>
+```clike
+[Js]
+//对于一个玩家对象pl
+var offhand = pl.getOffHand();
+log(offhand.name);
+[Lua]
+
+```
 
 #### 查询玩家操作权限  
 
@@ -360,7 +450,13 @@
   | 1            | OP权限          |
   | 4            | OP + 控制台权限 |
 
-<br>
+```clike
+[Js]
+//对于一个玩家对象pl
+log(pl.getPermLevel());
+[Lua]
+
+```
 
 #### 修改玩家操作权限  
 
@@ -381,7 +477,13 @@
 
 - 返回值类型：`Boolean`
 
-<br>
+```clike
+[Js]
+//对于一个玩家对象pl
+pl.setPermLevel(1);
+[Lua]
+
+```
 
 #### 提高玩家经验等级 
 
@@ -393,7 +495,13 @@
 - 返回值：是否设置成功
 - 返回值类型：`Boolean`
 
-<br>
+```clike
+[Js]
+//对于一个玩家对象pl
+pl.addLevel(6);
+[Lua]
+
+```
 
 #### 传送玩家至指定服务器  
 
@@ -408,7 +516,13 @@
 - 返回值：是否成功传送
 - 返回值类型：`Boolean` 
 
-<br>
+```clike
+[Js]
+//对于一个玩家对象pl
+pl.transServer("123.45.67.89",23333);
+[Lua]
+
+```
 
 #### 获取玩家计分板值  
 
@@ -420,7 +534,13 @@
 - 返回值：计分板上的数值
 - 返回值类型：`Integer`
 
-<br>
+```clike
+[Js]
+//对于一个玩家对象pl
+log("You have money:",pl.getScore("money"));
+[Lua]
+
+```
 
 #### 设置玩家计分板值  
 
@@ -437,7 +557,13 @@
 
 如果你想删除这个计分板项，请在value参数传入`Null`
 
-<br>
+```clike
+[Js]
+//对于一个玩家对象pl
+pl.setScore("money",10000);
+[Lua]
+
+```
 
 #### 给玩家计分板项加分 
 
@@ -452,7 +578,13 @@
 - 返回值：是否设置成功
 - 返回值类型：`Boolean`
 
-<br>
+```clike
+[Js]
+//对于一个玩家对象pl
+pl.addScore(100);
+[Lua]
+
+```
 
 #### 移除玩家计分板项
 
@@ -465,7 +597,13 @@
 - 返回值：是否移除成功
 - 返回值类型：`Boolean`
 
-<br>
+```clike
+[Js]
+//对于一个玩家对象pl
+pl.removeScore("what");
+[Lua]
+
+```
 
 #### 设置玩家自定义侧边栏计分板  
 
@@ -477,19 +615,25 @@
     侧边栏标题  
 
   - data : `Array<Object<String,String>, Object<String,String>, ...>`  
-    计分板对象数组  
+    侧边栏对象数组  
     对于数组中的某个对象`item`，有下面这些成员  
 
     | 成员       | 含义               | 类型      |
     | ---------- | ------------------ | --------- |
-    | item.title | 计分板显示项的名字 | `String`  |
-    | item.value | 计分板显示项的数值 | `Integer` |
+    | item.name  | 侧边栏显示项的名字 | `String`  |
+    | item.value | 侧边栏显示项的数值 | `Integer` |
 
 - 返回值：是否成功设置
 
 - 返回值类型：`Boolean`
 
-<br>
+```clike
+[Js]
+//对于一个玩家对象pl
+pl.setSidebar("title",[{name:"aaaa",value:3},{name:"bbbb",value:12},{name:"ccc",value:7}]);
+[Lua]
+
+```
 
 #### 移除玩家自定义侧边栏计分板  
 
@@ -498,7 +642,13 @@
 - 返回值：是否成功移除
 - 返回值类型：`Boolean`
 
-<br>
+```clike
+[Js]
+//对于一个玩家对象pl
+pl.removeSidebar();
+[Lua]
+
+```
 
 #### 设置玩家看到的自定义Boss血条  
 
@@ -513,7 +663,13 @@
 - 返回值：是否成功设置
 - 返回值类型：`Boolean`
 
-<br>
+```clike
+[Js]
+//对于一个玩家对象pl
+pl.setBossBar("Hello ~ ",80);
+[Lua]
+
+```
 
 #### 移除玩家的自定义Boss血条  
 
@@ -522,7 +678,13 @@
 - 返回值：是否成功移除
 - 返回值类型：`Boolean`
 
-<br>
+```clike
+[Js]
+//对于一个玩家对象pl
+pl.removeBossBar();
+[Lua]
+
+```
 
 ------
 
