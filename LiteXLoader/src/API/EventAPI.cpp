@@ -1,5 +1,6 @@
 ﻿#include "EventAPI.h"
 #include <iostream>
+#include <tuple>
 #include <vector>
 #include <map>
 #include <string>
@@ -236,7 +237,16 @@ void InitEventListeners()
 
 // For RegisterCmd...
     Event::addEventListener([](RegCmdEV ev) {
-		CMDREG::SetCommandRegistry(ev.CMDRg);
+        extern CommandRegistry* CmdReg;
+        CmdReg = ev.CMDRg;
+
+        //注册队列中的命令
+        extern std::vector<tuple<string, string, int>> toRegCmdQueue;
+        for(auto & cmdData : toRegCmdQueue)
+        {
+            Raw_RegisterCmd(std::get<0>(cmdData), std::get<1>(cmdData), std::get<2>(cmdData));
+        }
+        toRegCmdQueue.clear();
     });
 
 
@@ -576,7 +586,7 @@ THook(void, "?onProjectileHit@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@AEBVAct
 THook(unsigned short, "?onBlockInteractedWith@VanillaServerGameplayEventListener@@UEAA?AW4EventResult@@AEAVPlayer@@AEBVBlockPos@@@Z",
     void* _this, Player* pl, BlockPos* bp)
 {
-    IF_LISTENED(EVENT_TYPES::OnProjectileHit)
+    IF_LISTENED(EVENT_TYPES::OnInteractdWith)
     {
         CallEventRtn(EVENT_TYPES::OnInteractdWith, 0, PlayerClass::newPlayer(pl), IntPos::newPos(*bp, Raw_GetPlayerDimId(pl)));
     }

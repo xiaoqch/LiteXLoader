@@ -1,11 +1,18 @@
 #include "Global.h"
+#include <tuple>
+using namespace std;
 
 //声明
 class Scoreboard;
 
 //全局变量
-Minecraft* mc;
-Scoreboard* g_scoreboard;
+Minecraft* mc = nullptr;
+Scoreboard* g_scoreboard = nullptr;
+CommandRegistry* CmdReg = nullptr;
+bool isServerStarted = false;
+
+//命令注册等待队列
+std::vector<tuple<string, string, int>> toRegCmdQueue;
 
 
 THook(Scoreboard*, "??0ServerScoreboard@@QEAA@VCommandSoftEnumRegistry@@PEAVLevelStorage@@@Z",
