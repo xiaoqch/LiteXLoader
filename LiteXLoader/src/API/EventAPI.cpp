@@ -366,24 +366,24 @@ THook(bool, "?take@Player@@QEAA_NAEAVActor@@HH@Z",
 THook(void, "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVCommandRequestPacket@@@Z",
     ServerNetworkHandler* _this, NetworkIdentifier* id, void* pkt)
 {
-    IF_LISTENED(EVENT_TYPES::OnPlayerCmd)
-    {
-        auto player = SymCall("?_getServerPlayer@ServerNetworkHandler@@AEAAPEAVServerPlayer@@AEBVNetworkIdentifier@@E@Z",
-            Player*, void*, void*, char)(_this, id, *(char*)((uintptr_t)pkt + 16));
-        if (player)
-        {   
-            // Player Command
-            auto cmd = std::string(*(std::string*)((uintptr_t)pkt + 48));
-            if (cmd.front() == '/')
-                cmd = cmd.substr(1);
-            
-            bool callbackRes = CallServerCmdCallback(cmd);
-            
+    auto player = SymCall("?_getServerPlayer@ServerNetworkHandler@@AEAAPEAVServerPlayer@@AEBVNetworkIdentifier@@E@Z",
+        Player*, void*, void*, char)(_this, id, *(char*)((uintptr_t)pkt + 16));
+    if (player)
+    {   
+        // Player Command
+        auto cmd = std::string(*(std::string*)((uintptr_t)pkt + 48));
+        if (cmd.front() == '/')
+            cmd = cmd.substr(1);
+     
+        bool callbackRes = CallPlayerCmdCallback(player,cmd);
+        IF_LISTENED(EVENT_TYPES::OnPlayerCmd)
+        {
             CallEvent(EVENT_TYPES::OnPlayerCmd, PlayerClass::newPlayer(player), cmd);
-            if (!callbackRes)
-                return;
         }
+        if (!callbackRes)
+            return;
     }
+    
     return original(_this, id, pkt);
 }
 
@@ -669,14 +669,13 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
         if (!ProcessDebugEngine(cmd))
             return false;
 
+        bool callbackRes = CallServerCmdCallback(cmd);
         IF_LISTENED(EVENT_TYPES::OnServerCmd)
         {
-            bool callbackRes = CallServerCmdCallback(cmd);
-
             CallEventEx(EVENT_TYPES::OnServerCmd, cmd);
-            if(!callbackRes)
-                return false;
         }
+        if (!callbackRes)
+            return false;
     }
     return original(_this, a2, x, a4);
 }
@@ -811,19 +810,27 @@ bool CallPlayerCmdCallback(Player* player, const string& cmd)
         auto funcs = &(ENGINE_OWN_DATA()->playerCmdCallbacks);
         if (!funcs->empty())
             for (auto iter = funcs->begin(); iter != funcs->end(); ++iter)
-                if (cmd.find_first_of(iter->first) == 0)
+            {
+                string prefix = iter->first;
+                if (cmd == prefix || (cmd.find_first_of(prefix) == 0 && cmd[prefix.size()] == ' '))
+                    //如果命令与注册前缀全匹配，或者目标前缀后面为空格
                 {
                     //Matched
-                    auto paras = SplitCmdParas(cmd.substr(iter->first.size() + 1) + " ");
-                    Local<Array> args = Array::newArray({ String::newString(iter->first) });
-                    for (string para : paras)
-                        args.add(String::newString(para));
+                    Local<Array> args = Array::newArray({ String::newString(prefix) });
+                    if (cmd.size() > prefix.size())
+                    {
+                        //除了注册前缀之外还有额外参数
+                        auto paras = SplitCmdParas(cmd.substr(prefix.size() + 1));
+                        for (string para : paras)
+                            args.add(String::newString(para));
+                    }
 
                     auto res = iter->second.get().call({}, PlayerClass::newPlayer(player), args);
                     if (res.isNull() || (res.isBoolean() && res.asBoolean().value() == false))
                         passToOriginalCmdEvent = false;
                     break;
                 }
+            }
     }
     return passToOriginalCmdEvent;
 }
@@ -838,19 +845,27 @@ bool CallServerCmdCallback(const string& cmd)
         auto funcs = &(ENGINE_OWN_DATA()->consoleCmdCallbacks);
         if (!funcs->empty())
             for (auto iter = funcs->begin(); iter != funcs->end(); ++iter)
-                if (cmd.find_first_of(iter->first) == 0)
+            {
+                string prefix = iter->first;
+                if (cmd == prefix || (cmd.find_first_of(prefix) == 0 && cmd[prefix.size()] == ' '))
+                    //如果命令与注册前缀全匹配，或者目标前缀后面为空格
                 {
                     //Matched
-                    auto paras = SplitCmdParas(cmd.substr(iter->first.size() + 1));
-                    Local<Array> args = Array::newArray({ String::newString(iter->first) });
-                    for (string para : paras)
-                        args.add(String::newString(para));
+                    Local<Array> args = Array::newArray({ String::newString(prefix) });
+                    if (cmd.size() > prefix.size())
+                    {
+                        //除了注册前缀之外还有额外参数
+                        auto paras = SplitCmdParas(cmd.substr(prefix.size() + 1));
+                        for (string para : paras)
+                            args.add(String::newString(para));
+                    }
 
                     auto res = iter->second.get().call({}, args);
                     if (res.isNull() || (res.isBoolean() && res.asBoolean().value() == false))
                         passToOriginalCmdEvent = false;
                     break;
                 }
+            }
     }
     return passToOriginalCmdEvent;
 }
