@@ -1,19 +1,25 @@
 #include "Global.h"
 #include <string>
+#include <vector>
 #include <functional>
 
-std::string Raw_GetDateTimeStr();
-std::string Raw_RandomGuid();
-
+//文件系统
 bool Raw_DirCreate(const std::string &path);
 bool Raw_PathExists(const std::string &path);
 bool Raw_FileReadAll(const std::string &path, std::string & result);
 bool Raw_FileWriteAll(const std::string &path, const std::string &data);
 
+//系统调用
 bool Raw_SystemCmd(const std::string &cmd, std::function<void(int,std::string)> callback, int timeLimit);
 
-std::pair<int,std::string> Raw_HttpRequestSync(const std::string &url,const std::string &method,const std::string &data);
-bool Raw_HttpRequestAsync(const std::string &url,const std::string &method,const std::string &data,std::function<void(int,std::string)> callback);
+//网络
+bool Raw_HttpGet(const std::string &url, std::function<void(int,std::string)> callback);
+bool Raw_HttpPost(const std::string& url, const std::string& data, const std::string& type, std::function<void(int, std::string)> callback);
 
+//获取信息
+std::string Raw_GetDateTimeStr();
+std::string Raw_RandomGuid();
+
+//辅助
 unsigned int Raw_GetSystemThreadIdFromStdThread(std::thread::id id);
 bool Raw_KillThread(DWORD id);

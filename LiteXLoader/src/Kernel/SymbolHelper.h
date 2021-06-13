@@ -2,6 +2,15 @@
 #include <string>
 
 //类定义
+class BlockActor
+{
+public:
+    MCINLINE BlockPos const& getPosition() {
+        BlockPos const& (BlockActor:: * fnp)()const;
+        *((void**)&fnp) = dlsym("?getPosition@BlockActor@@QEBAAEBVBlockPos@@XZ");
+        return (this->*fnp)();
+    }
+};
 struct ScoreInfo
 {
     int getCount()

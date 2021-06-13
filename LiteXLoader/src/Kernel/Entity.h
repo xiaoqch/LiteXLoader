@@ -10,3 +10,4 @@ bool Raw_GetIsInAir(Actor *actor);
 
 bool Raw_TeleportEntity(Actor* actor, const FloatVec4 &pos);
 bool Raw_KillEntity(Actor* actor);
+Player* Raw_ToPlayer(Actor* actor);

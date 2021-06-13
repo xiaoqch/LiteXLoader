@@ -34,4 +34,5 @@ bool Raw_SendCmdOutput(const std::string& output)
     SymCall("??$_Insert_string@DU?$char_traits@D@std@@_K@std@@YAAEAV?$basic_ostream@DU?$char_traits@D@std@@@0@AEAV10@QEBD_K@Z",
         ostream& , ostream&, const char*, unsigned)
         (cout, output.c_str(), output.size());
+    return true;
 }

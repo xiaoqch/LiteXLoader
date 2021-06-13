@@ -183,14 +183,14 @@ ClassDefine<void> MoneyClassBuilder =
 class NetworkClass
 {
 public:
-    static Local<Value> requestSync(const Arguments& args) { return HttpRequestSync(args); }
-    static Local<Value> request(const Arguments& args) { return HttpRequestAsync(args); }
+    static Local<Value> httpGet(const Arguments& args) { return HttpGet(args); }
+    static Local<Value> httpPost(const Arguments& args) { return HttpPost(args); }
 };
 
 ClassDefine<void> NetworkClassBuilder =
     defineClass("network")
-        .function("requestSync", &NetworkClass::requestSync)
-        .function("request", &NetworkClass::request)
+        .function("httpGet", &NetworkClass::httpGet)
+        .function("httpPost", &NetworkClass::httpPost)
         .build();
 
 class LxlClass

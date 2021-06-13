@@ -333,21 +333,19 @@
 - 参数：
     - player : `Player`  
       操作容器的玩家对象
-
     - container : `Block`  
       被操作的容器的方块对象
-
+    - pos : `IntPos`  
+      被操作的容器的坐标
     - slotNum : `Integer`  
       操作容器的格子位置（第slotNum个格子）
-
     - isPutIn : `Boolean`  
       是否为放入物品
       - 为 `true` 表示正在放入物品
       - 为 `false` 表示正在取出物品
-
     - item : `Item`  
-      被操作的物品对象
-
+      被放入 / 取出的物品对象
+    
 - 拦截事件：不可以拦截
 
 <br>
@@ -414,14 +412,15 @@
 
 #### `"onMobHurt"` - 生物受伤（包括玩家）
 - 监听函数原型
-`function(mob,source)`
+`function(mob,source,damage)`
 - 参数：
     - mob : `Entity`  
       受伤的实体对象
-
     - source : `Entity`  
       伤害来源的实体对象
-
+    - damage : `Integer`  
+      受到的伤害数值
+    
 - 拦截事件：函数返回`false`
 
 <br>

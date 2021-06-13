@@ -15,15 +15,19 @@ namespace offPlayer {
 inline NetworkIdentifier *getNetworkIdentifier(Player *pl) {
     // return SymCall("?getClientId@Player@@QEBAAEBVNetworkIdentifier@@XZ", NetworkIdentifier*,
     // Player*)(pl);
-    return (NetworkIdentifier *)((uintptr_t)pl + 2544);  // ServerPlayer::isHostingPlayer
+    return (NetworkIdentifier *)((uintptr_t)pl + 2712);  // ServerPlayer::isHostingPlayer
 }
 inline Level *getLevel(Actor *pl) {
     // return SymCall("?getLevel@Actor@@QEBAAEBVLevel@@XZ", Level*, Actor*)(pl);
-    return (Level *)*((uintptr_t *)((uintptr_t)pl + 856));
+    return (Level *)*((uintptr_t *)((uintptr_t)pl + 888));
 }
 inline Certificate *getCert(Player *pl) {
-    return (Certificate *)*((uintptr_t *)pl + 356);
+    return (Certificate *)*((uintptr_t *)pl + 377);
     // return SymCall("?getCertificate@Player@@QEBAPEBVCertificate@@XZ", Certificate*, Player*)(pl);
+}
+
+inline BlockSource *getBlockSource(Actor *ac) {
+    return dAccess<BlockSource *, 872>(ac);
 }
 
 inline std::string getXUIDStringByCert(Certificate *cert) {

@@ -41,7 +41,6 @@ static inline auto __imp_Call(const char *fn) {
     return ((ret(*)(p...))(dlsym_cache<hash, hash2>(fn)));
 }
 #define SymCall(fn, ret, ...) (__imp_Call<do_hash(fn), do_hash2(fn), ret, __VA_ARGS__>(fn))
-
 #define SYM(fn) (dlsym_cache<do_hash(fn), do_hash2(fn)>(fn))
 #define dlsym(xx) SYM(xx)
 class THookRegister {

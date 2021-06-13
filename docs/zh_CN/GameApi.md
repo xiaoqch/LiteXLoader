@@ -605,7 +605,7 @@ pl.removeScore("what");
 
 ```
 
-#### 设置玩家自定义侧边栏计分板  
+#### 设置玩家自定义侧边栏
 
 `pl.setSidebar(title,data)`
 
@@ -614,14 +614,9 @@ pl.removeScore("what");
   - title : `String`  
     侧边栏标题  
 
-  - data : `Array<Object<String,String>, Object<String,String>, ...>`  
-    侧边栏对象数组  
-    对于数组中的某个对象`item`，有下面这些成员  
-
-    | 成员       | 含义               | 类型      |
-    | ---------- | ------------------ | --------- |
-    | item.name  | 侧边栏显示项的名字 | `String`  |
-    | item.value | 侧边栏显示项的数值 | `Integer` |
+  - data : `Object<String-Integer>`  
+    侧边栏对象内容对象  
+    对象中的每个键 - 值对将被设置为侧边栏内容的一行
 
 - 返回值：是否成功设置
 
@@ -630,12 +625,12 @@ pl.removeScore("what");
 ```clike
 [Js]
 //对于一个玩家对象pl
-pl.setSidebar("title",[{name:"aaaa",value:3},{name:"bbbb",value:12},{name:"ccc",value:7}]);
+pl.setSidebar("title",{"aaaa":3,"bbb":12,"cc":7});
 [Lua]
 
 ```
 
-#### 移除玩家自定义侧边栏计分板  
+#### 移除玩家自定义侧边栏
 
 `pl.removeSidebar()`
 
@@ -764,9 +759,10 @@ pl.removeBossBar();
 
 `it.isNull()`
 
+比如说当某个格子没有任何物品的时候，你获取到的物品对象即是空
+
 - 返回值：这个物品对象是否为空
 - 返回值类型： `Boolean`
-  - 比如说当这个格子没有任何物品的时候，你获取到的物品对象即是空
 
 <br>
 
@@ -834,6 +830,18 @@ pl.removeBossBar();
 
 - 返回值：是否成功执行
 - 返回值类型：`Boolean`
+
+<br>
+
+#### 将实体对象转换玩家对象
+
+`en.toPlayer()`
+
+- 返回值：转换成的玩家对象
+- 返回值类型：`Player`
+  - 如果此实体对象指向的不是某个玩家，或者转换失败，则返回 `Null`
+
+如果当前实体对象指向的是一个玩家，可以使用此函数将实体对象转换为玩家对象，以使用更多的玩家相关 API
 
 <br>
 

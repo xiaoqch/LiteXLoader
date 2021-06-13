@@ -237,43 +237,15 @@
 下面这些API为脚本提供了基本的网络接口。  
 如果有更复杂的需求，可以使用各自语言平台的网络库来完成任务  
 
-### 发送一个同步HTTP请求  
+### 发送一个异步HTTP Get请求  
 
-`network.requestSync(url,method,data)`
-
-- 参数：
-
-  - url : `String`  
-    请求的目标地址
-  - method : `String`  
-    请求发送方式，可选项有 `"GET"` 和 `"POST"`
-  - data : `String`  
-    发送的数据，形式为键 - 值对
-
-- 返回值类型： `Object<Integer,String>`
-
-  - 对于返回的某个执行结果对象res，有如下这些成员：  
-
-  | 成员       | 含义                          | 类型      |
-  | ---------- | ----------------------------- | --------- |
-  | res.status | HTTP响应码，如200代表请求成功 | `Integer` |
-  | res.data   | HTTP响应返回的具体数据        | `String`  |
-
-<br>
-
-### 发送一个异步HTTP请求  
-
-`network.request(url,method,data,callback)`
+`network.httpGet(url,callback)`
 
 - 参数：
   - url : `String`  
-    请求的目标地址
-  - method : `String`  
-    请求发送方式，可选项有 `"GET"` 和 `"POST"`
-  - data : `String`  
-    发送的数据，形式为键 - 值对
+    请求的目标地址（包括 Get 请求附带的参数）
   - callback : `Function`  
-    当请求返回时执行的回调函数，用于回传结果。
+    当请求返回时执行的回调函数，用于回传HTTP响应结果。
 - 返回值：是否成功发送请求
 - 返回值类型：`Boolean`
 
@@ -283,6 +255,35 @@
   返回的HTTP响应码，如200代表请求成功
 - result : `String`  
   返回的具体数据
+
+如果请求执行失败，status值将为 -1
+
+<br>
+
+### 发送一个异步HTTP Post请求  
+
+`network.httpGet(url,data,type,callback)`
+
+- 参数：
+  - url : `String`  
+    请求的目标地址
+  - data : `String`  
+    发送的数据
+  - type : `String`  
+    发送的 Post 数据类型，形如 `text/plain` `application/x-www-form-urlencoded` 等
+  - callback : `Function`  
+    当请求返回时执行的回调函数，用于回传HTTP响应结果。
+- 返回值：是否成功发送请求
+- 返回值类型：`Boolean`
+
+注：参数callback的回调函数原型：`function(status,result)`  
+
+- status : `Integer`    
+  返回的HTTP响应码，如200代表请求成功
+- result : `String`  
+  返回的具体数据
+
+如果请求执行失败，status值将为 -1
 
 <br>
 

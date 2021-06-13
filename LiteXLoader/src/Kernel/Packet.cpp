@@ -68,5 +68,5 @@ bool Raw_SendBossEventPacket(Player* player, string name, float percent, int typ
     dAccess<string>(packet, 80) = name;
     dAccess<float>(packet, 112) = percent;
    
-    Raw_SendPacket(player, packet);
+    return Raw_SendPacket(player, packet);
 }

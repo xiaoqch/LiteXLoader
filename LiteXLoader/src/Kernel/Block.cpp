@@ -34,8 +34,12 @@ Block* Raw_GetBlockByPos(IntVec4 *pos)
 	auto dim = SymCall("?getDimension@Level@@UEBAPEAVDimension@@V?$AutomaticID@VDimension@@H@@@Z",
 	      uintptr_t, void*, int)(mc->getLevel(), pos->dim);
 	auto bs = (BlockSource*)(dim + 88);
-	auto blk = SymCall("?getBlock@BlockSource@@QEBAAEBVBlock@@HHH@Z",
-		Block*, void*, int, int, int)(bs, pos->x, pos->y, pos->z);
-    
-    return blk;
+
+    return Raw_GetBlockByPos(pos->x, pos->y, pos->z , bs);
+}
+
+Block* Raw_GetBlockByPos(int x, int y, int z, BlockSource* bs)
+{
+    return SymCall("?getBlock@BlockSource@@QEBAAEBVBlock@@HHH@Z",
+        Block*, BlockSource*, int, int, int)(bs, x, y, z);
 }
