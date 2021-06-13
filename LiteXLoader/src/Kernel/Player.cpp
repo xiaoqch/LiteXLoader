@@ -107,9 +107,11 @@ ItemStack* Raw_GetOffHand(Player* player)
 
 vector<ItemStack*> Raw_GetPack(Player* player)
 {
-    vector<ItemStack*> res;     //############## 崩服 ##############
+    vector<ItemStack*> res;
 
-    auto v9 = *((uintptr_t*)player + 380);
+    //参考Player::die
+
+    auto v9 = *((uintptr_t*)player + 401);
 	auto v13 = (*(__int64(__fastcall**)(uintptr_t))(**(uintptr_t**)(v9 + 176) + 112i64))(*(uintptr_t*)(v9 + 176));
 	for (int i = 0; i < v13; ++i)
 	{

@@ -120,7 +120,7 @@ bool Raw_SystemCmd(const std::string &cmd, std::function<void(int,std::string)> 
         callback{std::move(callback)},timeLimit{std::move(timeLimit)}, wCmd{std::move(wCmd)}] ()
     {
         if(timeLimit == -1)
-            WaitForSingleObject(hProcess,INFINITE);     //################## 句柄表！##################
+            WaitForSingleObject(hProcess,INFINITE);
         else
         {
             WaitForSingleObject(hProcess,timeLimit);

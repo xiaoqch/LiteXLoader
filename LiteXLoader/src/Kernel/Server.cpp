@@ -3,7 +3,15 @@ using namespace std;
 
 bool Raw_SetServerMotd(const std::string &motd)
 {
-	//################# 没做呢 #################
+	extern Minecraft* mc;
+	if (!mc)
+		return false;
+	ServerNetworkHandler* snh = mc->getServerNetworkHandler();
+	if (!snh)
+		return false;
+
+	SymCall("?allowIncomingConnections@ServerNetworkHandler@@QEAAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@_N@Z",
+		long long, ServerNetworkHandler*, const string&, bool)(snh, motd, true);
     return true;
 }
 
@@ -13,7 +21,12 @@ bool Raw_SetOnlinePlayer(int nowCount, int maxCount)
 #define _QWORD uintptr_t
 
     extern Minecraft *mc;
-	auto v1 = (uintptr_t)mc->getServerNetworkHandler();
+	if (!mc)
+		return false;
+	ServerNetworkHandler* v1 = mc->getServerNetworkHandler();
+	if (!v1)
+		return false;
+
 	if (*((_BYTE*)v1 + 584))
 	{
 		auto v2 = 0;

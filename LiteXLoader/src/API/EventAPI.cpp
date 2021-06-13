@@ -10,6 +10,7 @@
 #include <Kernel/Global.h>
 #include <Kernel/Base.h>
 #include <Kernel/Block.h>
+#include <Kernel/Item.h>
 #include <Kernel/Player.h>
 #include <Kernel/SymbolHelper.h>
 #include "EngineOwnData.h"
@@ -475,14 +476,15 @@ THook(bool, "?use@ChestBlock@@UEBA_NAEAVPlayer@@AEBVBlockPos@@E@Z",
 }
 
 // ===== onCloseChest =====
+class ChestBlockActor;
 THook(bool, "?stopOpen@ChestBlockActor@@UEAAXAEAVPlayer@@@Z",
-    void* _this, Player* pl)
+    ChestBlockActor* _this, Player* pl)
 {
     IF_LISTENED(EVENT_TYPES::OnCloseChest)
     {
-        auto bp = ((BlockActor*)_this)->getPosition();
-        //################### 坐标错误 ###################
-        CallEventEx(EVENT_TYPES::OnCloseChest, PlayerClass::newPlayer(pl), IntPos::newPos(bp.x, bp.y, bp.z, Raw_GetPlayerDimId(pl)));
+        auto bp = (BlockPos*)((char*)_this - 204);
+
+        CallEventEx(EVENT_TYPES::OnCloseChest, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetPlayerDimId(pl)));
     }
     return original(_this, pl);
 }
@@ -504,39 +506,32 @@ THook(bool, "?stopOpen@BarrelBlockActor@@UEAAXAEAVPlayer@@@Z",
 {
     IF_LISTENED(EVENT_TYPES::OnCloseBarrel)
     {
-        //auto bp = (BlockPos*)((intptr_t*)_this - 204);
-        auto bp = SymCall("?getPosition@BlockActor@@QEBAAEBVBlockPos@@XZ", BlockPos*, BlockActor*)((BlockActor*)_this);
+        auto bp = (BlockPos*)((char*)_this - 204);
 
         CallEventEx(EVENT_TYPES::OnCloseBarrel, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetPlayerDimId(pl)));
-        //################### 坐标错误 ###################
     }
     return original(_this, pl);
 }
 
 // ===== onChangeSlot =====
 class LevelContainerModel;
-THook(void, "?containerContentChanged@LevelContainerModel@@UEAAXH@Z",
-    LevelContainerModel* a1, int a2)
+THook(void, "?_onItemChanged@LevelContainerModel@@MEAAXHAEBVItemStack@@0@Z",
+    LevelContainerModel* _this, int slotNumber, ItemStack* oldItem, ItemStack* newItem)
 {
-    IF_LISTENED(EVENT_TYPES::OnChangeSlot)     //###!!!######### 崩服 ##############
+    IF_LISTENED(EVENT_TYPES::OnChangeSlot)
     {
-        Actor* v3 = dAccess<Actor*>(a1, 208);
-        BlockSource* bs = dAccess<BlockSource*>(v3, 872);
-        BlockPos* bpos = dAccess<BlockPos*>(a1, 232);
+        Actor* pl = dAccess<Actor*>(_this, 208);
+        BlockSource* bs = dAccess<BlockSource*>(pl, 872);
+        BlockPos* bpos = (BlockPos*)((char*)_this + 216);
         Block* block = Raw_GetBlockByPos(bpos->x, bpos->y, bpos->z, bs);
-        
-        auto v5 = (*(__int64(__fastcall**)(LevelContainerModel*))(*(uintptr_t*)a1 + 160))(a1);
-        if (v5)
-        {
-            ItemStack* item = (ItemStack*)(*(__int64(__fastcall**)(__int64, uintptr_t))(*(uintptr_t*)v5 + 40))(v5, a2);
-            int count = offItemStack::getCount(item);
-            int slotNumber = a2;
-            Actor* pl = v3;
 
-            CallEvent(EVENT_TYPES::OnChangeSlot, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(block,bpos,bs), slotNumber, IntPos::newPos(bpos->x, bpos->y, bpos->z, Raw_GetBlockDimension(bs)), count != 0, ItemClass::newItem(item));
-        }
+        bool isPutIn = Raw_IsNull(oldItem);
+
+        CallEvent(EVENT_TYPES::OnChangeSlot, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(block, bpos, bs),
+            IntPos::newPos(bpos->x, bpos->y, bpos->z, Raw_GetBlockDimension(bs)), slotNumber, isPutIn,
+            ItemClass::newItem(isPutIn ? newItem : oldItem));
     }
-	return original(a1, a2);
+    return original(_this, slotNumber, oldItem, newItem);
 }
 
 // ===== onExplode =====
