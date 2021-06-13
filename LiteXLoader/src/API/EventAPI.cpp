@@ -7,9 +7,11 @@
 #include <sstream>
 #include <exception>
 #include <cstdarg>
+#include <Kernel/Global.h>
 #include <Kernel/Base.h>
 #include <Kernel/Block.h>
 #include <Kernel/Player.h>
+#include <Kernel/SymbolHelper.h>
 #include "EngineOwnData.h"
 #include "EngineGlobalData.h"
 #include "APIhelp.h"
@@ -234,6 +236,30 @@ void InitEventListeners()
         return true;
     });
 
+// ===== onMobHurt =====
+    Event::addEventListener([](MobHurtedEV ev)
+    {
+        IF_LISTENED(EVENT_TYPES::OnMobHurt)
+        {
+            auto level = offPlayer::getLevel(ev.Mob);
+            auto source = SymCall("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z"
+                , Actor*, Level*, ActorDamageSource*, bool)(level, ev.ActorDamageSource, 0);
+
+            CallEventEx(EVENT_TYPES::OnMobHurt, EntityClass::newEntity(ev.Mob), EntityClass::newEntity(source),
+                Number::newNumber(ev.Damage));
+        }
+        return true;
+    });
+
+// ===== onMobDie =====
+    Event::addEventListener([](MobDieEV ev)
+    {
+        IF_LISTENED(EVENT_TYPES::OnMobHurt)
+        {
+            CallEventEx(EVENT_TYPES::OnMobDie, EntityClass::newEntity(ev.mob), EntityClass::newEntity(ev.DamageSource));
+        }
+        return true;
+    });
 
 // For RegisterCmd...
     Event::addEventListener([](RegCmdEV ev) {
@@ -515,40 +541,6 @@ THook(void, "?containerContentChanged@LevelContainerModel@@UEAAXH@Z",
 	return original(a1, a2);
 }
 
-// ===== onMobDie =====
-THook(bool, "?die@Mob@@UEAAXAEBVActorDamageSource@@@Z",
-    Mob* self, void* ads)
-{
-    IF_LISTENED(EVENT_TYPES::OnMobDie)
-    {
-        char v83;
-        auto v6 = *(void**)(*(__int64(__fastcall**)(void*, char*))(*(intptr_t*)ads + 64i64))(ads, &v83);
-        auto level = offPlayer::getLevel(self);
-        auto ac = SymCall("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z"
-            , Actor*, Level*, void*, bool)(level, v6, 0);
-
-        CallEventEx(EVENT_TYPES::OnMobDie, EntityClass::newEntity(self), EntityClass::newEntity(ac));
-    }
-    return original(self, ads);
-}
-
-// ===== onMobHurt =====
-THook(bool, "?_hurt@Mob@@MEAA_NAEBVActorDamageSource@@H_N1@Z",
-    Mob* self, void* ads, int a1, bool a2, bool a3)
-{
-    IF_LISTENED(EVENT_TYPES::OnMobHurt)
-    {
-        char v83;
-        auto v6 = *(void**)(*(__int64(__fastcall**)(void*, char*))(*(intptr_t*)ads + 64i64))(ads, &v83);
-        auto level = offPlayer::getLevel(self);
-        auto ac = SymCall("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z"
-            , Actor*, Level*, void*, bool)(level, v6, 0);
-        
-        CallEventEx(EVENT_TYPES::OnMobHurt, EntityClass::newEntity(self), EntityClass::newEntity(ac));
-    }
-    return original(self, ads, a1, a2, a3);
-}
-
 // ===== onExplode =====
 THook(bool, "?explode@Level@@UEAAXAEAVBlockSource@@PEAVActor@@AEBVVec3@@M_N3M3@Z",
     Level* _this, BlockSource* bs, Actor* actor, Vec3 pos, float a5, bool a6, bool a7, float a8, bool a9)
@@ -575,7 +567,7 @@ THook(void, "?onExploded@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@PEAVActor@@@
 THook(void, "?onProjectileHit@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@AEBVActor@@@Z",
     Block* _this, BlockSource* bs, BlockPos* bp, Actor* actor)
 {
-    IF_LISTENED(EVENT_TYPES::OnProjectileHit)
+    IF_LISTENED(EVENT_TYPES::OnProjectileHit)       //################# 击中实体也会！################# 
     {
         CallEvent(EVENT_TYPES::OnProjectileHit,BlockClass::newBlock(_this,bp,bs),IntPos::newPos(*bp, Raw_GetBlockDimension(bs)),EntityClass::newEntity(actor));
     }
@@ -619,15 +611,14 @@ THook(void, "?transformOnFall@FarmBlock@@UEBAXAEAVBlockSource@@AEBVBlockPos@@PEA
 THook(bool, "?_attachedBlockWalker@PistonBlockActor@@AEAA_NAEAVBlockSource@@AEBVBlockPos@@EE@Z",
     BlockActor* _this, BlockSource* bs, BlockPos* bp, unsigned a3, unsigned a4)
 {
-    IF_LISTENED(EVENT_TYPES::OnPistonPush)         //############## 崩服 ##############
+    IF_LISTENED(EVENT_TYPES::OnPistonPush)
     {
         int dim = Raw_GetBlockDimension(bs);
-        BlockPos* pistonPos = dAccess<BlockPos*, 44>(_this);
-
+        BlockPos pistonPos = _this->getPosition();
         IntVec4 blockPos{ bp->x,bp->y,bp->z,dim };
         Block* pushedBlock = Raw_GetBlockByPos(&blockPos);
 
-        CallEventEx(EVENT_TYPES::OnPistonPush, IntPos::newPos(*pistonPos, dim), BlockClass::newBlock(pushedBlock, bp, dim));
+        CallEventEx(EVENT_TYPES::OnPistonPush, IntPos::newPos(pistonPos, dim), BlockClass::newBlock(pushedBlock, bp, dim));
     }
     return original(_this, bs, bp, a3, a4);
 }

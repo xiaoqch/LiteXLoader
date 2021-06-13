@@ -1,5 +1,6 @@
 #include "APIhelp.h"
 #include "EntityAPI.h"
+#include "PlayerAPI.h"
 #include <Kernel/Entity.h>
 using namespace script;
 
@@ -17,6 +18,7 @@ ClassDefine<EntityClass> EntityClassBuilder =
 
         .instanceFunction("teleport", &EntityClass::teleport)
         .instanceFunction("kill", &EntityClass::kill)
+        .instanceFunction("toPlayer", &EntityClass::toPlayer)
         .build();
 
 
@@ -109,4 +111,16 @@ Local<Value> EntityClass::kill(const Arguments& args)
         return Boolean::newBoolean(Raw_KillEntity(entity));
     }
     CATCH("Fail in KillEntity!")
+}
+
+Local<Value> EntityClass::toPlayer(const Arguments& args)
+{
+    try {
+        auto pl = Raw_ToPlayer(entity);
+        if (!pl)
+            return Local<Value>();
+        else
+            return PlayerClass::newPlayer(pl);
+    }
+    CATCH("Fail in toPlayer!")
 }

@@ -414,14 +414,15 @@
 
 #### `"onMobHurt"` - 生物受伤（包括玩家）
 - 监听函数原型
-`function(mob,source)`
+`function(mob,source,damage)`
 - 参数：
     - mob : `Entity`  
       受伤的实体对象
-
     - source : `Entity`  
       伤害来源的实体对象
-
+    - damage : `Integer`  
+      受到的伤害数值
+    
 - 拦截事件：函数返回`false`
 
 <br>

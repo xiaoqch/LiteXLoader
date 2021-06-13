@@ -1,6 +1,7 @@
 #pragma once
 
 #include <LiteLoader/lbpch.h>
+#include <LiteLoader/api/Basic_Event.h>
 #include <LiteLoader/mc/OffsetHelper.h>
 #include <LiteLoader/mc/block.h>
 #include <LiteLoader/mc/item.h>

@@ -92,6 +92,7 @@ bool Raw_Broadcast(const std::string& text, TextType type)
     auto playerList = Raw_GetOnlinePlayers();
     for (auto player : playerList)
         Raw_Tell(player, text, type);
+    return true;
 }
 
 ItemStack* Raw_GetHand(Player* player)

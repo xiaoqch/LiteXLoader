@@ -45,3 +45,11 @@ bool Raw_KillEntity(Actor* actor)
     SymCall("?kill@Mob@@UEAAXXZ", void, void*)(actor);
     return true;
 }
+
+Player* Raw_ToPlayer(Actor* actor)
+{
+    if (Raw_GetEntityTypeName(actor) == "entity.player.name")
+        return dAccess<Player*>(actor, 0);
+    else
+        return nullptr;
+}
