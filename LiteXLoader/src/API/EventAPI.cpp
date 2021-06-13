@@ -480,11 +480,9 @@ THook(bool, "?stopOpen@ChestBlockActor@@UEAAXAEAVPlayer@@@Z",
 {
     IF_LISTENED(EVENT_TYPES::OnCloseChest)
     {
-        //auto bp = (BlockPos*)((intptr_t*)_this - 204);
-        auto bp = SymCall("?getPosition@BlockActor@@QEBAAEBVBlockPos@@XZ", BlockPos*, BlockActor*)((BlockActor*)_this);
+        auto bp = ((BlockActor*)_this)->getPosition();
         //################### 坐标错误 ###################
-
-        CallEventEx(EVENT_TYPES::OnCloseChest, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetPlayerDimId(pl)));
+        CallEventEx(EVENT_TYPES::OnCloseChest, PlayerClass::newPlayer(pl), IntPos::newPos(bp.x, bp.y, bp.z, Raw_GetPlayerDimId(pl)));
     }
     return original(_this, pl);
 }
@@ -520,22 +518,22 @@ class LevelContainerModel;
 THook(void, "?containerContentChanged@LevelContainerModel@@UEAAXH@Z",
     LevelContainerModel* a1, int a2)
 {
-    IF_LISTENED(EVENT_TYPES::OnChangeSlot)     //############## 崩服 ##############
+    IF_LISTENED(EVENT_TYPES::OnChangeSlot)     //###!!!######### 崩服 ##############
     {
-        Actor* v3 = dAccess<Actor*, 208>(a1);
-        BlockSource* bs = dAccess<BlockSource*, 840>(v3);
-        //offset LevelContainerModel::_getContainer(LevelContainerModel *this) Line->BlockSource::getBlockEntity
-        BlockPos* bpos = dAccess<BlockPos*, 216>(a1);
-        Block* pBlk = SymCall("?getBlock@BlockSource@@QEBAAEBVBlock@@AEBVBlockPos@@@Z", Block*, BlockSource*, BlockPos*)(bs, bpos);
-        auto v5 = (*(__int64(__fastcall**)(LevelContainerModel*))(*(uintptr_t*)a1 + 160i64))(a1);
+        Actor* v3 = dAccess<Actor*>(a1, 208);
+        BlockSource* bs = dAccess<BlockSource*>(v3, 872);
+        BlockPos* bpos = dAccess<BlockPos*>(a1, 232);
+        Block* block = Raw_GetBlockByPos(bpos->x, bpos->y, bpos->z, bs);
+        
+        auto v5 = (*(__int64(__fastcall**)(LevelContainerModel*))(*(uintptr_t*)a1 + 160))(a1);
         if (v5)
         {
-            ItemStack* item = (ItemStack*)(*(__int64(__fastcall**)(__int64, uintptr_t))(*(uintptr_t*)v5 + 40i64))(v5, a2);
+            ItemStack* item = (ItemStack*)(*(__int64(__fastcall**)(__int64, uintptr_t))(*(uintptr_t*)v5 + 40))(v5, a2);
             int count = offItemStack::getCount(item);
             int slotNumber = a2;
             Actor* pl = v3;
 
-            CallEvent(EVENT_TYPES::OnChangeSlot, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(pBlk,bpos,bs), slotNumber, IntPos::newPos(bpos->x, bpos->y, bpos->z, Raw_GetBlockDimension(bs)), count != 0, ItemClass::newItem(item));
+            CallEvent(EVENT_TYPES::OnChangeSlot, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(block,bpos,bs), slotNumber, IntPos::newPos(bpos->x, bpos->y, bpos->z, Raw_GetBlockDimension(bs)), count != 0, ItemClass::newItem(item));
         }
     }
 	return original(a1, a2);
@@ -615,8 +613,7 @@ THook(bool, "?_attachedBlockWalker@PistonBlockActor@@AEAA_NAEAVBlockSource@@AEBV
     {
         int dim = Raw_GetBlockDimension(bs);
         BlockPos pistonPos = _this->getPosition();
-        IntVec4 blockPos{ bp->x,bp->y,bp->z,dim };
-        Block* pushedBlock = Raw_GetBlockByPos(&blockPos);
+        Block* pushedBlock = Raw_GetBlockByPos(bp->x, bp->y, bp->z, bs);
 
         CallEventEx(EVENT_TYPES::OnPistonPush, IntPos::newPos(pistonPos, dim), BlockClass::newBlock(pushedBlock, bp, dim));
     }
