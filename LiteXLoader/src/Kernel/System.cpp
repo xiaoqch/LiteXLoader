@@ -147,25 +147,72 @@ bool Raw_SystemCmd(const std::string &cmd, std::function<void(int,std::string)> 
     return true;
 }
 
-std::pair<int,std::string> Raw_HttpRequestSync(const std::string &url,const std::string &method,const std::string &data)
+//////////////////// Helper ////////////////////
+void SplitHttpUrl(const std::string& url, string& host, string& path)
 {
-    httplib::Client cli(url.c_str());       //############## 崩服 ##############
-    auto response = (method == "POST" || method == "Post") ? cli.Post(data.c_str()) : cli.Get(data.c_str());
-    return {response->status,response->body};
-}
+    host = url;
 
-bool Raw_HttpRequestAsync(const string &url,const string &method,const string &data,function<void(int,std::string)> callback)
+    bool foundProcotol = host.find_first_of('//') != string::npos;
+
+    auto splitPos = host.find('/', foundProcotol ? host.find_first_of('//') + 2 : 0);    //查找协议后的第一个/分割host与路径
+    if (splitPos == string::npos)
+    {
+        path = "/";
+    }
+    else
+    {
+        path = host.substr(splitPos);
+        host = host.substr(0, splitPos);
+    }
+}
+//////////////////// Helper ////////////////////
+
+bool Raw_HttpGet(const string& url, function<void(int, string)> callback)
 {
-    httplib::Client *cli = new httplib::Client(url.c_str());    //############## 崩服 ##############
-    if(!cli->is_valid())
+    string host, path;
+    SplitHttpUrl(url, host, path);
+
+    httplib::Client* cli = new httplib::Client(host.c_str());
+    if (!cli->is_valid())
     {
         delete cli;
         return false;
     }
-    std::thread([cli,method{std::move(method)},data{std::move(data)},callback{std::move(callback)}]() {
-        auto response = (method == "POST" || method == "Post") ? cli->Post(data.c_str()) : cli->Get(data.c_str());
+    std::thread([cli, callback{ std::move(callback) }, path{ std::move(path) }]()
+    {
+        auto response = cli->Get(path.c_str());
         delete cli;
-        callback(response->status,response->body);
+
+        if (!response)
+            callback(-1, "");
+        else
+            callback(response->status, response->body);
+    }).detach();
+
+    return true;
+}
+
+bool Raw_HttpPost(const string& url, const string& data, const string& type, function<void(int, string)> callback)
+{
+    string host, path;
+    SplitHttpUrl(url, host, path);
+
+    httplib::Client* cli = new httplib::Client(host.c_str());
+    if (!cli->is_valid())
+    {
+        delete cli;
+        return false;
+    }
+    std::thread([cli, data{ std::move(data) }, type{ std::move(type) }, callback{ std::move(callback) },
+        path{ std::move(path) }]()
+    {
+        auto response = cli->Post(path.c_str(), data, type.c_str());
+        delete cli;
+
+        if (!response)
+            callback(-1, "");
+        else
+            callback(response->status, response->body);
     }).detach();
 
     return true;

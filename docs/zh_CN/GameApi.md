@@ -614,7 +614,7 @@ pl.removeScore("what");
   - title : `String`  
     侧边栏标题  
 
-  - data : `Array<Object<String,String>, Object<String,String>, ...>`  
+  - data : `Array<Object<String-String>, Object<String-String>, ...>`  
     侧边栏对象数组  
     对于数组中的某个对象`item`，有下面这些成员  
 
