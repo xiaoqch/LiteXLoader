@@ -485,7 +485,7 @@
 
 <br>
 
-#### `"onInteractdWith"` - 方块接受玩家互动
+#### `"onBlockInteractd"` - 方块接受玩家互动
 
 - 监听函数原型
   `function(player,pos)`

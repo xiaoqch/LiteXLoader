@@ -35,57 +35,57 @@ bool CallFormCallback(int formId, const string& data);
 
 enum class EVENT_TYPES : int
 {
-    OnJoin=0, OnLeft, OnPlayerCmd, OnChat, 
-    OnRespawn, OnChangeDim, OnJump, OnSneak, OnAttack, OnEat, OnMove, OnSetArmor,
-    OnUseItem, OnTakeItem, OnDropItem,
-    OnDestroyingBlock, OnDestroyBlock, OnPlaceBlock,
-    OnOpenChest, OnCloseChest, OnOpenBarrel, OnCloseBarrel, OnChangeSlot,
-    OnMobDie, OnMobHurt, OnExplode, OnBlockExploded, OnCmdBlockExecute,
-    OnProjectileHit, OnInteractdWith, OnUseRespawnAnchor, OnFarmLandDecay,
-    OnPistonPush, OnHopperSearchItem, OnHopperPushOut,
-    OnServerStarted, OnServerCmd, OnFormSelected, OnConsoleOutput,
+    onJoin=0, onLeft, onPlayerCmd, onChat, 
+    onRespawn, onChangeDim, onJump, onSneak, onAttack, onEat, onMove, onSetArmor,
+    onUseItem, onTakeItem, onDropItem,
+    onDestroyingBlock, onDestroyBlock, onPlaceBlock,
+    onOpenChest, onCloseChest, onOpenBarrel, onCloseBarrel, onChangeSlot,
+    onMobDie, onMobHurt, onExplode, onBlockExploded, onCmdBlockExecute,
+    onProjectileHit, onBlockInteractd, onUseRespawnAnchor, onFarmLandDecay,
+    onPistonPush, onHopperSearchItem, onHopperPushOut,
+    onServerStarted, onServerCmd, onFormSelected, onConsoleOutput,
     EVENT_COUNT
 };
 static const std::unordered_map<string, EVENT_TYPES> EventsMap{
-    {"onJoin",EVENT_TYPES::OnJoin},
-    {"onLeft",EVENT_TYPES::OnLeft},
-    {"onPlayerCmd",EVENT_TYPES::OnPlayerCmd},
-    {"onChat",EVENT_TYPES::OnChat},
-    {"onRespawn",EVENT_TYPES::OnRespawn},
-    {"onChangeDim",EVENT_TYPES::OnChangeDim},
-    {"onJump",EVENT_TYPES::OnJump},
-    {"onSneak",EVENT_TYPES::OnSneak},
-    {"onAttack",EVENT_TYPES::OnAttack},
-    {"onEat",EVENT_TYPES::OnEat},
-    {"onMove",EVENT_TYPES::OnMove},
-    {"onSetArmor",EVENT_TYPES::OnSetArmor},
-    {"onMobDie",EVENT_TYPES::OnMobDie},
-    {"onMobHurt",EVENT_TYPES::OnMobHurt},
-    {"onUseItem",EVENT_TYPES::OnUseItem},
-    {"onTakeItem",EVENT_TYPES::OnTakeItem},
-    {"onDropItem",EVENT_TYPES::OnDropItem},
-    {"onDestroyingBlock",EVENT_TYPES::OnDestroyingBlock},
-    {"onDestroyBlock",EVENT_TYPES::OnDestroyBlock},
-    {"onPlaceBlock",EVENT_TYPES::OnPlaceBlock},
-    {"onExplode",EVENT_TYPES::OnExplode},
-    {"onBlockExploded",EVENT_TYPES::OnBlockExploded},
-    {"onOpenChest",EVENT_TYPES::OnOpenChest},
-    {"onCloseChest",EVENT_TYPES::OnCloseChest},
-    {"onOpenBarrel",EVENT_TYPES::OnOpenBarrel},
-    {"onCloseBarrel",EVENT_TYPES::OnCloseBarrel},
-    {"onChangeSlot",EVENT_TYPES::OnChangeSlot},
-    {"onCmdBlockExecute",EVENT_TYPES::OnCmdBlockExecute},
-    {"onProjectileHit",EVENT_TYPES::OnProjectileHit},
-    {"onInteractdWith",EVENT_TYPES::OnInteractdWith},
-    {"onUseRespawnAnchor",EVENT_TYPES::OnUseRespawnAnchor},
-    {"onFarmLandDecay",EVENT_TYPES::OnFarmLandDecay},
-    {"onPistonPush",EVENT_TYPES::OnPistonPush},
-    {"onHopperSearchItem",EVENT_TYPES::OnHopperSearchItem},
-    {"onHopperPushOut",EVENT_TYPES::OnHopperPushOut},
-    {"onServerStarted",EVENT_TYPES::OnServerStarted},
-    {"onServerCmd",EVENT_TYPES::OnServerCmd},
-    {"onConsoleOutput",EVENT_TYPES::OnConsoleOutput},
-    {"onFormSelected",EVENT_TYPES::OnFormSelected},
+    {"onJoin",EVENT_TYPES::onJoin},
+    {"onLeft",EVENT_TYPES::onLeft},
+    {"onPlayerCmd",EVENT_TYPES::onPlayerCmd},
+    {"onChat",EVENT_TYPES::onChat},
+    {"onRespawn",EVENT_TYPES::onRespawn},
+    {"onChangeDim",EVENT_TYPES::onChangeDim},
+    {"onJump",EVENT_TYPES::onJump},
+    {"onSneak",EVENT_TYPES::onSneak},
+    {"onAttack",EVENT_TYPES::onAttack},
+    {"onEat",EVENT_TYPES::onEat},
+    {"onMove",EVENT_TYPES::onMove},
+    {"onSetArmor",EVENT_TYPES::onSetArmor},
+    {"onMobDie",EVENT_TYPES::onMobDie},
+    {"onMobHurt",EVENT_TYPES::onMobHurt},
+    {"onUseItem",EVENT_TYPES::onUseItem},
+    {"onTakeItem",EVENT_TYPES::onTakeItem},
+    {"onDropItem",EVENT_TYPES::onDropItem},
+    {"onDestroyingBlock",EVENT_TYPES::onDestroyingBlock},
+    {"onDestroyBlock",EVENT_TYPES::onDestroyBlock},
+    {"onPlaceBlock",EVENT_TYPES::onPlaceBlock},
+    {"onExplode",EVENT_TYPES::onExplode},
+    {"onBlockExploded",EVENT_TYPES::onBlockExploded},
+    {"onOpenChest",EVENT_TYPES::onOpenChest},
+    {"onCloseChest",EVENT_TYPES::onCloseChest},
+    {"onOpenBarrel",EVENT_TYPES::onOpenBarrel},
+    {"onCloseBarrel",EVENT_TYPES::onCloseBarrel},
+    {"onChangeSlot",EVENT_TYPES::onChangeSlot},
+    {"onCmdBlockExecute",EVENT_TYPES::onCmdBlockExecute},
+    {"onProjectileHit",EVENT_TYPES::onProjectileHit},
+    {"onBlockInteractd",EVENT_TYPES::onBlockInteractd},
+    {"onUseRespawnAnchor",EVENT_TYPES::onUseRespawnAnchor},
+    {"onFarmLandDecay",EVENT_TYPES::onFarmLandDecay},
+    {"onPistonPush",EVENT_TYPES::onPistonPush},
+    {"onHopperSearchItem",EVENT_TYPES::onHopperSearchItem},
+    {"onHopperPushOut",EVENT_TYPES::onHopperPushOut},
+    {"onServerStarted",EVENT_TYPES::onServerStarted},
+    {"onServerCmd",EVENT_TYPES::onServerCmd},
+    {"onConsoleOutput",EVENT_TYPES::onConsoleOutput},
+    {"onFormSelected",EVENT_TYPES::onFormSelected},
 };
 struct ListenerListType
 {
@@ -193,27 +193,27 @@ void InitEventListeners()
 // ===== onPlayerJoin =====
     Event::addEventListener([](JoinEV ev)
     {
-        IF_LISTENED(EVENT_TYPES::OnJoin)
+        IF_LISTENED(EVENT_TYPES::onJoin)
         {
-            CallEvent(EVENT_TYPES::OnJoin, PlayerClass::newPlayer(ev.Player));
+            CallEvent(EVENT_TYPES::onJoin, PlayerClass::newPlayer(ev.Player));
         }
     });
 
 // ===== onPlayerLeft =====
     Event::addEventListener([](LeftEV ev)
     {
-        IF_LISTENED(EVENT_TYPES::OnLeft)
+        IF_LISTENED(EVENT_TYPES::onLeft)
         {
-            CallEvent(EVENT_TYPES::OnLeft, PlayerClass::newPlayer(ev.Player));
+            CallEvent(EVENT_TYPES::onLeft, PlayerClass::newPlayer(ev.Player));
         }
     });
 
 // ===== onChat =====
     Event::addEventListener([](ChatEV ev)
     {
-        IF_LISTENED(EVENT_TYPES::OnChat)
+        IF_LISTENED(EVENT_TYPES::onChat)
         {
-            CallEventEx(EVENT_TYPES::OnChat, PlayerClass::newPlayer(ev.pl), ev.msg);
+            CallEventEx(EVENT_TYPES::onChat, PlayerClass::newPlayer(ev.pl), ev.msg);
         }
         return true;
     });
@@ -221,18 +221,18 @@ void InitEventListeners()
 // ===== onChangeDimension =====
     Event::addEventListener([](ChangeDimEV ev)
     {
-        IF_LISTENED(EVENT_TYPES::OnChangeDim)
+        IF_LISTENED(EVENT_TYPES::onChangeDim)
         {
-            CallEvent(EVENT_TYPES::OnChangeDim, PlayerClass::newPlayer(ev.Player));
+            CallEvent(EVENT_TYPES::onChangeDim, PlayerClass::newPlayer(ev.Player));
         }
     });
 
 // ===== onCmdBlockExecute =====
     Event::addEventListener([](CmdBlockExeEV ev)
     {
-        IF_LISTENED(EVENT_TYPES::OnCmdBlockExecute)
+        IF_LISTENED(EVENT_TYPES::onCmdBlockExecute)
         {
-            CallEventEx(EVENT_TYPES::OnCmdBlockExecute, ev.cmd, IntPos::newPos(ev.bpos.x, ev.bpos.y, ev.bpos.z));
+            CallEventEx(EVENT_TYPES::onCmdBlockExecute, ev.cmd, IntPos::newPos(ev.bpos.x, ev.bpos.y, ev.bpos.z));
         }
         return true;
     });
@@ -240,13 +240,13 @@ void InitEventListeners()
 // ===== onMobHurt =====
     Event::addEventListener([](MobHurtedEV ev)
     {
-        IF_LISTENED(EVENT_TYPES::OnMobHurt)
+        IF_LISTENED(EVENT_TYPES::onMobHurt)
         {
             auto level = offPlayer::getLevel(ev.Mob);
             auto source = SymCall("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z"
                 , Actor*, Level*, ActorDamageSource*, bool)(level, ev.ActorDamageSource, 0);
 
-            CallEventEx(EVENT_TYPES::OnMobHurt, EntityClass::newEntity(ev.Mob), EntityClass::newEntity(source),
+            CallEventEx(EVENT_TYPES::onMobHurt, EntityClass::newEntity(ev.Mob), EntityClass::newEntity(source),
                 Number::newNumber(ev.Damage));
         }
         return true;
@@ -255,9 +255,9 @@ void InitEventListeners()
 // ===== onMobDie =====
     Event::addEventListener([](MobDieEV ev)
     {
-        IF_LISTENED(EVENT_TYPES::OnMobHurt)
+        IF_LISTENED(EVENT_TYPES::onMobHurt)
         {
-            CallEventEx(EVENT_TYPES::OnMobDie, EntityClass::newEntity(ev.mob), EntityClass::newEntity(ev.DamageSource));
+            CallEventEx(EVENT_TYPES::onMobDie, EntityClass::newEntity(ev.mob), EntityClass::newEntity(ev.DamageSource));
         }
         return true;
     });
@@ -283,9 +283,9 @@ void InitEventListeners()
         //注册预置命令
         RegisterBuiltinCmds();
 
-        IF_LISTENED(EVENT_TYPES::OnServerStarted)
+        IF_LISTENED(EVENT_TYPES::onServerStarted)
         {
-            CallEvent(EVENT_TYPES::OnServerStarted);
+            CallEvent(EVENT_TYPES::onServerStarted);
         }
     });
 }
@@ -294,9 +294,9 @@ void InitEventListeners()
 THook(bool, "?attack@Player@@UEAA_NAEAVActor@@@Z",
     Player* pl,  Actor* ac)
 {
-    IF_LISTENED(EVENT_TYPES::OnAttack)
+    IF_LISTENED(EVENT_TYPES::onAttack)
     {
-        CallEventEx(EVENT_TYPES::OnAttack, PlayerClass::newPlayer(pl), EntityClass::newEntity(ac));
+        CallEventEx(EVENT_TYPES::onAttack, PlayerClass::newPlayer(pl), EntityClass::newEntity(ac));
     }
     return original(pl, ac);
 }
@@ -305,9 +305,9 @@ THook(bool, "?attack@Player@@UEAA_NAEAVActor@@@Z",
 THook(void, "?eat@Player@@QEAAXAEBVItemStack@@@Z",
     Player* _this, ItemStack* eaten)
 {
-    IF_LISTENED(EVENT_TYPES::OnEat)
+    IF_LISTENED(EVENT_TYPES::onEat)
     {
-        CallEvent(EVENT_TYPES::OnEat, PlayerClass::newPlayer(_this), ItemClass::newItem(eaten));
+        CallEvent(EVENT_TYPES::onEat, PlayerClass::newPlayer(_this), ItemClass::newItem(eaten));
     }
     return original(_this, eaten);
 }
@@ -316,9 +316,9 @@ THook(void, "?eat@Player@@QEAAXAEBVItemStack@@@Z",
 THook(void, "??0MovePlayerPacket@@QEAA@AEAVPlayer@@AEBVVec3@@@Z",
     void *_this, Player * pl, Vec3 * to)
 {
-    IF_LISTENED(EVENT_TYPES::OnMove)
+    IF_LISTENED(EVENT_TYPES::onMove)
     {
-        CallEvent(EVENT_TYPES::OnMove, PlayerClass::newPlayer(pl), FloatPos::newPos(*to, Raw_GetPlayerDimId(pl)));
+        CallEvent(EVENT_TYPES::onMove, PlayerClass::newPlayer(pl), FloatPos::newPos(*to, Raw_GetPlayerDimId(pl)));
     }
     return original(_this, pl, to);
 }
@@ -327,9 +327,9 @@ THook(void, "??0MovePlayerPacket@@QEAA@AEAVPlayer@@AEBVVec3@@@Z",
 THook(void, "?setArmor@Player@@UEAAXW4ArmorSlot@@AEBVItemStack@@@Z",
     Player* _this, unsigned slot, ItemStack* it)
 {
-    IF_LISTENED(EVENT_TYPES::OnSetArmor)
+    IF_LISTENED(EVENT_TYPES::onSetArmor)
     {
-        CallEvent(EVENT_TYPES::OnSetArmor, PlayerClass::newPlayer(_this), Number::newNumber((int)slot), ItemClass::newItem(it));
+        CallEvent(EVENT_TYPES::onSetArmor, PlayerClass::newPlayer(_this), Number::newNumber((int)slot), ItemClass::newItem(it));
     }
     return original(_this, slot, it);
 }
@@ -338,9 +338,9 @@ THook(void, "?setArmor@Player@@UEAAXW4ArmorSlot@@AEBVItemStack@@@Z",
 THook(bool, "?respawn@Player@@UEAAXXZ",
     Player* pl)
 {
-    IF_LISTENED(EVENT_TYPES::OnRespawn)
+    IF_LISTENED(EVENT_TYPES::onRespawn)
     {
-        CallEventEx(EVENT_TYPES::OnRespawn, PlayerClass::newPlayer(pl));
+        CallEventEx(EVENT_TYPES::onRespawn, PlayerClass::newPlayer(pl));
     }
     return original(pl);
 }
@@ -349,9 +349,9 @@ THook(bool, "?respawn@Player@@UEAAXXZ",
 THook(void, "?jumpFromGround@Player@@UEAAXXZ",
     Player* pl)
 {
-    IF_LISTENED(EVENT_TYPES::OnJump)
+    IF_LISTENED(EVENT_TYPES::onJump)
     {
-        CallEvent(EVENT_TYPES::OnJump, PlayerClass::newPlayer(pl));
+        CallEvent(EVENT_TYPES::onJump, PlayerClass::newPlayer(pl));
     }
     return original(pl);
 }
@@ -360,9 +360,9 @@ THook(void, "?jumpFromGround@Player@@UEAAXXZ",
 THook(void, "?sendActorSneakChanged@ActorEventCoordinator@@QEAAXAEAVActor@@_N@Z",
     void* _this, Actor* ac, bool isSneaking)
 {
-    IF_LISTENED(EVENT_TYPES::OnSneak)
+    IF_LISTENED(EVENT_TYPES::onSneak)
     {
-        CallEvent(EVENT_TYPES::OnSneak, PlayerClass::newPlayer((Player*)ac), Boolean::newBoolean(isSneaking));
+        CallEvent(EVENT_TYPES::onSneak, PlayerClass::newPlayer((Player*)ac), Boolean::newBoolean(isSneaking));
     }
     return original(_this, ac, isSneaking);
 }
@@ -371,9 +371,9 @@ THook(void, "?sendActorSneakChanged@ActorEventCoordinator@@QEAAXAEAVActor@@_N@Z"
 THook(bool, "?drop@Player@@UEAA_NAEBVItemStack@@_N@Z",
     Player* _this, ItemStack* a2, bool a3)
 {
-    IF_LISTENED(EVENT_TYPES::OnDropItem)
+    IF_LISTENED(EVENT_TYPES::onDropItem)
     {
-        CallEventEx(EVENT_TYPES::OnDropItem, PlayerClass::newPlayer(_this), ItemClass::newItem(a2));
+        CallEventEx(EVENT_TYPES::onDropItem, PlayerClass::newPlayer(_this), ItemClass::newItem(a2));
     }
     return original(_this, a2, a3);
 }
@@ -382,9 +382,9 @@ THook(bool, "?drop@Player@@UEAA_NAEBVItemStack@@_N@Z",
 THook(bool, "?take@Player@@QEAA_NAEAVActor@@HH@Z",
     Player* _this, Actor* actor, int a2, int a3)
 {
-    IF_LISTENED(EVENT_TYPES::OnTakeItem)       //################### 有无办法改成获取item ###################
+    IF_LISTENED(EVENT_TYPES::onTakeItem)       //################### 有无办法改成获取item ###################
     {
-        CallEventEx(EVENT_TYPES::OnTakeItem, PlayerClass::newPlayer(_this), EntityClass::newEntity(actor));
+        CallEventEx(EVENT_TYPES::onTakeItem, PlayerClass::newPlayer(_this), EntityClass::newEntity(actor));
     }
     return original(_this, actor, a2, a3);
 }
@@ -403,9 +403,9 @@ THook(void, "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVComma
             cmd = cmd.substr(1);
      
         bool callbackRes = CallPlayerCmdCallback(player,cmd);
-        IF_LISTENED(EVENT_TYPES::OnPlayerCmd)
+        IF_LISTENED(EVENT_TYPES::onPlayerCmd)
         {
-            CallEvent(EVENT_TYPES::OnPlayerCmd, PlayerClass::newPlayer(player), cmd);
+            CallEvent(EVENT_TYPES::onPlayerCmd, PlayerClass::newPlayer(player), cmd);
         }
         if (!callbackRes)
             return;
@@ -418,11 +418,11 @@ THook(void, "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVComma
 THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@PEBVBlock@@@Z",
     void* _this,  ItemStack* item, BlockPos* bp, unsigned __int8 a4, Vec3* a5,  Block* bl)
 {
-    IF_LISTENED(EVENT_TYPES::OnUseItem)
+    IF_LISTENED(EVENT_TYPES::onUseItem)
     {
         auto sp = *reinterpret_cast<Player**>(reinterpret_cast<unsigned long long>(_this) + 8);
 
-        CallEventEx(EVENT_TYPES::OnUseItem, PlayerClass::newPlayer(sp), ItemClass::newItem(item),
+        CallEventEx(EVENT_TYPES::onUseItem, PlayerClass::newPlayer(sp), ItemClass::newItem(item),
             BlockClass::newBlock(bl,bp), IntPos::newPos(bp->x, bp->y, bp->z, WPlayer(*sp).getDimID()));
     }
     return original(_this, item, bp, a4, a5, bl);
@@ -432,9 +432,9 @@ THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@
 THook(float, "?getDestroySpeed@Player@@QEBAMAEBVBlock@@@Z",
     Player* _this, Block* bl)
 {
-    IF_LISTENED(EVENT_TYPES::OnDestroyingBlock)
+    IF_LISTENED(EVENT_TYPES::onDestroyingBlock)
     {
-        CallEvent(EVENT_TYPES::OnDestroyingBlock, PlayerClass::newPlayer(_this), BlockClass::newBlock(bl));
+        CallEvent(EVENT_TYPES::onDestroyingBlock, PlayerClass::newPlayer(_this), BlockClass::newBlock(bl));
     }
     return original(_this, bl);
 }
@@ -443,11 +443,11 @@ THook(float, "?getDestroySpeed@Player@@QEBAMAEBVBlock@@@Z",
 THook(bool, "?checkBlockDestroyPermissions@BlockSource@@QEAA_NAEAVActor@@AEBVBlockPos@@AEBVItemStackBase@@_N@Z",
     BlockSource * _this, Actor* pl, BlockPos* pos, ItemStack* a3, bool a4)
 {
-    IF_LISTENED(EVENT_TYPES::OnDestroyBlock)
+    IF_LISTENED(EVENT_TYPES::onDestroyBlock)
     {
         auto block = SymCall("?getBlock@BlockSource@@QEBAAEBVBlock@@AEBVBlockPos@@@Z", Block*, BlockSource*, BlockPos*)(_this, pos);
 
-        CallEventEx(EVENT_TYPES::OnDestroyBlock, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(block,pos,_this),
+        CallEventEx(EVENT_TYPES::onDestroyBlock, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(block,pos,_this),
             IntPos::newPos(pos->x, pos->y, pos->z,Raw_GetBlockDimension(_this)));
     }
     return original(_this, pl, pos,a3, a4);
@@ -457,9 +457,9 @@ THook(bool, "?checkBlockDestroyPermissions@BlockSource@@QEAA_NAEAVActor@@AEBVBlo
 THook(bool, "?mayPlace@BlockSource@@QEAA_NAEBVBlock@@AEBVBlockPos@@EPEAVActor@@_N@Z",
     BlockSource* bs, Block* bl, BlockPos* bp, unsigned __int8 a4, Actor* pl, bool a6)
 {
-    IF_LISTENED(EVENT_TYPES::OnPlaceBlock)
+    IF_LISTENED(EVENT_TYPES::onPlaceBlock)
     {
-        CallEventEx(EVENT_TYPES::OnPlaceBlock, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(bl,bp,bs), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetBlockDimension(bs)));
+        CallEventEx(EVENT_TYPES::onPlaceBlock, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(bl,bp,bs), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetBlockDimension(bs)));
     }
     return original(bs, bl, bp, a4, pl, a6);
 }
@@ -468,9 +468,9 @@ THook(bool, "?mayPlace@BlockSource@@QEAA_NAEBVBlock@@AEBVBlockPos@@EPEAVActor@@_
 THook(bool, "?use@ChestBlock@@UEBA_NAEAVPlayer@@AEBVBlockPos@@E@Z",
     void* _this, Player* pl , BlockPos* bp)
 {
-    IF_LISTENED(EVENT_TYPES::OnOpenChest)
+    IF_LISTENED(EVENT_TYPES::onOpenChest)
     {
-        CallEventEx(EVENT_TYPES::OnOpenChest, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetPlayerDimId(pl)));
+        CallEventEx(EVENT_TYPES::onOpenChest, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetPlayerDimId(pl)));
     }
     return original(_this, pl, bp);
 }
@@ -480,11 +480,11 @@ class ChestBlockActor;
 THook(bool, "?stopOpen@ChestBlockActor@@UEAAXAEAVPlayer@@@Z",
     ChestBlockActor* _this, Player* pl)
 {
-    IF_LISTENED(EVENT_TYPES::OnCloseChest)
+    IF_LISTENED(EVENT_TYPES::onCloseChest)
     {
         auto bp = (BlockPos*)((char*)_this - 204);
 
-        CallEventEx(EVENT_TYPES::OnCloseChest, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetPlayerDimId(pl)));
+        CallEventEx(EVENT_TYPES::onCloseChest, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetPlayerDimId(pl)));
     }
     return original(_this, pl);
 }
@@ -493,9 +493,9 @@ THook(bool, "?stopOpen@ChestBlockActor@@UEAAXAEAVPlayer@@@Z",
 THook(bool, "?use@BarrelBlock@@UEBA_NAEAVPlayer@@AEBVBlockPos@@E@Z",
     void* _this, Player* pl, BlockPos* bp)
 {
-    IF_LISTENED(EVENT_TYPES::OnOpenBarrel)
+    IF_LISTENED(EVENT_TYPES::onOpenBarrel)
     {
-        CallEventEx(EVENT_TYPES::OnOpenBarrel, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetPlayerDimId(pl)));
+        CallEventEx(EVENT_TYPES::onOpenBarrel, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetPlayerDimId(pl)));
     }
     return original(_this, pl, bp);
 }
@@ -504,11 +504,11 @@ THook(bool, "?use@BarrelBlock@@UEBA_NAEAVPlayer@@AEBVBlockPos@@E@Z",
 THook(bool, "?stopOpen@BarrelBlockActor@@UEAAXAEAVPlayer@@@Z",
     void* _this, Player* pl)
 {
-    IF_LISTENED(EVENT_TYPES::OnCloseBarrel)
+    IF_LISTENED(EVENT_TYPES::onCloseBarrel)
     {
         auto bp = (BlockPos*)((char*)_this - 204);
 
-        CallEventEx(EVENT_TYPES::OnCloseBarrel, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetPlayerDimId(pl)));
+        CallEventEx(EVENT_TYPES::onCloseBarrel, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetPlayerDimId(pl)));
     }
     return original(_this, pl);
 }
@@ -518,7 +518,7 @@ class LevelContainerModel;
 THook(void, "?_onItemChanged@LevelContainerModel@@MEAAXHAEBVItemStack@@0@Z",
     LevelContainerModel* _this, int slotNumber, ItemStack* oldItem, ItemStack* newItem)
 {
-    IF_LISTENED(EVENT_TYPES::OnChangeSlot)
+    IF_LISTENED(EVENT_TYPES::onChangeSlot)
     {
         Actor* pl = dAccess<Actor*>(_this, 208);
         BlockSource* bs = dAccess<BlockSource*>(pl, 872);
@@ -527,7 +527,7 @@ THook(void, "?_onItemChanged@LevelContainerModel@@MEAAXHAEBVItemStack@@0@Z",
 
         bool isPutIn = Raw_IsNull(oldItem);
 
-        CallEvent(EVENT_TYPES::OnChangeSlot, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(block, bpos, bs),
+        CallEvent(EVENT_TYPES::onChangeSlot, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(block, bpos, bs),
             IntPos::newPos(bpos->x, bpos->y, bpos->z, Raw_GetBlockDimension(bs)), slotNumber, isPutIn,
             ItemClass::newItem(isPutIn ? newItem : oldItem));
     }
@@ -538,9 +538,9 @@ THook(void, "?_onItemChanged@LevelContainerModel@@MEAAXHAEBVItemStack@@0@Z",
 THook(bool, "?explode@Level@@UEAAXAEAVBlockSource@@PEAVActor@@AEBVVec3@@M_N3M3@Z",
     Level* _this, BlockSource* bs, Actor* actor, Vec3 pos, float a5, bool a6, bool a7, float a8, bool a9)
 {
-    IF_LISTENED(EVENT_TYPES::OnExplode)
+    IF_LISTENED(EVENT_TYPES::onExplode)
     {
-        CallEventEx(EVENT_TYPES::OnExplode, EntityClass::newEntity(actor), FloatPos::newPos(pos.x, pos.y, pos.z));
+        CallEventEx(EVENT_TYPES::onExplode, EntityClass::newEntity(actor), FloatPos::newPos(pos.x, pos.y, pos.z));
     }
     return original(_this, bs, actor, pos, a5, a6, a7, a8, a9);
 }
@@ -549,90 +549,90 @@ THook(bool, "?explode@Level@@UEAAXAEAVBlockSource@@PEAVActor@@AEBVVec3@@M_N3M3@Z
 THook(void, "?onExploded@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@PEAVActor@@@Z",
     Block* _this, BlockSource *bs, BlockPos *bp, Actor * actor)
 {
-    IF_LISTENED(EVENT_TYPES::OnBlockExploded)
+    IF_LISTENED(EVENT_TYPES::onBlockExploded)
     {
-        CallEvent(EVENT_TYPES::OnBlockExploded,BlockClass::newBlock(_this,bp,bs),IntPos::newPos(*bp,Raw_GetBlockDimension(bs)),EntityClass::newEntity(actor));
+        CallEvent(EVENT_TYPES::onBlockExploded,BlockClass::newBlock(_this,bp,bs),IntPos::newPos(*bp,Raw_GetBlockDimension(bs)),EntityClass::newEntity(actor));
     }
     return original(_this, bs, bp, actor);
 }
 
-// ===== OnProjectileHit =====
+// ===== onProjectileHit =====
 THook(void, "?onProjectileHit@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@AEBVActor@@@Z",
     Block* _this, BlockSource* bs, BlockPos* bp, Actor* actor)
 {
-    IF_LISTENED(EVENT_TYPES::OnProjectileHit)       //################# 击中实体也会！################# 
+    IF_LISTENED(EVENT_TYPES::onProjectileHit)       //################# 击中实体也会！################# 
     {
-        CallEvent(EVENT_TYPES::OnProjectileHit,BlockClass::newBlock(_this,bp,bs),IntPos::newPos(*bp, Raw_GetBlockDimension(bs)),EntityClass::newEntity(actor));
+        CallEvent(EVENT_TYPES::onProjectileHit,BlockClass::newBlock(_this,bp,bs),IntPos::newPos(*bp, Raw_GetBlockDimension(bs)),EntityClass::newEntity(actor));
     }
     return original(_this, bs, bp, actor);
 }
 
-// ===== OnInteractdWith =====
+// ===== onBlockInteractd =====
 THook(unsigned short, "?onBlockInteractedWith@VanillaServerGameplayEventListener@@UEAA?AW4EventResult@@AEAVPlayer@@AEBVBlockPos@@@Z",
     void* _this, Player* pl, BlockPos* bp)
 {
-    IF_LISTENED(EVENT_TYPES::OnInteractdWith)
+    IF_LISTENED(EVENT_TYPES::onBlockInteractd)
     {
-        CallEventRtn(EVENT_TYPES::OnInteractdWith, 0, PlayerClass::newPlayer(pl), IntPos::newPos(*bp, Raw_GetPlayerDimId(pl)));
+        CallEventRtn(EVENT_TYPES::onBlockInteractd, 0, PlayerClass::newPlayer(pl), IntPos::newPos(*bp, Raw_GetPlayerDimId(pl)));
     }
     return original(_this, pl, bp);
 }
 
-// ===== OnUseRespawnAnchor =====
+// ===== onUseRespawnAnchor =====
 THook(bool, "?trySetSpawn@RespawnAnchorBlock@@CA_NAEAVPlayer@@AEBVBlockPos@@AEAVBlockSource@@AEAVLevel@@@Z",
     Player* pl, BlockPos* a2, BlockSource* a3, Level* a4)
 {
-    IF_LISTENED(EVENT_TYPES::OnUseRespawnAnchor)
+    IF_LISTENED(EVENT_TYPES::onUseRespawnAnchor)
     {
-        CallEventEx(EVENT_TYPES::OnUseRespawnAnchor,PlayerClass::newPlayer(pl),IntPos::newPos(*a2, Raw_GetBlockDimension(a3)));
+        CallEventEx(EVENT_TYPES::onUseRespawnAnchor,PlayerClass::newPlayer(pl),IntPos::newPos(*a2, Raw_GetBlockDimension(a3)));
     }
     return original(pl, a2, a3, a4);
 }
 
-// ===== OnFarmLandDecay =====
+// ===== onFarmLandDecay =====
 THook(void, "?transformOnFall@FarmBlock@@UEBAXAEAVBlockSource@@AEBVBlockPos@@PEAVActor@@M@Z",
     void *_this, BlockSource * bs, BlockPos * bp, Actor * ac, float a5)
 {
-    IF_LISTENED(EVENT_TYPES::OnFarmLandDecay)
+    IF_LISTENED(EVENT_TYPES::onFarmLandDecay)
     {
-        CallEvent(EVENT_TYPES::OnFarmLandDecay,IntPos::newPos(*bp, Raw_GetBlockDimension(bs)),EntityClass::newEntity(ac));
+        CallEvent(EVENT_TYPES::onFarmLandDecay,IntPos::newPos(*bp, Raw_GetBlockDimension(bs)),EntityClass::newEntity(ac));
     }
     return original(_this,bs,bp,ac,a5);
 }
 
-// ===== OnPistonPush =====
+// ===== onPistonPush =====
 THook(bool, "?_attachedBlockWalker@PistonBlockActor@@AEAA_NAEAVBlockSource@@AEBVBlockPos@@EE@Z",
     BlockActor* _this, BlockSource* bs, BlockPos* bp, unsigned a3, unsigned a4)
 {
-    IF_LISTENED(EVENT_TYPES::OnPistonPush)
+    IF_LISTENED(EVENT_TYPES::onPistonPush)
     {
         int dim = Raw_GetBlockDimension(bs);
         BlockPos pistonPos = _this->getPosition();
         Block* pushedBlock = Raw_GetBlockByPos(bp->x, bp->y, bp->z, bs);
 
-        CallEventEx(EVENT_TYPES::OnPistonPush, IntPos::newPos(pistonPos, dim), BlockClass::newBlock(pushedBlock, bp, dim));
+        CallEventEx(EVENT_TYPES::onPistonPush, IntPos::newPos(pistonPos, dim), BlockClass::newBlock(pushedBlock, bp, dim));
     }
     return original(_this, bs, bp, a3, a4);
 }
 
-// ===== OnHopperSearchItem =====
+// ===== onHopperSearchItem =====
 THook(bool, "?_tryPullInItemsFromAboveContainer@Hopper@@IEAA_NAEAVBlockSource@@AEAVContainer@@AEBVVec3@@@Z",
     void* _this, BlockSource* bs, void* container, Vec3* pos)
 {
-    IF_LISTENED(EVENT_TYPES::OnHopperSearchItem)
+    IF_LISTENED(EVENT_TYPES::onHopperSearchItem)
     {
-        CallEventEx(EVENT_TYPES::OnHopperSearchItem, FloatPos::newPos(*pos, Raw_GetBlockDimension(bs)));
+        CallEventEx(EVENT_TYPES::onHopperSearchItem, FloatPos::newPos(*pos, Raw_GetBlockDimension(bs)));
     }
     return original(_this, bs, container, pos);
 }
 
-// ===== OnHopperPushOut =====
+// ===== onHopperPushOut =====
 THook(bool, "?_pushOutItems@Hopper@@IEAA_NAEAVBlockSource@@AEAVContainer@@AEBVVec3@@H@Z",
     void* _this, BlockSource* bs, void* container, Vec3* pos, int a5)
 {
-    IF_LISTENED(EVENT_TYPES::OnHopperPushOut)
+    IF_LISTENED(EVENT_TYPES::onHopperPushOut)
     {
-        CallEventEx(EVENT_TYPES::OnHopperPushOut, FloatPos::newPos(*pos, Raw_GetBlockDimension(bs)));
+        CallEventEx(EVENT_TYPES::onHopperPushOut, FloatPos::newPos(*pos, Raw_GetBlockDimension(bs)));
     }
     return original(_this, bs, container, pos, a5);
 }
@@ -653,9 +653,9 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
             return false;
 
         bool callbackRes = CallServerCmdCallback(cmd);
-        IF_LISTENED(EVENT_TYPES::OnServerCmd)
+        IF_LISTENED(EVENT_TYPES::onServerCmd)
         {
-            CallEventEx(EVENT_TYPES::OnServerCmd, cmd);
+            CallEventEx(EVENT_TYPES::onServerCmd, cmd);
         }
         if (!callbackRes)
             return false;
@@ -667,7 +667,7 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
 THook(void, "?handle@?$PacketHandlerDispatcherInstance@VModalFormResponsePacket@@$0A@@@UEBAXAEBVNetworkIdentifier@@AEAVNetEventCallback@@AEAV?$shared_ptr@VPacket@@@std@@@Z",
 	void* _this, unsigned long long id, ServerNetworkHandler* handler, void* packet)
 {
-    //IF_LISTENED(EVENT_TYPES::OnFormSelected)
+    //IF_LISTENED(EVENT_TYPES::onFormSelected)
 
     Player* p = handler->_getServerPlayer(*(NetworkIdentifier*)(void*)id, *(unsigned char*)packet);
     if (p)
@@ -689,9 +689,9 @@ THook(void, "?handle@?$PacketHandlerDispatcherInstance@VModalFormResponsePacket@
 THook(ostream&, "??$_Insert_string@DU?$char_traits@D@std@@_K@std@@YAAEAV?$basic_ostream@DU?$char_traits@D@std@@@0@AEAV10@QEBD_K@Z",
     ostream& _this, const char* str, unsigned size)
 {
-    IF_LISTENED(EVENT_TYPES::OnConsoleOutput)
+    IF_LISTENED(EVENT_TYPES::onConsoleOutput)
     {
-        CallEventRtn(EVENT_TYPES::OnConsoleOutput, _this, String::newString(string(str)));
+        CallEventRtn(EVENT_TYPES::onConsoleOutput, _this, String::newString(string(str)));
     }
     return original(_this, str, size);
 }
