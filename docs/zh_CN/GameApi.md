@@ -605,7 +605,7 @@ pl.removeScore("what");
 
 ```
 
-#### 设置玩家自定义侧边栏计分板  
+#### 设置玩家自定义侧边栏
 
 `pl.setSidebar(title,data)`
 
@@ -614,14 +614,9 @@ pl.removeScore("what");
   - title : `String`  
     侧边栏标题  
 
-  - data : `Array<Object<String-String>, Object<String-String>, ...>`  
-    侧边栏对象数组  
-    对于数组中的某个对象`item`，有下面这些成员  
-
-    | 成员       | 含义               | 类型      |
-    | ---------- | ------------------ | --------- |
-    | item.name  | 侧边栏显示项的名字 | `String`  |
-    | item.value | 侧边栏显示项的数值 | `Integer` |
+  - data : `Object<String-Integer>`  
+    侧边栏对象内容对象  
+    对象中的每个键 - 值对将被设置为侧边栏内容的一行
 
 - 返回值：是否成功设置
 
@@ -630,12 +625,12 @@ pl.removeScore("what");
 ```clike
 [Js]
 //对于一个玩家对象pl
-pl.setSidebar("title",[{name:"aaaa",value:3},{name:"bbbb",value:12},{name:"ccc",value:7}]);
+pl.setSidebar("title",{"aaaa":3,"bbb":12,"cc":7});
 [Lua]
 
 ```
 
-#### 移除玩家自定义侧边栏计分板  
+#### 移除玩家自定义侧边栏
 
 `pl.removeSidebar()`
 

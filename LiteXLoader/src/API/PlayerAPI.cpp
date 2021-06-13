@@ -426,17 +426,16 @@ Local<Value> PlayerClass::setSidebar(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,2)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
-    CHECK_ARG_TYPE(args[1],ValueKind::kArray)
+    CHECK_ARG_TYPE(args[1],ValueKind::kObject)
     
-    try{
-        auto arr = args[1].asArray();
-        CHECK_ARG_TYPE(arr.get(0),ValueKind::kObject)
-
-        std::vector<std::pair<std::string,int>> data;
-        for(int i=0;i<arr.size();++i)
+    try
+    {
+        std::vector<std::pair<std::string, int>> data;
+        auto source = args[1].asObject();
+        auto keys = source.getKeyNames();
+        for (auto& key : keys)
         {
-            auto obj = arr.get(i).asObject();
-            data.push_back({obj.get("name").toStr(), obj.get("value").toInt()});
+            data.push_back(make_pair(key, source.get(key).toInt()));
         }
 
         return Boolean::newBoolean(Raw_SetSidebar(player,args[0].toStr(),data));
