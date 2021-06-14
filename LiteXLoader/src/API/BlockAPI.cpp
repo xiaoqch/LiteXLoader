@@ -1,6 +1,7 @@
 #include "APIhelp.h"
 #include "BlockAPI.h"
 #include <Kernel/Block.h>
+#include <Kernel/SymbolHelper.h>
 using namespace script;
 
 //////////////////// Class Definition ////////////////////

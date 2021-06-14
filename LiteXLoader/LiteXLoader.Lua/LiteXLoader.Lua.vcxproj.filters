@@ -118,7 +118,7 @@
     <ClCompile Include="..\src\Loader.cpp">
       <Filter>Main</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Kernel\Global.cpp">
+    <ClCompile Include="..\src\Kernel\SymbolHelper.cpp">
       <Filter>Kernel</Filter>
     </ClCompile>
   </ItemGroup>

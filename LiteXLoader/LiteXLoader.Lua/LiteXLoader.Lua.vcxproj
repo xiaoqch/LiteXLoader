@@ -43,13 +43,13 @@
     <ClCompile Include="..\src\Kernel\Db.cpp" />
     <ClCompile Include="..\src\Kernel\Entity.cpp" />
     <ClCompile Include="..\src\Kernel\Event.cpp" />
-    <ClCompile Include="..\src\Kernel\Global.cpp" />
     <ClCompile Include="..\src\Kernel\Gui.cpp" />
     <ClCompile Include="..\src\Kernel\Item.cpp" />
     <ClCompile Include="..\src\Kernel\NBT.cpp" />
     <ClCompile Include="..\src\Kernel\Packet.cpp" />
     <ClCompile Include="..\src\Kernel\Player.cpp" />
     <ClCompile Include="..\src\Kernel\Server.cpp" />
+    <ClCompile Include="..\src\Kernel\SymbolHelper.cpp" />
     <ClCompile Include="..\src\Kernel\System.cpp" />
     <ClCompile Include="..\src\LiteXLoader.cpp" />
     <ClCompile Include="..\src\Loader.cpp" />

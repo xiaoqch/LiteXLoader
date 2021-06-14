@@ -2,7 +2,6 @@
 
 [<< 返回目录](Development.md)
 
-
 事件系统和事件相关的处理代码，将是你编写插件的重要组成部分。  
 下面这些API，提供了监听**游戏事件**并做出响应的相关能力。
 
@@ -41,6 +40,11 @@
 ---
 ## 📜 监听事件列表
 目前，LiteXLoader支持如下这些事件的监听。
+
+> 提示：接下来的许多事件，你会发现并没有给出与事件相关的坐标参数。  
+> 但是不要忘记，通过玩家对象 / 方块对象 / 实体对象的 pos 属性是可以获取到他们的坐标的  
+> 而且还可以顺带查询许许多多其他的数据，并完成一些函数调用  
+> 这里的接口的设计哲学是：只要可以提供完善的对象，就把 pos 属性封装起来，而非作为参数单独传输
 
 ### 🏃‍♂️ 玩家相关事件
 
@@ -160,7 +164,7 @@
 
 #### `"onUseItem"` - 玩家使用物品 / 点击右键
 - 监听函数原型
-  `function(player,item,block,pos)`
+  `function(player,item,block)`
 - 参数：
     - player : `Player`  
       使用物品的玩家对象
@@ -168,8 +172,6 @@
       被使用的物品对象
     - block : `Block`  
       被点击到的方块对象
-    - pos : `IntPos`  
-      被点击到方块坐标
 - 拦截事件：函数返回`false`
 
 注：Win10客户端玩家右键会在服务端连续多次激发这个事件
@@ -222,13 +224,13 @@
 #### `"onDestroyingBlock"` - 玩家正在破坏方块  / 点击左键
 
 - 监听函数原型
-  `function(player,block,pos)`
+  `function(player,block)`
 - 参数：
   - player : `Player`  
-    破坏方块的玩家对象
+    正在破坏方块的玩家对象
 
   - block : `Block`  
-    被破坏的方块对象
+    正在被破坏的方块对象
 
 - 拦截事件：不可以拦截
 
@@ -238,7 +240,7 @@
 
 #### `"onDestroyBlock"` - 玩家破坏方块完成
 - 监听函数原型
-`function(player,block,pos)`
+`function(player,block)`
 - 参数：
     - player : `Player`  
       破坏方块的玩家对象
@@ -246,25 +248,19 @@
     - block : `Block`  
       被破坏的方块对象
 
-    - pos : `IntPos`  
-      被破坏的方块坐标
-
 - 拦截事件：函数返回`false`
 
 <br>
 
 #### `"onPlaceBlock"` - 玩家放置方块
 - 监听函数原型
-`function(player,block,pos)`
+`function(player,block)`
 - 参数：
     - player : `Player`  
       放置方块的玩家对象
 
     - block : `Block`  
       被放置的方块对象
-
-    - pos : `IntPos`  
-      被放置的方块坐标
 
 - 拦截事件：函数返回`false`
 
@@ -335,8 +331,6 @@
       操作容器的玩家对象
     - container : `Block`  
       被操作的容器的方块对象
-    - pos : `IntPos`  
-      被操作的容器的坐标
     - slotNum : `Integer`  
       操作容器的格子位置（第slotNum个格子）
     - isPutIn : `Boolean`  
@@ -444,12 +438,10 @@
 #### `"onBlockExploded"` - 方块被爆炸破坏
 
 - 监听函数原型
-  `function(block,pos,source)`
+  `function(block,source)`
 - 参数：
   - block : `Block`  
     被爆炸破坏的方块对象
-  - pos : `IntPos`  
-    被爆炸破坏的方块坐标
   - source : `Entity`  
     爆炸来源的实体对象
 - 拦截事件：不可以拦截
@@ -477,8 +469,6 @@
 - 参数：
   - block : `Block`  
     被击中的方块对象
-  - pos : `IntPos`  
-    被击中的方块坐标
   - source : `Entity`  
     弹射物来源的实体对象
 - 拦截事件：不可以拦截
@@ -493,8 +483,8 @@
   - player : `Player`  
     与方块互动的玩家对象
 
-  - pos : `IntPos`  
-    被互动的方块坐标
+  - block : `Block`  
+    被互动的方块对象
 
 - 拦截事件：函数返回`false`
 

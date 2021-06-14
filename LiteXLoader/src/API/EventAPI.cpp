@@ -423,7 +423,7 @@ THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@
         auto sp = *reinterpret_cast<Player**>(reinterpret_cast<unsigned long long>(_this) + 8);
 
         CallEventEx(EVENT_TYPES::onUseItem, PlayerClass::newPlayer(sp), ItemClass::newItem(item),
-            BlockClass::newBlock(bl,bp), IntPos::newPos(bp->x, bp->y, bp->z, WPlayer(*sp).getDimID()));
+            BlockClass::newBlock(bl, bp, WPlayer(*sp).getDimID()));
     }
     return original(_this, item, bp, a4, a5, bl);
 }
@@ -432,7 +432,7 @@ THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@
 THook(float, "?getDestroySpeed@Player@@QEBAMAEBVBlock@@@Z",
     Player* _this, Block* bl)
 {
-    IF_LISTENED(EVENT_TYPES::onDestroyingBlock)
+    IF_LISTENED(EVENT_TYPES::onDestroyingBlock)     //############## 找个可以获取坐标的？ ################
     {
         CallEvent(EVENT_TYPES::onDestroyingBlock, PlayerClass::newPlayer(_this), BlockClass::newBlock(bl));
     }
@@ -445,10 +445,9 @@ THook(bool, "?checkBlockDestroyPermissions@BlockSource@@QEAA_NAEAVActor@@AEBVBlo
 {
     IF_LISTENED(EVENT_TYPES::onDestroyBlock)
     {
-        auto block = SymCall("?getBlock@BlockSource@@QEBAAEBVBlock@@AEBVBlockPos@@@Z", Block*, BlockSource*, BlockPos*)(_this, pos);
+        auto block = Raw_GetBlockByPos(pos->x, pos->y, pos->z, _this);
 
-        CallEventEx(EVENT_TYPES::onDestroyBlock, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(block,pos,_this),
-            IntPos::newPos(pos->x, pos->y, pos->z,Raw_GetBlockDimension(_this)));
+        CallEventEx(EVENT_TYPES::onDestroyBlock, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(block,pos,_this));
     }
     return original(_this, pl, pos,a3, a4);
 }
@@ -459,7 +458,7 @@ THook(bool, "?mayPlace@BlockSource@@QEAA_NAEBVBlock@@AEBVBlockPos@@EPEAVActor@@_
 {
     IF_LISTENED(EVENT_TYPES::onPlaceBlock)
     {
-        CallEventEx(EVENT_TYPES::onPlaceBlock, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(bl,bp,bs), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetBlockDimension(bs)));
+        CallEventEx(EVENT_TYPES::onPlaceBlock, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(bl,bp,bs));
     }
     return original(bs, bl, bp, a4, pl, a6);
 }
@@ -521,15 +520,14 @@ THook(void, "?_onItemChanged@LevelContainerModel@@MEAAXHAEBVItemStack@@0@Z",
     IF_LISTENED(EVENT_TYPES::onChangeSlot)
     {
         Actor* pl = dAccess<Actor*>(_this, 208);
-        BlockSource* bs = dAccess<BlockSource*>(pl, 872);
+        BlockSource* bs = Raw_GetBlockSourceByActor(pl);
         BlockPos* bpos = (BlockPos*)((char*)_this + 216);
         Block* block = Raw_GetBlockByPos(bpos->x, bpos->y, bpos->z, bs);
 
         bool isPutIn = Raw_IsNull(oldItem);
 
         CallEvent(EVENT_TYPES::onChangeSlot, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(block, bpos, bs),
-            IntPos::newPos(bpos->x, bpos->y, bpos->z, Raw_GetBlockDimension(bs)), slotNumber, isPutIn,
-            ItemClass::newItem(isPutIn ? newItem : oldItem));
+            slotNumber, isPutIn, ItemClass::newItem(isPutIn ? newItem : oldItem));
     }
     return original(_this, slotNumber, oldItem, newItem);
 }
@@ -551,7 +549,7 @@ THook(void, "?onExploded@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@PEAVActor@@@
 {
     IF_LISTENED(EVENT_TYPES::onBlockExploded)
     {
-        CallEvent(EVENT_TYPES::onBlockExploded,BlockClass::newBlock(_this,bp,bs),IntPos::newPos(*bp,Raw_GetBlockDimension(bs)),EntityClass::newEntity(actor));
+        CallEvent(EVENT_TYPES::onBlockExploded, BlockClass::newBlock(_this,bp,bs), EntityClass::newEntity(actor));
     }
     return original(_this, bs, bp, actor);
 }
@@ -560,9 +558,9 @@ THook(void, "?onExploded@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@PEAVActor@@@
 THook(void, "?onProjectileHit@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@AEBVActor@@@Z",
     Block* _this, BlockSource* bs, BlockPos* bp, Actor* actor)
 {
-    IF_LISTENED(EVENT_TYPES::onProjectileHit)       //################# 击中实体也会！################# 
+    IF_LISTENED(EVENT_TYPES::onProjectileHit)       //################# 击中实体时也会触发 ################# 
     {
-        CallEvent(EVENT_TYPES::onProjectileHit,BlockClass::newBlock(_this,bp,bs),IntPos::newPos(*bp, Raw_GetBlockDimension(bs)),EntityClass::newEntity(actor));
+        CallEvent(EVENT_TYPES::onProjectileHit, BlockClass::newBlock(_this,bp,bs), EntityClass::newEntity(actor));
     }
     return original(_this, bs, bp, actor);
 }
@@ -573,7 +571,10 @@ THook(unsigned short, "?onBlockInteractedWith@VanillaServerGameplayEventListener
 {
     IF_LISTENED(EVENT_TYPES::onBlockInteractd)
     {
-        CallEventRtn(EVENT_TYPES::onBlockInteractd, 0, PlayerClass::newPlayer(pl), IntPos::newPos(*bp, Raw_GetPlayerDimId(pl)));
+        BlockSource* bs = Raw_GetBlockSourceByActor((Actor*)pl);
+
+        CallEventRtn(EVENT_TYPES::onBlockInteractd, 0, PlayerClass::newPlayer(pl), 
+            BlockClass::newBlock(Raw_GetBlockByPos(bp->x, bp->y, bp->z, bs), bp, bs));
     }
     return original(_this, pl, bp);
 }
@@ -860,7 +861,7 @@ bool CallFormCallback(int formId, const string& data)
 
     EngineScope scope(callback.first);
     auto res = callback.second.get().call({}, String::newString(data));
-    if (res.isBoolean() && res.asBoolean().value() == false)
+    if (res.isNull() || (res.isBoolean() && res.asBoolean().value() == false))
         passToBDS = false;
 
     return passToBDS;
