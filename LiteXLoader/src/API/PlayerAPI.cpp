@@ -25,14 +25,16 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceProperty("xuid", &PlayerClass::getXuid)
         .instanceProperty("uuid", &PlayerClass::getUuid)
         .instanceProperty("ip", &PlayerClass::getIP)
+        .instanceProperty("permLevel", &PlayerClass::getPermLevel)
+        .instanceProperty("gameMode", &PlayerClass::getGameMode)
         .instanceProperty("maxHealth", &PlayerClass::getMaxHealth)
         .instanceProperty("health", &PlayerClass::getHealth)
         .instanceProperty("inAir", &PlayerClass::getInAir)
         .instanceProperty("sneaking", &PlayerClass::getSneaking)
 
         .instanceFunction("isOP", &PlayerClass::isOP)
-        .instanceFunction("getPermLevel", &PlayerClass::getPermLevel)
         .instanceFunction("setPermLevel", &PlayerClass::setPermLevel)
+        .instanceFunction("setGameMode", &PlayerClass::setGameMode)
 
         .instanceFunction("runcmd", &PlayerClass::runcmd)
         .instanceFunction("teleport", &PlayerClass::teleport)
@@ -140,7 +142,7 @@ Local<Value> PlayerClass::getName()
     try{
         return String::newString(Raw_GetPlayerName(player));
     }
-    CATCH("Fail in GetPlayerName!")
+    CATCH("Fail in getPlayerName!")
 }
 
 Local<Value> PlayerClass::getPos()
@@ -148,7 +150,7 @@ Local<Value> PlayerClass::getPos()
     try{
         return FloatPos::newPos(Raw_GetPlayerPos(player));
     }
-    CATCH("Fail in GetPlayerPos!")
+    CATCH("Fail in getPlayerPos!")
 }
 
 Local<Value> PlayerClass::getXuid()
@@ -156,7 +158,7 @@ Local<Value> PlayerClass::getXuid()
     try{
         return String::newString(Raw_GetXuid(player));
     }
-    CATCH("Fail in GetXuid!")
+    CATCH("Fail in getXuid!")
 }
 
 Local<Value> PlayerClass::getUuid()
@@ -164,7 +166,7 @@ Local<Value> PlayerClass::getUuid()
     try{
         return String::newString(Raw_GetUuid(player));
     }
-    CATCH("Fail in GetXuid!")
+    CATCH("Fail in getXuid!")
 }
 
 Local<Value> PlayerClass::getRealName()
@@ -172,7 +174,7 @@ Local<Value> PlayerClass::getRealName()
     try{
         return String::newString(Raw_GetRealName(player));
     }
-    CATCH("Fail in GetRealName!")
+    CATCH("Fail in getRealName!")
 }
 
 Local<Value> PlayerClass::getIP()
@@ -181,6 +183,22 @@ Local<Value> PlayerClass::getIP()
         return String::newString(Raw_GetIP(player));
     }
     CATCH("Fail in GetIP!")
+}
+
+Local<Value> PlayerClass::getPermLevel()
+{
+    try {
+        return Number::newNumber(Raw_GetPlayerPermLevel(player));
+    }
+    CATCH("Fail in getPlayerPermLevel!")
+}
+
+Local<Value> PlayerClass::getGameMode()
+{
+    try {
+        return Number::newNumber(Raw_GetGameMode(player));
+    }
+    CATCH("Fail in getGameMode!")
 }
 
 Local<Value> PlayerClass::getSneaking()
@@ -245,14 +263,6 @@ Local<Value> PlayerClass::isOP(const Arguments& args)
     CATCH("Fail in IsOP!")
 }
 
-Local<Value> PlayerClass::getPermLevel(const Arguments& args)
-{
-    try{
-        return Number::newNumber(Raw_GetPlayerPermLevel(player));
-    }
-    CATCH("Fail in GetPlayerPermLevel!")
-}
-
 Local<Value> PlayerClass::setPermLevel(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
@@ -265,7 +275,22 @@ Local<Value> PlayerClass::setPermLevel(const Arguments& args)
             res = Raw_SetPlayerPermLevel(player,newPerm);
         return Boolean::newBoolean(res);
     }
-    CATCH("Fail in SetPlayerPermLevel!")
+    CATCH("Fail in setPlayerPermLevel!")
+}
+
+Local<Value> PlayerClass::setGameMode(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kNumber)
+
+    try {
+        bool res = false;
+        int newMode = args[0].asNumber().toInt32();
+        if (newMode >= 0 || newMode <= 3)
+            res = Raw_SetGameMode(player, newMode);
+        return Boolean::newBoolean(res);
+    }
+    CATCH("Fail in setGameMode!")
 }
 
 Local<Value> PlayerClass::runcmd(const Arguments& args)

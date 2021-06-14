@@ -38,10 +38,19 @@ string  Raw_GetIP(Player* player)
     return liteloader::getIP(*offPlayer::getNetworkIdentifier(player));
 }
 
+int Raw_GetPlayerPermLevel(Player* player)
+{
+    return (int)WPlayer(*player).getPermLvl();
+}
+
+int Raw_GetGameMode(Player* player)
+{
+    return SymCall("?getPlayerGameType@Player@@QEBA?AW4GameType@@XZ", unsigned short, Player*)(player);
+}
+
 bool Raw_GetSneaking(Player *player)
 {
-    return SymCall("?isSneaking@Actor@@QEBA_NXZ",
-        bool, Player*)(player);
+    return SymCall("?isSneaking@Actor@@QEBA_NXZ", bool, Player*)(player);
 }
 
 bool  Raw_RuncmdAs(Player *player, const string &cmd)
@@ -61,15 +70,16 @@ bool Raw_KillPlayer(Player* player)
     return true;
 }
 
-int Raw_GetPlayerPermLevel(Player* player)
-{
-    return (int)WPlayer(*player).getPermLvl();
-}
-
 bool Raw_SetPlayerPermLevel(Player* player, int permLevel)
 {
     ((ServerPlayer*)player)->setPermissions((CommandPermissionLevel)permLevel);
     return true;
+}
+
+bool Raw_SetGameMode(Player* player, int gameMode)
+{
+    SymCall("?setPlayerGameType@Player@@UEAAXW4GameType@@@Z", void, Player*, unsigned short)(player, (unsigned short)gameMode);
+    return true;        //############ 发包给客户端 ############
 }
 
 bool Raw_KickPlayer(Player* player, const string &msg)
