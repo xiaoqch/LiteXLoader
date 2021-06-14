@@ -60,7 +60,7 @@ bool  Raw_RuncmdAs(Player *player, const string &cmd)
 
 bool Raw_TeleportPlayer(Player* player, const FloatVec4 &pos)
 {
-    WPlayer(*player).teleport({pos.x,pos.y,pos.z},pos.dim);
+    WPlayer(*player).teleport({pos.x,pos.y,pos.z}  ,pos.dim);
     return true;
 }
 
@@ -79,7 +79,7 @@ bool Raw_SetPlayerPermLevel(Player* player, int permLevel)
 bool Raw_SetGameMode(Player* player, int gameMode)
 {
     SymCall("?setPlayerGameType@Player@@UEAAXW4GameType@@@Z", void, Player*, unsigned short)(player, (unsigned short)gameMode);
-    return true;        //############ 发包给客户端 ############
+    return true;        //############ 加上发包给客户端 ############
 }
 
 bool Raw_KickPlayer(Player* player, const string &msg)

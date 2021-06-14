@@ -18,8 +18,8 @@ bool Raw_SendPacket(Player *player,void *packet)
 
 int Raw_SendFormPacket(Player* player, const string &data)
 {
-    static int id = 1;
-	++id;
+    static int id = 0;
+    id = 255 + id * 127;
 
     void *packet = Raw_CreatePacket(100);   //表单数据包
     dAccess<unsigned>(packet, 48) = id;

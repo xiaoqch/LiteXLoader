@@ -1,6 +1,7 @@
 ﻿// Ignore error below
 #include <ScriptX/ScriptX.h>
 #include <API/APIhelp.h>
+#include <API/EngineGlobalData.h>
 #include <API/EngineOwnData.h>
 #include <Kernel/Db.h>
 #include <Kernel/System.h>
@@ -37,6 +38,9 @@ void entry()
     if (!iniConf)
         ERROR("Failed in loading configs of LXL!");
     lxlLogLevel = Raw_IniGetInt(iniConf,"Main","LxlLogLevel",1);
+
+    //初始化全局数据
+    InitEngineGlobalData();
 
     //预加载库
     LoadBaseLib();
