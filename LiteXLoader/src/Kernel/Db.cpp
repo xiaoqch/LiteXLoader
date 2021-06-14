@@ -70,7 +70,9 @@ JSON_ROOT Raw_JsonOpen(const std::string& path, const std::string& defContent)
             }
         }
         else
-            jsonConf = JSON_VALUE::array();
+        {
+            jsonConf = JSON_VALUE::object();
+        }
 
         ofstream jsonFile(path);
         if (jsonFile.is_open() && defContent != "")
@@ -274,7 +276,7 @@ money_t Raw_GetMoney(xuid_t player)
     else
     {
         ERROR("API money.getMoney have not been loaded!");
-        return -1;
+        return 0;
     }
 }
 
@@ -285,7 +287,7 @@ bool Raw_SetMoney(xuid_t player, money_t money)
     else
     {
         ERROR("API money.setMoney have not been loaded!");
-        return -1;
+        return false;
     }
 }
 
@@ -296,7 +298,7 @@ bool Raw_AddMoney(xuid_t player, money_t money)
     else
     {
         ERROR("API money.addMoney have not been loaded!");
-        return -1;
+        return false;
     }
 }
 
@@ -307,7 +309,7 @@ bool Raw_ReduceMoney(xuid_t player, money_t money)
     else
     {
         ERROR("API money.reduceMoney have not been loaded!");
-        return -1;
+        return false;
     }
 }
 
@@ -318,7 +320,7 @@ bool Raw_TransMoney(xuid_t player1, xuid_t player2, money_t money, string const&
     else
     {
         ERROR("API money.transMoney have not been loaded!");
-        return -1;
+        return false;
     }
 }
 

@@ -859,7 +859,7 @@ bool CallServerCmdCallback(const string& cmd)
 bool CallFormCallback(unsigned formId, const string& data)
 {
     bool passToBDS = true;
-    auto callback = engineGlobalData->formCallbacks[formId];
+    auto callback = engineGlobalData->formCallbacks[formId];    //###!!!!####### 全局变量不同步？？ ###!!!!#######
 
     EngineScope scope(callback.engine);
     auto res = callback.func.get().call({}, String::newString(data));

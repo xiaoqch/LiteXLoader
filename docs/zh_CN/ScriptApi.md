@@ -232,7 +232,7 @@
 则在接下来的日志输出将变为形如：  
 
 ```
-[LiteXLoader] [2021-05-21 19:41:03 Error] Fail to transport the player
+[LiteXLoader][2021-05-21 19:41:03 Error] Fail to transport the player
 ```
 
 如果在设置之后想要关闭标头，请执行`logger.setTitle("")`

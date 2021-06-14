@@ -20,7 +20,7 @@ int Raw_SendSimpleForm(Player* player,const string &title,const string &content,
 
     model = model.replace(model.find("%s"),2, result);
 
-    return Raw_SendFormPacket(player,model);    //############## callback崩服 ##############
+    return Raw_SendFormPacket(player,model);
 }
 
 int Raw_SendModalForm(Player* player,const string &title,const string &content,const string &button1,const string &button2)

@@ -27,7 +27,7 @@ public:
 };
 
 
-class ConfBaseClass : public ScriptClass
+class ConfBaseClass
 {
 protected:
     std::string confPath;
@@ -42,7 +42,7 @@ public:
 };
 
 
-class ConfJsonClass : public ConfBaseClass
+class ConfJsonClass : public ScriptClass, public ConfBaseClass
 {
 private:
     JSON_ROOT jsonConf;
@@ -59,7 +59,7 @@ public:
 };
 
 
-class ConfIniClass : public ConfBaseClass
+class ConfIniClass : public ScriptClass, public ConfBaseClass
 {
 private:
     INI_ROOT iniConf;

@@ -524,6 +524,7 @@ Local<Value> PlayerClass::sendSimpleForm(const Arguments& args)
 
         int formId = Raw_SendSimpleForm(player, args[0].toStr(), args[1].toStr(), buttons);
         engineGlobalData->formCallbacks[(unsigned)formId] = { EngineScope::currentEngine(),Global<Function>(args[3].asFunction()) };
+        //###!!!!####### 全局变量不同步？？ ###!!!!#######
 
         return Number::newNumber(formId);
     }

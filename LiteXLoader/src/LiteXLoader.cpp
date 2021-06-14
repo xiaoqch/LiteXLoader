@@ -42,6 +42,9 @@ void entry()
     //初始化全局数据
     InitEngineGlobalData();
 
+    //初始化经济系统
+    Raw_InitEcnonmicSystem();
+
     //预加载库
     LoadBaseLib();
     LoadDepends();

@@ -149,7 +149,7 @@ void JsonToValue_Helper(Local<Array> &res, JSON_VALUE &j)
         res.add(Local<Value>());
 }
 
-Local<Value> JsonToValue(JSON_VALUE j)
+Local<Value> JsonToValue(JSON_VALUE j)          //#################### 不分青红皂白加[]？？ ####################
 {
     Local<Value> res;
     
