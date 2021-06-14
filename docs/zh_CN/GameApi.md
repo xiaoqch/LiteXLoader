@@ -713,11 +713,12 @@ pl.removeBossBar();
 
 每一个方块对象都包含一些固定的对象属性。对于某个特定的方块对象`bl`，有以下这些属性
 
-| 属性    | 含义                 | 类型     |
-| ------- | -------------------- | -------- |
-| bl.name | 游戏内显示的方块名称 | `String` |
-| bl.type | 方块标准类型名       | `String` |
-| bl.pos  | 方块所在坐标         | `IntPos` |
+| 属性    | 含义                 | 类型      |
+| ------- | -------------------- | --------- |
+| bl.name | 游戏内显示的方块名称 | `String`  |
+| bl.type | 方块标准类型名       | `String`  |
+| bl.id   | 方块的游戏内id       | `Integer` |
+| bl.pos  | 方块所在坐标         | `IntPos`  |
 
 这些对象属性都是只读的，无法被修改
 
@@ -744,6 +745,7 @@ pl.removeBossBar();
 | -------- | ------------------------ | --------- |
 | it.name  | 游戏内显示的物品名称     | `String`  |
 | it.type  | 物品标准类型名           | `String`  |
+| it.id    | 物品的游戏内id           | `Integer` |
 | it.count | 这个物品对象堆叠的个数   | `Integer` |
 | it.aux   | 物品附加值（如羊毛颜色） | `Integer` |
 
@@ -799,6 +801,7 @@ pl.removeBossBar();
 | ------------ | ---------------- | ---------- |
 | en.name      | 实体名称         | `String`   |
 | en.type      | 实体标准类型名   | `String`   |
+| en.id        | 实体的游戏内id   | `Integer`  |
 | en.pos       | 实体所在坐标     | `FloatPos` |
 | en.maxHealth | 实体最大生命值   | `Integer`  |
 | en.health    | 实体当前生命值   | `Integer`  |

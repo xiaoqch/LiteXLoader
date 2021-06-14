@@ -11,6 +11,7 @@ ClassDefine<EntityClass> EntityClassBuilder =
         .constructor(nullptr)
         .instanceProperty("name", &EntityClass::getName)
         .instanceProperty("type", &EntityClass::getType)
+        .instanceProperty("id", &EntityClass::getId)
         .instanceProperty("pos", &EntityClass::getPos)
         .instanceProperty("maxHealth", &EntityClass::getMaxHealth)
         .instanceProperty("health", &EntityClass::getHealth)
@@ -57,6 +58,14 @@ Local<Value> EntityClass::getType()
         return String::newString(Raw_GetEntityTypeName(entity));
     }
     CATCH("Fail in getEntityType!")
+}
+
+Local<Value> EntityClass::getId()
+{
+    try {
+        return Number::newNumber(Raw_GetEntityId(entity));
+    }
+    CATCH("Fail in getEntityId!")
 }
 
 Local<Value> EntityClass::getPos()

@@ -11,6 +11,7 @@ ClassDefine<BlockClass> BlockClassBuilder =
         .constructor(nullptr)
         .instanceProperty("name", &BlockClass::getName)
         .instanceProperty("type", &BlockClass::getType)
+        .instanceProperty("id", &BlockClass::getId)
         .instanceProperty("pos", &BlockClass::getPos)
         .build();
 
@@ -20,17 +21,13 @@ ClassDefine<BlockClass> BlockClassBuilder =
 BlockClass::BlockClass(Block *p)
     :ScriptClass(ScriptClass::ConstructFromCpp<BlockClass>{}),block(p)
 {
-    name = Raw_GetBlockName(block);
-    type = Raw_GetBlockFullName(block);
-    pos = {0,0,0,-1};
+    preloadData({ 0,0,0 }, -1);
 }
 
 BlockClass::BlockClass(Block *p, BlockPos bp, int dim)
     :ScriptClass(ScriptClass::ConstructFromCpp<BlockClass>{}),block(p)
 {
-    name = Raw_GetBlockName(block);
-    type = Raw_GetBlockFullName(block);
-    pos = {bp.x,bp.y,bp.z,dim};
+    preloadData(bp, dim);
 }
 
 //生成函数
@@ -67,13 +64,21 @@ Block* BlockClass::extractBlock(Local<Value> v)
 }
 
 //成员函数
+void BlockClass::preloadData(BlockPos bp, int dim)
+{
+    name = Raw_GetBlockName(block);
+    type = Raw_GetBlockFullName(block);
+    id = Raw_GetBlockId(block);
+    pos = { bp.x,bp.y,bp.z,dim };
+}
+
 Local<Value> BlockClass::getName()
 {
     try{
         // 已预加载
         return String::newString(name);
     }
-    CATCH("Fail in GetBlockName!")
+    CATCH("Fail in getBlockName!")
 }
 
 Local<Value> BlockClass::getType()
@@ -82,7 +87,16 @@ Local<Value> BlockClass::getType()
         // 已预加载
         return String::newString(type);
     }
-    CATCH("Fail in GetBlockType!")
+    CATCH("Fail in getBlockType!")
+}
+
+Local<Value> BlockClass::getId()
+{
+    try {
+        // 已预加载
+        return Number::newNumber(id);
+    }
+    CATCH("Fail in getBlockId!")
 }
 
 Local<Value> BlockClass::getPos()
@@ -91,7 +105,7 @@ Local<Value> BlockClass::getPos()
         // 已预加载
         return IntPos::newPos(pos);
     }
-    CATCH("Fail in GetBlockPos!")
+    CATCH("Fail in getBlockPos!")
 }
 
 //公用API

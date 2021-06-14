@@ -15,16 +15,19 @@ private:
 
     // Pre data
     std::string name,type;
+    int id;
     IntVec4 pos;
 
 public:
 	explicit BlockClass(Block *p);
     BlockClass(Block *p, BlockPos bp, int dim);
 
+    void preloadData(BlockPos bp, int dim);
     Block *get()
     {
         return block;
     }
+
 
     static Local<Object> newBlock(Block *p);
     static Local<Object> newBlock(Block *p, BlockPos *pos);
@@ -35,6 +38,7 @@ public:
 
     Local<Value> getName();
     Local<Value> getType();
+    Local<Value> getId();
     Local<Value> getPos();
 };
 

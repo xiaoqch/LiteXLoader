@@ -8,6 +8,7 @@ class EntityClass : public ScriptClass
 {
 private:
     Actor *entity;
+
 public:
 	explicit EntityClass(Actor *p)
         :ScriptClass(ScriptClass::ConstructFromCpp<EntityClass>{}),entity(p)
@@ -23,6 +24,7 @@ public:
 
     Local<Value> getName();
     Local<Value> getType();
+    Local<Value> getId();
     Local<Value> getPos();
     Local<Value> getMaxHealth();
     Local<Value> getHealth();

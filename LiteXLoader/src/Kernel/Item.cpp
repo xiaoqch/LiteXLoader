@@ -27,6 +27,11 @@ std::string Raw_GetItemTypeName(ItemStack* item)
     return fullName; 
 }
 
+int Raw_GetItemId(ItemStack* item)
+{
+    return item->getId();
+}
+
 int Raw_GetItemAux(ItemStack* item)
 {
     if (Raw_IsNull(item))
