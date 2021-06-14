@@ -16,30 +16,8 @@ std::string Raw_GetBlockFullName(Block* block)
     return offBlock::getFullName(block);
 }
 
-//GetBlockDimension_Helper
-class AutomaticID<class Dimension, int> GetDimensionId(BlockSource *bs)
+int Raw_GetBlockId(Block* block)
 {
-    class AutomaticID<class Dimension, int> (BlockSource::*rv)() const;
-    *((void **)&rv) = dlsym("?getDimensionId@BlockSource@@QEBA?AV?$AutomaticID@VDimension@@H@@XZ");
-    return (bs->*rv)();
-}
-
-int Raw_GetBlockDimension(BlockSource *bs)
-{
-    return GetDimensionId(bs);
-}
-
-Block* Raw_GetBlockByPos(IntVec4 *pos)
-{
-	auto dim = SymCall("?getDimension@Level@@UEBAPEAVDimension@@V?$AutomaticID@VDimension@@H@@@Z",
-	      uintptr_t, void*, int)(mc->getLevel(), pos->dim);
-	auto bs = (BlockSource*)(dim + 88);
-
-    return Raw_GetBlockByPos(pos->x, pos->y, pos->z , bs);
-}
-
-Block* Raw_GetBlockByPos(int x, int y, int z, BlockSource* bs)
-{
-    return SymCall("?getBlock@BlockSource@@QEBAAEBVBlock@@HHH@Z",
-        Block*, BlockSource*, int, int, int)(bs, x, y, z);
+    auto blockLegacy = (BlockLegacy*)((uintptr_t)block + 16);
+    return blockLegacy->getBlockItemId();
 }

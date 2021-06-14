@@ -12,10 +12,11 @@ private:
 
     // Pre data
     std::string name,type;
-    int count,aux;
+    int id, count, aux;
 
 public:
 	explicit ItemClass(ItemStack *p);
+    void preloadData();
 
     ItemStack *get()
     {
@@ -27,13 +28,10 @@ public:
 
     Local<Value> getName();
     Local<Value> getType();
+    Local<Value> getId();
     Local<Value> getCount();
     Local<Value> getAux();
 
     Local<Value> isNull(const Arguments& args);
     Local<Value> setLore(const Arguments& args);
 };
-
-//////////////////// APIs ////////////////////
-
-Local<Value> SetLore(const Arguments& args);

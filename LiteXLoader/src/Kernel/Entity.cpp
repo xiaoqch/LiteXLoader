@@ -14,6 +14,11 @@ std::string Raw_GetEntityTypeName(Actor* actor)
         (actor->getEntityTypeId(), 1);
 }
 
+int Raw_GetEntityId(Actor* actor)
+{
+    return actor->getEntityTypeId();
+}
+
 FloatVec4 Raw_GetEntityPos(Actor* actor)
 {
     auto pos = actor->getPos();

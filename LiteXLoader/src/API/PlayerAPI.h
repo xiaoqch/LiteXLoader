@@ -27,14 +27,16 @@ public:
     Local<Value> getXuid();
     Local<Value> getUuid();
     Local<Value> getIP();
+    Local<Value> getPermLevel();
+    Local<Value> getGameMode();
     Local<Value> getMaxHealth();
     Local<Value> getHealth();
     Local<Value> getInAir();
     Local<Value> getSneaking();
 
     Local<Value> isOP(const Arguments& args);
-    Local<Value> getPermLevel(const Arguments& args);
     Local<Value> setPermLevel(const Arguments& args);
+    Local<Value> setGameMode(const Arguments& args);
 
     Local<Value> runcmd(const Arguments& args);
     Local<Value> teleport(const Arguments& args);

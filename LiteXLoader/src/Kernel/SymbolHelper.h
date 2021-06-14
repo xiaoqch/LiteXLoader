@@ -82,3 +82,9 @@ struct ScorePacketInfo
 //全局变量
 extern Minecraft* mc;
 extern Scoreboard* g_scoreboard;
+
+//辅助函数
+BlockSource* Raw_GetBlockSourceByActor(Actor* actor);
+int Raw_GetBlockDimension(BlockSource* bs);
+Block* Raw_GetBlockByPos(IntVec4* pos);
+Block* Raw_GetBlockByPos(int x, int y, int z, BlockSource* bs);
