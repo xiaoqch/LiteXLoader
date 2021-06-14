@@ -512,13 +512,23 @@ Local<Value> PlayerClass::sendSimpleForm(const Arguments& args)
     CHECK_ARG_TYPE(args[2],ValueKind::kArray)
     CHECK_ARG_TYPE(args[3],ValueKind::kFunction)
 
-    try{    
-        int formId = Raw_SendSimpleForm(player, args[0].toStr(), args[1].toStr(), ValueToJson(args[2].asArray()));
-        formCallbacks[formId] = {EngineScope::currentEngine(),args[3].asFunction()};
+    try
+    {   
+        auto source = args[2].asArray();
+        if (source.size() == 0 || !source.get(0).isString())
+            return Local<Value>();
+
+        vector<string> buttons;
+        for (int i = 0; i < source.size(); ++i)
+            buttons.push_back(source.get(i).toStr());
+
+        int formId = Raw_SendSimpleForm(player, args[0].toStr(), args[1].toStr(), buttons);
+        engineGlobalData->formCallbacks[(unsigned)formId] = { EngineScope::currentEngine(),Global<Function>(args[3].asFunction()) };
+        //###!!!!####### 全局变量不同步？？ ###!!!!#######
 
         return Number::newNumber(formId);
     }
-    CATCH("Fail in SendSimpleForm!")
+    CATCH("Fail in sendSimpleForm!")
 }
 
 Local<Value> PlayerClass::sendModalForm(const Arguments& args)
@@ -532,7 +542,7 @@ Local<Value> PlayerClass::sendModalForm(const Arguments& args)
 
     try{
         int formId = Raw_SendModalForm(player, args[0].toStr(), args[1].toStr(), args[2].toStr(), args[3].toStr());
-        formCallbacks[formId] = {EngineScope::currentEngine(),args[4].asFunction()};
+        engineGlobalData->formCallbacks[formId] = { EngineScope::currentEngine(),Global<Function>(args[4].asFunction()) };
         
         return Number::newNumber(formId);
     }
@@ -567,7 +577,7 @@ Local<Value> PlayerClass::sendForm(const Arguments& args)
         }
         
         int formId = Raw_SendCustomForm(player,data);
-        formCallbacks[formId] = {EngineScope::currentEngine(),args[1].asFunction()};
+        engineGlobalData->formCallbacks[formId] = { EngineScope::currentEngine(),Global<Function>(args[1].asFunction()) };
         
         return Number::newNumber(formId);
     }

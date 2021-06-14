@@ -86,7 +86,7 @@ Local<Value> LoggerDebug(const Arguments& args)
     {
         string preString{ globalConf->title };
         if (!preString.empty())
-            preString = "[" + preString + "] ";
+            preString = "[" + preString + "]";
         preString = preString + "[" + GetTimeStrHelper() + " Debug] ";
 
         LogToEachTarget(globalConf, preString, args, 0);
@@ -103,7 +103,7 @@ Local<Value> LoggerInfo(const Arguments& args)
     {
         string preString{ globalConf->title };
         if (!preString.empty())
-            preString = "[" + preString + "] ";
+            preString = "[" + preString + "]";
         preString = preString + "[" + GetTimeStrHelper() + " Info] ";
 
         LogToEachTarget(globalConf, preString, args, 1);
@@ -120,7 +120,7 @@ Local<Value> LoggerWarn(const Arguments& args)
     {
         string preString{ globalConf->title };
         if (!preString.empty())
-            preString = "[" + preString + "] ";
+            preString = "[" + preString + "]";
         preString = preString + "[" + GetTimeStrHelper() + " Warning] ";
 
         LogToEachTarget(globalConf, preString, args, 2);
@@ -137,7 +137,7 @@ Local<Value> LoggerError(const Arguments& args)
     {
         string preString{ globalConf->title };
         if (!preString.empty())
-            preString = "[" + preString + "] ";
+            preString = "[" + preString + "]";
         preString = preString + "[" + GetTimeStrHelper() + " Error] ";
 
         LogToEachTarget(globalConf, preString, args, 3);
@@ -154,7 +154,7 @@ Local<Value> LoggerFatal(const Arguments& args)
     {
         string preString{ globalConf->title };
         if (!preString.empty())
-            preString = "[" + preString + "] ";
+            preString = "[" + preString + "]";
         preString = preString + "[" + GetTimeStrHelper() + " FATAL] ";
 
         LogToEachTarget(globalConf, preString, args, 4);

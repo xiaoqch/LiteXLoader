@@ -29,7 +29,7 @@ using namespace script;
 bool ProcessDebugEngine(const string& cmd);
 bool CallPlayerCmdCallback(Player *player, const string& cmd);
 bool CallServerCmdCallback(const string& cmd);
-bool CallFormCallback(int formId, const string& data);
+bool CallFormCallback(unsigned formId, const string& data);
 
 //////////////////// Listeners ////////////////////
 
@@ -255,7 +255,7 @@ void InitEventListeners()
 // ===== onMobDie =====
     Event::addEventListener([](MobDieEV ev)
     {
-        IF_LISTENED(EVENT_TYPES::onMobHurt)
+        IF_LISTENED(EVENT_TYPES::onMobDie)
         {
             CallEventEx(EVENT_TYPES::onMobDie, EntityClass::newEntity(ev.mob), EntityClass::newEntity(ev.DamageSource));
         }
@@ -666,24 +666,26 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
 
 // ===== onFormSelected =====
 THook(void, "?handle@?$PacketHandlerDispatcherInstance@VModalFormResponsePacket@@$0A@@@UEBAXAEBVNetworkIdentifier@@AEAVNetEventCallback@@AEAV?$shared_ptr@VPacket@@@std@@@Z",
-	void* _this, unsigned long long id, ServerNetworkHandler* handler, void* packet)
+	void* _this, NetworkIdentifier* id, ServerNetworkHandler* handler, void** pPacket)
 {
     //IF_LISTENED(EVENT_TYPES::onFormSelected)
+    void *packet = *pPacket;
+    Player* p = SymCall("?_getServerPlayer@ServerNetworkHandler@@AEAAPEAVServerPlayer@@AEBVNetworkIdentifier@@E@Z",
+        ServerPlayer*, ServerNetworkHandler* , const NetworkIdentifier &, unsigned char)(handler, *id, *((unsigned char*)packet+16));
 
-    Player* p = handler->_getServerPlayer(*(NetworkIdentifier*)(void*)id, *(unsigned char*)packet);
     if (p)
     {
-        unsigned formId = dAccess<unsigned>(packet,48);
+        unsigned formId = dAccess<unsigned>(packet, 48);
         string data = dAccess<string>(packet,56);
 
         if (data.back() == '\n')
             data.pop_back();
-            
+          
         CallFormCallback(formId, data);
         // No CallEvent here
     }
 
-    original(_this, id, handler, packet);
+    original(_this, id, handler, pPacket);
 }
 
 // ===== onConsoleOutput =====
@@ -854,13 +856,13 @@ bool CallServerCmdCallback(const string& cmd)
     return passToOriginalCmdEvent;
 }
 
-bool CallFormCallback(int formId, const string& data)
+bool CallFormCallback(unsigned formId, const string& data)
 {
     bool passToBDS = true;
-    auto callback = formCallbacks[formId];
+    auto callback = engineGlobalData->formCallbacks[formId];    //###!!!!####### 全局变量不同步？？ ###!!!!#######
 
-    EngineScope scope(callback.first);
-    auto res = callback.second.get().call({}, String::newString(data));
+    EngineScope scope(callback.engine);
+    auto res = callback.func.get().call({}, String::newString(data));
     if (res.isNull() || (res.isBoolean() && res.asBoolean().value() == false))
         passToBDS = false;
 

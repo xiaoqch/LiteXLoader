@@ -114,7 +114,7 @@ Local<Value> DbClass::del(const Arguments& args)
 //////////////////// Classes ConfBase ////////////////////
 
 ConfBaseClass::ConfBaseClass(const string& dir)
-    :ScriptClass(ScriptClass::ConstructFromCpp<ConfBaseClass>{}), confPath(dir)
+    :confPath(dir)
 { }
 
 Local<Value> ConfBaseClass::getPath(const Arguments& args)
@@ -161,7 +161,7 @@ Local<Value> ConfJsonClass::newConf(const string& path, const string& defContent
 }
 
 ConfJsonClass::ConfJsonClass(const string& path, const string& defContent)
-    :ConfBaseClass(path)
+    :ScriptClass(ScriptClass::ConstructFromCpp<ConfJsonClass>{}), ConfBaseClass(path)
 {
     jsonConf = Raw_JsonOpen(path, defContent);
 }
@@ -215,7 +215,19 @@ Local<Value> ConfJsonClass::del(const Arguments& args)
 
     try
     {
-        return Boolean::newBoolean(jsonConf.erase(args[0].toStr()) > 0);
+        if (jsonConf.erase(args[0].toStr()) <= 0)
+            return Boolean::newBoolean(false);
+
+        //写回文件
+        ofstream jsonFile(confPath);
+        if (jsonFile.is_open())
+        {
+            jsonFile << jsonConf.dump(4);
+            jsonFile.close();
+            return Boolean::newBoolean(true);
+        }
+        else
+            return Boolean::newBoolean(false);
     }
     catch (exception& e)
     {
@@ -258,7 +270,7 @@ Local<Value> ConfIniClass::newConf(const string& path, const string& defContent)
 }
 
 ConfIniClass::ConfIniClass(const string& path, const string& defContent)
-    :ConfBaseClass(path)
+    :ScriptClass(ScriptClass::ConstructFromCpp<ConfIniClass>{}), ConfBaseClass(path)
 {
     iniConf = Raw_IniOpen(path, defContent);
 }
@@ -271,7 +283,7 @@ Local<Value> ConfIniClass::set(const Arguments& args)
 
     try
     {
-        switch (args[1].getKind())
+        switch (args[2].getKind())
         {
         case ValueKind::kString:
             Raw_IniSetString(iniConf, args[0].toStr(), args[1].toStr(), args[2].toStr());
@@ -389,13 +401,12 @@ Local<Value> OpenConfig(const Arguments& args)
     CHECK_ARGS_COUNT(args,1)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
     if(args.size() >= 2)
-        CHECK_ARG_TYPE(args[2],ValueKind::kString)
+        CHECK_ARG_TYPE(args[1],ValueKind::kString)
     if(args.size() >= 3)
-        CHECK_ARG_TYPE(args[3],ValueKind::kString)
+        CHECK_ARG_TYPE(args[2],ValueKind::kString)
 
     try{
         string path = args[0].toStr();
-        string fileType = args[1].toStr();
         GlobalConfType confType = GlobalConfType::ini;
 
         if(path.empty())
@@ -403,6 +414,7 @@ Local<Value> OpenConfig(const Arguments& args)
 
         if(args.size() >= 2)
         {
+            string fileType = args[1].toStr();
             if(fileType == "json" || fileType == "Json")
                 confType = GlobalConfType::json;
         }
@@ -417,9 +429,9 @@ Local<Value> OpenConfig(const Arguments& args)
         else    //json
         {
             if (args.size() >= 3)
-                return ConfIniClass::newConf(path, args[2].toStr());
+                return ConfJsonClass::newConf(path, args[2].toStr());
             else
-                return ConfIniClass::newConf(path);
+                return ConfJsonClass::newConf(path);
         }
     }
     CATCH("Fail in OpenConfig!")

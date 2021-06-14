@@ -345,7 +345,7 @@ Local<Value> ClearInterval(const Arguments& args)
     CHECK_ARG_TYPE(args[0],ValueKind::kNumber)
 
     try{
-        DWORD id=timeTaskMap.at((unsigned int)args[0].asNumber().toInt64());     //########### ID no found ? ###########
+        DWORD id=timeTaskMap.at((unsigned int)args[0].asNumber().toInt64());     //########### 前面返回的ID一直是0 ###########
         return Boolean::newBoolean(Raw_KillThread(id));
     }
     CATCH("Fail in ClearInterval!")

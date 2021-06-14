@@ -7,5 +7,15 @@
 //主引擎表
 extern std::list<std::shared_ptr<script::ScriptEngine>> lxlModules;
 
-//全局表单监听表
-extern std::unordered_map<int, std::pair<script::ScriptEngine*,script::Global<script::Function>> > formCallbacks;
+void InitEngineGlobalData();
+struct FormCallbackData
+{
+	script::ScriptEngine* engine;
+	script::Global<script::Function> func;
+};
+struct EngineGlobalData_Type
+{
+	//全局表单监听
+	std::unordered_map<unsigned, FormCallbackData> formCallbacks;
+};
+extern EngineGlobalData_Type* engineGlobalData;
