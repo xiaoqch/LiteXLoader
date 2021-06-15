@@ -20,7 +20,7 @@ extern int lxlLogLevel;
 #define PRINT(t)  { std::cout << t << std::endl; }
 #define ERRPRINT(t)  { if(lxlLogLevel <= 3) std::cerr << t << std::endl; }
 
-//方便提取类型
+// 方便提取类型
 #define toStr() asString().toString()
 #define toInt() asNumber().toInt32()
 
@@ -33,6 +33,9 @@ extern int lxlLogLevel;
 #define CHECK_ARG_TYPE(ARG,TYPE) \
     if(ARG.getKind() != TYPE) \
     {ERROR("Wrong type of argument!"); return Local<Value>();}
+
+// 判断是否为浮点数
+bool CheckIsFloat(const Local<Value> &num);
 
 // 截获引擎异常
 #define CATCH(LOG) \
