@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <cmath>
 
 #include "BaseAPI.h"
 #include "BlockAPI.h"
@@ -23,7 +24,10 @@ void PrintValue(std::ostream &out, Local<Value> v)
             out << v.asString().toString();
             break;
         case ValueKind::kNumber:
-            out << v.asNumber().toDouble();
+            if(CheckIsFloat(v))
+                out << v.asNumber().toDouble();
+            else
+                out << v.asNumber().toInt64();
             break;
         case ValueKind::kBoolean:
             out << v.asBoolean().value();
@@ -81,6 +85,18 @@ void PrintValue(std::ostream &out, Local<Value> v)
         default:
             out << "<Unknown>";
             break;
+    }
+}
+
+bool CheckIsFloat(const Local<Value> &num)
+{
+    try
+    {
+        return fabs(num.asNumber().toDouble() - num.asNumber().toInt64()) >= 0.000001;
+    }
+    catch (...)
+    {
+        return false;
     }
 }
 
@@ -149,7 +165,7 @@ void JsonToValue_Helper(Local<Array> &res, JSON_VALUE &j)
         res.add(Local<Value>());
 }
 
-Local<Value> JsonToValue(JSON_VALUE j)          //#################### 不分青红皂白加[]？？ ####################
+Local<Value> JsonToValue(JSON_VALUE j)
 {
     Local<Value> res;
     
@@ -192,70 +208,154 @@ Local<Value> JsonToValue(std::string jsonStr)
 
 ///////////////////// Value To Json /////////////////////
 
-void ValueToJson_Helper(JSON_VALUE &res, Local<Value> &v)
+void ValueToJson_Obj_Helper(JSON_VALUE& res, const Local<Object>& v);
+
+void ValueToJson_Arr_Helper(JSON_VALUE &res, const Local<Array> &v)
 {
-    switch(v.getKind())
+    for (int i = 0; i < v.size(); ++i)
     {
+        switch (v.get(i).getKind())
+        {
         case ValueKind::kString:
-            res.push_back(v.asString().toString());
+            res.push_back(v.get(i).asString().toString());
             break;
         case ValueKind::kNumber:
-            res.push_back(v.asNumber().toDouble());
+            if (CheckIsFloat(v))
+                res.push_back(v.get(i).asNumber().toDouble());
+            else
+                res.push_back(v.get(i).asNumber().toInt64());
             break;
         case ValueKind::kBoolean:
-            res.push_back(v.asBoolean().value());
+            res.push_back(v.get(i).asBoolean().value());
             break;
         case ValueKind::kNull:
             res.push_back(nullptr);
             break;
         case ValueKind::kArray:
         {
-            Local<Array> arr=v.asArray();
-            if(arr.size() == 0)
+            Local<Array> arrToAdd = v.get(i).asArray();
+            if (arrToAdd.size() == 0)
                 res.push_back(JSON_VALUE::array());
             else
             {
-                JSON_VALUE arrToAdd = JSON_VALUE::array();
-                for(int i=0;i<arr.size();++i)
-                {
-                    JSON_VALUE arrItem;
-                    auto v = arr.get(i);
-                    ValueToJson_Helper(arrItem,v);
-                    arrToAdd.push_back(arrItem);
-                }
-                res.push_back(arrToAdd);
+                JSON_VALUE arrJson = JSON_VALUE::array();
+                ValueToJson_Arr_Helper(arrJson, arrToAdd);
+                res.push_back(arrJson);
             }
             break;
         }
         case ValueKind::kObject:
         {
-            Local<Object> obj = v.asObject();
-            std::vector<std::string> keys = obj.getKeyNames();
-            if(keys.empty())
+            Local<Object> objToAdd = v.get(i).asObject();
+            if (objToAdd.getKeyNames().empty())
                 res.push_back(JSON_VALUE::object());
             else
             {
-                JSON_VALUE objToAdd = JSON_VALUE::object();
-                for(int i=0;i<keys.size();++i)
-                {
-                    JSON_VALUE objItem;
-                    auto v = obj.get(keys[i]);
-                    ValueToJson_Helper(objItem,v);
-                    objToAdd.push_back({keys[i],objItem});
-                }
-                res.push_back(objToAdd);
+                JSON_VALUE objJson = JSON_VALUE::object();
+                ValueToJson_Obj_Helper(objJson, objToAdd);
+                res.push_back(objJson);
             }
             break;
         }
         default:
             res.push_back(nullptr);
             break;
+        }
+    }
+}
+
+void ValueToJson_Obj_Helper(JSON_VALUE& res, const Local<Object>& v)
+{
+    auto keys = v.getKeyNames();
+    for (auto &key : keys)
+    {
+        switch (v.get(key).getKind())
+        {
+        case ValueKind::kString:
+            res.push_back({ key,v.get(key).asString().toString() });
+            break;
+        case ValueKind::kNumber:
+            if (CheckIsFloat(v))
+                res.push_back({ key,v.get(key).asNumber().toDouble() });
+            else
+                res.push_back({ key,v.get(key).asNumber().toInt64() });
+            break;
+        case ValueKind::kBoolean:
+            res.push_back({ key,v.get(key).asBoolean().value() });
+            break;
+        case ValueKind::kNull:
+            res.push_back(nullptr);
+            break;
+        case ValueKind::kArray:
+        {
+            Local<Array> arrToAdd = v.get(key).asArray();
+            if (arrToAdd.size() == 0)
+                res.push_back({ key,JSON_VALUE::array() });
+            else
+            {
+                JSON_VALUE arrJson = JSON_VALUE::array();
+                ValueToJson_Arr_Helper(arrJson, arrToAdd);
+                res.push_back({ key,arrJson });
+            }
+            break;
+        }
+        case ValueKind::kObject:
+        {
+            Local<Object> objToAdd = v.get(key).asObject();
+            if (objToAdd.getKeyNames().empty())
+                res.push_back({ key,JSON_VALUE::object() });
+            else
+            {
+                JSON_VALUE objJson = JSON_VALUE::object();
+                ValueToJson_Obj_Helper(objJson, objToAdd);
+                res.push_back({ key,objJson });
+            }
+            break;
+        }
+        default:
+            res.push_back({ key,nullptr });
+            break;
+        }
     }
 }
 
 std::string ValueToJson(Local<Value> v,int formatIndent)
 {
-    JSON_VALUE res;
-    ValueToJson_Helper(res, v);
-    return res.dump(formatIndent);
+    string res;
+    switch (v.getKind())
+    {
+    case ValueKind::kString:
+        res = v.asString().toString();
+        break;
+    case ValueKind::kNumber:
+        if (CheckIsFloat(v))
+            res = std::to_string(v.asNumber().toDouble());
+        else
+            res = std::to_string(v.asNumber().toInt64());
+        break;
+    case ValueKind::kBoolean:
+        res = std::to_string(v.asBoolean().value());
+        break;
+    case ValueKind::kNull:
+        res = "";
+        break;
+    case ValueKind::kArray:
+    {
+        JSON_VALUE jsonRes = JSON_VALUE::array();
+        ValueToJson_Arr_Helper(jsonRes, v.asArray());
+        res = jsonRes.dump(formatIndent);
+        break;
+    }
+    case ValueKind::kObject:
+    {
+        JSON_VALUE jsonRes = JSON_VALUE::object();
+        ValueToJson_Obj_Helper(jsonRes, v.asObject());
+        res = jsonRes.dump(formatIndent);
+        break;
+    }
+    default:
+        res = "";
+        break;
+    }
+    return res;
 }
