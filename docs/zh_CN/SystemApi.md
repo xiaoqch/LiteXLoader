@@ -262,7 +262,7 @@
 
 ### 发送一个异步HTTP Post请求  
 
-`network.httpGet(url,data,type,callback)`
+`network.httpPost(url,data,type,callback)`
 
 - 参数：
   - url : `String`  

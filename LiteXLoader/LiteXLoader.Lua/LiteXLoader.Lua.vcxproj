@@ -90,7 +90,7 @@
     <ClInclude Include="..\src\Kernel\ThirdParty.h" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\engine\Lua\lib\Lua54.lib" />
+    <Library Include="..\engine\Lua\lib\lua.lib" />
     <Library Include="..\lib\LiteLoader.lib" />
     <Library Include="..\lib\ScriptX-Lua.lib" />
   </ItemGroup>
@@ -222,6 +222,5 @@
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets" />
 </Project>
