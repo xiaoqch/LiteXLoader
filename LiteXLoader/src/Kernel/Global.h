@@ -28,6 +28,9 @@ public:
     int dim;
 };
 
+//全局变量
+extern bool isServerStarted;
+
 // 输出
 extern int lxlLogLevel;
 #define PREFIX "[LiteXLoader." LXL_SCRIPT_LANG_TYPE "]" 

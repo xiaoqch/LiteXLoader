@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "Packet.h"
 #include "SymbolHelper.h"
+#include "Global.h"
 using namespace std;
 
 string  Raw_GetPlayerName(Player* player)
@@ -232,7 +233,7 @@ bool Raw_RemoveBossBar(Player *player)
 
 vector<Player*> Raw_GetOnlinePlayers()
 {
-    return liteloader::getAllPlayers();
+    return isServerStarted ? liteloader::getAllPlayers() : vector<Player*>();
 }
 
 bool Raw_IsPlayerValid(Player *player)
