@@ -280,15 +280,18 @@ void InitEventListeners()
 // ===== onServerStarted =====
     Event::addEventListener([](ServerStartedEV ev)
     {
-        //注册预置命令
-        RegisterBuiltinCmds();
-
         //标记已启动
-        isServerStarted = true;
-
-        IF_LISTENED(EVENT_TYPES::onServerStarted)
+        if (!isServerStarted)
         {
-            CallEvent(EVENT_TYPES::onServerStarted);
+            isServerStarted = true;
+
+            //注册预置命令
+            RegisterBuiltinCmds();
+
+            IF_LISTENED(EVENT_TYPES::onServerStarted)
+            {
+                CallEvent(EVENT_TYPES::onServerStarted);
+            }
         }
     });
 }
