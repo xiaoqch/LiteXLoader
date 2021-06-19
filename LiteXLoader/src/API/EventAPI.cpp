@@ -13,6 +13,7 @@
 #include <Kernel/Item.h>
 #include <Kernel/Player.h>
 #include <Kernel/SymbolHelper.h>
+#include <Kernel/Packet.h>
 #include "EngineOwnData.h"
 #include "EngineGlobalData.h"
 #include "APIhelp.h"
@@ -190,23 +191,6 @@ void RegisterBuiltinCmds()
 
 void InitEventListeners()
 {
-// ===== onPlayerJoin =====
-    Event::addEventListener([](JoinEV ev)
-    {
-        IF_LISTENED(EVENT_TYPES::onJoin)
-        {
-            CallEvent(EVENT_TYPES::onJoin, PlayerClass::newPlayer(ev.Player));
-        }
-    });
-
-// ===== onPlayerLeft =====
-    Event::addEventListener([](LeftEV ev)
-    {
-        IF_LISTENED(EVENT_TYPES::onLeft)
-        {
-            CallEvent(EVENT_TYPES::onLeft, PlayerClass::newPlayer(ev.Player));
-        }
-    });
 
 // ===== onChat =====
     Event::addEventListener([](ChatEV ev)
@@ -294,6 +278,28 @@ void InitEventListeners()
             }
         }
     });
+}
+
+// ===== onJoin =====
+THook(bool, "?_loadNewPlayer@ServerNetworkHandler@@AEAA_NAEAVServerPlayer@@_N@Z",
+    ServerNetworkHandler* _this, ServerPlayer* pl, bool a3)
+{
+    IF_LISTENED(EVENT_TYPES::onJoin)
+    {
+        CallEvent(EVENT_TYPES::onJoin, PlayerClass::newPlayer(pl));
+    }
+    return original(_this, pl, a3);
+}
+
+// ===== onLeft =====
+THook(void, "?_onPlayerLeft@ServerNetworkHandler@@AEAAXPEAVServerPlayer@@_N@Z",
+    ServerNetworkHandler* _this, Player* pl, char a3)
+{
+    IF_LISTENED(EVENT_TYPES::onLeft)
+    {
+        CallEvent(EVENT_TYPES::onLeft, PlayerClass::newPlayer(pl));
+    }
+    return original(_this, pl, a3);
 }
 
 // ===== onAttack =====
@@ -399,8 +405,8 @@ THook(bool, "?take@Player@@QEAA_NAEAVActor@@HH@Z",
 THook(void, "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVCommandRequestPacket@@@Z",
     ServerNetworkHandler* _this, NetworkIdentifier* id, void* pkt)
 {
-    auto player = SymCall("?_getServerPlayer@ServerNetworkHandler@@AEAAPEAVServerPlayer@@AEBVNetworkIdentifier@@E@Z",
-        Player*, void*, void*, char)(_this, id, *(char*)((uintptr_t)pkt + 16));
+    auto player = Raw_GetPlayerFromPacket(_this, id, pkt);
+
     if (player)
     {   
         // Player Command

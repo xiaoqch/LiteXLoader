@@ -70,3 +70,9 @@ bool Raw_SendBossEventPacket(Player* player, string name, float percent, int typ
    
     return Raw_SendPacket(player, packet);
 }
+
+Player* Raw_GetPlayerFromPacket(ServerNetworkHandler* handler, NetworkIdentifier* id, void* packet)
+{
+    return SymCall("?_getServerPlayer@ServerNetworkHandler@@AEAAPEAVServerPlayer@@AEBVNetworkIdentifier@@E@Z",
+        Player*, void*, void*, char)(handler, id, *(char*)((uintptr_t)packet + 16));
+}
