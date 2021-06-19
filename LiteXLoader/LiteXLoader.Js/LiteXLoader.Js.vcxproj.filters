@@ -122,6 +122,9 @@
     <ClCompile Include="..\src\Kernel\SymbolHelper.cpp">
       <Filter>Kernel</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Kernel\Global.cpp">
+      <Filter>Kernel</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Configs.h">

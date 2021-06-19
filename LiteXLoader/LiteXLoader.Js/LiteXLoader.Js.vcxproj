@@ -43,6 +43,7 @@
     <ClCompile Include="..\src\Kernel\Db.cpp" />
     <ClCompile Include="..\src\Kernel\Entity.cpp" />
     <ClCompile Include="..\src\Kernel\Event.cpp" />
+    <ClCompile Include="..\src\Kernel\Global.cpp" />
     <ClCompile Include="..\src\Kernel\SymbolHelper.cpp" />
     <ClCompile Include="..\src\Kernel\Gui.cpp" />
     <ClCompile Include="..\src\Kernel\Item.cpp" />

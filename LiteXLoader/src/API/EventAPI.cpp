@@ -283,6 +283,9 @@ void InitEventListeners()
         //注册预置命令
         RegisterBuiltinCmds();
 
+        //标记已启动
+        isServerStarted = true;
+
         IF_LISTENED(EVENT_TYPES::onServerStarted)
         {
             CallEvent(EVENT_TYPES::onServerStarted);
