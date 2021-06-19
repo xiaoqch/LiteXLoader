@@ -189,7 +189,7 @@ Local<Value> ConfJsonClass::set(const Arguments& args)
 
     try
     {
-        jsonConf[args[0].toStr()] = ValueToJson(args[1]);
+        jsonConf[args[0].toStr()] = JSON_VALUE::parse(ValueToJson(args[1]));
         //写回文件
         ofstream jsonFile(confPath);
         if (jsonFile.is_open())

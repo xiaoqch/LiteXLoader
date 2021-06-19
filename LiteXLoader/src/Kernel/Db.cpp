@@ -266,7 +266,11 @@ bool Raw_InitEcnonmicSystem()
                 WARN("Fail to load API money.clearHist!");
         }
     if (!libExists)
+    {
         WARN("LLMoney no found! Economic system in LXL will not work.");
+        return false;
+    }
+    return true;
 }
 
 money_t Raw_GetMoney(xuid_t player)

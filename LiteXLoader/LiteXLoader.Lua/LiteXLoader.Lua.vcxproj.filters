@@ -227,10 +227,10 @@
     <Library Include="..\lib\LiteLoader.lib">
       <Filter>Lib</Filter>
     </Library>
-    <Library Include="..\engine\Lua\lib\Lua54.lib">
+    <Library Include="..\lib\ScriptX-Lua.lib">
       <Filter>Lib</Filter>
     </Library>
-    <Library Include="..\lib\ScriptX-Lua.lib">
+    <Library Include="..\engine\Lua\lib\lua.lib">
       <Filter>Lib</Filter>
     </Library>
   </ItemGroup>

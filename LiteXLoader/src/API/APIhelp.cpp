@@ -92,7 +92,7 @@ bool CheckIsFloat(const Local<Value> &num)
 {
     try
     {
-        return fabs(num.asNumber().toDouble() - num.asNumber().toInt64()) >= 0.000001;
+        return fabs(num.asNumber().toDouble() - num.asNumber().toInt64()) >= 1e-15;
     }
     catch (...)
     {
