@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 
+class Packet;
 class ScorePacketInfo;
 
 void* Raw_CreatePacket(int type);
@@ -13,3 +14,5 @@ bool Raw_SendSetDisplayObjectivePacket(Player* player, const string& title, cons
 bool Raw_SendSetScorePacket(Player* player, char type, const vector<ScorePacketInfo>& data);
 
 bool Raw_SendBossEventPacket(Player* player, string name, float percent, int type);
+
+Player* Raw_GetPlayerFromPacket(ServerNetworkHandler* handler, NetworkIdentifier* id, void* packet);
