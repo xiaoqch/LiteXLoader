@@ -25,7 +25,8 @@
 
 2. **功能强大，设施完备** ⭐
 
-    - 提供众多的游戏API支持、游戏事件监听，为你发挥创意打好技术基础
+    - 提供众多的游戏API支持、游戏事件监听：玩家，实体，方块，物品，容器，游戏系统，......  
+      为你发挥创意打好技术基础
     - 配备大量基础设施，如统一配置文件接口、统一日志接口、文件系统接口、数据库接口等等  
       让你专注于业务代码实现，而非各种琐碎的技术细节
 3. **兼容性强** ⭐
@@ -34,8 +35,7 @@
        一次编写，多平台共享
      - 仅依赖LiteLoader加载器和标准的C/C++运行时库，没有其他的额外依赖，兼容性极强
      - 兼容绝大多数其他主流插件加载器（`CSR` `PYR`等）
-     - 后续版本更新时将保证 API 向后兼容，避免出现插件需要一再重写的情况。  
-       脚本插件不需要随版本更新而修改代码，一次编写，全版本适配。
+     - 后续版本更新时将保证 API 向后兼容，脚本插件不需要随版本更新而修改代码，一次编写，全版本适配。
 4. **模块化，高性能** ⭐
    
      - 使用C++开发，底层性能优越。借助ScriptX的高效率通用接口，让脚本插件也可以做到高效运行。
@@ -54,7 +54,7 @@
 ## 💻 安装
 项目主要发布于**MineBBS**，请[移步MineBBS](https://www.minebbs.com/)下载
 1. 正确安装`LiteLoader`插件加载器
-2. 下载`LiteXLoader`，解压，把全部内容复制到 **BDS** 的`plugins`目录中。如果有冲突，选择覆盖即可。
+2. 下载`LiteXLoader`，解压，把全部内容复制到 **BDS** 的`plugins`目录中。如果有冲突，选择覆盖即可。
 3. 开服
 
 ## 🎯 加载插件
@@ -115,7 +115,7 @@
 [ElementZero](https://github.com/Element-0/ElementZero) GPL v3  
 [ChakraCore](https://github.com/chakra-core/ChakraCore) MIT License  
 [OpenSSL](https://github.com/openssl/openssl) Apache License Version 2.0    
-[Minini](https://github.com/compuphase/minIni) Apache License Version 2.0  
+[SimpleIni](https://github.com/brofield/simpleini) MIT License  
 [Nlohmann-Json](https://github.com/nlohmann/json) MIT License  
 
 ### Extra Restrictions & Exceptions
@@ -128,10 +128,12 @@ but if you modified the framework, or write a new framework based on this framew
 
 ## 🏆 鸣谢
 - 开源 [ScriptX](https://github.com/Tencent/ScriptX) 项目提供的跨语言引擎支持
-- [LiteLoader ](https://github.com/LiteLDev/LiteLoaderBDS)项目提供的加载服务与基础API  
-- [LiteLuaLoader ](#)项目 和 [BDSPyRunner ]()项目 提供的部分底层接口实现
+- [LiteLoader](https://github.com/LiteLDev/LiteLoaderBDS) 项目提供的加载服务与基础API  
+- [LiteLuaLoader](https://github.com/wzyyyyyyy) 项目 和 [BDSPyRunner](https://github.com/twoone-3/BDSpyrunner)项目 提供的很多底层接口实现
 
-> 特别鸣谢：[LiteLDev](https://github.com/orgs/LiteLDev/people) 各位大佬们 和 ScriptX开发者 [@LanderlYoung](https://github.com/Tencent/ScriptX/commits?author=LanderlYoung)   
+> 特别鸣谢：感谢 [LiteLDev](https://github.com/orgs/LiteLDev/people) 各位大佬们的技术援助   
+> [@wzy](https://github.com/wzyyyyyyy) [@twoone-3](https://github.com/twoone-3) [@dreamguxiang](https://github.com/dreamguxiang) [@RedbeanW](https://github.com/Redbeanw44602) 的代码贡献  
+> 以及 ScriptX开发者 [@LanderlYoung](https://github.com/Tencent/ScriptX/commits?author=LanderlYoung)   
 > 在开发过程中给予了作者以非常大的支持。感谢他们！ 💖💖
 
 ## 📞 联系我们
