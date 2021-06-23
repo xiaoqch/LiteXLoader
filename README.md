@@ -1,4 +1,4 @@
-# LiteXLoader - 划时代 x 跨语言脚本插件加载器
+# LiteXLoader - 划时代 x 跨语言BDS脚本插件框架
 
 [![GitHub license](https://img.shields.io/github/license/LiteLDev/LiteXLoader)](https://github.com/LiteLDev/LiteXLoader/blob/main/LICENSE)
 [![Build](https://img.shields.io/badge/build-passing-brightgreen)](#)
@@ -7,9 +7,12 @@
 简体中文 | [English](README_en.md)
 
 ## 🎨 简介
-`LiteXLoader`是一个基岩版官方服务端`Bedrock Delicated Server`（以下简称**BDS**）插件框架，提供强大的跨语言脚本插件支持能力和稳定的开发API支持。  
-由`LiteLoader`插件加载器加载并提供部分基础API。  
-使用脚本开发**BDS**插件具有上手容易、代码简洁、便于维护的优点。同时脚本插件不需要随着**BDS**版本更新而修改代码，仅需本项目在底层适配即可，给插件开发与维护带来了很大的便利。  
+       `LiteXLoader`是一个基岩版官方服务端`Bedrock Delicated Server`（以下简称**BDS**）插件框架，提供强大的跨语言脚本插件支持能力和稳定的开发API支持。  
+
+​       为了为基岩版**BDS**拓展更多玩法和功能，弥补官方行为包长期以来存在的一些不足，我们开发了基于注入技术的开发框架，为**BDS**的插件开发提供了坚实的基础。  
+​       而为了进一步降低开发门槛，为更多开发者参与社区发展提供支持，脚本插件开发框架 `LiteXLoader` 呼之欲出。支持多种脚本语言，拥有完善的API系统和大量基础设施，`LiteXLoader` 为开发者提供了最大程度的便利。  
+
+​       使用脚本开发**BDS**插件具有上手容易、代码简洁、便于维护的优点。同时脚本插件不需要随着**BDS**版本更新而修改代码，仅需本项目在底层适配更新即可，给插件开发与维护带来了很大的便利。  
 
 ## 🎁 优势
 > “为什么我要选择LiteXLoader？”
@@ -52,7 +55,8 @@
 4. 编译生成成功之后，在同目录下 `Release` 文件夹中的几个DLL文件即是生成的 LiteXLoader 加载器
 
 ## 💻 安装
-项目主要发布于**MineBBS**，请[移步MineBBS](https://www.minebbs.com/)下载
+项目主要发布于**MineBBS**，请[移步MineBBS](https://www.minebbs.com/)下载。注意，本项目需要 `LiteLoader` 作为前置加载器。
+
 1. 正确安装`LiteLoader`插件加载器
 2. 下载`LiteXLoader`，解压，把全部内容复制到 **BDS** 的`plugins`目录中。如果有冲突，选择覆盖即可。
 3. 开服
