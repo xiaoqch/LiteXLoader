@@ -1,4 +1,4 @@
-# LiteXLoader - 划时代 x 跨语言脚本插件加载器
+# LiteXLoader - 划时代 x 跨语言BDS脚本插件框架
 
 [![GitHub license](https://img.shields.io/github/license/LiteLDev/LiteXLoader)](https://github.com/LiteLDev/LiteXLoader/blob/main/LICENSE)
 [![Build](https://img.shields.io/badge/build-passing-brightgreen)](#)
@@ -7,9 +7,15 @@
 简体中文 | [English](README_en.md)
 
 ## 🎨 简介
-`LiteXLoader`是一个基岩版官方服务端`Bedrock Delicated Server`（以下简称**BDS**）插件框架，提供强大的跨语言脚本插件支持能力和稳定的开发API支持。  
-由`LiteLoader`插件加载器加载并提供部分基础API。  
-使用脚本开发**BDS**插件具有上手容易、代码简洁、便于维护的优点。同时脚本插件不需要随着**BDS**版本更新而修改代码，仅需本项目在底层适配即可，给插件开发与维护带来了很大的便利。  
+`LiteXLoader`是一个基岩版官方服务端`Bedrock Delicated Server`（以下简称**BDS**）的脚本插件框架，提供强大的跨语言脚本插件支持能力和稳定的开发API支持。  
+
+目前，基于注入技术的C++插件开发框架`LiteLoader`的使用十分广泛。它为拓展基岩版**BDS**的更多玩法和功能提供了坚实的基础，弥补了官方行为包系统长期以来存在的一些不足。
+
+而为了进一步降低开发门槛，为更多开发者参与社区发展提供支持，脚本插件开发框架 `LiteXLoader` 呼之欲出。
+
+使用脚本开发**BDS**插件具有上手容易、代码简洁、便于维护的优点。同时脚本插件不需要随着**BDS**版本更新而修改代码，仅需本项目在底层适配更新即可，给插件开发与维护带来了很大的便利。  
+
+作为先进的脚本插件支持引擎，`LiteXLoader`支持使用多种不同的脚本语言编写插件，拥有完善的API系统、事件系统和大量的开发基础设施，为开发者提供了最大程度的便利。  
 
 ## 🎁 优势
 > “为什么我要选择LiteXLoader？”
@@ -25,17 +31,24 @@
 
 2. **功能强大，设施完备** ⭐
 
-    - 提供众多的游戏API支持、游戏事件监听，为你发挥创意打好技术基础
-    - 配备大量基础设施，如统一配置文件接口、统一日志接口、文件系统接口、数据库接口等等  
-      让你专注于业务代码实现，而非各种琐碎的技术细节
+    - 提供众多的游戏API支持、游戏事件监听：玩家，实体，方块，物品，容器，游戏系统，......  
+      为你发挥创意打好技术基础
+    - 配备大量基础设施
+      - 统一配置文件接口
+      - 统一日志接口
+      - 文件系统接口
+      - 关系型、非关系型数据库接口
+      - 系统调用接口
+      - 网络功能接口
+      - 脚本引擎辅助接口
+    - 让你专注于业务代码实现，而非各种琐碎的技术细节
 3. **兼容性强** ⭐
 
      - LXL支持通过Wine在Linux平台运行，给Linux平台也带来自由的插件体验  
        一次编写，多平台共享
-     - 仅依赖LiteLoader加载器和标准的C/C++运行时库，没有其他的额外依赖，兼容性极强
+     - 仅依赖 `LiteLoader` 加载器和标准的C/C++运行时库，没有其他的额外依赖，兼容性极强
      - 兼容绝大多数其他主流插件加载器（`CSR` `PYR`等）
-     - 后续版本更新时将保证 API 向后兼容，避免出现插件需要一再重写的情况。  
-       脚本插件不需要随版本更新而修改代码，一次编写，全版本适配。
+     - 后续版本更新时将保证 API 向后兼容，脚本插件不需要随版本更新而修改代码，一次编写，全版本适配。
 4. **模块化，高性能** ⭐
    
      - 使用C++开发，底层性能优越。借助ScriptX的高效率通用接口，让脚本插件也可以做到高效运行。
@@ -52,9 +65,10 @@
 4. 编译生成成功之后，在同目录下 `Release` 文件夹中的几个DLL文件即是生成的 LiteXLoader 加载器
 
 ## 💻 安装
-项目主要发布于**MineBBS**，请[移步MineBBS](https://www.minebbs.com/)下载
+项目主要发布于**MineBBS**，请[移步MineBBS](https://www.minebbs.com/)下载。注意，本项目需要 `LiteLoader` 作为前置加载器。
+
 1. 正确安装`LiteLoader`插件加载器
-2. 下载`LiteXLoader`，解压，把全部内容复制到 **BDS** 的`plugins`目录中。如果有冲突，选择覆盖即可。
+2. 下载`LiteXLoader`，解压，把全部内容复制到 **BDS** 的`plugins`目录中。如果有冲突，选择覆盖即可。
 3. 开服
 
 ## 🎯 加载插件
@@ -115,7 +129,7 @@
 [ElementZero](https://github.com/Element-0/ElementZero) GPL v3  
 [ChakraCore](https://github.com/chakra-core/ChakraCore) MIT License  
 [OpenSSL](https://github.com/openssl/openssl) Apache License Version 2.0    
-[Minini](https://github.com/compuphase/minIni) Apache License Version 2.0  
+[SimpleIni](https://github.com/brofield/simpleini) MIT License  
 [Nlohmann-Json](https://github.com/nlohmann/json) MIT License  
 
 ### Extra Restrictions & Exceptions
@@ -128,10 +142,12 @@ but if you modified the framework, or write a new framework based on this framew
 
 ## 🏆 鸣谢
 - 开源 [ScriptX](https://github.com/Tencent/ScriptX) 项目提供的跨语言引擎支持
-- [LiteLoader ](https://github.com/LiteLDev/LiteLoaderBDS)项目提供的加载服务与基础API  
-- [LiteLuaLoader ](#)项目 和 [BDSPyRunner ]()项目 提供的部分底层接口实现
+- [LiteLoader](https://github.com/LiteLDev/LiteLoaderBDS) 项目提供的加载服务与基础API  
+- [LiteLuaLoader](https://github.com/wzyyyyyyy) 项目 和 [BDSPyRunner](https://github.com/twoone-3/BDSpyrunner)项目 提供的很多底层接口实现
 
-> 特别鸣谢：[LiteLDev](https://github.com/orgs/LiteLDev/people) 各位大佬们 和 ScriptX开发者 [@LanderlYoung](https://github.com/Tencent/ScriptX/commits?author=LanderlYoung)   
+> 特别鸣谢：感谢 [LiteLDev](https://github.com/orgs/LiteLDev/people) 各位大佬们的技术援助   
+> [@wzy](https://github.com/wzyyyyyyy) [@twoone-3](https://github.com/twoone-3) [@dreamguxiang](https://github.com/dreamguxiang) [@RedbeanW](https://github.com/Redbeanw44602) 的代码贡献  
+> 以及 ScriptX开发者 [@LanderlYoung](https://github.com/Tencent/ScriptX/commits?author=LanderlYoung)   
 > 在开发过程中给予了作者以非常大的支持。感谢他们！ 💖💖
 
 ## 📞 联系我们

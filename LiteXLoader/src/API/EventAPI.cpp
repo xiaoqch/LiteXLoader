@@ -175,13 +175,8 @@ Local<Value> Listen(const Arguments& args)
 //注册后台调试命令
 void RegisterBuiltinCmds()
 {
-    static bool hasDone = false;
-    if (!hasDone)
-    {
-        Raw_RegisterCmd(LXL_DEBUG_CMD, string(LXL_SCRIPT_LANG_TYPE) + " Engine Real-time Debugging", 4);
-        DEBUG("Builtin Cmds Registered.");
-        hasDone = true;
-    }
+    Raw_RegisterCmd(LXL_DEBUG_CMD, string(LXL_SCRIPT_LANG_TYPE) + " Engine Real-time Debugging", 4);
+    DEBUG("Builtin Cmds Registered.");
 }
 
 
@@ -247,7 +242,8 @@ void InitEventListeners()
     });
 
 // For RegisterCmd...
-    Event::addEventListener([](RegCmdEV ev) {
+    Event::addEventListener([](RegCmdEV ev)
+    {
         extern CommandRegistry* CmdReg;
         CmdReg = ev.CMDRg;
 
