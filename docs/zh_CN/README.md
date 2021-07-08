@@ -15,14 +15,14 @@
 
 这里介绍了如何为BDS服务端安装`LiteXLoader`加载器，以及如何安装LXL插件  
 
-👉[点击此处](Usage.md)👈 查看 LXL安装和使用文档
+👉[点击此处](zh_CN/Usage/)👈 查看 LXL安装和使用文档
 
 <br>
 
 ## 🎯 插件开发指南 与 API文档
 这里是`LiteXLoader`插件开发必读的说明文档  
 
-👉[点击此处](Development.md)👈 查看 LXL插件开发文档 
+👉[点击此处](zh_CN/Development/)👈 查看 LXL插件开发文档 
 
 <br>
 
@@ -30,7 +30,7 @@
 
 我们欢迎你对`LiteXLoader`做出自己的贡献！  
 
-👉[点击此处](Maintance.md)👈查看 LXL项目维护与支持文档
+👉[点击此处](zh_CN/Maintance/)👈查看 LXL项目维护与支持文档
 
 <br>
 
