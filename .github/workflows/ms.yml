@@ -34,9 +34,12 @@ jobs:
       run: |
         cp -a ./LiteXLoader/Release/*.lib D:/dev
         cp -a ./LiteXLoader/Release/*.pdb D:/dev
-        cp -rf ./RELEASE/. D:/build
         cp -a ./LiteXLoader/Release/*.dll D:/build
+        cp -rf ./RELEASE/. D:/build
         rm -f D:/build/.gitignore
+        # BaseLib
+        cp -a ./LiteXLoader/BaseLib/BaseLib.js D:/build/lib
+        cp -a ./LiteXLoader/BaseLib/BaseLib.lua D:/build/lib
       shell: bash
     
     - name: Upload BuildFiles
