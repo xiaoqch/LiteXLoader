@@ -19,9 +19,14 @@ jobs:
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
 
-    - name: Build LiteXLoader
+    - name: Build LiteXLoader.Js
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: MSBuild.exe ./LiteXLoader/LiteXLoader.sln -property:Configuration=Release
+      run: MSBuild.exe ./LiteXLoader/LiteXLoader.sln -property:Configuration=Js
+      shell: bash
+      
+    - name: Build LiteXLoader.Lua
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: MSBuild.exe ./LiteXLoader/LiteXLoader.sln -property:Configuration=Lua
       shell: bash
       
     - name: MkDirs
