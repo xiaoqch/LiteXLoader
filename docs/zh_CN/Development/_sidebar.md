@@ -12,8 +12,10 @@
 - 事件系统
 
   - [🔔 监听事件](zh_CN/Development/EventAPI/Listen.md)
-
-  - [📜 事件列表](zh_CN/Development/EventAPI/Events.md)
+  - [🏃‍♂️ 玩家事件列表](zh_CN/Development/EventAPI/PlayerEvents.md)
+  - [🎈 实体事件列表](zh_CN/Development/EventAPI/EntityEvents.md)
+  - [📦 方块事件列表](zh_CN/Development/EventAPI/BlockEvents.md)
+  - [🔊 其他事件列表](zh_CN/Development/EventAPI/OtherEvents.md)
 - 图形界面与表单
   
   - [📊 表单](zh_CN/Development/GuiAPI/Form.md)
@@ -37,5 +39,5 @@
   - [🌏 网络](zh_CN/Development/SystemAPI/Network.md)
   - [📡 系统调用](zh_CN/Development/SystemAPI/SystemCall.md)
   - [📜 获取系统信息](zh_CN/Development/SystemAPI/SystemInfo.md)
--     
+-     
 - [👈 返回起始页](zh_CN/)
