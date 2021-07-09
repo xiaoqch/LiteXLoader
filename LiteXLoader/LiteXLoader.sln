@@ -3,34 +3,24 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31112.23
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LiteXLoader.Js", "LiteXLoader.Js\LiteXLoader.Js.vcxproj", "{3524E651-FDFA-498D-BE39-7DF750172672}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LiteXLoader.Lua", "LiteXLoader.Lua\LiteXLoader.Lua.vcxproj", "{BDE1339E-D853-4869-B03E-4CEC77654122}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LiteXLoader", "LiteXLoader\LiteXLoader.vcxproj", "{3524E651-FDFA-498D-BE39-7DF750172672}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|x64 = Debug|x64
-		Debug|x86 = Debug|x86
-		Release|x64 = Release|x64
-		Release|x86 = Release|x86
+		Js|x64 = Js|x64
+		Js|x86 = Js|x86
+		Lua|x64 = Lua|x64
+		Lua|x86 = Lua|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3524E651-FDFA-498D-BE39-7DF750172672}.Debug|x64.ActiveCfg = Debug|x64
-		{3524E651-FDFA-498D-BE39-7DF750172672}.Debug|x64.Build.0 = Debug|x64
-		{3524E651-FDFA-498D-BE39-7DF750172672}.Debug|x86.ActiveCfg = Debug|Win32
-		{3524E651-FDFA-498D-BE39-7DF750172672}.Debug|x86.Build.0 = Debug|Win32
-		{3524E651-FDFA-498D-BE39-7DF750172672}.Release|x64.ActiveCfg = Release|x64
-		{3524E651-FDFA-498D-BE39-7DF750172672}.Release|x64.Build.0 = Release|x64
-		{3524E651-FDFA-498D-BE39-7DF750172672}.Release|x86.ActiveCfg = Release|Win32
-		{3524E651-FDFA-498D-BE39-7DF750172672}.Release|x86.Build.0 = Release|Win32
-		{BDE1339E-D853-4869-B03E-4CEC77654122}.Debug|x64.ActiveCfg = Debug|x64
-		{BDE1339E-D853-4869-B03E-4CEC77654122}.Debug|x64.Build.0 = Debug|x64
-		{BDE1339E-D853-4869-B03E-4CEC77654122}.Debug|x86.ActiveCfg = Debug|Win32
-		{BDE1339E-D853-4869-B03E-4CEC77654122}.Debug|x86.Build.0 = Debug|Win32
-		{BDE1339E-D853-4869-B03E-4CEC77654122}.Release|x64.ActiveCfg = Release|x64
-		{BDE1339E-D853-4869-B03E-4CEC77654122}.Release|x64.Build.0 = Release|x64
-		{BDE1339E-D853-4869-B03E-4CEC77654122}.Release|x86.ActiveCfg = Release|Win32
-		{BDE1339E-D853-4869-B03E-4CEC77654122}.Release|x86.Build.0 = Release|Win32
+		{3524E651-FDFA-498D-BE39-7DF750172672}.Js|x64.ActiveCfg = Js|x64
+		{3524E651-FDFA-498D-BE39-7DF750172672}.Js|x64.Build.0 = Js|x64
+		{3524E651-FDFA-498D-BE39-7DF750172672}.Js|x86.ActiveCfg = Js|Win32
+		{3524E651-FDFA-498D-BE39-7DF750172672}.Js|x86.Build.0 = Js|Win32
+		{3524E651-FDFA-498D-BE39-7DF750172672}.Lua|x64.ActiveCfg = Lua|x64
+		{3524E651-FDFA-498D-BE39-7DF750172672}.Lua|x64.Build.0 = Lua|x64
+		{3524E651-FDFA-498D-BE39-7DF750172672}.Lua|x86.ActiveCfg = Lua|Win32
+		{3524E651-FDFA-498D-BE39-7DF750172672}.Lua|x86.Build.0 = Lua|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

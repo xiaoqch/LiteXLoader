@@ -60,13 +60,17 @@
 
 ## 🔨 Compiling
 
-你可以前往`LiteXLoader`项目的[`GitHub Actions`](https://github.com/LiteLDev/LiteXLoader/actions)页面获取最新的自动构建结果。  
-当然，如果你愿意自己编译项目，也可以如下操作：
+> 前往`LiteXLoader`项目的[`GitHub Actions`](https://github.com/LiteLDev/LiteXLoader/actions)页面获取最新的自动构建结果
+
+当然，如果你愿意自己编译项目，也可以按照如下说明自行编译  
+VS项目采用多目标构建，构建的每种配置对应一种脚本语言
 
 1. Install newest **Microsoft Visual Studio** with standard C++ building suite
 2. Install the newest version of **Windows SDK**
-3. 打开 LiteXLoader 目录下的 `LiteXLoader.sln` 项目文件，点击 **生成解决方案** 按钮
-4. 编译生成成功之后，返回到项目根目录，执行根目录中的 `MakeRelease.cmd`，执行完之后根目录 `RELEASE` 文件夹内的内容即为完整的`LiteXLoader`及所有的依赖库
+3. 打开 LiteXLoader 目录下的 `LiteXLoader.sln` 项目文件，点击 **生成** 菜单中的 **批生成** 项
+4. 弹出批生成对话框，选中每种语言配置对应的 **x64** 平台右侧的生成复选框
+5. 选择完毕之后，点击对话框中的 **生成** 按钮，进行批生成
+6. 编译生成成功之后，返回到项目根目录，执行根目录中的 `MakeRelease.cmd`，执行完之后根目录 `RELEASE` 文件夹内的内容即为完整的`LiteXLoader`及所有的依赖库
 
 ## 💻 安装
 项目主要发布于**MineBBS**，请[移步MineBBS](https://www.minebbs.com/)下载。注意，本项目需要 `LiteLoader` 作为前置加载器。

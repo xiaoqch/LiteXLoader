@@ -246,5 +246,11 @@
     <Library Include="..\engine\V8\lib\zlib.lib">
       <Filter>Lib</Filter>
     </Library>
+    <Library Include="..\lib\ScriptX-Lua.lib">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="..\engine\Lua\lib\lua.lib">
+      <Filter>Lib</Filter>
+    </Library>
   </ItemGroup>
 </Project>
