@@ -810,7 +810,7 @@ bool CallPlayerCmdCallback(Player* player, const string& cmd)
                     //如果命令与注册前缀全匹配，或者目标前缀后面为空格
                 {
                     //Matched
-                    Local<Array> args = Array::newArray({ String::newString(prefix) });
+                    Local<Array> args = Array::newArray();
                     if (cmd.size() > prefix.size())
                     {
                         //除了注册前缀之外还有额外参数
@@ -845,7 +845,7 @@ bool CallServerCmdCallback(const string& cmd)
                     //如果命令与注册前缀全匹配，或者目标前缀后面为空格
                 {
                     //Matched
-                    Local<Array> args = Array::newArray({ String::newString(prefix) });
+                    Local<Array> args = Array::newArray();
                     if (cmd.size() > prefix.size())
                     {
                         //除了注册前缀之外还有额外参数

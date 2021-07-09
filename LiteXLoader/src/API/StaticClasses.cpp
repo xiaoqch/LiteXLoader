@@ -144,7 +144,7 @@ public:
     static Local<Value> openConfig(const Arguments& args) { return OpenConfig(args); }
     static Local<Value> openDB(const Arguments& args) { return OpenDB(args); }
 
-    static Local<Value> fromJson(const Arguments& args) { return FromJson(args); }
+    static Local<Value> parseJson(const Arguments& args) { return ParseJson(args); }
     static Local<Value> toJson(const Arguments& args) { return ToJson(args); }
 };
 
@@ -153,7 +153,7 @@ ClassDefine<void> DataClassBuilder =
         .function("openConfig", &DataClass::openConfig)
         .function("openDB", &DataClass::openDB)
 
-        .function("fromJson", &DataClass::fromJson)
+        .function("parseJson", &DataClass::parseJson)
         .function("toJson", &DataClass::toJson)
         .build();
 

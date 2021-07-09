@@ -1,4 +1,5 @@
 - [⛳ 新手入门（必读）](zh_CN/Development/)
+- [📋 最近更改](zh_CN/Development/Changes)
 - 游戏内容接口
 
   - [🎯 命令系统](zh_CN/Development/GameAPI/Command.md)
@@ -23,16 +24,17 @@
 - NBT
 - 脚本辅助接口
 
-  - [💼 脚本辅助接口](zh_CN/Development/ScriptAPI/ScriptHelp.md)
+  - [💼 通用脚本接口](zh_CN/Development/ScriptAPI/ScriptHelp.md)
 
-  - [📅 通用日志系统](zh_CN/Development/ScriptAPI/Logger.md)
+  - [📅 日志系统](zh_CN/Development/ScriptAPI/Logger.md)
   - [💡 加载器相关](zh_CN/Development/ScriptAPI/Lxl.md)
-- 配置文件与数据处理接口
+- 配置文件与数据处理
 
   - [🔨 配置文件](zh_CN/Development/DataAPI/ConfigFile.md)
   - [📦 数据库](zh_CN/Development/DataAPI/DataBase.md)
   - [💰 经济系统](zh_CN/Development/DataAPI/Economy.md)
-  - [🏃‍♂️ 玩家相关数据](zh_CN/Development/DataAPI/PlayerData.md)
+  - [🏃‍♂️ 玩家绑定数据](zh_CN/Development/DataAPI/PlayerData.md)
+  - [🧰 其他数据处理接口](zh_CN/Development/DataAPI/OtherData.md)
 - 系统调用与网络
   - [📝 文件读写](zh_CN/Development/SystemAPI/File.md)
   - [📂 文件与目录操作](zh_CN/Development/SystemAPI/FileSystem.md)

@@ -107,94 +107,130 @@ void JsonToValue_Helper(Local<Array> &res, JSON_VALUE &j);
 
 void JsonToValue_Helper(Local<Object> &res, const string &key, JSON_VALUE &j)
 {
-    if(j.is_string())
+    switch (j.type())
+    {
+    case JSON_VALUE::value_t::string:
         res.set(key, String::newString(j.get<string>()));
-    else if(j.is_number_integer())
+        break;
+    case JSON_VALUE::value_t::number_integer:
+    case JSON_VALUE::value_t::number_unsigned:
         res.set(key, Number::newNumber(j.get<int>()));
-    else if(j.is_number_float())
+        break;
+    case JSON_VALUE::value_t::number_float:
         res.set(key, Number::newNumber(j.get<double>()));
-    else if(j.is_boolean())
+        break;
+    case JSON_VALUE::value_t::boolean:
         res.set(key, Boolean::newBoolean(j.get<bool>()));
-    else if(j.is_null())
+        break;
+    case JSON_VALUE::value_t::null:
         res.set(key, Local<Value>());
-    else if(j.is_array())
+        break;
+    case JSON_VALUE::value_t::array:
     {
         Local<Array> arrToAdd = Array::newArray();
         for (JSON_VALUE::iterator it = j.begin(); it != j.end(); ++it)
-            JsonToValue_Helper(arrToAdd,*it);
+            JsonToValue_Helper(arrToAdd, *it);
         res.set(key, arrToAdd);
+        break;
     }
-    else if(j.is_object())
+    case JSON_VALUE::value_t::object:
     {
         Local<Object> objToAdd = Object::newObject();
         for (JSON_VALUE::iterator it = j.begin(); it != j.end(); ++it)
-            JsonToValue_Helper(objToAdd,it.key(),it.value());
+            JsonToValue_Helper(objToAdd, it.key(), it.value());
         res.set(key, objToAdd);
+        break;
     }
-    else
+    default:
         res.set(key, Local<Value>());
+        break;
+    }
 }
 
 void JsonToValue_Helper(Local<Array> &res, JSON_VALUE &j)
 {
-    if(j.is_string())
+    switch (j.type())
+    {
+    case JSON_VALUE::value_t::string:
         res.add(String::newString(j.get<string>()));
-    else if(j.is_number_integer())
+        break;
+    case JSON_VALUE::value_t::number_integer:
+    case JSON_VALUE::value_t::number_unsigned:
         res.add(Number::newNumber(j.get<int>()));
-    else if(j.is_number_float())
+        break;
+    case JSON_VALUE::value_t::number_float:
         res.add(Number::newNumber(j.get<double>()));
-    else if(j.is_boolean())
+        break;
+    case JSON_VALUE::value_t::boolean:
         res.add(Boolean::newBoolean(j.get<bool>()));
-    else if(j.is_null())
+        break;
+    case JSON_VALUE::value_t::null:
         res.add(Local<Value>());
-    else if(j.is_array())
+        break;
+    case JSON_VALUE::value_t::array:
     {
         Local<Array> arrToAdd = Array::newArray();
         for (JSON_VALUE::iterator it = j.begin(); it != j.end(); ++it)
-            JsonToValue_Helper(arrToAdd,*it);
+            JsonToValue_Helper(arrToAdd, *it);
         res.add(arrToAdd);
+        break;
     }
-    else if(j.is_object())
+    case JSON_VALUE::value_t::object:
     {
         Local<Object> objToAdd = Object::newObject();
         for (JSON_VALUE::iterator it = j.begin(); it != j.end(); ++it)
-            JsonToValue_Helper(objToAdd,it.key(),it.value());
+            JsonToValue_Helper(objToAdd, it.key(), it.value());
         res.add(objToAdd);
+        break;
     }
-    else
+    default:
         res.add(Local<Value>());
+        break;
+    }
 }
 
 Local<Value> JsonToValue(JSON_VALUE j)
 {
     Local<Value> res;
-    
-    if(j.is_string())
+
+    switch (j.type())
+    {
+    case JSON_VALUE::value_t::string:
         res = String::newString(j.get<string>());
-    else if(j.is_number_integer())
+        break;
+    case JSON_VALUE::value_t::number_integer:
+    case JSON_VALUE::value_t::number_unsigned:
         res = Number::newNumber(j.get<int>());
-    else if(j.is_number_float())
+        break;
+    case JSON_VALUE::value_t::number_float:
         res = Number::newNumber(j.get<double>());
-    else if(j.is_boolean())
+        break;
+    case JSON_VALUE::value_t::boolean:
         res = Boolean::newBoolean(j.get<bool>());
-    else if(j.is_null())
+        break;
+    case JSON_VALUE::value_t::null:
         res = Local<Value>();
-    else if(j.is_array())
+        break;
+    case JSON_VALUE::value_t::array:
     {
         Local<Array> resArr = Array::newArray();
         for (JSON_VALUE::iterator it = j.begin(); it != j.end(); ++it)
-            JsonToValue_Helper(resArr,*it);
+            JsonToValue_Helper(resArr, *it);
         res = resArr;
+        break;
     }
-    else if(j.is_object())
+    case JSON_VALUE::value_t::object:
     {
         Local<Object> resObj = Object::newObject();
         for (JSON_VALUE::iterator it = j.begin(); it != j.end(); ++it)
-            JsonToValue_Helper(resObj,it.key(),it.value());
+            JsonToValue_Helper(resObj, it.key(), it.value());
         res = resObj;
+        break;
     }
-    else
+    default:
         res = Local<Value>();
+        break;
+    }
     
     return res;
 }

@@ -93,4 +93,4 @@ Local<Value> MoneyGetHintory(const Arguments& args);
 Local<Value> MoneyClearHistory(const Arguments& args);
 
 Local<Value> ToJson(const Arguments& args);
-Local<Value> FromJson(const Arguments& args);
+Local<Value> ParseJson(const Arguments& args);
