@@ -1,4 +1,4 @@
-- [⛳ 新手入门](zh_CN/Development/)
+- [⛳ 新手入门（必读）](zh_CN/Development/)
 - 游戏内容接口
 
   - [🎯 命令系统](zh_CN/Development/GameAPI/Command.md)

@@ -77,7 +77,7 @@
 
 > 没错，就这么简单 o(*￣▽￣*)ブ
 
-关于具体的**安装与使用指南** ，请👉[移步文档站](https://lxl.litetitle.com/#/zh_CN/Usage)👈查看
+关于具体的**安装与使用指南** ，请👉[移步文档站](https://lxl.litetitle.com/#/zh_CN/Usage/)👈查看
 
 ## 💡 兼容性与可扩展性
 兼容`旧LiteLuaRunner`的大部分插件。  
@@ -101,7 +101,7 @@
 
 ## 📕 开发文档
 
-请👉[移步文档站](https://lxl.litetitle.com/#/zh_CN/Development)👈查看详细的**API文档**和**插件开发教程**  
+请👉[移步文档站](https://lxl.litetitle.com/#/zh_CN/Development/)👈查看详细的**API文档**和**插件开发教程**  
 如果有修订需求或者有新增API的需要，欢迎联系作者或者发布Issue  
 
 ## 🎬 参与贡献
@@ -114,7 +114,7 @@
 4. 帮助我们宣传LXL，对我们的开发给予支持
 
 ⭐⭐⭐我们欢迎你对LiteXLoader做出自己的贡献！⭐⭐⭐  
-如果你有意为LXL贡献代码，欢迎👉[移步文档站](https://lxl.litetitle.com/#/zh_CN/Maintance)👈查看 **项目维护与支持文档**  
+如果你有意为LXL贡献代码，欢迎👉[移步文档站](https://lxl.litetitle.com/#/zh_CN/Maintance/)👈查看 **项目维护与支持文档**  
 
 有你们，LiteXLoader将变得更好~
 
@@ -146,7 +146,7 @@ but if you modified the framework, or write a new framework based on this framew
 - [LiteLuaLoader](https://github.com/wzyyyyyyy) 项目 和 [BDSPyRunner](https://github.com/twoone-3/BDSpyrunner)项目 提供的很多底层接口实现
 
 > 特别鸣谢：感谢 [LiteLDev](https://github.com/orgs/LiteLDev/people) 各位大佬们的技术援助   
-> [@wzy](https://github.com/wzyyyyyyy) [@twoone-3](https://github.com/twoone-3) [@dreamguxiang](https://github.com/dreamguxiang) [@RedbeanW](https://github.com/Redbeanw44602) 的代码贡献  
+> [@wzy](https://github.com/wzyyyyyyy) [@twoone-3](https://github.com/twoone-3) [@dreamguxiang](https://github.com/dreamguxiang) [@Sysca11](https://github.com/Sysca11) [@RedbeanW](https://github.com/Redbeanw44602) 的代码贡献  
 > 以及 ScriptX开发者 [@LanderlYoung](https://github.com/Tencent/ScriptX/commits?author=LanderlYoung)   
 > 在开发过程中给予了作者以非常大的支持。感谢他们！ 💖💖
 
