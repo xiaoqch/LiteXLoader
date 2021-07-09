@@ -410,7 +410,11 @@ Local<Value> OpenConfig(const Arguments& args)
         GlobalConfType confType = GlobalConfType::ini;
 
         if(path.empty())
-            return Boolean::newBoolean(false);        
+            return Boolean::newBoolean(false);  
+
+        //自动创建路径
+        filesystem::path dir(path);
+        filesystem::create_directories(dir.remove_filename());
 
         if(args.size() >= 2)
         {
@@ -567,7 +571,7 @@ Local<Value> ToJson(const Arguments& args)
     CATCH("Fail in ToJson!")
 }
 
-Local<Value> FromJson(const Arguments& args)
+Local<Value> ParseJson(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1)
     CHECK_ARG_TYPE(args[0], ValueKind::kString)
@@ -584,5 +588,5 @@ Local<Value> FromJson(const Arguments& args)
             return Local<Value>();
         }
     }
-    CATCH("Fail in FromJson!")
+    CATCH("Fail in ParseJson!")
 }

@@ -22,7 +22,7 @@ ClassDefine<IntPos> IntPosBuilder =
         .instanceProperty("x", &IntPos::getX, &IntPos::setX)
         .instanceProperty("y", &IntPos::getY, &IntPos::setY)
         .instanceProperty("z", &IntPos::getZ, &IntPos::setZ)
-        .instanceProperty("dim", &IntPos::getDim, &IntPos::setDim)
+        .instanceProperty("dimid", &IntPos::getDim, &IntPos::setDim)
         .build();
 
 ClassDefine<FloatPos> FloatPosBuilder =
@@ -31,7 +31,7 @@ ClassDefine<FloatPos> FloatPosBuilder =
         .instanceProperty("x", &FloatPos::getX, &FloatPos::setX)
         .instanceProperty("y", &FloatPos::getY, &FloatPos::setY)
         .instanceProperty("z", &FloatPos::getZ, &FloatPos::setZ)
-        .instanceProperty("dim", &FloatPos::getDim, &FloatPos::setDim)
+        .instanceProperty("dimid", &FloatPos::getDim, &FloatPos::setDim)
         .build();
 
 

@@ -86,7 +86,8 @@ var open = pl.isOP();
 
 #### 断开玩家连接  
 
-`pl.kick([msg])`
+`pl.kick([msg])`  
+`pl.disconnect([msg])`
 
 - 参数：
   - msg : `String`  
@@ -105,7 +106,8 @@ pl.kick();
 
 #### 发送一个文本消息给玩家  
 
-`pl.tell(msg[,type])`
+`pl.tell(msg[,type])`  
+`pl.sendText(msg[,type])`
 
 - 参数：
 

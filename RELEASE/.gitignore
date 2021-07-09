@@ -1,2 +1,4 @@
 *.dll
 !/lib/*
+*.js
+*.lua

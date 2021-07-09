@@ -1,6 +1,6 @@
 # LiteXLoader - 游戏元素接口文档
 
-> 下列这些API，提供了对游戏内容进行 **修改** 和 **扩展** 的能力。  
+> 下列这些API，提供了对游戏内容进行 **修改** 和 **扩展** 的能力。  
 
 ## 🎯 命令相关 API
 
@@ -75,7 +75,8 @@ log(result.output);
 - player : `Player`  
   执行命令的玩家对象
 - args : `Array<String,String...>`    
-  按空格为分界分割，得到的命令字符串数组
+  目标命令后面的参数。按空格为分界分割，组成字符串数组。  
+  如注册了自定义命令 `land set`，当执行 `/land set abc 2333` 时，args的值将为 `[ "abc","2333" ]`
 
 ```clike
 [Js]
@@ -105,8 +106,9 @@ mc.regPlayerCmd("fly on","Turn on the fly mode",function(pl,args){
 
 注：参数callback的回调函数原型：`function(args)`  
 
-- args : `Array<String,String...>`    
-  按空格为分界分割，得到的命令字符串数组
+- args : `Array<String,String...>`      
+  目标命令后面的参数。按空格为分界分割，组成字符串数组。  
+  如注册了自定义命令 `land set`，当执行 `/land set abc 2333` 时，args的值将为 `['abc','2333']`
 
 ```clike
 [Js]
@@ -125,8 +127,8 @@ mc.regConsoleCmd("backup","Start the backup",function(args){
 
 以Js语言为例：执行注册`mc.regPlayerCmd("land buy", "购买领地", 0, function(args){ .... } );` 之后，  
 当你使用命令`/land buy abcde 12345`的时候，这个回调函数就会被调用。  
-回调函数的参数args被传入一个数组：[ "land buy", "abcde" , "12345" ]  
-正如所见，`args[0]`为注册的这个命令本身，后面按顺序是被分割好的参数。  
+回调函数的参数args被传入一个数组：[ "abcde" , "12345" ]  
+正如所见，`args` 中包含的值是被 **按顺序分割好的** 命令参数。  
 如果你的命令中有引号（比如说为了处理含有空格的玩家名字），LXL在分割时也会做处理。
 
 在调用回调函数之后，如果你没有拦截，传统的的命令执行事件仍然会被正常触发一次。  
