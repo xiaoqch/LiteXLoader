@@ -49,6 +49,7 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceFunction("rename", &PlayerClass::rename)
         .instanceFunction("addLevel", &PlayerClass::addLevel)
         .instanceFunction("transServer", &PlayerClass::transServer)
+        .instanceFunction("crash", &PlayerClass::crash)
 
         .instanceFunction("getScore", &PlayerClass::getScore)
         .instanceFunction("setScore", &PlayerClass::setScore)
@@ -401,6 +402,14 @@ Local<Value> PlayerClass::transServer(const Arguments& args)
         return Boolean::newBoolean(Raw_TransServer(player, args[0].toStr(), (short) args[1].toInt()));
     }
     CATCH("Fail in transServer!")
+}
+
+Local<Value> PlayerClass::crash(const Arguments& args)
+{
+    try {
+        return Boolean::newBoolean(Raw_CrashPlayer(player));
+    }
+    CATCH("Fail in crashPlayer!")
 }
 
 Local<Value> PlayerClass::getScore(const Arguments& args)

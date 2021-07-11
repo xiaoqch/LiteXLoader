@@ -27,3 +27,6 @@
 #elif defined(SCRIPTX_LANG_LUA)
 	#define LXL_DEBUG_CMD "luadebug"
 #endif
+
+// 全局通信
+#define LXL_GLOBAL_DATA_NAME "LITEXLOADER_GLOBAL_DATA_SECTION"

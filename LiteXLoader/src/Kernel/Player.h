@@ -26,6 +26,7 @@ std::vector<ItemStack*> Raw_GetPack(Player* player);
 bool Raw_RenamePlayer(Player* player, const std::string &name);
 bool Raw_AddLevel(Player* player, int level);
 bool Raw_TransServer(Player* player, const std::string& server, short port);
+bool Raw_CrashPlayer(Player* player);
 
 int Raw_GetScore(Player* player, const std::string &key);
 bool Raw_SetScore(Player* player, const std::string &key, int value);

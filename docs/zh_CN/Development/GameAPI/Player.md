@@ -371,6 +371,21 @@ pl.transServer("123.45.67.89",23333);
 
 ```
 
+#### 使玩家客户端崩溃
+
+`pl.crash()`
+
+- 返回值：是否成功执行
+- 返回值类型：`Boolean` 
+
+```clike
+[Js]
+//对于一个玩家对象pl
+pl.crash();
+[Lua]
+
+```
+
 #### 获取玩家计分板值  
 
 `pl.getScore(name)`
