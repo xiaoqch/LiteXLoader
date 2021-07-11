@@ -379,10 +379,11 @@ pl.transServer("123.45.67.89",23333);
 - 返回值类型：`Boolean` 
 
 ```clike
-[Js]
 //对于一个玩家对象pl
+[Js]
 pl.crash();
 [Lua]
+pl:crash()
 
 ```
 

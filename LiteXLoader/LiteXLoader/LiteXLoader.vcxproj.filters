@@ -228,28 +228,28 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\lib\LiteLoader.lib">
+    <Library Include="..\third-party\Lua\lib\lua.lib">
       <Filter>Lib</Filter>
     </Library>
-    <Library Include="..\lib\ScriptX-Js.lib">
+    <Library Include="..\third-party\V8\lib\v8.lib">
       <Filter>Lib</Filter>
     </Library>
-    <Library Include="..\engine\V8\lib\v8.lib">
+    <Library Include="..\third-party\V8\lib\v8_libbase.lib">
       <Filter>Lib</Filter>
     </Library>
-    <Library Include="..\engine\V8\lib\v8_libbase.lib">
+    <Library Include="..\third-party\V8\lib\v8_libplatform.lib">
       <Filter>Lib</Filter>
     </Library>
-    <Library Include="..\engine\V8\lib\v8_libplatform.lib">
+    <Library Include="..\third-party\V8\lib\zlib.lib">
       <Filter>Lib</Filter>
     </Library>
-    <Library Include="..\engine\V8\lib\zlib.lib">
+    <Library Include="..\third-party\LiteLoader\LiteLoader.lib">
       <Filter>Lib</Filter>
     </Library>
-    <Library Include="..\lib\ScriptX-Lua.lib">
+    <Library Include="..\third-party\ScriptX\lib\ScriptX-Js.lib">
       <Filter>Lib</Filter>
     </Library>
-    <Library Include="..\engine\Lua\lib\lua.lib">
+    <Library Include="..\third-party\ScriptX\lib\ScriptX-Lua.lib">
       <Filter>Lib</Filter>
     </Library>
   </ItemGroup>
