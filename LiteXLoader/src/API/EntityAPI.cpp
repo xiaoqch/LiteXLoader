@@ -15,6 +15,8 @@ ClassDefine<EntityClass> EntityClassBuilder =
         .instanceProperty("pos", &EntityClass::getPos)
         .instanceProperty("maxHealth", &EntityClass::getMaxHealth)
         .instanceProperty("health", &EntityClass::getHealth)
+        .instanceProperty("maxStrength", &EntityClass::getMaxStrength)
+        .instanceProperty("strength", &EntityClass::getStrength)
         .instanceProperty("inAir", &EntityClass::getInAir)
 
         .instanceFunction("teleport", &EntityClass::teleport)
@@ -90,6 +92,22 @@ Local<Value> EntityClass::getHealth()
         return Number::newNumber(Raw_GetHealth(entity));
     }
     CATCH("Fail in GetHealth!")
+}
+
+Local<Value> EntityClass::getMaxStrength()
+{
+    try {
+        return Number::newNumber(Raw_GetMaxStrength(entity));
+    }
+    CATCH("Fail in GetMaxStrength!")
+}
+
+Local<Value> EntityClass::getStrength()
+{
+    try {
+        return Number::newNumber(Raw_GetStrength(entity));
+    }
+    CATCH("Fail in GetStrength!")
 }
 
 Local<Value> EntityClass::getInAir()

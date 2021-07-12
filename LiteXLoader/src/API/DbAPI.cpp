@@ -18,6 +18,7 @@ ClassDefine<DbClass> DbClassBuilder =
         .instanceFunction("get", &DbClass::get)
         .instanceFunction("set", &DbClass::set)
         .instanceFunction("delete", &DbClass::del)
+        .instanceFunction("close", &DbClass::close)
         .build();
 
 ClassDefine<ConfJsonClass> ConfJsonClassBuilder =
@@ -27,6 +28,7 @@ ClassDefine<ConfJsonClass> ConfJsonClassBuilder =
         .instanceFunction("set", &ConfJsonClass::set)
         .instanceFunction("delete", &ConfJsonClass::del)
         .instanceFunction("reload", &ConfJsonClass::reload)
+        .instanceFunction("close", &ConfJsonClass::close)
         .instanceFunction("getPath", &ConfJsonClass::getPath)
         .instanceFunction("read", &ConfJsonClass::read)
         .instanceFunction("write", &ConfJsonClass::write)
@@ -42,6 +44,7 @@ ClassDefine<ConfIniClass> ConfIniClassBuilder =
         .instanceFunction("getBool", &ConfIniClass::getBool)
         .instanceFunction("delete", &ConfIniClass::del)
         .instanceFunction("reload", &ConfIniClass::reload)
+        .instanceFunction("close", &ConfIniClass::close)
         .instanceFunction("getPath", &ConfIniClass::getPath)
         .instanceFunction("read", &ConfIniClass::read)
         .instanceFunction("write", &ConfIniClass::write)
@@ -108,6 +111,30 @@ Local<Value> DbClass::del(const Arguments& args)
         return Boolean::newBoolean(Raw_DBDel(kvdb,args[0].asString().toString()));
     }
     CATCH("Fail in DbDel!")
+}
+
+Local<Value> DbClass::close(const Arguments& args)
+{
+    try
+    {
+        return Boolean::newBoolean(Raw_DBClose(kvdb));
+    }
+    CATCH("Fail in DbClose!")
+}
+
+Local<Value> DbClass::listKey(const Arguments& args)
+{
+    try
+    {
+        auto list = Raw_DBListKey(kvdb);
+        Local<Array> arr = Array::newArray();
+        for (auto& key : list)
+        {
+            arr.add(String::newString(key));
+        }
+        return arr;
+    }
+    CATCH("Fail in DbListKey!")
 }
 
 
@@ -190,16 +217,7 @@ Local<Value> ConfJsonClass::set(const Arguments& args)
     try
     {
         jsonConf[args[0].toStr()] = JSON_VALUE::parse(ValueToJson(args[1]));
-        //写回文件
-        ofstream jsonFile(confPath);
-        if (jsonFile.is_open())
-        {
-            jsonFile << jsonConf.dump(4);
-            jsonFile.close();
-            return Boolean::newBoolean(true);
-        }
-        else
-            return Boolean::newBoolean(false);
+        return Boolean::newBoolean(flush());
     }
     catch (exception& e)
     {
@@ -218,16 +236,7 @@ Local<Value> ConfJsonClass::del(const Arguments& args)
         if (jsonConf.erase(args[0].toStr()) <= 0)
             return Boolean::newBoolean(false);
 
-        //写回文件
-        ofstream jsonFile(confPath);
-        if (jsonFile.is_open())
-        {
-            jsonFile << jsonConf.dump(4);
-            jsonFile.close();
-            return Boolean::newBoolean(true);
-        }
-        else
-            return Boolean::newBoolean(false);
+        return Boolean::newBoolean(flush());
     }
     catch (exception& e)
     {
@@ -254,6 +263,29 @@ Local<Value> ConfJsonClass::reload(const Arguments& args)
         return Boolean::newBoolean(false);
     }
     CATCH("Fail in confJsonReload!")
+}
+
+Local<Value> ConfJsonClass::close(const Arguments& args)
+{
+    try
+    {
+        flush();
+        return Boolean::newBoolean(true);
+    }
+    CATCH("Fail in confJsonClose!")
+}
+
+bool ConfJsonClass::flush()
+{
+    ofstream jsonFile(confPath);
+    if (jsonFile.is_open())
+    {
+        jsonFile << jsonConf.dump(4);
+        jsonFile.close();
+        return true;
+    }
+    else
+        return false;
 }
 
 
@@ -392,6 +424,15 @@ Local<Value> ConfIniClass::reload(const Arguments& args)
     CATCH("Fail in confReload!")
 }
 
+Local<Value> ConfIniClass::close(const Arguments& args)
+{
+    try
+    {
+        Raw_IniClose(iniConf);
+        return Boolean::newBoolean(true);
+    }
+    CATCH("Fail in confClose!")
+}
 
 
 //////////////////// APIs ////////////////////
