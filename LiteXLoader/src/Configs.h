@@ -2,15 +2,18 @@
 #include <ScriptX/ScriptX.h>
 
 ////////////// Configs //////////////
-#define LXL_VERSION "0.0.4"
+#define LXL_VERSION_MAJOR 0
+#define LXL_VERSION_MINOR 0
+#define LXL_VERSION_BUILD 7
+#define LXL_VERSION_IS_BETA true
 
 // 后端宏
 #if defined(SCRIPTX_LANG_JAVASCRIPT)
-	#define LXL_SCRIPT_LANG_TYPE "Js"
-	#define LXL_PLUGINS_SUFFIX ".js"
+#define LXL_SCRIPT_LANG_TYPE "Js"
+#define LXL_PLUGINS_SUFFIX ".js"
 #elif defined(SCRIPTX_LANG_LUA)
-	#define LXL_SCRIPT_LANG_TYPE "Lua"
-	#define LXL_PLUGINS_SUFFIX ".lua"
+#define LXL_SCRIPT_LANG_TYPE "Lua"
+#define LXL_PLUGINS_SUFFIX ".lua"
 #endif
 
 // 配置文件

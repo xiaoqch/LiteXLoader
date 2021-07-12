@@ -197,7 +197,7 @@ class LxlClass
 {
 public:
     static Local<Value> version(const Arguments& args) { return LxlGetVersion(args); }
-    static Local<Value> loadPlugin(const Arguments& args) { return LxlLoadPlugin(args); }
+    //static Local<Value> loadPlugin(const Arguments& args) { return LxlLoadPlugin(args); }
     static Local<Value> listPlugins(const Arguments& args) { return LxlListPlugins(args); }
 };
 

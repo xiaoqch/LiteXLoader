@@ -43,7 +43,7 @@ enum class EVENT_TYPES : int
     onOpenChest, onCloseChest, onOpenBarrel, onCloseBarrel, onChangeSlot,
     onMobDie, onMobHurt, onExplode, onBlockExploded, onCmdBlockExecute,
     onProjectileHit, onBlockInteractd, onUseRespawnAnchor, onFarmLandDecay,
-    onPistonPush, onHopperSearchItem, onHopperPushOut,
+    onPistonPush, onHopperSearchItem, onHopperPushOut, onFireSpread, 
     onServerStarted, onServerCmd, onFormSelected, onConsoleOutput,
     EVENT_COUNT
 };
@@ -83,6 +83,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onPistonPush",EVENT_TYPES::onPistonPush},
     {"onHopperSearchItem",EVENT_TYPES::onHopperSearchItem},
     {"onHopperPushOut",EVENT_TYPES::onHopperPushOut},
+    {"onFireSpread",EVENT_TYPES::onFireSpread},
     {"onServerStarted",EVENT_TYPES::onServerStarted},
     {"onServerCmd",EVENT_TYPES::onServerCmd},
     {"onConsoleOutput",EVENT_TYPES::onConsoleOutput},
@@ -644,6 +645,17 @@ THook(bool, "?_pushOutItems@Hopper@@IEAA_NAEAVBlockSource@@AEAVContainer@@AEBVVe
         CallEventEx(EVENT_TYPES::onHopperPushOut, FloatPos::newPos(*pos, Raw_GetBlockDimension(bs)));
     }
     return original(_this, bs, container, pos, a5);
+}
+
+// ===== onFireSpread =====
+THook(bool, "?_trySpawnBlueFire@FireBlock@@AEBA_NAEAVBlockSource@@AEBVBlockPos@@@Z",
+    void* _this, BlockSource* bs, BlockPos* bp)
+{
+    IF_LISTENED(EVENT_TYPES::onFireSpread)
+    {
+        CallEventEx(EVENT_TYPES::onFireSpread, IntPos::newPos(*bp, Raw_GetBlockDimension(bs)));
+    }
+    return original(_this, bs, bp);
 }
 
 // ===== onServerCmd =====

@@ -107,6 +107,9 @@
     <ClInclude Include="..\src\Kernel\ThirdParty.h" />
   </ItemGroup>
   <ItemGroup>
+    <Library Include="..\third-party\dyncall\lib\libdyncallback_s.lib" />
+    <Library Include="..\third-party\dyncall\lib\libdyncall_s.lib" />
+    <Library Include="..\third-party\dyncall\lib\libdynload_s.lib" />
     <Library Include="..\third-party\LiteLoader\LiteLoader.lib" />
     <Library Include="..\third-party\Lua\lib\lua.lib" />
     <Library Include="..\third-party\ScriptX\lib\ScriptX-Js.lib" />
@@ -241,6 +244,7 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Release\</OutDir>
     <TargetName>$(ProjectName).Js</TargetName>
+    <IncludePath>$(SolutionDir)third-party\ScriptX\src\include\ScriptX;$(SolutionDir)third-party\ScriptX\src\include;$(SolutionDir)third-party\LiteLoader;$(SolutionDir)third-party;$(SolutionDir);$(SolutionDir)src;$(SolutionDir)third-party\V8\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -368,7 +372,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;SCRIPTX_BACKEND_TRAIT_PREFIX=../backend/V8/trait/Trait;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)third-party\ScriptX\src\include\ScriptX;$(SolutionDir)third-party\ScriptX\src\include;$(SolutionDir)third-party\LiteLoader;$(SolutionDir)third-party;$(SolutionDir);$(SolutionDir)src;$(SolutionDir)third-party\V8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>

@@ -46,7 +46,8 @@ void Welcome()
 void LoaderInfo()
 {
     INFO(std::string("LXL for ") + LXL_SCRIPT_LANG_TYPE + " loaded");
-    INFO(std::string("Version ") + LXL_VERSION);
+    INFO(std::string("Version ") + to_string(LXL_VERSION_MAJOR) + "." + to_string(LXL_VERSION_MINOR) + "."
+        + to_string(LXL_VERSION_BUILD) + (LXL_VERSION_IS_BETA ? " Beta" : ""));
 }
 
 void entry()
@@ -83,8 +84,9 @@ void entry()
     LoadDebugEngine();
 
     //GC循环
-    std::thread([]() {
-        std::this_thread::sleep_for(std::chrono::seconds(Raw_IniGetInt(iniConf, "Advanced", "GCInterval", 20)));
+    int gcTime = Raw_IniGetInt(iniConf, "Advanced", "GCInterval", 20);
+    std::thread([gcTime]() {
+        std::this_thread::sleep_for(std::chrono::seconds(gcTime));
         for (auto engine : lxlModules)
         {
             EngineScope enter(engine.get());
