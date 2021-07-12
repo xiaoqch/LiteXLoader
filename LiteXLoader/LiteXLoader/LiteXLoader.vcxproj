@@ -235,6 +235,7 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Release\</OutDir>
     <TargetName>$(ProjectName).Lua</TargetName>
+    <IncludePath>$(SolutionDir)third-party\ScriptX\src\include\ScriptX;$(SolutionDir)third-party\ScriptX\src\include;$(SolutionDir)third-party\LiteLoader;$(SolutionDir)third-party;$(SolutionDir);$(SolutionDir)src;$(SolutionDir)third-party\Lua\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Js|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -347,7 +348,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;SCRIPTX_BACKEND_TRAIT_PREFIX=../backend/Lua/trait/Trait;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)third-party\ScriptX\src\include\ScriptX;$(SolutionDir)third-party\ScriptX\src\include;$(SolutionDir)third-party\LiteLoader;$(SolutionDir)third-party;$(SolutionDir);$(SolutionDir)src;$(SolutionDir)third-party\Lua\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -355,7 +356,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)third-party\ScriptX\lib\ScriptX-Lua.lib;$(SolutionDir)third-party\Lua\lib\lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)third-party\LiteLoader\LiteLoader.lib;$(SolutionDir)third-party\ScriptX\lib\ScriptX-Lua.lib;$(SolutionDir)third-party\Lua\lib\lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Js|x64'">
@@ -375,7 +376,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)third-party\ScriptX\lib\ScriptX-Js.lib;$(SolutionDir)third-party\V8\lib\v8.lib;$(SolutionDir)third-party\V8\lib\v8_libbase.lib;$(SolutionDir)third-party\V8\lib\v8_libplatform.lib;$(SolutionDir)third-party\V8\lib\zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)third-party\LiteLoader\LiteLoader.lib;$(SolutionDir)third-party\ScriptX\lib\ScriptX-Js.lib;$(SolutionDir)third-party\V8\lib\v8.lib;$(SolutionDir)third-party\V8\lib\v8_libbase.lib;$(SolutionDir)third-party\V8\lib\v8_libplatform.lib;$(SolutionDir)third-party\V8\lib\zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

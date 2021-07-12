@@ -7,7 +7,7 @@
 //主引擎表
 extern std::list<std::shared_ptr<script::ScriptEngine>> lxlModules;
 
-void InitEngineGlobalData();
+void InitEngineGlobalData(bool* isFirstInstance);
 struct FormCallbackData
 {
 	script::ScriptEngine* engine;

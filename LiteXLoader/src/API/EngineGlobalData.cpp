@@ -9,7 +9,8 @@ using namespace script;
 //全局表单监听
 EngineGlobalData_Type* engineGlobalData;
 
-void InitEngineGlobalData()
+void InitEngineGlobalData(bool *isFirstInstance)
 {
 	engineGlobalData = new EngineGlobalData_Type;
+	*isFirstInstance = true;
 }

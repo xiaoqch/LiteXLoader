@@ -15,6 +15,7 @@
 
 // 配置文件
 #define LXL_DEF_LOAD_DIR "./plugins"
+#define LXL_LANGPACK_DIR "./plugins/LiteXLoader/LangPack/"
 #define LXL_CONFIG_PATH "./plugins/LiteXLoader/config.ini"
 
 // 基础库 & 依赖库
