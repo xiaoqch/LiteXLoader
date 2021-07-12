@@ -237,6 +237,24 @@ pl.rename("newname");
 
 ```
 
+#### 获取玩家  
+
+`pl.rename(newname)`
+
+- 参数：
+  - newname : `String`  
+    玩家的新名字  
+- 返回值：是否重命名成功
+- 返回值类型：`Boolean`
+
+```clike
+[Js]
+//对于一个玩家对象pl
+pl.rename("newname");
+[Lua]
+
+```
+
 #### 查询玩家背包  
 
 `pl.getPack()`
@@ -546,6 +564,3 @@ pl.removeBossBar();
 
 ```
 
-------
-
-## 
