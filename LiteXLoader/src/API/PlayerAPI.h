@@ -31,6 +31,8 @@ public:
     Local<Value> getGameMode();
     Local<Value> getMaxHealth();
     Local<Value> getHealth();
+    Local<Value> getMaxStrength();
+    Local<Value> getStrength();
     Local<Value> getInAir();
     Local<Value> getSneaking();
 
@@ -49,6 +51,7 @@ public:
     Local<Value> rename(const Arguments& args);
     Local<Value> addLevel(const Arguments& args);
     Local<Value> transServer(const Arguments& args);
+    Local<Value> crash(const Arguments& args);
 
     Local<Value> getScore(const Arguments& args);
     Local<Value> setScore(const Arguments& args);

@@ -9,6 +9,7 @@
 #include <LiteLoader/api/commands.h>
 #include <LiteLoader/api/types/types.h>
 #include <LiteLoader/stl/KVDB.h>
+#include <LiteLoader/stl/langPack.h>
 #include <LiteLoader/api/gui/gui.h>
 #include <LiteLoader/httplib.h>
 #include <LiteLoader/api/myPacket.h>

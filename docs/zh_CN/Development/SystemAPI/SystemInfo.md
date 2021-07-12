@@ -20,7 +20,7 @@
 
 - 返回值类型： `Object<Integer,Integer,Integer,Integer,Integer,Integer,Integer>`
 
-  - 对于返回的某个时间对象tm，有如下这些成员：
+  - 对于返回的某个时间对象 tm，有如下这些成员：
 
   | 成员  | 含义                 | 类型      |
   | ----- | -------------------- | --------- |

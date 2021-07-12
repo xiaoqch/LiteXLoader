@@ -9,9 +9,10 @@ string Raw_GetEntityName(Actor* actor)
 
 std::string Raw_GetEntityTypeName(Actor* actor)
 {
-    return SymCall("?EntityTypeToString@@YA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@W4ActorType@@W4ActorTypeNamespaceRules@@@Z",
-        string, int, int)
-        (actor->getEntityTypeId(), 1);
+    void* identifier = SymCall("?getActorIdentifier@Actor@@QEBAAEBUActorDefinitionIdentifier@@XZ",
+        void*, Actor*)(actor);
+    return SymCall("?getCanonicalName@ActorDefinitionIdentifier@@QEBAAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ",
+        string, void*)(identifier);
 }
 
 int Raw_GetEntityId(Actor* actor)
@@ -34,6 +35,17 @@ int Raw_GetMaxHealth(Actor *actor)
 {
     return SymCall("?getMaxHealth@Actor@@QEBAHXZ", int, Actor*)(actor);
 }
+
+int Raw_GetStrength(Actor* actor)
+{
+    return SymCall("?getStrength@Actor@@QEBAHXZ", int, Actor*)(actor);
+}
+
+int Raw_GetMaxStrength(Actor* actor)
+{
+    return SymCall("?getStrengthMax@Actor@@QEBAHXZ", int, Actor*)(actor);
+}
+
 bool Raw_GetIsInAir(Actor *actor)
 {
     return !(dAccess<bool,448>(actor));

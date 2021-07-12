@@ -7,6 +7,8 @@ int Raw_GetEntityId(Actor* actor);
 FloatVec4 Raw_GetEntityPos(Actor* actor);
 int Raw_GetHealth(Actor *actor);
 int Raw_GetMaxHealth(Actor *actor);
+int Raw_GetStrength(Actor* actor);
+int Raw_GetMaxStrength(Actor* actor);
 bool Raw_GetIsInAir(Actor *actor);
 
 bool Raw_TeleportEntity(Actor* actor, const FloatVec4 &pos);

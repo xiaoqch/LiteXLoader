@@ -107,14 +107,17 @@
     <ClInclude Include="..\src\Kernel\ThirdParty.h" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\engine\Lua\lib\lua.lib" />
-    <Library Include="..\engine\V8\lib\v8.lib" />
-    <Library Include="..\engine\V8\lib\v8_libbase.lib" />
-    <Library Include="..\engine\V8\lib\v8_libplatform.lib" />
-    <Library Include="..\engine\V8\lib\zlib.lib" />
-    <Library Include="..\lib\LiteLoader.lib" />
-    <Library Include="..\lib\ScriptX-Js.lib" />
-    <Library Include="..\lib\ScriptX-Lua.lib" />
+    <Library Include="..\third-party\dyncall\lib\libdyncallback_s.lib" />
+    <Library Include="..\third-party\dyncall\lib\libdyncall_s.lib" />
+    <Library Include="..\third-party\dyncall\lib\libdynload_s.lib" />
+    <Library Include="..\third-party\LiteLoader\LiteLoader.lib" />
+    <Library Include="..\third-party\Lua\lib\lua.lib" />
+    <Library Include="..\third-party\ScriptX\lib\ScriptX-Js.lib" />
+    <Library Include="..\third-party\ScriptX\lib\ScriptX-Lua.lib" />
+    <Library Include="..\third-party\V8\lib\v8.lib" />
+    <Library Include="..\third-party\V8\lib\v8_libbase.lib" />
+    <Library Include="..\third-party\V8\lib\v8_libplatform.lib" />
+    <Library Include="..\third-party\V8\lib\zlib.lib" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -235,11 +238,13 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Release\</OutDir>
     <TargetName>$(ProjectName).Lua</TargetName>
+    <IncludePath>$(SolutionDir)third-party\ScriptX\src\include\ScriptX;$(SolutionDir)third-party\ScriptX\src\include;$(SolutionDir)third-party\LiteLoader;$(SolutionDir)third-party;$(SolutionDir);$(SolutionDir)src;$(SolutionDir)third-party\Lua\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Js|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Release\</OutDir>
     <TargetName>$(ProjectName).Js</TargetName>
+    <IncludePath>$(SolutionDir)third-party\ScriptX\src\include\ScriptX;$(SolutionDir)third-party\ScriptX\src\include;$(SolutionDir)third-party\LiteLoader;$(SolutionDir)third-party;$(SolutionDir);$(SolutionDir)src;$(SolutionDir)third-party\V8\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -347,7 +352,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;SCRIPTX_BACKEND_TRAIT_PREFIX=../backend/Lua/trait/Trait;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)include\ScriptX\src\include\ScriptX;$(SolutionDir)include\ScriptX\src\include;$(SolutionDir)include\LiteLoader;$(SolutionDir)include;$(SolutionDir)src;$(SolutionDir)engine\Lua\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -355,7 +360,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)lib\ScriptX-Lua.lib;$(SolutionDir)engine\Lua\lib\lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)third-party\LiteLoader\LiteLoader.lib;$(SolutionDir)third-party\ScriptX\lib\ScriptX-Lua.lib;$(SolutionDir)third-party\Lua\lib\lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Js|x64'">
@@ -367,7 +372,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;SCRIPTX_BACKEND_TRAIT_PREFIX=../backend/V8/trait/Trait;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)include\ScriptX\src\include\ScriptX;$(SolutionDir)include\ScriptX\src\include;$(SolutionDir)include\LiteLoader;$(SolutionDir)include;$(SolutionDir)src;$(SolutionDir)engine\V8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -375,7 +380,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)lib\ScriptX-Js.lib;$(SolutionDir)engine\V8\lib\v8.lib;$(SolutionDir)engine\V8\lib\v8_libbase.lib;$(SolutionDir)engine\V8\lib\v8_libplatform.lib;$(SolutionDir)engine\V8\lib\zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)third-party\LiteLoader\LiteLoader.lib;$(SolutionDir)third-party\ScriptX\lib\ScriptX-Js.lib;$(SolutionDir)third-party\V8\lib\v8.lib;$(SolutionDir)third-party\V8\lib\v8_libbase.lib;$(SolutionDir)third-party\V8\lib\v8_libplatform.lib;$(SolutionDir)third-party\V8\lib\zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

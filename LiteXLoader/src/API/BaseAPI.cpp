@@ -254,7 +254,8 @@ Local<Value> RandomGuid(const Arguments& args)
 
 
 /////////////// Helper ///////////////
-std::map<unsigned int, DWORD> timeTaskMap;
+int timeTaskId = 0;
+std::unordered_map<int, bool> timeTaskMap;
 
 Local<Value> SetTimeout(const Arguments& args)
 {
@@ -274,23 +275,25 @@ Local<Value> SetTimeout(const Arguments& args)
         if(timeout <= 0)
             timeout = 1;
         
+        timeTaskMap[++timeTaskId] = true;
         std::thread task([engine{EngineScope::currentEngine()}, isFunc{std::move(isFunc)},
-            func{std::move(func)}, timeout{std::move(timeout)}]()
+            func{ std::move(func) }, timeout{ std::move(timeout) }, id{ timeTaskId }]()
         {
-            timeTaskMap[Raw_GetSystemThreadIdFromStdThread(std::this_thread::get_id())]
-                    = GetCurrentThreadId();
-            
             std::this_thread::sleep_for(std::chrono::milliseconds(timeout));
-            EngineScope enter(engine);
-            if(isFunc)
-                func.get().asFunction().call();
-            else
-                engine->eval(func.get().toStr());
-        });
 
-        auto id = Raw_GetSystemThreadIdFromStdThread(task.get_id());
+            if (timeTaskMap[id])
+            {
+                EngineScope enter(engine);
+                if (isFunc)
+                    func.get().asFunction().call();
+                else
+                    engine->eval(func.get().toStr());
+            }
+            timeTaskMap[id] = false;
+        });
         task.detach();
-        return Number::newNumber((long long)id);
+
+        return Number::newNumber(timeTaskId);
     }
     CATCH("Fail in SetTimeout!")
 }
@@ -313,13 +316,12 @@ Local<Value> SetInterval(const Arguments& args)
         if(timeout <= 0)
             timeout = 1;
         
+        timeTaskMap[++timeTaskId] = true;
         std::thread task([engine{EngineScope::currentEngine()}, isFunc{std::move(isFunc)},
-            func{std::move(func)}, timeout{std::move(timeout)}]()
+            func{std::move(func)}, timeout{std::move(timeout)}, id{ timeTaskId }]()
         {
-            timeTaskMap[Raw_GetSystemThreadIdFromStdThread(std::this_thread::get_id())]
-                    = GetCurrentThreadId();
             auto sleepTime = std::chrono::milliseconds(timeout);
-            while(true)
+            while(timeTaskMap[id])
             {
                 std::this_thread::sleep_for(sleepTime);
                 EngineScope enter(engine);
@@ -330,10 +332,9 @@ Local<Value> SetInterval(const Arguments& args)
                 ExitEngineScope exit;
             }
         });
-
-        auto id = Raw_GetSystemThreadIdFromStdThread(task.get_id());
         task.detach();
-        return Number::newNumber((long long)id);
+
+        return Number::newNumber(timeTaskId);
     }
     CATCH("Fail in SetInterval!")
 }
@@ -345,8 +346,8 @@ Local<Value> ClearInterval(const Arguments& args)
     CHECK_ARG_TYPE(args[0],ValueKind::kNumber)
 
     try{
-        DWORD id=timeTaskMap.at((unsigned int)args[0].asNumber().toInt64());     //########### 前面返回的ID一直是0 ###########
-        return Boolean::newBoolean(Raw_KillThread(id));
+        timeTaskMap.at(args[0].toInt()) = false;
+        return Boolean::newBoolean(true);
     }
     CATCH("Fail in ClearInterval!")
     catch(const std::out_of_range &e)

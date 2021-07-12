@@ -14,7 +14,8 @@ DB_ROOT Raw_NewDB(const std::string &dir);
 bool Raw_DBGet(DB_ROOT &db, const std::string & key, std::string &val);
 bool Raw_DBSet(DB_ROOT &db, const std::string & key, const std::string & val);
 bool Raw_DBDel(DB_ROOT &db, const std::string & key);
-std::vector<std::string> Raw_DBListKey(DB_ROOT db);
+std::vector<std::string> Raw_DBListKey(DB_ROOT &db);
+bool Raw_DBClose(DB_ROOT& db);
 
 //Json
 JSON_ROOT Raw_JsonOpen(const std::string& path, const std::string& defContent = "");

@@ -2,19 +2,23 @@
 #include <ScriptX/ScriptX.h>
 
 ////////////// Configs //////////////
-#define LXL_VERSION "0.0.4"
+#define LXL_VERSION_MAJOR 0
+#define LXL_VERSION_MINOR 0
+#define LXL_VERSION_BUILD 7
+#define LXL_VERSION_IS_BETA true
 
 // 后端宏
 #if defined(SCRIPTX_LANG_JAVASCRIPT)
-	#define LXL_SCRIPT_LANG_TYPE "Js"
-	#define LXL_PLUGINS_SUFFIX ".js"
+#define LXL_SCRIPT_LANG_TYPE "Js"
+#define LXL_PLUGINS_SUFFIX ".js"
 #elif defined(SCRIPTX_LANG_LUA)
-	#define LXL_SCRIPT_LANG_TYPE "Lua"
-	#define LXL_PLUGINS_SUFFIX ".lua"
+#define LXL_SCRIPT_LANG_TYPE "Lua"
+#define LXL_PLUGINS_SUFFIX ".lua"
 #endif
 
 // 配置文件
 #define LXL_DEF_LOAD_DIR "./plugins"
+#define LXL_LANGPACK_DIR "./plugins/LiteXLoader/LangPack/"
 #define LXL_CONFIG_PATH "./plugins/LiteXLoader/config.ini"
 
 // 基础库 & 依赖库
@@ -27,3 +31,6 @@
 #elif defined(SCRIPTX_LANG_LUA)
 	#define LXL_DEBUG_CMD "luadebug"
 #endif
+
+// 全局通信
+#define LXL_GLOBAL_DATA_NAME "LITEXLOADER_GLOBAL_DATA_SECTION"

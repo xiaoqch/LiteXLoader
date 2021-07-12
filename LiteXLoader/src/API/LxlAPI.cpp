@@ -10,7 +10,12 @@ using namespace script;
 Local<Value> LxlGetVersion(const Arguments& args)
 {
     try{
-        return String::newString(LXL_VERSION);
+        Local<Object> ver = Object::newObject();
+        ver.set("major", LXL_VERSION_MAJOR);
+        ver.set("minor", LXL_VERSION_MINOR);
+        ver.set("build", LXL_VERSION_BUILD);
+        ver.set("isBeta", LXL_VERSION_IS_BETA);
+        return ver;
     }
     CATCH("Fail in LxlGetVersion!")
 }

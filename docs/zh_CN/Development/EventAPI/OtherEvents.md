@@ -10,6 +10,17 @@
 
 <br>
 
+#### `"onFireSpread"` - 火焰蔓延
+
+- 监听函数原型
+  `function(pos)`
+- 参数：
+  - pos : `IntPos`  
+    火焰蔓延到的方块坐标
+- 拦截事件：函数返回`false`
+
+<br>
+
 #### `"onServerStarted"` - 服务器启动完毕
 
 - 监听函数原型

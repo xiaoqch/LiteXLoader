@@ -22,6 +22,8 @@ public:
     Local<Value> get(const Arguments& args);
     Local<Value> set(const Arguments& args);
     Local<Value> del(const Arguments& args);
+    Local<Value> close(const Arguments& args);
+    Local<Value> listKey(const Arguments& args);
 
     static Local<Value> newDb(const string& dir);
 };
@@ -36,6 +38,7 @@ public:
     explicit ConfBaseClass(const string& dir);
 
     virtual Local<Value> reload(const Arguments& args) = 0;
+    virtual Local<Value> close(const Arguments& args) = 0;
     Local<Value> getPath(const Arguments& args);
     Local<Value> read(const Arguments& args);
     Local<Value> write(const Arguments& args);
@@ -46,6 +49,7 @@ class ConfJsonClass : public ScriptClass, public ConfBaseClass
 {
 private:
     JSON_ROOT jsonConf;
+    bool flush();
 
 public:
     explicit ConfJsonClass(const string& path, const string& defContent);
@@ -54,6 +58,7 @@ public:
     Local<Value> set(const Arguments& args);
     Local<Value> del(const Arguments& args);
     virtual Local<Value> reload(const Arguments& args) override;
+    virtual Local<Value> close(const Arguments& args) override;
 
     static Local<Value> newConf(const string& path, const string& defContent = "");
 };
@@ -74,6 +79,7 @@ public:
     Local<Value> getBool(const Arguments& args);
     Local<Value> del(const Arguments& args);
     virtual Local<Value> reload(const Arguments& args) override;
+    virtual Local<Value> close(const Arguments& args) override;
 
     static Local<Value> newConf(const string& path, const string& defContent = "");
 };

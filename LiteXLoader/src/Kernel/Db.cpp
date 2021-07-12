@@ -39,7 +39,7 @@ bool Raw_DBDel(DB_ROOT &db, const string & key)
     return true;
 }
 
-vector<string> Raw_DBListKey(DB_ROOT db)
+vector<string> Raw_DBListKey(DB_ROOT &db)
 {
     vector<string> keyList;
     db->iter([&](const string_view& key)
@@ -48,6 +48,12 @@ vector<string> Raw_DBListKey(DB_ROOT db)
         return true;
     });
     return keyList;
+}
+
+bool Raw_DBClose(DB_ROOT& db)
+{
+    db.reset();
+    return true;
 }
 
 JSON_ROOT Raw_JsonOpen(const std::string& path, const std::string& defContent)

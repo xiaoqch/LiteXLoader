@@ -28,6 +28,8 @@ public:
     Local<Value> getPos();
     Local<Value> getMaxHealth();
     Local<Value> getHealth();
+    Local<Value> getMaxStrength();
+    Local<Value> getStrength();
     Local<Value> getInAir();
 
     Local<Value> teleport(const Arguments& args);

@@ -36,13 +36,11 @@ inline static void *dlsym_cache(const char *fn) {
 }
 #define VA_EXPAND(...) __VA_ARGS__
 //#define Call(fn, ret, ...) __CALL_IMP<do_hash(fn), ret, __VA_ARGS__>(fn)
-template <CHash hash, CHash hash2, typename ret, typename... p>
-static inline auto __imp_Call(const char *fn) {
-    return ((ret(*)(p...))(dlsym_cache<hash, hash2>(fn)));
-}
-#define SymCall(fn, ret, ...) (__imp_Call<do_hash(fn), do_hash2(fn), ret, __VA_ARGS__>(fn))
-#define SYM(fn) (dlsym_cache<do_hash(fn), do_hash2(fn)>(fn))
+//#define SymCall(fn, ret, ...) (__imp_Call<ret, __VA_ARGS__>(fn))
+#define SymCall(fn, ret, ...) ((ret(*)(__VA_ARGS__))(dlsym_real(fn)))
+#define SYM(fn) (dlsym_real(fn))
 #define dlsym(xx) SYM(xx)
+
 class THookRegister {
   public:
     THookRegister(void *address, void *hook, void **org) {
