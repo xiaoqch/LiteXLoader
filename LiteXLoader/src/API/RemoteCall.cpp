@@ -49,11 +49,11 @@ unsigned __stdcall MessageLoop(void* pParam)
             if (msg.message == LXL_REMOTE_CALL)
             {
                 RemoteCallData *callData = (RemoteCallData*)msg.wParam;
-                ExportedFuncData* funcData = &(engineGlobalData->exportedFuncs)[callData->funcName];
                 RemoteCallReturn* rtn = new RemoteCallReturn;
 
                 try
                 {
+                    ExportedFuncData* funcData = &(engineGlobalData->exportedFuncs).at(callData->funcName);
                     EngineScope enter(funcData->engine);
 
                     Local<Array> args = JsonToValue(callData->args).asArray();
@@ -203,7 +203,7 @@ Local<Value> LxlImport(const Arguments &args)
         {
             //远程调用
             EngineScope::currentEngine()->set(alias, Function::newFunction(
-                [curEngine{ EngineScope::currentEngine() }, funcData{ funcData }, funcName{ alias }]
+                [curEngine{ EngineScope::currentEngine() }, funcData{ funcData }, funcName{ funcName }]
                 (const Arguments& args)->Local<Value>
             {
                 EngineScope enter(curEngine);
@@ -212,14 +212,18 @@ Local<Value> LxlImport(const Arguments &args)
                 for (int i = 0; i < args.size(); ++i)
                     argsList.add(args[i]);
 
-                return MakeRemoteCall(funcData, funcName, ValueToJson(argsList));
+                Local<Value> res = MakeRemoteCall(funcData, funcName, ValueToJson(argsList));
+                if (res.isArray())
+                    return res.asArray().get(0);
+                else
+                    return res;
             }));
         }
         return Boolean::newBoolean(true);
     }
     catch (const std::out_of_range& e)
     {
-        ERROR(string("Fail to import! Function ") + funcName + " has not been exported!");
+        ERROR(string("Fail to import! Function [") + funcName + "] has not been exported!");
         return Boolean::newBoolean(false);
     }
     CATCH("Fail in LxlImport!")

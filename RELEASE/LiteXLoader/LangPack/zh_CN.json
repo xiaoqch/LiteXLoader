@@ -3,6 +3,7 @@
     "init.fileMapping.fail":    "全局共享数据加载失败！",
     "init.mapFile.fail":        "全局共享数据映射失败！",
     "init.llMoney.noFound":     "LLMoney.dll 未找到！LXL经济系统将不会工作",
+    "api.parseJson.fail":       "Json解析发生错误！",
     "remoteCall.createMessageThread.fail":  "创建消息循环失败！",
     "remoteCall.createEventObject.fail":    "创建事件对象失败！",
     "remoteCall.postMessage.fail":          "递送远程调用信息失败！",
