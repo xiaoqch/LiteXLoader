@@ -44,10 +44,10 @@
 | pl.name        | 玩家名                                                   | `String`   |
 | pl.pos         | 玩家所在坐标                                             | `FloatPos` |
 | pl.realName    | 玩家的真实名字（即使改名后也不变）                       | `String`   |
-| pl.xuid        | 玩家Xuid                                                 | `String`   |
-| pl.uuid        | 玩家Uuid                                                 | `String`   |
+| pl.xuid        | 玩家Xuid字符串                                           | `String`   |
+| pl.uuid        | 玩家Uuid字符串                                           | `String`   |
 | pl.ip          | 玩家设备的IP地址，格式类似`12.34.567.89:1111`            | `String`   |
-| pl.permLevel   | 玩家的操作权限等级                                       | `Integer`  |
+| pl.permLevel   | 玩家的操作权限等级（0 - 4）                              | `Integer`  |
 | pl.gameMode    | 玩家的游戏模式（0 - 生存，1 - 创造，2 - 极限，3 - 旁观） | `Integer`  |
 | pl.maxHealth   | 玩家最大生命值                                           | `Integer`  |
 | pl.health      | 玩家当前生命值                                           | `Integer`  |
@@ -168,7 +168,7 @@ mc.broadcast("Hello everyone ~ ");
 
 ```
 
-#### 以这个玩家身份执行一条命令 
+#### 以某个玩家身份执行一条命令 
 
 `pl.runcmd(cmd)`
 
@@ -237,54 +237,22 @@ pl.rename("newname");
 
 ```
 
-#### 查询玩家背包  
+#### 查询玩家所有物品  
 
-`pl.getPack()`
+`pl.getAllItems()`
 
-- 返回值：玩家背包中所有的物品对象
-- 返回值类型：`Array<Item,Item,...>`
-  - 返回值数组中物品对象的排列顺序和背包中的顺序一致
+- 返回值：玩家所拥有的所有物品对象的集合
+- 返回值类型：`Object<...>`
 
-```clike
-[Js]
-//对于一个玩家对象pl
-var pack = pl.getPack();
-log(pack[0].name);
-[Lua]
+对于返回的某个物品对象集合`obj`，集合中有以下几种内容：
 
-```
-
-#### 获取玩家主手物品  
-
-`pl.getHand()`
-
-- 返回值：玩家当前主手持有的物品对象
-- 返回值类型：`Item`
-
-```clike
-[Js]
-//对于一个玩家对象pl
-var hand = pl.getHand();
-log(hand.name);
-[Lua]
-
-```
-
-#### 获取玩家副手物品  
-
-`pl.getOffHand()`
-
-- 返回值：玩家当前副手持有的物品对象
-- 返回值类型：`Item`
-
-```clike
-[Js]
-//对于一个玩家对象pl
-var offhand = pl.getOffHand();
-log(offhand.name);
-[Lua]
-
-```
+| 属性         | 含义                                     | 类型                   |
+| ------------ | ---------------------------------------- | ---------------------- |
+| obj.hand     | 玩家的主手物品                           | `Item`                 |
+| obj.offHand  | 玩家的副手物品                           | `Item`                 |
+| obj.pack     | 玩家物品栏中所有物品的数组（共40个物品） | `Array<Item,Item,...>` |
+| obj.armor    | 玩家盔甲栏中所有物品的数组（共4个物品）  | `Array<Item,Item,...>` |
+| obj.endchest | 玩家末影箱中所有物品的数组（共30个物品） | `Array<Item,Item,...>` |
 
 #### 修改玩家操作权限  
 

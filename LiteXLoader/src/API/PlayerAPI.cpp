@@ -45,9 +45,7 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceFunction("disconnect", &PlayerClass::kick)
         .instanceFunction("tell", &PlayerClass::tell)
         .instanceFunction("sendText", &PlayerClass::tell)
-        .instanceFunction("getHand", &PlayerClass::getHand)
-        .instanceFunction("getOffHand", &PlayerClass::getOffHand)
-        .instanceFunction("getPack", &PlayerClass::getPack)
+        .instanceFunction("getAllItems", &PlayerClass::getAllItems)
         .instanceFunction("rename", &PlayerClass::rename)
         .instanceFunction("addLevel", &PlayerClass::addLevel)
         .instanceFunction("transServer", &PlayerClass::transServer)
@@ -337,7 +335,7 @@ Local<Value> PlayerClass::kick(const Arguments& args)
         
         return Boolean::newBoolean(Raw_KickPlayer(player,msg));
     }
-    CATCH("Fail in KickPlayer!")
+    CATCH("Fail in kickPlayer!")
 }
 
 Local<Value> PlayerClass::tell(const Arguments& args)
@@ -355,37 +353,57 @@ Local<Value> PlayerClass::tell(const Arguments& args)
         }
         return Boolean::newBoolean(Raw_Tell(player,args[0].toStr(),type));
     }
-    CATCH("Fail in Tell!")
+    CATCH("Fail in tell!")
 }
 
-Local<Value> PlayerClass::getHand(const Arguments& args)
+Local<Value> PlayerClass::getAllItems(const Arguments& args)
 {
     try{
-        return ItemClass::newItem(Raw_GetHand(player));
-    }
-    CATCH("Fail in GetHand!")
-}
+        ItemStack* hand;
+        ItemStack* offHand;
+        vector<ItemStack*> inventory;
+        vector<ItemStack*> armor;
+        vector<ItemStack*> endChest;
 
-Local<Value> PlayerClass::getOffHand(const Arguments& args)
-{
-    try{
-        return ItemClass::newItem(Raw_GetOffHand(player));
-    }
-    CATCH("Fail in getOffHand!")
-}
-
-Local<Value> PlayerClass::getPack(const Arguments& args)
-{
-    try{
-        auto res = Raw_GetPack(player);
-        Local<Array> pack = Array::newArray();
-        for(ItemStack* item : res)
+        if (!Raw_GetAllItems(player, &hand, &offHand, &inventory, &armor, &endChest))
         {
-            pack.add(ItemClass::newItem(item));
+            return Local<Value>();
         }
-        return pack;
+        Local<Object> result = Object::newObject();
+        
+        //hand
+        result.set("hand", ItemClass::newItem(hand));
+
+        //offHand
+        result.set("offHand", ItemClass::newItem(offHand));
+
+        //inventory
+        Local<Array> inventoryArr = Array::newArray();
+        for(ItemStack* item : inventory)
+        {
+            inventoryArr.add(ItemClass::newItem(item));
+        }
+        result.set("inventory", inventoryArr);
+
+        //armor
+        Local<Array> armorArr = Array::newArray();
+        for (ItemStack* item : armor)
+        {
+            armorArr.add(ItemClass::newItem(item));
+        }
+        result.set("armor", armorArr);
+
+        //endChest
+        Local<Array> endChestArr = Array::newArray();
+        for (ItemStack* item : endChest)
+        {
+            endChestArr.add(ItemClass::newItem(item));
+        }
+        result.set("endChest", endChestArr);
+
+        return result;
     }
-    CATCH("Fail in GetPack!")
+    CATCH("Fail in getAllItems!")
 }
 
 Local<Value> PlayerClass::rename(const Arguments& args)
