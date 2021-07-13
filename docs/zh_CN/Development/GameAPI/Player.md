@@ -52,7 +52,7 @@
 | pl.maxHealth   | 玩家最大生命值                                           | `Integer`  |
 | pl.health      | 玩家当前生命值                                           | `Integer`  |
 | pl.maxStrength | 玩家最大护甲值                                           | `Integer`  |
-| pl.strength    | 玩家当前生命值                                           | `Integer`  |
+| pl.strength    | 玩家当前护甲值                                           | `Integer`  |
 | pl.inAir       | 玩家当前是否悬空                                         | `Boolean`  |
 | pl.sneaking    | 玩家当前是否正在潜行                                     | `Boolean`  |
 
@@ -220,24 +220,6 @@ pl.kill();
 ```
 
 #### 重命名玩家  
-
-`pl.rename(newname)`
-
-- 参数：
-  - newname : `String`  
-    玩家的新名字  
-- 返回值：是否重命名成功
-- 返回值类型：`Boolean`
-
-```clike
-[Js]
-//对于一个玩家对象pl
-pl.rename("newname");
-[Lua]
-
-```
-
-#### 获取玩家  
 
 `pl.rename(newname)`
 

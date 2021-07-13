@@ -879,12 +879,21 @@ bool CallServerCmdCallback(const string& cmd)
 bool CallFormCallback(unsigned formId, const string& data)
 {
     bool passToBDS = true;
-    auto callback = engineGlobalData->formCallbacks[formId];    //###!!!!####### 全局变量不同步？？ ###!!!!#######
 
-    EngineScope scope(callback.engine);
-    auto res = callback.func.get().call({}, String::newString(data));
-    if (res.isNull() || (res.isBoolean() && res.asBoolean().value() == false))
-        passToBDS = false;
+    FormCallbackKey key{ LXL_SCRIPT_LANG_TYPE,formId };
+    try
+    {
+        auto callback = engineGlobalData->formCallbacks.at(key);
+
+        EngineScope scope(callback.engine);
+        auto res = callback.func.get().call({}, String::newString(data));
+        if (res.isNull() || (res.isBoolean() && res.asBoolean().value() == false))
+            passToBDS = false;
+    }
+    catch (...)
+    {
+        ;
+    }
 
     return passToBDS;
 }

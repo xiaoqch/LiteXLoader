@@ -3,6 +3,7 @@
 #include "System.h"
 #include "ThirdParty.h"
 #include <filesystem>
+#include "i18n.h"
 using namespace std;
 
 DB_ROOT Raw_NewDB(const string &dir)
@@ -273,7 +274,7 @@ bool Raw_InitEcnonmicSystem()
         }
     if (!libExists)
     {
-        WARN("LLMoney no found! Economic system in LXL will not work.");
+        WARN(_TRS("init.llMoney.noFound"));
         return false;
     }
     return true;

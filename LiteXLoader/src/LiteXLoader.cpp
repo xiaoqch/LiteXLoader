@@ -5,6 +5,7 @@
 #include <API/EngineOwnData.h>
 #include <Kernel/Db.h>
 #include <Kernel/System.h>
+#include <Kernel/i18n.h>
 #include <windows.h>
 #include <string>
 #include <exception>
@@ -22,12 +23,10 @@ std::list<std::shared_ptr<ScriptEngine>> lxlModules;
 INI_ROOT iniConf;
 // 日志等级
 int lxlLogLevel = 1;
-// 国际化
-LangPack LangP;
 
 extern void LoadBaseLib();
 extern void LoadDepends();
-extern void LoadPlugins();
+extern void LoadMain();
 extern void BindAPIs(std::shared_ptr<ScriptEngine> engine);
 extern void LoadDebugEngine();
 
@@ -68,7 +67,7 @@ void entry()
     LoaderInfo();
 
     //国际化
-    LangP.load(LXL_LANGPACK_DIR + Raw_IniGetString(iniConf, "Main", "Language", "en_US") + ".json");
+    InitI18n(LXL_LANGPACK_DIR + Raw_IniGetString(iniConf, "Main", "Language", "en_US") + ".json");
 
     //初始化经济系统
     Raw_InitEcnonmicSystem();
@@ -78,7 +77,7 @@ void entry()
     LoadDepends();
     
     //加载插件
-    LoadPlugins();
+    LoadMain();
 
     //注册后台调试
     LoadDebugEngine();

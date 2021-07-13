@@ -3,22 +3,27 @@
 #include "Packet.h"
 using namespace std;
 
-int Raw_SendSimpleForm(Player* player,const string &title,const string &content,const vector<string> &buttons)
+int Raw_SendSimpleForm(Player* player,const string &title,const string &content,const vector<string> &buttons, const std::vector<std::string>& images)
 {
     string model = u8R"({"title":"%s","content":"%s","buttons":%s,"type":"form"})";
     model = model.replace(model.find("%s"),2, title);
     model = model.replace(model.find("%s"),2, content);
 
     JSON_ROOT buttonText;
-    for (auto& text : buttons)
+    for (int i = 0; i < buttons.size(); ++i)
     {
-        JSON_VALUE oneButton = JSON_VALUE::object();
-        oneButton["text"] = text;
+        JSON_VALUE oneButton;
+        oneButton["text"] = buttons[i];
+        if (!images[i].empty())
+        {
+            JSON_VALUE image;
+            image["type"] = images[i].find("textures/") == 0 ? "path" : "url";
+            image["data"] = images[i];
+            oneButton["image"] = image;
+        }
         buttonText.push_back(oneButton);
     }
-    string result = buttonText.dump();
-
-    model = model.replace(model.find("%s"),2, result);
+    model = model.replace(model.find("%s"),2, buttonText.dump());
 
     return Raw_SendFormPacket(player,model);
 }

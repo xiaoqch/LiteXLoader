@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include <cmath>
+#include <sstream>
 
 #include "BaseAPI.h"
 #include "BlockAPI.h"
@@ -13,6 +14,7 @@
 #include <Kernel/Global.h>
 #include "EngineOwnData.h"
 using namespace script;
+using namespace std;
 
 //////////////////// APIs ////////////////////
 
@@ -86,6 +88,13 @@ void PrintValue(std::ostream &out, Local<Value> v)
             out << "<Unknown>";
             break;
     }
+}
+
+std::string ValueToString(Local<Value> v)
+{
+    std::ostringstream sout;
+    PrintValue(sout, v);
+    return sout.str();
 }
 
 bool CheckIsFloat(const Local<Value> &num)
@@ -237,8 +246,16 @@ Local<Value> JsonToValue(JSON_VALUE j)
 
 Local<Value> JsonToValue(std::string jsonStr)
 {
-    auto j = JSON_VALUE::parse(jsonStr);
-    return JsonToValue(j);
+    try
+    {
+        auto j = JSON_VALUE::parse(jsonStr);
+        return JsonToValue(j);
+    }
+    catch (const JSON_VALUE::exception &e)
+    {
+        WARN(_TRS("api.parseJson.fail") + e.what());
+        return String::newString(jsonStr);
+    }
 }
 
 
@@ -357,41 +374,41 @@ void ValueToJson_Obj_Helper(JSON_VALUE& res, const Local<Object>& v)
 
 std::string ValueToJson(Local<Value> v,int formatIndent)
 {
-    string res;
+    string result;
     switch (v.getKind())
     {
     case ValueKind::kString:
-        res = v.asString().toString();
+        result = "\"" + v.asString().toString() + "\"";
         break;
     case ValueKind::kNumber:
         if (CheckIsFloat(v))
-            res = std::to_string(v.asNumber().toDouble());
+            result = std::to_string(v.asNumber().toDouble());
         else
-            res = std::to_string(v.asNumber().toInt64());
+            result = std::to_string(v.asNumber().toInt64());
         break;
     case ValueKind::kBoolean:
-        res = std::to_string(v.asBoolean().value());
+        result = std::to_string(v.asBoolean().value());
         break;
     case ValueKind::kNull:
-        res = "";
+        result = "";
         break;
     case ValueKind::kArray:
     {
         JSON_VALUE jsonRes = JSON_VALUE::array();
         ValueToJson_Arr_Helper(jsonRes, v.asArray());
-        res = jsonRes.dump(formatIndent);
+        result = jsonRes.dump(formatIndent);
         break;
     }
     case ValueKind::kObject:
     {
         JSON_VALUE jsonRes = JSON_VALUE::object();
         ValueToJson_Obj_Helper(jsonRes, v.asObject());
-        res = jsonRes.dump(formatIndent);
+        result = jsonRes.dump(formatIndent);
         break;
     }
     default:
-        res = "";
+        result = "";
         break;
     }
-    return res;
+    return result;
 }

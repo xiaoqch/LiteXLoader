@@ -1,4 +1,4 @@
-# LiteXLoader - 最近更改页面
+# LiteXLoader - 重大更改页面
 
 这里列出了LXL引擎对API进行的一些可能会造成 **不向下兼容** 的重大更改。  
 如果你的插件在更新版本后发生问题，请首先查阅本章节的相关内容，检查是否由API变更导致。
@@ -10,3 +10,7 @@
   具体详见命令系统API相关文档说明
 - 将`IntPos`与`FloatPos`类型中的`dim`变量重命名为`dimid`，表意维度ID更加清晰
 
+#### 20210713
+
+- `lxl.getVerion` 返回值类型变为`Object`
+- `pl.sendSimpleForm` 函数增加 `images` 参数

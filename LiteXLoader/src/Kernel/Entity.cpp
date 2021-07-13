@@ -9,10 +9,9 @@ string Raw_GetEntityName(Actor* actor)
 
 std::string Raw_GetEntityTypeName(Actor* actor)
 {
-    void* identifier = SymCall("?getActorIdentifier@Actor@@QEBAAEBUActorDefinitionIdentifier@@XZ",
-        void*, Actor*)(actor);
-    return SymCall("?getCanonicalName@ActorDefinitionIdentifier@@QEBAAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ",
-        string, void*)(identifier);
+    return SymCall("?EntityTypeToString@@YA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@W4ActorType@@W4ActorTypeNamespaceRules@@@Z",
+        string, int, int)
+        (actor->getEntityTypeId(), 1);
 }
 
 int Raw_GetEntityId(Actor* actor)
