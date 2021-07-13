@@ -8,6 +8,7 @@ using namespace script;
 ClassDefine<FormClass> FormClassBuilder =
     defineClass<FormClass>("Form")
         .constructor(nullptr)
+        .instanceFunction("setTitle", &FormClass::setTitle)
         .instanceFunction("addLabel", &FormClass::addLabel)
         .instanceFunction("addInput", &FormClass::addInput)
         .instanceFunction("addSwitch", &FormClass::addSwitch)
@@ -20,9 +21,10 @@ ClassDefine<FormClass> FormClassBuilder =
 //////////////////// Classes ////////////////////
 
 FormClass::FormClass()
-    :ScriptClass(ScriptClass::ConstructFromCpp<FormClass>{}),
-     form({{"title",""},{"content",""}})
-{ }
+    :ScriptClass(ScriptClass::ConstructFromCpp<FormClass>{})
+{ 
+    form = JSON_VALUE::parse(R"({ "title":"","type":"custom_form", "content":[] })");
+}
 
 
 //生成函数
@@ -53,6 +55,7 @@ Local<Value> FormClass::setTitle(const Arguments& args)
     }
     catch(JSON_VALUE::exception &e){
         ERROR("Fail to Form currect Form string!");
+        ERRPRINT(e.what());
         return Boolean::newBoolean(false);
     }
     CATCH("Fail in setTitle!")
@@ -73,6 +76,7 @@ Local<Value> FormClass::addLabel(const Arguments& args)
     }
     catch(JSON_VALUE::exception &e){
         ERROR("Fail to Form currect Form string!");
+        ERRPRINT(e.what());
         return Boolean::newBoolean(false);
     }
     CATCH("Fail in addLabel!")
@@ -99,6 +103,7 @@ Local<Value> FormClass::addInput(const Arguments& args)
     }
     catch(JSON_VALUE::exception &e){
         ERROR("Fail to Form currect Form string!");
+        ERRPRINT(e.what());
         return Boolean::newBoolean(false);
     }
     CATCH("Fail in addInput!")
@@ -113,7 +118,7 @@ Local<Value> FormClass::addSwitch(const Arguments& args)
 
     try{
         JSON_VALUE itemAdd;
-        itemAdd["type"] = "input";
+        itemAdd["type"] = "toggle";
         itemAdd["text"] = args[0].toStr();
         if(args.size() >= 2)
             itemAdd["default"] = args[1].asBoolean().value();
@@ -123,6 +128,7 @@ Local<Value> FormClass::addSwitch(const Arguments& args)
     }
     catch(JSON_VALUE::exception &e){
         ERROR("Fail to Form currect Form string!");
+        ERRPRINT(e.what());
         return Boolean::newBoolean(false);
     }
     CATCH("Fail in addSwitch!")
@@ -148,6 +154,7 @@ Local<Value> FormClass::addDropdown(const Arguments& args)
     }
     catch(JSON_VALUE::exception &e){
         ERROR("Fail to Form currect Form string!");
+        ERRPRINT(e.what());
         return Boolean::newBoolean(false);
     }
     CATCH("Fail in addDropdown!")
@@ -191,6 +198,7 @@ Local<Value> FormClass::addSlider(const Arguments& args)
     }
     catch(JSON_VALUE::exception &e){
         ERROR("Fail to Form currect Form string!");
+        ERRPRINT(e.what());
         return Boolean::newBoolean(false);
     }
     CATCH("Fail in addSlider!")
@@ -223,6 +231,7 @@ Local<Value> FormClass::addStepSlider(const Arguments& args)
     }
     catch(JSON_VALUE::exception &e){
         ERROR("Fail to Form currect Form string!");
+        ERRPRINT(e.what());
         return Boolean::newBoolean(false);
     }
     CATCH("Fail in addStepSlider!")

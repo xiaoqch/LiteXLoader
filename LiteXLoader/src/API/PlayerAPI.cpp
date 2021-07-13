@@ -552,8 +552,8 @@ Local<Value> PlayerClass::sendSimpleForm(const Arguments& args)
             buttons.push_back(source.get(i).toStr());
 
         int formId = Raw_SendSimpleForm(player, args[0].toStr(), args[1].toStr(), buttons);
-        engineGlobalData->formCallbacks[(unsigned)formId] = { EngineScope::currentEngine(),Global<Function>(args[3].asFunction()) };
-        //###!!!!####### 全局变量不同步？？ ###!!!!#######
+        FormCallbackKey key{ LXL_SCRIPT_LANG_TYPE,(unsigned)formId };
+        engineGlobalData->formCallbacks[key] = { EngineScope::currentEngine(),Global<Function>(args[3].asFunction()) };
 
         return Number::newNumber(formId);
     }
@@ -571,7 +571,8 @@ Local<Value> PlayerClass::sendModalForm(const Arguments& args)
 
     try{
         int formId = Raw_SendModalForm(player, args[0].toStr(), args[1].toStr(), args[2].toStr(), args[3].toStr());
-        engineGlobalData->formCallbacks[formId] = { EngineScope::currentEngine(),Global<Function>(args[4].asFunction()) };
+        FormCallbackKey key{ LXL_SCRIPT_LANG_TYPE,(unsigned)formId };
+        engineGlobalData->formCallbacks[key] = { EngineScope::currentEngine(),Global<Function>(args[4].asFunction()) };
         
         return Number::newNumber(formId);
     }
@@ -606,7 +607,8 @@ Local<Value> PlayerClass::sendForm(const Arguments& args)
         }
         
         int formId = Raw_SendCustomForm(player,data);
-        engineGlobalData->formCallbacks[formId] = { EngineScope::currentEngine(),Global<Function>(args[1].asFunction()) };
+        FormCallbackKey key{ LXL_SCRIPT_LANG_TYPE,(unsigned)formId };
+        engineGlobalData->formCallbacks[key] = { EngineScope::currentEngine(),Global<Function>(args[1].asFunction()) };
         
         return Number::newNumber(formId);
     }

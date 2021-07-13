@@ -15,7 +15,7 @@ struct ExportedFuncData
 {
 	std::string fromEngineType;
 	ScriptEngine* engine;
-	Global<Function> func;
+	Global<Function> func;	/////////////// 可能有问题，不崩就不改
 };
 
 //远程调用信息
@@ -23,6 +23,22 @@ struct RemoteEngineData
 {
 	unsigned threadId;
 };
+
+struct FormCallbackKey
+{
+	std::string fromEngineType;
+	unsigned formId;
+
+	bool operator<(const FormCallbackKey& b)
+	{
+		return fromEngineType == b.fromEngineType ? formId < b.formId : fromEngineType < b.fromEngineType;
+	}
+};
+
+bool inline operator<(const FormCallbackKey& a, const FormCallbackKey& b)
+{
+	return a.fromEngineType == b.fromEngineType ? a.formId < b.formId : a.fromEngineType < b.fromEngineType;
+}
 
 //表单回调信息
 struct FormCallbackData
@@ -43,7 +59,7 @@ struct GlobalDataType
 	std::unordered_map<std::string, RemoteEngineData> remoteEngineList;
 
 	//全局表单监听
-	std::unordered_map<unsigned, FormCallbackData> formCallbacks;
+	std::map<FormCallbackKey, FormCallbackData> formCallbacks;
 };
 
 //全局共享数据
