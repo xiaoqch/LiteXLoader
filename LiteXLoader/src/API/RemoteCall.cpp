@@ -171,6 +171,8 @@ Local<Value> LxlImport(const Arguments &args)
 {
     CHECK_ARGS_COUNT(args, 1)
     CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    if (args.size() >= 2)
+        CHECK_ARG_TYPE(args[1], ValueKind::kString);
 
     string funcName;
     try {
@@ -178,7 +180,7 @@ Local<Value> LxlImport(const Arguments &args)
         ExportedFuncData* funcData = &(engineGlobalData->exportedFuncs).at(funcName);
 
         string alias = funcName;
-        if (args.size() >= 2 && args[1].isString())
+        if (args.size() >= 2)
             alias = args[1].toStr();
 
 

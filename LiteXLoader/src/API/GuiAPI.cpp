@@ -1,7 +1,9 @@
 #include "APIhelp.h"
 #include "GuiAPI.h"
 #include <Kernel/Gui.h>
+#include <iostream>
 using namespace script;
+using namespace std;
 
 //////////////////// Class Definition ////////////////////
 
@@ -23,7 +25,7 @@ ClassDefine<FormClass> FormClassBuilder =
 FormClass::FormClass()
     :ScriptClass(ScriptClass::ConstructFromCpp<FormClass>{})
 { 
-    form = JSON_VALUE::parse(R"({ "title":"","type":"custom_form", "content":[] })");
+    form = JSON_VALUE::parse(R"({ "title":"", "type":"custom_form", "content":[], "buttons":[] })");
 }
 
 
