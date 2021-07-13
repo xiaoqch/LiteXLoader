@@ -50,6 +50,7 @@
     <ClCompile Include="..\src\API\NbtAPI.cpp" />
     <ClCompile Include="..\src\API\NetworkAPI.cpp" />
     <ClCompile Include="..\src\API\PlayerAPI.cpp" />
+    <ClCompile Include="..\src\API\RemoteCall.cpp" />
     <ClCompile Include="..\src\API\ServerAPI.cpp" />
     <ClCompile Include="..\src\API\StaticClasses.cpp" />
     <ClCompile Include="..\src\BindAPIs.cpp" />
@@ -60,6 +61,7 @@
     <ClCompile Include="..\src\Kernel\Entity.cpp" />
     <ClCompile Include="..\src\Kernel\Event.cpp" />
     <ClCompile Include="..\src\Kernel\Global.cpp" />
+    <ClCompile Include="..\src\Kernel\i18n.cpp" />
     <ClCompile Include="..\src\Kernel\SymbolHelper.cpp" />
     <ClCompile Include="..\src\Kernel\Gui.cpp" />
     <ClCompile Include="..\src\Kernel\Item.cpp" />
@@ -88,6 +90,7 @@
     <ClInclude Include="..\src\API\NbtAPI.h" />
     <ClInclude Include="..\src\API\NetworkAPI.h" />
     <ClInclude Include="..\src\API\PlayerAPI.h" />
+    <ClInclude Include="..\src\API\RemoteCall.h" />
     <ClInclude Include="..\src\API\ServerAPI.h" />
     <ClInclude Include="..\src\Configs.h" />
     <ClInclude Include="..\src\Kernel\Base.h" />
@@ -97,6 +100,7 @@
     <ClInclude Include="..\src\Kernel\Event.h" />
     <ClInclude Include="..\src\Kernel\Global.h" />
     <ClInclude Include="..\src\Kernel\Gui.h" />
+    <ClInclude Include="..\src\Kernel\i18n.h" />
     <ClInclude Include="..\src\Kernel\Item.h" />
     <ClInclude Include="..\src\Kernel\NBT.h" />
     <ClInclude Include="..\src\Kernel\Packet.h" />
@@ -105,6 +109,7 @@
     <ClInclude Include="..\src\Kernel\SymbolHelper.h" />
     <ClInclude Include="..\src\Kernel\System.h" />
     <ClInclude Include="..\src\Kernel\ThirdParty.h" />
+    <ClInclude Include="..\src\Loader.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\third-party\dyncall\lib\libdyncallback_s.lib" />

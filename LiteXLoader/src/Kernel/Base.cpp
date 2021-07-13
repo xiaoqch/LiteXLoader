@@ -31,8 +31,11 @@ bool Raw_RegisterCmd(const string &cmd, const string &describe, int cmdLevel)
 
 bool Raw_SendCmdOutput(const std::string& output)
 {
+    string finalOutput(output);
+    finalOutput += "\r\n";
+
     SymCall("??$_Insert_string@DU?$char_traits@D@std@@_K@std@@YAAEAV?$basic_ostream@DU?$char_traits@D@std@@@0@AEAV10@QEBD_K@Z",
         ostream& , ostream&, const char*, unsigned)
-        (cout, output.c_str(), output.size());
+        (cout, finalOutput.c_str(), finalOutput.size());
     return true;
 }

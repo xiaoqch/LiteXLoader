@@ -12,6 +12,7 @@
 #include "NetworkAPI.h"
 #include "GuiAPI.h"
 #include "LxlAPI.h"
+#include "RemoteCall.h"
 using namespace script;
 
 class McClass
@@ -197,13 +198,15 @@ class LxlClass
 {
 public:
     static Local<Value> version(const Arguments& args) { return LxlGetVersion(args); }
-    //static Local<Value> loadPlugin(const Arguments& args) { return LxlLoadPlugin(args); }
     static Local<Value> listPlugins(const Arguments& args) { return LxlListPlugins(args); }
+    static Local<Value> importFunc(const Arguments& args) { return LxlImport(args); }
+    static Local<Value> exportFunc(const Arguments& args) { return LxlExport(args); }
 };
 
 ClassDefine<void> LxlClassBuilder =
     defineClass("lxl")
         .function("version", &LxlClass::version)
-        //.function("loadPlugin", &LxlClass::loadPlugin)
-        //.function("listPlugins", &LxlClass::listPlugins)
+        .function("listPlugins", &LxlClass::listPlugins)
+        .function("import", &LxlClass::importFunc)
+        .function("export", &LxlClass::exportFunc)
         .build();

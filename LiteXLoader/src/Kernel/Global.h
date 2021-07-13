@@ -1,5 +1,10 @@
 #pragma once
 
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+
+#include <windows.h>
 #include <LiteLoader/lbpch.h>
 #include <LiteLoader/api/Basic_Event.h>
 #include <LiteLoader/mc/OffsetHelper.h>
@@ -10,7 +15,7 @@
 #include <LiteLoader/api/types/types.h>
 #include <LiteLoader/stl/KVDB.h>
 #include <LiteLoader/stl/langPack.h>
-#include <LiteLoader/api/gui/gui.h>
+//#include <LiteLoader/api/gui/gui.h>
 #include <LiteLoader/httplib.h>
 #include <LiteLoader/api/myPacket.h>
 #include <Configs.h>

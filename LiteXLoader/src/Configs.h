@@ -2,18 +2,23 @@
 #include <ScriptX/ScriptX.h>
 
 ////////////// Configs //////////////
+
+// 版本记录
 #define LXL_VERSION_MAJOR 0
 #define LXL_VERSION_MINOR 0
 #define LXL_VERSION_BUILD 7
 #define LXL_VERSION_IS_BETA true
 
 // 后端宏
+#define LXL_LANG_JS "Js"
+#define LXL_LANG_LUA "Lua"
+
 #if defined(SCRIPTX_LANG_JAVASCRIPT)
-#define LXL_SCRIPT_LANG_TYPE "Js"
-#define LXL_PLUGINS_SUFFIX ".js"
+	#define LXL_SCRIPT_LANG_TYPE LXL_LANG_JS
+	#define LXL_PLUGINS_SUFFIX ".js"
 #elif defined(SCRIPTX_LANG_LUA)
-#define LXL_SCRIPT_LANG_TYPE "Lua"
-#define LXL_PLUGINS_SUFFIX ".lua"
+	#define LXL_SCRIPT_LANG_TYPE LXL_LANG_LUA
+	#define LXL_PLUGINS_SUFFIX ".lua"
 #endif
 
 // 配置文件
@@ -33,4 +38,6 @@
 #endif
 
 // 全局通信
-#define LXL_GLOBAL_DATA_NAME "LITEXLOADER_GLOBAL_DATA_SECTION"
+#define LXL_GLOBAL_DATA_NAME L"LITEXLOADER_GLOBAL_DATA_SECTION"
+#define LXL_REMOTE_CALL_EVENT_NAME L"LITEXLOADER_REMOTE_CALL_EVENT"
+#define LXL_REMOTE_CALL_MAX_WAIT 120

@@ -6,8 +6,8 @@ using namespace script;
 #include <Kernel/ThirdParty.h>
 #include <Configs.h>
 #include "BaseAPI.h"
+#include <Kernel/i18n.h>
 #include <string>
-
 
 // 输出
 extern int lxlLogLevel;

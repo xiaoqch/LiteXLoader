@@ -1,5 +1,6 @@
 #include <ScriptX/ScriptX.h>
 #include <API/APIhelp.h>
+#include <API/EngineGlobalData.h>
 #include <API/EngineOwnData.h>
 #include <Kernel/Db.h>
 #include <list>
@@ -11,6 +12,7 @@
 #include <filesystem>
 #include <memory>
 #include <Configs.h>
+#include "Loader.h"
 using namespace script;
 
 //基础库 & 依赖库
@@ -102,40 +104,65 @@ void LoadDepends()
     }
 }
 
-//加载过程
-void LoadScriptFile(const std::string& filePath)
+//加载插件
+bool LoadPlugin(const std::string& filePath)
 {
-    std::string scripts = ReadFileFrom(filePath);
-
-    //启动引擎
-    std::shared_ptr<ScriptEngine> engine = NewEngine();
-    //setData
-    std::static_pointer_cast<EngineOwnData>(engine->getData())->pluginName
-        = std::filesystem::path(filePath).filename().u8string();
-    
-    lxlModules.push_back(engine);
-    EngineScope enter(engine.get());
-
-    //绑定API
-    try{
-        BindAPIs(engine);
-    }
-    catch(Exception& e)
+    try
     {
-        ERROR("Fail in Binding APIs!\n");
-        throw;
-    }
+        std::string scripts = ReadFileFrom(filePath);
 
-    //加载基础库
-    engine->eval(baseLib);
+        //启动引擎
+        std::shared_ptr<ScriptEngine> engine = NewEngine();
+        //setData
+        string pluginName = std::filesystem::path(filePath).filename().u8string();
+        std::static_pointer_cast<EngineOwnData>(engine->getData())->pluginName = pluginName;
 
-    //加载libs依赖库
-    for (auto& i : depends) {
-        engine->eval(i);
+        lxlModules.push_back(engine);
+        EngineScope enter(engine.get());
+
+        //绑定API
+        try {
+            BindAPIs(engine);
+        }
+        catch (Exception& e)
+        {
+            ERROR("Fail in Binding APIs!\n");
+            throw;
+        }
+
+        //加载基础库
+        engine->eval(baseLib);
+
+        //加载libs依赖库
+        for (auto& i : depends) {
+            engine->eval(i);
+        }
+
+        //加载脚本
+        engine->eval(scripts);
+
+        engineGlobalData->pluginsList.push_back(pluginName);
+        return true;
     }
-    
-    //加载脚本
-    engine->eval(scripts);
+    catch (Exception& e)
+    {
+        EngineScope enter(lxlModules.back().get());
+        ERROR("Fail to load " + filePath + "!\n");
+        ERRPRINT(e);
+        ExitEngineScope exit;
+        //############# Js delete v8崩溃
+        //lxlModules.pop_back();
+    }
+    catch (std::exception& e)
+    {
+        ERROR("Fail to load " + filePath + "!");
+        ERROR(e.what());
+    }
+    catch (...)
+    {
+        ERROR("Fail to load " + filePath + "!");
+    }
+    return false;
 }
 
 //加载调试引擎
@@ -169,36 +196,16 @@ void LoadDebugEngine()
 }
 
 //主加载
-void LoadPlugins()
+void LoadMain()
 {
     INFO("Loading plugins...");
     std::filesystem::directory_iterator files(Raw_IniGetString(iniConf,"Main","PluginsDir",LXL_DEF_LOAD_DIR));
     for (auto& i : files) {
         if (i.is_regular_file() && i.path().extension() == LXL_PLUGINS_SUFFIX)
         {
-            try
-            {
-                LoadScriptFile(i.path().string());
+            if(LoadPlugin(i.path().string()))
                 INFO(i.path().filename().string() + " loaded.");
-            }
-            catch(Exception& e)
-            {
-                EngineScope enter(lxlModules.back().get());
-                ERROR("Fail to load " + i.path().filename().string() + "!\n");
-                ERRPRINT(e);
-                ExitEngineScope exit;
-                //###### Js delete v8崩溃
-                //lxlModules.pop_back();
-            }
-            catch(std::exception& e)
-            {
-                ERROR("Fail to load " + i.path().filename().string() + "!");
-                ERROR(e.what());
-            }
-            catch(...)
-            {
-                ERROR("Fail to load " + i.path().filename().string() + "!");
-            }
+            
         }
     }
 }
