@@ -158,7 +158,7 @@ Local<Value> ConfBaseClass::read(const Arguments& args)
     try
     {
         string content;
-        if (!Raw_FileReadAll(confPath, content))
+        if (!Raw_FileReadFrom(confPath, content))
             return Local<Value>();
         else
             return String::newString(content);
@@ -173,7 +173,7 @@ Local<Value> ConfBaseClass::write(const Arguments& args)
         CHECK_ARGS_COUNT(args, 1)
         CHECK_ARG_TYPE(args[0], ValueKind::kString)
 
-        return Boolean::newBoolean(Raw_FileWriteAll(confPath, args[0].toStr()));
+        return Boolean::newBoolean(Raw_FileWriteTo(confPath, args[0].toStr()));
     }
     CATCH("Fail in confWrite!")
 }
@@ -250,7 +250,7 @@ Local<Value> ConfJsonClass::reload(const Arguments& args)
     try
     {
         string jsonTexts;
-        if (!Raw_FileReadAll(confPath, jsonTexts))
+        if (!Raw_FileReadFrom(confPath, jsonTexts))
             return Boolean::newBoolean(false);
     
         jsonConf = JSON_VALUE::parse(jsonTexts);

@@ -45,7 +45,7 @@ bool Raw_PathExists(const string &path)
     return filesystem::exists(path);
 }
 
-bool Raw_FileReadAll(const string &path, string & result)
+bool Raw_FileReadFrom(const string &path, string & result)
 {
     ifstream fRead(path);
     if(!fRead)
@@ -57,7 +57,7 @@ bool Raw_FileReadAll(const string &path, string & result)
     return true;
 }
 
-bool Raw_FileWriteAll(const std::string &path, const std::string &data)
+bool Raw_FileWriteTo(const std::string &path, const std::string &data)
 {
     std::ofstream fileWrite(path,std::ios::out);
     if(!fileWrite)

@@ -19,11 +19,12 @@ public:
     Local<Value> getX() { return Number::newNumber(x); }
     Local<Value> getY() { return Number::newNumber(y); }
     Local<Value> getZ() { return Number::newNumber(z); }
-    Local<Value> getDim() { return Number::newNumber(dim); }
+    Local<Value> getDim();
+    Local<Value> getDimId() { return Number::newNumber(dim); }
     void setX(const Local<Value>& value) { x = value.asNumber().toInt64(); }
     void setY(const Local<Value>& value) { y = value.asNumber().toInt64(); }
     void setZ(const Local<Value>& value) { z = value.asNumber().toInt64(); }
-    void setDim(const Local<Value>& value) { dim = value.asNumber().toInt32(); }
+    void setDimId(const Local<Value>& value) { dim = value.asNumber().toInt32(); }
 };
 
 class FloatPos : public FloatVec4, public ScriptClass
@@ -40,11 +41,12 @@ public:
     Local<Value> getX() { return Number::newNumber(x); }
     Local<Value> getY() { return Number::newNumber(y); }
     Local<Value> getZ() { return Number::newNumber(z); }
-    Local<Value> getDim() { return Number::newNumber(dim); }
+    Local<Value> getDim();
+    Local<Value> getDimId() { return Number::newNumber(dim); }
     void setX(const Local<Value>& value) { x = value.asNumber().toInt64(); }
     void setY(const Local<Value>& value) { y = value.asNumber().toInt64(); }
     void setZ(const Local<Value>& value) { z = value.asNumber().toInt64(); }
-    void setDim(const Local<Value>& value) { dim = value.asNumber().toInt32(); }
+    void setDimId(const Local<Value>& value) { dim = value.asNumber().toInt32(); }
 };
 
 

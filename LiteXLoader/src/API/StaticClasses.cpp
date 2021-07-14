@@ -79,8 +79,8 @@ ClassDefine<void> SystemClassBuilder =
 class FileClass
 {
 public:
-    static Local<Value> read(const Arguments& args) { return FileReadAll(args); }
-    static Local<Value> write(const Arguments& args) { return FileWriteAll(args); }
+    static Local<Value> readFrom(const Arguments& args) { return FileReadFrom(args); }
+    static Local<Value> writeTo(const Arguments& args) { return FileWriteTo(args); }
     static Local<Value> writeLine(const Arguments& args) { return FileWriteLine(args); }
 
     static Local<Value> createDir(const Arguments& args) { return DirCreate(args); }
@@ -93,8 +93,8 @@ public:
 
 ClassDefine<void> FileClassBuilder =
     defineClass("file")
-        .function("read", &FileClass::read)
-        .function("write", &FileClass::write)
+        .function("readFrom", &FileClass::readFrom)
+        .function("writeTo", &FileClass::writeTo)
         .function("writeLine", &FileClass::writeLine)
 
         .function("createDir", &FileClass::createDir)

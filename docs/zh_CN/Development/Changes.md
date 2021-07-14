@@ -17,6 +17,8 @@
 
 #### 20210714
 
-- 将`onOpenChest`和`onOpenBarrel`合并为`onOpenContainer`
-- 将`onCloseChest`和`onCloseBarrel`合并为`onCloseContainer`
-- 将`onChangeSlot`重命名为`onContainerChangeSlot`
+- 将事件`onOpenChest`和`onOpenBarrel`合并为`onOpenContainer`
+- 将事件`onCloseChest`和`onCloseBarrel`合并为`onCloseContainer`
+- 将事件`onChangeSlot`重命名为`onContainerChangeSlot`
+- 将接口`file.read`重命名为`file.readFrom`，将接口`file.write`重命名为`file.writeTo`
+- 通用日志接口的 日志输出等级 发生了较大变化

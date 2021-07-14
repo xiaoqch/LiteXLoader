@@ -2,8 +2,8 @@
 #include <ScriptX/ScriptX.h>
 using namespace script;
 
-Local<Value> FileReadAll(const Arguments& args);
-Local<Value> FileWriteAll(const Arguments& args);
+Local<Value> FileReadFrom(const Arguments& args);
+Local<Value> FileWriteTo(const Arguments& args);
 Local<Value> FileWriteLine(const Arguments& args);
 
 Local<Value> DirCreate(const Arguments& args);

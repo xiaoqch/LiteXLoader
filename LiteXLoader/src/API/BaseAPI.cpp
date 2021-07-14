@@ -22,7 +22,8 @@ ClassDefine<IntPos> IntPosBuilder =
         .instanceProperty("x", &IntPos::getX, &IntPos::setX)
         .instanceProperty("y", &IntPos::getY, &IntPos::setY)
         .instanceProperty("z", &IntPos::getZ, &IntPos::setZ)
-        .instanceProperty("dimid", &IntPos::getDim, &IntPos::setDim)
+        .instanceProperty("dim", &IntPos::getDim)
+        .instanceProperty("dimid", &IntPos::getDimId, &IntPos::setDimId)
         .build();
 
 ClassDefine<FloatPos> FloatPosBuilder =
@@ -31,11 +32,12 @@ ClassDefine<FloatPos> FloatPosBuilder =
         .instanceProperty("x", &FloatPos::getX, &FloatPos::setX)
         .instanceProperty("y", &FloatPos::getY, &FloatPos::setY)
         .instanceProperty("z", &FloatPos::getZ, &FloatPos::setZ)
-        .instanceProperty("dimid", &FloatPos::getDim, &FloatPos::setDim)
+        .instanceProperty("dim", &FloatPos::getDim)
+        .instanceProperty("dimid", &FloatPos::getDimId, &FloatPos::setDimId)
         .build();
 
 
-//////////////////// IntPos 生成函数 ////////////////////   
+//////////////////// IntPos ////////////////////   
 
 IntPos* IntPos::create(const Arguments& args)
 {
@@ -79,7 +81,28 @@ IntPos* IntPos::extractPos(Local<Value> v)
         return nullptr;
 }
 
-//////////////////// FloatPos 生成函数 ////////////////////
+Local<Value> IntPos::getDim()
+{
+    string name;
+    switch (dim)
+    {
+    case 0:
+        name = _TRS("base.getDimName.0");
+        break;
+    case 1:
+        name = _TRS("base.getDimName.1");
+        break;
+    case 2:
+        name = _TRS("base.getDimName.2");
+        break;
+    default:
+        name = _TRS("base.getDimName.unknown");
+        break;
+    }
+    return String::newString(name);
+}
+
+//////////////////// FloatPos ////////////////////
 
 FloatPos* FloatPos::create(const Arguments& args)
 {
@@ -121,6 +144,27 @@ FloatPos* FloatPos::extractPos(Local<Value> v)
         return EngineScope::currentEngine()->getNativeInstance<FloatPos>(v);
     else
         return nullptr;
+}
+
+Local<Value> FloatPos::getDim()
+{
+    string name;
+    switch (dim)
+    {
+    case 0:
+        name = _TRS("base.getDimName.0");
+        break;
+    case 1:
+        name = _TRS("base.getDimName.1");
+        break;
+    case 2:
+        name = _TRS("base.getDimName.2");
+        break;
+    default:
+        name = _TRS("base.getDimName.unknown");
+        break;
+    }
+    return String::newString(name);
 }
 
 //////////////////// APIs ////////////////////
