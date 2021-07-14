@@ -6,8 +6,8 @@
 //文件系统
 bool Raw_DirCreate(const std::string &path);
 bool Raw_PathExists(const std::string &path);
-bool Raw_FileReadAll(const std::string &path, std::string & result);
-bool Raw_FileWriteAll(const std::string &path, const std::string &data);
+bool Raw_FileReadFrom(const std::string &path, std::string & result);
+bool Raw_FileWriteTo(const std::string &path, const std::string &data);
 
 //系统调用
 bool Raw_SystemCmd(const std::string &cmd, std::function<void(int,std::string)> callback, int timeLimit);

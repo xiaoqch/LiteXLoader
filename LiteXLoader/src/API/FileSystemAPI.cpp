@@ -111,28 +111,28 @@ Local<Value> PathMove(const Arguments& args)
     CATCH("Fail in MovePath!")
 }
 
-Local<Value> FileReadAll(const Arguments& args)
+Local<Value> FileReadFrom(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
     
     try{
         string texts;
-        if(!Raw_FileReadAll(args[0].asString().toString(),texts))
+        if(!Raw_FileReadFrom(args[0].asString().toString(),texts))
             return Local<Value>();  //Null
         return String::newString(texts);
     }
     CATCH("Fail in FileReadAll!")
 }
 
-Local<Value> FileWriteAll(const Arguments& args)
+Local<Value> FileWriteTo(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,2)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
     CHECK_ARG_TYPE(args[1],ValueKind::kString)
     
     try{
-        return Boolean::newBoolean(Raw_FileWriteAll(args[0].asString().toString(),args[1].asString().toString()));
+        return Boolean::newBoolean(Raw_FileWriteTo(args[0].asString().toString(),args[1].asString().toString()));
     }
     CATCH("Fail in FileWriteAll!")
 }

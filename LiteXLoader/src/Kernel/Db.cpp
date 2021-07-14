@@ -90,7 +90,7 @@ JSON_ROOT Raw_JsonOpen(const std::string& path, const std::string& defContent)
     {
         //已存在
         string jsonTexts;
-        if (!Raw_FileReadAll(path, jsonTexts))
+        if (!Raw_FileReadFrom(path, jsonTexts))
             jsonTexts = "";
         try
         {
