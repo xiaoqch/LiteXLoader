@@ -39,10 +39,10 @@ struct EngineOwnData
     std::ofstream fout;
     Player *player = nullptr;
     std::string title = "";
-    int minLogLevel = 1;
-    int consoleLogLevel = 1;
-    int fileLogLevel = 1;
-    int playerLogLevel = 1;
+    int maxLogLevel = 4;
+    int consoleLogLevel = 4;
+    int fileLogLevel = 4;
+    int playerLogLevel = 4;
 
     //PlayerAPI
     std::unordered_map<std::string,Global<Value>> playerDataDB;
