@@ -123,7 +123,10 @@ Local<Value> GetBlock(const Arguments& args)
             if(!block)
                 return Local<Value>();    //Null
             else
-                return BlockClass::newBlock(block);
+            {
+                BlockPos bp{ pos->x,pos->y,pos->z };
+                return BlockClass::newBlock(block, &bp, pos->dim);
+            }
         }
     }
     CATCH("Fail in GetBlock!")

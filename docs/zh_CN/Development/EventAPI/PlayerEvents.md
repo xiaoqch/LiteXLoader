@@ -237,67 +237,39 @@
 
 <br>
 
-#### `"onOpenChest"` - 玩家打开箱子
+#### `"onOpenContainer"` - 玩家打开容器方块
 
 - 监听函数原型
-  `function(player,pos)`
+  `function(player,block)`
 - 参数：
   - player : `Player`  
-    打开箱子的玩家对象
+    打开容器方块的玩家对象
 
-  - pos : `IntPos`  
-    被打开的箱子坐标
-
+  - block : `Block`  
+    被打开的容器方块对象
 - 拦截事件：函数返回`false`
+
+目前已支持监听的容器有：箱子（`minecraft:chest`）、木桶（`minecraft:barrel`）
 
 <br>
 
-#### `"onCloseChest"` - 玩家关闭箱子
+#### `"onCloseContainer"` - 玩家关闭容器方块
 
 - 监听函数原型
-  `function(player,pos)`
+  `function(player,block)`
 - 参数：
   - player : `Player`  
-    关闭箱子的玩家对象
+    关闭容器方块的玩家对象
 
-  - pos : `IntPos`  
-    被关闭的箱子坐标
-
+  - block : `Block`  
+    被关闭的容器方块对象
 - 拦截事件：函数返回`false`
+
+目前已支持监听的容器有：箱子（`minecraft:chest`）、木桶（`minecraft:barrel`）
 
 <br>
 
-#### `"onOpenBarrel"` - 玩家打开木桶
-
-- 监听函数原型
-  `function(player,pos)`
-- 参数：
-  - player : `Player`  
-    打开木桶的玩家对象
-
-  - pos : `IntPos`  
-    被打开的木桶坐标
-
-- 拦截事件：函数返回`false`
-
-<br>
-
-#### `"onCloseBarrel"` - 玩家关闭木桶
-
-- 监听函数原型
-  `function(player)`
-- 参数：
-  - player : `Player`  
-    关闭木桶的玩家对象
-
-  - pos : `IntPos`  
-    被关闭的木桶坐标
-
-- 拦截事件：函数返回`false`
-
-<br>
-
-#### `"onChangeSlot"` - 玩家向容器放入 / 取出物品
+#### `"onContainerChangeSlot"` - 玩家向容器放入 / 取出物品
 
 - 监听函数原型
   `function(player,container,slotNum,isPutIn,item)`

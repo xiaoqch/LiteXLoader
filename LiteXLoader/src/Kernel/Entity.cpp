@@ -35,16 +35,6 @@ int Raw_GetMaxHealth(Actor *actor)
     return SymCall("?getMaxHealth@Actor@@QEBAHXZ", int, Actor*)(actor);
 }
 
-int Raw_GetStrength(Actor* actor)
-{
-    return SymCall("?getStrength@Actor@@QEBAHXZ", int, Actor*)(actor);
-}
-
-int Raw_GetMaxStrength(Actor* actor)
-{
-    return SymCall("?getStrengthMax@Actor@@QEBAHXZ", int, Actor*)(actor);
-}
-
 bool Raw_GetIsInAir(Actor *actor)
 {
     return !(dAccess<bool,448>(actor));

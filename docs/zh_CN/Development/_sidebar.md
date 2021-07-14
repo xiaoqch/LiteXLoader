@@ -1,5 +1,5 @@
 - [⛳ 新手入门（必读）](zh_CN/Development/)
-- [📋 最近更改](zh_CN/Development/Changes)
+- [📋 重大更改](zh_CN/Development/Changes)
 - 游戏内容接口
 
   - [🎯 命令系统](zh_CN/Development/GameAPI/Command.md)

@@ -13,11 +13,12 @@ string Raw_GetBlockName(Block* block)
 
 std::string Raw_GetBlockFullName(Block* block)
 {
-    return offBlock::getFullName(block);
+    BlockLegacy* blockLegacy = offBlock::getLegacyBlock(block);
+    return offBlockLegacy::getFullName(blockLegacy);
 }
 
 int Raw_GetBlockId(Block* block)
 {
-    auto blockLegacy = (BlockLegacy*)((uintptr_t)block + 16);
+    BlockLegacy* blockLegacy = offBlock::getLegacyBlock(block);
     return blockLegacy->getBlockItemId();
 }

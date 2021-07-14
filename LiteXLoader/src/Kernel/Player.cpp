@@ -134,6 +134,36 @@ vector<ItemStack*> Raw_GetPack(Player* player)
     return res;
 }
 
+bool Raw_GetAllItems(Player* player, ItemStack** hand, ItemStack** offHand, vector<ItemStack*>* inventory,
+    vector<ItemStack*>* armor, vector<ItemStack*>* endChest)
+{
+    //Hand
+    *hand = (ItemStack*)&(player->getSelectedItem());
+
+    //OffHand
+    *offHand = SymCall("?getOffhandSlot@Actor@@QEBAAEBVItemStack@@XZ", ItemStack*, Player*)(player);
+
+    //Inventory
+    Container* container = SymCall("?getInventory@Player@@QEAAAEAVContainer@@XZ", Container*, Player*)(player);
+    auto slot = container->getSlots();
+    for (auto& item : slot)
+        inventory->push_back((ItemStack*)item);
+    
+    //Armor
+    container = dAccess<Container*>(player, 1648);
+    slot = container->getSlots();
+    for (auto& item : slot)
+        armor->push_back((ItemStack*)item);
+
+    //EndChest
+    container = dAccess<Container*>(player, 4360);
+    slot = container->getSlots();
+    for (auto& item : slot)
+        armor->push_back((ItemStack*)item);
+
+    return true;
+}
+
 bool Raw_RenamePlayer(Player* player, const string &name)
 {
     player->setNameTag(name);

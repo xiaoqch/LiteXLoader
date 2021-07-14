@@ -63,6 +63,47 @@ public:
     }
 };
 
+class Container
+{
+public:
+    //std::vector<ItemStack const *,std::allocator<ItemStack const *> > const Container::getSlots()const 
+    MCINLINE std::vector<ItemStack const*, std::allocator<ItemStack const*> > const getSlots() {
+        std::vector<ItemStack const*, std::allocator<ItemStack const*> > const (Container:: * fnp)()const;
+        *((void**)&fnp) = dlsym("?getSlots@Container@@UEBA?BV?$vector@PEBVItemStack@@V?$allocator@PEBVItemStack@@@std@@@std@@XZ");
+        return (this->*fnp)();
+    }
+    //void Container::addItem(ItemStack &)
+    MCINLINE void addItem(ItemStack& arg0) {
+        void (Container:: * fnp)(ItemStack&)const;
+        *((void**)&fnp) = dlsym("?addItem@Container@@UEAAXAEAVItemStack@@@Z");
+        return (this->*fnp)(arg0);
+    }
+    //bool Container::addItemToFirstEmptySlot(ItemStack &)
+    MCINLINE bool addItemToFirstEmptySlot(ItemStack& arg0) {
+        bool (Container:: * fnp)(ItemStack&)const;
+        *((void**)&fnp) = dlsym("?addItemToFirstEmptySlot@Container@@UEAA_NAEAVItemStack@@@Z");
+        return (this->*fnp)(arg0);
+    }
+    //int Container::getItemCount(ItemStack const &)const 
+    MCINLINE int getItemCount(ItemStack const& arg0) {
+        int (Container:: * fnp)(ItemStack const&)const;
+        *((void**)&fnp) = dlsym("?getItemCount@Container@@UEBAHAEBVItemStack@@@Z");
+        return (this->*fnp)(arg0);
+    }
+    //void Container::removeAllItems()
+    MCINLINE void removeAllItems() {
+        void (Container:: * fnp)()const;
+        *((void**)&fnp) = dlsym("?removeAllItems@Container@@UEAAXXZ");
+        return (this->*fnp)();
+    }
+    //void Container::removeItem(int,int)
+    MCINLINE void removeItem(int arg0, int arg1) {
+        void (Container:: * fnp)(int, int)const;
+        *((void**)&fnp) = dlsym("?removeItem@Container@@UEAAXHH@Z");
+        return (this->*fnp)(arg0, arg1);
+    }
+};
+
 struct ScorePacketInfo
 {
     ScoreboardId sid;
@@ -85,6 +126,7 @@ extern Scoreboard* g_scoreboard;
 
 //辅助函数
 BlockSource* Raw_GetBlockSourceByActor(Actor* actor);
+BlockSource* Raw_GetBlockSourceByDim(int dimid);
 int Raw_GetBlockDimension(BlockSource* bs);
 Block* Raw_GetBlockByPos(IntVec4* pos);
 Block* Raw_GetBlockByPos(int x, int y, int z, BlockSource* bs);
