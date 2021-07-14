@@ -39,22 +39,20 @@
 
 每一个玩家对象都包含一些固定的对象属性。对于某个特定的玩家对象`pl`，有以下这些属性
 
-| 属性           | 含义                                                     | 类型       |
-| -------------- | -------------------------------------------------------- | ---------- |
-| pl.name        | 玩家名                                                   | `String`   |
-| pl.pos         | 玩家所在坐标                                             | `FloatPos` |
-| pl.realName    | 玩家的真实名字（即使改名后也不变）                       | `String`   |
-| pl.xuid        | 玩家Xuid字符串                                           | `String`   |
-| pl.uuid        | 玩家Uuid字符串                                           | `String`   |
-| pl.ip          | 玩家设备的IP地址，格式类似`12.34.567.89:1111`            | `String`   |
-| pl.permLevel   | 玩家的操作权限等级（0 - 4）                              | `Integer`  |
-| pl.gameMode    | 玩家的游戏模式（0 - 生存，1 - 创造，2 - 极限，3 - 旁观） | `Integer`  |
-| pl.maxHealth   | 玩家最大生命值                                           | `Integer`  |
-| pl.health      | 玩家当前生命值                                           | `Integer`  |
-| pl.maxStrength | 玩家最大护甲值                                           | `Integer`  |
-| pl.strength    | 玩家当前护甲值                                           | `Integer`  |
-| pl.inAir       | 玩家当前是否悬空                                         | `Boolean`  |
-| pl.sneaking    | 玩家当前是否正在潜行                                     | `Boolean`  |
+| 属性         | 含义                                                     | 类型       |
+| ------------ | -------------------------------------------------------- | ---------- |
+| pl.name      | 玩家名                                                   | `String`   |
+| pl.pos       | 玩家所在坐标                                             | `FloatPos` |
+| pl.realName  | 玩家的真实名字（即使改名后也不变）                       | `String`   |
+| pl.xuid      | 玩家Xuid字符串                                           | `String`   |
+| pl.uuid      | 玩家Uuid字符串                                           | `String`   |
+| pl.ip        | 玩家设备的IP地址，格式类似`12.34.567.89:1111`            | `String`   |
+| pl.permLevel | 玩家的操作权限等级（0 - 4）                              | `Integer`  |
+| pl.gameMode  | 玩家的游戏模式（0 - 生存，1 - 创造，2 - 极限，3 - 旁观） | `Integer`  |
+| pl.maxHealth | 玩家最大生命值                                           | `Integer`  |
+| pl.health    | 玩家当前生命值                                           | `Integer`  |
+| pl.inAir     | 玩家当前是否悬空                                         | `Boolean`  |
+| pl.sneaking  | 玩家当前是否正在潜行                                     | `Boolean`  |
 
 这些对象属性都是只读的，无法被修改  
 其中，**操作权限等级**属性的对照表如下：
@@ -246,13 +244,13 @@ pl.rename("newname");
 
 对于返回的某个物品对象集合`obj`，集合中有以下几种内容：
 
-| 属性         | 含义                                     | 类型                   |
-| ------------ | ---------------------------------------- | ---------------------- |
-| obj.hand     | 玩家的主手物品                           | `Item`                 |
-| obj.offHand  | 玩家的副手物品                           | `Item`                 |
-| obj.pack     | 玩家物品栏中所有物品的数组（共40个物品） | `Array<Item,Item,...>` |
-| obj.armor    | 玩家盔甲栏中所有物品的数组（共4个物品）  | `Array<Item,Item,...>` |
-| obj.endchest | 玩家末影箱中所有物品的数组（共30个物品） | `Array<Item,Item,...>` |
+| 属性          | 含义                                     | 类型                   |
+| ------------- | ---------------------------------------- | ---------------------- |
+| obj.hand      | 玩家的主手物品                           | `Item`                 |
+| obj.offHand   | 玩家的副手物品                           | `Item`                 |
+| obj.inventory | 玩家物品栏中所有物品的数组（共40个物品） | `Array<Item,Item,...>` |
+| obj.armor     | 玩家盔甲栏中所有物品的数组（共4个物品）  | `Array<Item,Item,...>` |
+| obj.endchest  | 玩家末影箱中所有物品的数组（共30个物品） | `Array<Item,Item,...>` |
 
 #### 修改玩家操作权限  
 

@@ -29,8 +29,6 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceProperty("gameMode", &PlayerClass::getGameMode)
         .instanceProperty("maxHealth", &PlayerClass::getMaxHealth)
         .instanceProperty("health", &PlayerClass::getHealth)
-        .instanceProperty("maxStrength", &PlayerClass::getMaxStrength)
-        .instanceProperty("strength", &PlayerClass::getStrength)
         .instanceProperty("inAir", &PlayerClass::getInAir)
         .instanceProperty("sneaking", &PlayerClass::getSneaking)
 
@@ -223,22 +221,6 @@ Local<Value> PlayerClass::getMaxHealth()
 Local<Value> PlayerClass::getHealth()
 {
     try{
-        return Number::newNumber(Raw_GetHealth((Actor*)player));
-    }
-    CATCH("Fail in GetHealth!")
-}
-
-Local<Value> PlayerClass::getMaxStrength()
-{
-    try {
-        return Number::newNumber(Raw_GetMaxHealth((Actor*)player));
-    }
-    CATCH("Fail in GetMaxHealth!")
-}
-
-Local<Value> PlayerClass::getStrength()
-{
-    try {
         return Number::newNumber(Raw_GetHealth((Actor*)player));
     }
     CATCH("Fail in GetHealth!")

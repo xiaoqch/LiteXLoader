@@ -40,7 +40,7 @@ enum class EVENT_TYPES : int
     onRespawn, onChangeDim, onJump, onSneak, onAttack, onEat, onMove, onSetArmor,
     onUseItem, onTakeItem, onDropItem,
     onDestroyingBlock, onDestroyBlock, onPlaceBlock,
-    onOpenChest, onCloseChest, onOpenBarrel, onCloseBarrel, onChangeSlot,
+    onOpenContainer, onCloseContainer, onContainerChangeSlot,
     onMobDie, onMobHurt, onExplode, onBlockExploded, onCmdBlockExecute,
     onProjectileHit, onBlockInteractd, onUseRespawnAnchor, onFarmLandDecay,
     onPistonPush, onHopperSearchItem, onHopperPushOut, onFireSpread, 
@@ -70,11 +70,9 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onPlaceBlock",EVENT_TYPES::onPlaceBlock},
     {"onExplode",EVENT_TYPES::onExplode},
     {"onBlockExploded",EVENT_TYPES::onBlockExploded},
-    {"onOpenChest",EVENT_TYPES::onOpenChest},
-    {"onCloseChest",EVENT_TYPES::onCloseChest},
-    {"onOpenBarrel",EVENT_TYPES::onOpenBarrel},
-    {"onCloseBarrel",EVENT_TYPES::onCloseBarrel},
-    {"onChangeSlot",EVENT_TYPES::onChangeSlot},
+    {"onOpenContainer",EVENT_TYPES::onOpenContainer},
+    {"onCloseContainer",EVENT_TYPES::onCloseContainer},
+    {"onContainerChangeSlot",EVENT_TYPES::onContainerChangeSlot},
     {"onCmdBlockExecute",EVENT_TYPES::onCmdBlockExecute},
     {"onProjectileHit",EVENT_TYPES::onProjectileHit},
     {"onBlockInteractd",EVENT_TYPES::onBlockInteractd},
@@ -472,61 +470,77 @@ THook(bool, "?mayPlace@BlockSource@@QEAA_NAEBVBlock@@AEBVBlockPos@@EPEAVActor@@_
     return original(bs, bl, bp, a4, pl, a6);
 }
 
-// ===== onOpenChest =====
+
+
+// ===== onOpenContainer_Chest =====
 THook(bool, "?use@ChestBlock@@UEBA_NAEAVPlayer@@AEBVBlockPos@@E@Z",
     void* _this, Player* pl , BlockPos* bp)
 {
-    IF_LISTENED(EVENT_TYPES::onOpenChest)
+    IF_LISTENED(EVENT_TYPES::onOpenContainer)
     {
-        CallEventEx(EVENT_TYPES::onOpenChest, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetPlayerDimId(pl)));
+        int dim = Raw_GetPlayerDimId(pl);
+        BlockSource* bs = Raw_GetBlockSourceByDim(dim);
+        Block* bl = Raw_GetBlockByPos(bp->x, bp->y, bp->z, bs);
+
+        CallEventEx(EVENT_TYPES::onOpenContainer, PlayerClass::newPlayer(pl), BlockClass::newBlock(bl, bp, dim));
     }
     return original(_this, pl, bp);
 }
 
-// ===== onCloseChest =====
+// ===== onCloseContainer_Chest =====
 class ChestBlockActor;
 THook(bool, "?stopOpen@ChestBlockActor@@UEAAXAEAVPlayer@@@Z",
     ChestBlockActor* _this, Player* pl)
 {
-    IF_LISTENED(EVENT_TYPES::onCloseChest)
+    IF_LISTENED(EVENT_TYPES::onCloseContainer)
     {
         auto bp = (BlockPos*)((char*)_this - 204);
+        int dim = Raw_GetPlayerDimId(pl);
+        BlockSource* bs = Raw_GetBlockSourceByDim(dim);
+        Block* bl = Raw_GetBlockByPos(bp->x, bp->y, bp->z, bs);
 
-        CallEventEx(EVENT_TYPES::onCloseChest, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetPlayerDimId(pl)));
+        CallEventEx(EVENT_TYPES::onCloseContainer, PlayerClass::newPlayer(pl), BlockClass::newBlock(bl, bp, dim));
     }
     return original(_this, pl);
 }
 
-// ===== onOpenBarrel =====
+// ===== onOpenContainer_Barrel =====
 THook(bool, "?use@BarrelBlock@@UEBA_NAEAVPlayer@@AEBVBlockPos@@E@Z",
     void* _this, Player* pl, BlockPos* bp)
 {
-    IF_LISTENED(EVENT_TYPES::onOpenBarrel)
+    IF_LISTENED(EVENT_TYPES::onOpenContainer)
     {
-        CallEventEx(EVENT_TYPES::onOpenBarrel, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetPlayerDimId(pl)));
+        int dim = Raw_GetPlayerDimId(pl);
+        BlockSource* bs = Raw_GetBlockSourceByDim(dim);
+        Block* bl = Raw_GetBlockByPos(bp->x, bp->y, bp->z, bs);
+
+        CallEventEx(EVENT_TYPES::onOpenContainer, PlayerClass::newPlayer(pl), BlockClass::newBlock(bl, bp, dim));
     }
     return original(_this, pl, bp);
 }
 
-// ===== onCloseBarrel =====
+// ===== onCloseContainer_Barrel =====
 THook(bool, "?stopOpen@BarrelBlockActor@@UEAAXAEAVPlayer@@@Z",
     void* _this, Player* pl)
 {
-    IF_LISTENED(EVENT_TYPES::onCloseBarrel)
+    IF_LISTENED(EVENT_TYPES::onCloseContainer)
     {
         auto bp = (BlockPos*)((char*)_this - 204);
+        int dim = Raw_GetPlayerDimId(pl);
+        BlockSource* bs = Raw_GetBlockSourceByDim(dim);
+        Block* bl = Raw_GetBlockByPos(bp->x, bp->y, bp->z, bs);
 
-        CallEventEx(EVENT_TYPES::onCloseBarrel, PlayerClass::newPlayer(pl), IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetPlayerDimId(pl)));
+        CallEventEx(EVENT_TYPES::onCloseContainer, PlayerClass::newPlayer(pl), BlockClass::newBlock(bl, bp, dim));
     }
     return original(_this, pl);
 }
 
-// ===== onChangeSlot =====
+// ===== onContainerChangeSlot =====
 class LevelContainerModel;
 THook(void, "?_onItemChanged@LevelContainerModel@@MEAAXHAEBVItemStack@@0@Z",
     LevelContainerModel* _this, int slotNumber, ItemStack* oldItem, ItemStack* newItem)
 {
-    IF_LISTENED(EVENT_TYPES::onChangeSlot)
+    IF_LISTENED(EVENT_TYPES::onContainerChangeSlot)
     {
         Actor* pl = dAccess<Actor*>(_this, 208);
         BlockSource* bs = Raw_GetBlockSourceByActor(pl);
@@ -535,7 +549,7 @@ THook(void, "?_onItemChanged@LevelContainerModel@@MEAAXHAEBVItemStack@@0@Z",
 
         bool isPutIn = Raw_IsNull(oldItem);
 
-        CallEvent(EVENT_TYPES::onChangeSlot, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(block, bpos, bs),
+        CallEvent(EVENT_TYPES::onContainerChangeSlot, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(block, bpos, bs),
             slotNumber, isPutIn, ItemClass::newItem(isPutIn ? newItem : oldItem));
     }
     return original(_this, slotNumber, oldItem, newItem);
@@ -686,10 +700,9 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
 
 // ===== onFormSelected =====
 THook(void, "?handle@?$PacketHandlerDispatcherInstance@VModalFormResponsePacket@@$0A@@@UEBAXAEBVNetworkIdentifier@@AEAVNetEventCallback@@AEAV?$shared_ptr@VPacket@@@std@@@Z",
-	void* _this, NetworkIdentifier* id, ServerNetworkHandler* handler, void** pPacket)
+	void* _this, NetworkIdentifier* id, ServerNetworkHandler* handler, void** packet)
 {
     //IF_LISTENED(EVENT_TYPES::onFormSelected)
-    void *packet = *pPacket;
     Player* p = SymCall("?_getServerPlayer@ServerNetworkHandler@@AEAAPEAVServerPlayer@@AEBVNetworkIdentifier@@E@Z",
         ServerPlayer*, ServerNetworkHandler* , const NetworkIdentifier &, unsigned char)(handler, *id, *((unsigned char*)packet+16));
 
@@ -705,7 +718,7 @@ THook(void, "?handle@?$PacketHandlerDispatcherInstance@VModalFormResponsePacket@
         // No CallEvent here
     }
 
-    original(_this, id, handler, pPacket);
+    original(_this, id, handler, packet);
 }
 
 // ===== onConsoleOutput =====

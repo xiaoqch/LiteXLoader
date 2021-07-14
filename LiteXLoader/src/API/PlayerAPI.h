@@ -31,8 +31,6 @@ public:
     Local<Value> getGameMode();
     Local<Value> getMaxHealth();
     Local<Value> getHealth();
-    Local<Value> getMaxStrength();
-    Local<Value> getStrength();
     Local<Value> getInAir();
     Local<Value> getSneaking();
 

@@ -21,6 +21,14 @@ int Raw_GetBlockDimension(BlockSource* bs)
 	return GetDimensionId(bs);
 }
 
+BlockSource* Raw_GetBlockSourceByDim(int dimid)
+{
+	extern Minecraft* mc;
+	auto dim = (int*) SymCall("?getDimension@Level@@UEBAPEAVDimension@@V?$AutomaticID@VDimension@@H@@@Z",
+		uintptr_t, void*, int)(mc->getLevel(), dimid);
+	return dAccess<BlockSource*>(dim, 96);
+}
+
 Block* Raw_GetBlockByPos(int x, int y, int z, BlockSource* bs)
 {
 	return SymCall("?getBlock@BlockSource@@QEBAAEBVBlock@@HHH@Z",
@@ -29,10 +37,6 @@ Block* Raw_GetBlockByPos(int x, int y, int z, BlockSource* bs)
 
 Block* Raw_GetBlockByPos(IntVec4* pos)
 {
-	extern Minecraft* mc;
-	auto dim = SymCall("?getDimension@Level@@UEBAPEAVDimension@@V?$AutomaticID@VDimension@@H@@@Z",
-		uintptr_t, void*, int)(mc->getLevel(), pos->dim);
-	auto bs = (BlockSource*)(dim + 88);
-
+	auto bs = Raw_GetBlockSourceByDim(pos->dim);
 	return Raw_GetBlockByPos(pos->x, pos->y, pos->z, bs);
 }

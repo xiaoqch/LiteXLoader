@@ -14,3 +14,9 @@
 
 - `lxl.getVerion` 返回值类型变为`Object`
 - `pl.sendSimpleForm` 函数增加 `images` 参数
+
+#### 20210714
+
+- 将`onOpenChest`和`onOpenBarrel`合并为`onOpenContainer`
+- 将`onCloseChest`和`onCloseBarrel`合并为`onCloseContainer`
+- 将`onChangeSlot`重命名为`onContainerChangeSlot`
