@@ -10,5 +10,9 @@
     "remoteCall.timeout.fail":  "远程调用等待超时！调用失败",
     "remoteCall.waitFail.fail": "远程调用等待失败！调用失败",
     "remoteCall.postMessageReturn.fail":    "远程调用传递返回值失败！",
-    "remoteCall.inRemoteEngine.fail":       "在远程引擎中发生错误！"
+    "remoteCall.inRemoteEngine.fail":       "在远程引擎中发生错误！",
+    "base.getDimName.0":        "主世界",
+    "base.getDimName.1":        "下界",
+    "base.getDimName.2":        "末地",
+    "base.getDimName.unknown":  "其他维度"
 }
