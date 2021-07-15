@@ -11,6 +11,7 @@
 #include <Kernel/Base.h>
 #include <Kernel/Block.h>
 #include <Kernel/Item.h>
+#include <Kernel/Entity.h>
 #include <Kernel/Player.h>
 #include <Kernel/SymbolHelper.h>
 #include <Kernel/Packet.h>
@@ -44,7 +45,7 @@ enum class EVENT_TYPES : int
     onMobDie, onMobHurt, onExplode, onBlockExploded, onCmdBlockExecute,
     onProjectileHit, onBlockInteractd, onUseRespawnAnchor, onFarmLandDecay,
     onPistonPush, onHopperSearchItem, onHopperPushOut, onFireSpread, 
-    onServerStarted, onServerCmd, onFormSelected, onConsoleOutput,
+    onServerStarted, onConsoleCmd, onFormSelected, onConsoleOutput,
     EVENT_COUNT
 };
 static const std::unordered_map<string, EVENT_TYPES> EventsMap{
@@ -83,7 +84,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onHopperPushOut",EVENT_TYPES::onHopperPushOut},
     {"onFireSpread",EVENT_TYPES::onFireSpread},
     {"onServerStarted",EVENT_TYPES::onServerStarted},
-    {"onServerCmd",EVENT_TYPES::onServerCmd},
+    {"onConsoleCmd",EVENT_TYPES::onConsoleCmd},
     {"onConsoleOutput",EVENT_TYPES::onConsoleOutput},
     {"onFormSelected",EVENT_TYPES::onFormSelected},
 };
@@ -297,6 +298,9 @@ THook(void, "?_onPlayerLeft@ServerNetworkHandler@@AEAAXPEAVServerPlayer@@_N@Z",
     return original(_this, pl, a3);
 }
 
+Level* level;
+ActorUniqueID aid;
+
 // ===== onAttack =====
 THook(bool, "?attack@Player@@UEAA_NAEAVActor@@@Z",
     Player* pl,  Actor* ac)
@@ -398,9 +402,9 @@ THook(bool, "?take@Player@@QEAA_NAEAVActor@@HH@Z",
 
 // ===== onPlayerCmd =====
 THook(void, "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVCommandRequestPacket@@@Z",
-    ServerNetworkHandler* _this, NetworkIdentifier* id, void* pkt)
+    ServerNetworkHandler* _this, NetworkIdentifier* id, Packet* pkt)
 {
-    auto player = Raw_GetPlayerFromPacket(_this, id, pkt);
+    Player* player = Raw_GetPlayerFromPacket(_this, id, pkt);
 
     if (player)
     {   
@@ -672,7 +676,7 @@ THook(bool, "?_trySpawnBlueFire@FireBlock@@AEBA_NAEAVBlockSource@@AEBVBlockPos@@
     return original(_this, bs, bp);
 }
 
-// ===== onServerCmd =====
+// ===== onConsoleCmd =====
 THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@VCommandContext@@@std@@_N@Z",
     MinecraftCommands* _this, unsigned int* a2, std::shared_ptr<CommandContext> x, char a4)
 {
@@ -688,9 +692,9 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
             return false;
 
         bool callbackRes = CallServerCmdCallback(cmd);
-        IF_LISTENED(EVENT_TYPES::onServerCmd)
+        IF_LISTENED(EVENT_TYPES::onConsoleCmd)
         {
-            CallEventEx(EVENT_TYPES::onServerCmd, cmd);
+            CallEventEx(EVENT_TYPES::onConsoleCmd, cmd);
         }
         if (!callbackRes)
             return false;
@@ -700,11 +704,11 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
 
 // ===== onFormSelected =====
 THook(void, "?handle@?$PacketHandlerDispatcherInstance@VModalFormResponsePacket@@$0A@@@UEBAXAEBVNetworkIdentifier@@AEAVNetEventCallback@@AEAV?$shared_ptr@VPacket@@@std@@@Z",
-	void* _this, NetworkIdentifier* id, ServerNetworkHandler* handler, void** packet)
+	void* _this, NetworkIdentifier* id, ServerNetworkHandler* handler, void* pPacket)
 {
     //IF_LISTENED(EVENT_TYPES::onFormSelected)
-    Player* p = SymCall("?_getServerPlayer@ServerNetworkHandler@@AEAAPEAVServerPlayer@@AEBVNetworkIdentifier@@E@Z",
-        ServerPlayer*, ServerNetworkHandler* , const NetworkIdentifier &, unsigned char)(handler, *id, *((unsigned char*)packet+16));
+    Packet* packet = *(Packet**)pPacket;
+    Player* p = Raw_GetPlayerFromPacket(handler, id, packet);
 
     if (p)
     {
@@ -718,7 +722,7 @@ THook(void, "?handle@?$PacketHandlerDispatcherInstance@VModalFormResponsePacket@
         // No CallEvent here
     }
 
-    original(_this, id, handler, packet);
+    original(_this, id, handler, pPacket);
 }
 
 // ===== onConsoleOutput =====
@@ -899,7 +903,7 @@ bool CallFormCallback(unsigned formId, const string& data)
         auto callback = engineGlobalData->formCallbacks.at(key);
 
         EngineScope scope(callback.engine);
-        auto res = callback.func.get().call({}, String::newString(data));
+        auto res = callback.func.get().call({}, JsonToValue(data));
         if (res.isNull() || (res.isBoolean() && res.asBoolean().value() == false))
             passToBDS = false;
     }

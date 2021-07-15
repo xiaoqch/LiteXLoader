@@ -1,9 +1,9 @@
 #include "Server.h"
+#include "Global.h"
 using namespace std;
 
 bool Raw_SetServerMotd(const std::string &motd)
 {
-	extern Minecraft* mc;
 	if (!mc)
 		return false;
 	ServerNetworkHandler* snh = mc->getServerNetworkHandler();

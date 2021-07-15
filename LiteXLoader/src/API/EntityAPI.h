@@ -7,16 +7,17 @@ class Actor;
 class EntityClass : public ScriptClass
 {
 private:
-    Actor *entity;
+    ActorUniqueID id;
 
 public:
 	explicit EntityClass(Actor *p)
-        :ScriptClass(ScriptClass::ConstructFromCpp<EntityClass>{}),entity(p)
-    {}
-    Actor *get()
+        :ScriptClass(ScriptClass::ConstructFromCpp<EntityClass>{})
     {
-        return entity;
+        set(p);
     }
+
+    void set(Actor* actor);
+    Actor* get();
 
     static Local<Object> newEntity(Actor *p);
     static Local<Object> newEntity(WActor p);
