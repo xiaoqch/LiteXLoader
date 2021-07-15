@@ -23,7 +23,6 @@ int Raw_GetBlockDimension(BlockSource* bs)
 
 BlockSource* Raw_GetBlockSourceByDim(int dimid)
 {
-	extern Minecraft* mc;
 	auto dim = (int*) SymCall("?getDimension@Level@@UEBAPEAVDimension@@V?$AutomaticID@VDimension@@H@@@Z",
 		uintptr_t, void*, int)(mc->getLevel(), dimid);
 	return dAccess<BlockSource*>(dim, 96);

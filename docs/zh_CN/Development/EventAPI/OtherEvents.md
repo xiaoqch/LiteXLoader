@@ -31,7 +31,7 @@
 
 <br>
 
-#### `"onServerCmd"` - 服务端执行后台命令
+#### `"onConsoleCmd"` - 服务端执行后台命令
 
 - 监听函数原型
   `function(cmd)`

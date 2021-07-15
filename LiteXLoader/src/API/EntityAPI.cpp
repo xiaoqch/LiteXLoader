@@ -44,9 +44,28 @@ Actor* EntityClass::extractEntity(Local<Value> v)
 }
 
 //成员函数
+void EntityClass::set(Actor* actor)
+{
+    id = actor->getUniqueID();
+}
+
+Actor* EntityClass::get()
+{
+    Actor *actor = SymCall("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z"
+        , Actor*, Level*, ActorUniqueID, bool)(mc->getLevel(), id, 0);
+    if (actor)
+        return actor;
+    else
+        return nullptr;
+}
+
 Local<Value> EntityClass::getName()
 { 
     try{
+        Actor* entity = get();
+        if (!entity)
+            return Local<Value>();
+
         return String::newString(Raw_GetEntityName(entity));
     }
     CATCH("Fail in getEntityName!")
@@ -55,6 +74,10 @@ Local<Value> EntityClass::getName()
 Local<Value> EntityClass::getType()
 {
     try {
+        Actor* entity = get();
+        if (!entity)
+            return Local<Value>();
+
         return String::newString(Raw_GetEntityTypeName(entity));
     }
     CATCH("Fail in getEntityType!")
@@ -63,6 +86,10 @@ Local<Value> EntityClass::getType()
 Local<Value> EntityClass::getId()
 {
     try {
+        Actor* entity = get();
+        if (!entity)
+            return Local<Value>();
+
         return Number::newNumber(Raw_GetEntityId(entity));
     }
     CATCH("Fail in getEntityId!")
@@ -71,6 +98,10 @@ Local<Value> EntityClass::getId()
 Local<Value> EntityClass::getPos()
 { 
     try{
+        Actor* entity = get();
+        if (!entity)
+            return Local<Value>();
+
         return FloatPos::newPos(Raw_GetEntityPos(entity));
     }
     CATCH("Fail in GetEntityPos!")
@@ -79,6 +110,10 @@ Local<Value> EntityClass::getPos()
 Local<Value> EntityClass::getMaxHealth()
 {
     try{
+        Actor* entity = get();
+        if (!entity)
+            return Local<Value>();
+
         return Number::newNumber(Raw_GetMaxHealth(entity));
     }
     CATCH("Fail in GetMaxHealth!")
@@ -87,6 +122,10 @@ Local<Value> EntityClass::getMaxHealth()
 Local<Value> EntityClass::getHealth()
 {
     try{
+        Actor* entity = get();
+        if (!entity)
+            return Local<Value>();
+
         return Number::newNumber(Raw_GetHealth(entity));
     }
     CATCH("Fail in GetHealth!")
@@ -95,6 +134,10 @@ Local<Value> EntityClass::getHealth()
 Local<Value> EntityClass::getInAir()
 {
     try{
+        Actor* entity = get();
+        if (!entity)
+            return Local<Value>();
+
         return Boolean::newBoolean(Raw_GetIsInAir(entity));
     }
     CATCH("Fail in getInAir!")
@@ -109,6 +152,10 @@ Local<Value> EntityClass::teleport(const Arguments& args)
         if(!pos)
             return Local<Value>();
         
+        Actor* entity = get();
+        if (!entity)
+            return Local<Value>();
+
         return Boolean::newBoolean(Raw_TeleportEntity(entity,*pos));
     }
     CATCH("Fail in TeleportEntity!")
@@ -117,6 +164,10 @@ Local<Value> EntityClass::teleport(const Arguments& args)
 Local<Value> EntityClass::kill(const Arguments& args)
 {
     try{
+        Actor* entity = get();
+        if (!entity)
+            return Local<Value>();
+
         return Boolean::newBoolean(Raw_KillEntity(entity));
     }
     CATCH("Fail in KillEntity!")
@@ -125,6 +176,10 @@ Local<Value> EntityClass::kill(const Arguments& args)
 Local<Value> EntityClass::toPlayer(const Arguments& args)
 {
     try {
+        Actor* entity = get();
+        if (!entity)
+            return Local<Value>();
+
         auto pl = Raw_ToPlayer(entity);
         if (!pl)
             return Local<Value>();

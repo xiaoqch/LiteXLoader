@@ -36,6 +36,7 @@ public:
 
 //全局变量
 extern bool isServerStarted;
+extern Minecraft* mc;
 
 // 输出
 extern int lxlLogLevel;
