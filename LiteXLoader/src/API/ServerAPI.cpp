@@ -13,6 +13,7 @@ Local<Value> SetMotd(const Arguments& args)
     }
     CATCH("Fail in SetServerMotd!")
 }
+
 Local<Value> SetOnlinePlayer(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,2)
@@ -23,4 +24,10 @@ Local<Value> SetOnlinePlayer(const Arguments& args)
         return Boolean::newBoolean(Raw_SetOnlinePlayer(args[0].asNumber().toInt32(),args[1].asNumber().toInt32()));
     }
     CATCH("Fail in SetOnlinePlayer!")
+}
+
+Local<Value> CrashBDS(const Arguments& args)
+{
+    *(int*)(uintptr_t)0 = 2;
+    return Boolean::newBoolean(true);
 }
