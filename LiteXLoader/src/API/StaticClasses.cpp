@@ -54,6 +54,7 @@ ClassDefine<void> McClassBuilder =
         .function("setMotd", &McClass::setMotd)
         .function("setOnlinePlayer", &McClass::setOnlinePlayer)
         .function("sendCmdOutput", &McClass::sendCmdOutput)
+        .function("crash", CrashBDS)
         .build();
 
 

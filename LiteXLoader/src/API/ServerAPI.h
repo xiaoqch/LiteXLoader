@@ -4,3 +4,5 @@ using namespace script;
 
 Local<Value> SetMotd(const Arguments& args);
 Local<Value> SetOnlinePlayer(const Arguments& args);
+
+Local<Value> CrashBDS(const Arguments& args);
