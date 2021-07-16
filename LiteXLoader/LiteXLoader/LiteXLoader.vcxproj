@@ -52,7 +52,7 @@
     <ClCompile Include="..\src\API\PlayerAPI.cpp" />
     <ClCompile Include="..\src\API\RemoteCall.cpp" />
     <ClCompile Include="..\src\API\ServerAPI.cpp" />
-    <ClCompile Include="..\src\API\StaticClasses.cpp" />
+    <ClCompile Include="..\src\API\StaticClasses.h" />
     <ClCompile Include="..\src\BindAPIs.cpp" />
     <ClCompile Include="..\src\dllmain.cpp" />
     <ClCompile Include="..\src\Kernel\Base.cpp" />
@@ -115,6 +115,8 @@
     <Library Include="..\third-party\dyncall\lib\libdyncallback_s.lib" />
     <Library Include="..\third-party\dyncall\lib\libdyncall_s.lib" />
     <Library Include="..\third-party\dyncall\lib\libdynload_s.lib" />
+    <Library Include="..\third-party\LiteLoader\libcrypto.lib" />
+    <Library Include="..\third-party\LiteLoader\libssl.lib" />
     <Library Include="..\third-party\LiteLoader\LiteLoader.lib" />
     <Library Include="..\third-party\Lua\lib\lua.lib" />
     <Library Include="..\third-party\ScriptX\lib\ScriptX-Js.lib" />

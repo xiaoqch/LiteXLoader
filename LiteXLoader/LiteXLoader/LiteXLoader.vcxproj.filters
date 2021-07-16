@@ -68,7 +68,7 @@
     <ClCompile Include="..\src\API\ServerAPI.cpp">
       <Filter>API</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\API\StaticClasses.cpp">
+    <ClCompile Include="..\src\API\StaticClasses.h">
       <Filter>API</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Kernel\Base.cpp">
@@ -274,6 +274,12 @@
       <Filter>Lib</Filter>
     </Library>
     <Library Include="..\third-party\dyncall\lib\libdynload_s.lib">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="..\third-party\LiteLoader\libcrypto.lib">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="..\third-party\LiteLoader\libssl.lib">
       <Filter>Lib</Filter>
     </Library>
   </ItemGroup>

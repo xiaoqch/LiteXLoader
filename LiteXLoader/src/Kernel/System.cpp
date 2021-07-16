@@ -66,6 +66,21 @@ bool Raw_FileWriteTo(const std::string &path, const std::string &data)
     return fileWrite.good();
 }
 
+vector<string> Raw_GetFilesList(const std::string& path)
+{
+    std::filesystem::directory_entry dir(path);
+    if (!dir.is_directory())
+        return {};
+
+    vector<string> list;
+    std::filesystem::directory_iterator deps(path);
+    for (auto& i : deps)
+    {
+        list.push_back(i.path().filename().u8string());
+    }
+    return list;
+}
+
 /////////////////// String Helper ///////////////////
 wchar_t* str2wstr(string str)  
 {  
@@ -216,6 +231,31 @@ bool Raw_HttpPost(const string& url, const string& data, const string& type, fun
     }).detach();
 
     return true;
+}
+
+bool Raw_HttpGetSync(const std::string& url, int* status, std::string* result)
+{
+    string host, path;
+    SplitHttpUrl(url, host, path);
+
+    httplib::Client cli(host.c_str());
+    if (!cli.is_valid())
+    {
+        return false;
+    }
+
+    httplib::Result res = cli.Get(path.c_str());
+    if (res)
+    {
+        *status = res->status;
+        *result = res->body;
+        return true;
+    }
+    else
+    {
+        *status = res.error();
+        return false;
+    }
 }
 
 unsigned int Raw_GetSystemThreadIdFromStdThread(std::thread::id id)

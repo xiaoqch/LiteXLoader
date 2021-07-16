@@ -15,6 +15,7 @@ using namespace script;
 #include <API/NetworkAPI.h>
 #include <API/PlayerAPI.h>
 #include <API/ServerAPI.h>
+#include <API/StaticClasses.h>
 
 void BindAPIs(std::shared_ptr<ScriptEngine> engine)
 {
@@ -43,28 +44,13 @@ void BindAPIs(std::shared_ptr<ScriptEngine> engine)
 
     //////////////// 静态类 ////////////////
 
-    extern ClassDefine<void> McClassBuilder;
     engine->registerNativeClass(McClassBuilder);
-
-    extern ClassDefine<void> SystemClassBuilder;
     engine->registerNativeClass(SystemClassBuilder);
-
-    extern ClassDefine<void> FileClassBuilder;
     engine->registerNativeClass(FileClassBuilder);
-
-    extern ClassDefine<void> LoggerClassBuilder;
     engine->registerNativeClass(LoggerClassBuilder);
-
-    extern ClassDefine<void> DataClassBuilder;
     engine->registerNativeClass(DataClassBuilder);
-
-    extern ClassDefine<void> MoneyClassBuilder;
     engine->registerNativeClass(MoneyClassBuilder);
-
-    extern ClassDefine<void> NetworkClassBuilder;
     engine->registerNativeClass(NetworkClassBuilder);
-
-    extern ClassDefine<void> LxlClassBuilder;
     engine->registerNativeClass(LxlClassBuilder);
 
 

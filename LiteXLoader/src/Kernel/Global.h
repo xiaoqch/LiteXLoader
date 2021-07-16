@@ -3,6 +3,7 @@
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
+#define CPPHTTPLIB_OPENSSL_SUPPORT
 
 #include <windows.h>
 #include <LiteLoader/lbpch.h>

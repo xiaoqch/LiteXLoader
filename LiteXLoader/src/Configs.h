@@ -6,7 +6,7 @@
 // 版本记录
 #define LXL_VERSION_MAJOR 0
 #define LXL_VERSION_MINOR 0
-#define LXL_VERSION_BUILD 7
+#define LXL_VERSION_BUILD 8
 #define LXL_VERSION_IS_BETA true
 
 // 后端宏
@@ -22,12 +22,12 @@
 #endif
 
 // 配置文件
-#define LXL_DEF_LOAD_DIR "./plugins"
+#define LXL_PLUGINS_LOAD_DIR "./plugins"
 #define LXL_LANGPACK_DIR "./plugins/LiteXLoader/LangPack/"
 #define LXL_CONFIG_PATH "./plugins/LiteXLoader/config.ini"
 
 // 基础库 & 依赖库
-#define LXL_SCRIPT_DEPENDS_DIR "./plugins/lib"
+#define LXL_DEPENDS_DIR "./plugins/lib"
 #define LXL_SCRIPT_BASE_LIB_PATH "./plugins/LiteXLoader/BaseLib" ## LXL_PLUGINS_SUFFIX
 
 // 全局调试

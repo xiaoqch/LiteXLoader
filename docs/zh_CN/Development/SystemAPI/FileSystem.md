@@ -85,3 +85,16 @@
 - 返回值类型：`Boolean`
 
 <br>
+
+### 列出指定文件夹下的所有文件 / 文件夹
+
+`file.getFilesList(dir)`
+
+- 参数：
+  - dir: `String`  
+    文件夹路径
+
+- 返回值：文件名、文件夹名数组
+- 返回值类型：`Array<String,String,...>`
+
+<br>

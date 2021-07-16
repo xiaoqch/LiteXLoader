@@ -82,7 +82,7 @@ void LoadBaseLib()
 //预加载依赖库
 void LoadDepends()
 {
-    std::filesystem::directory_iterator deps(Raw_IniGetString(iniConf,"Main","DependsDir",LXL_SCRIPT_DEPENDS_DIR));
+    std::filesystem::directory_iterator deps(Raw_IniGetString(iniConf,"Main","DependsDir",LXL_DEPENDS_DIR));
     for (auto& i : deps) {
         if (i.is_regular_file() && i.path().extension() == LXL_PLUGINS_SUFFIX)
         {
@@ -199,7 +199,7 @@ void LoadDebugEngine()
 void LoadMain()
 {
     INFO("Loading plugins...");
-    std::filesystem::directory_iterator files(Raw_IniGetString(iniConf,"Main","PluginsDir",LXL_DEF_LOAD_DIR));
+    std::filesystem::directory_iterator files(Raw_IniGetString(iniConf,"Main","PluginsDir",LXL_PLUGINS_LOAD_DIR));
     for (auto& i : files) {
         if (i.is_regular_file() && i.path().extension() == LXL_PLUGINS_SUFFIX)
         {
