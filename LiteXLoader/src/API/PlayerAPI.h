@@ -7,15 +7,17 @@ class Player;
 class PlayerClass : public ScriptClass
 {
 private:
-    Player *player;
+    ActorUniqueID id;
+
 public:
 	explicit PlayerClass(Player *p)
-        :ScriptClass(ScriptClass::ConstructFromCpp<PlayerClass>{}),player(p)
-    {}
-    Player *get()
+        :ScriptClass(ScriptClass::ConstructFromCpp<PlayerClass>{})
     {
-        return player;
+        set(p);
     }
+
+    void set(Player* player);
+    Player* get();
 
     static Local<Object> newPlayer(Player *p);
     static Local<Object> newPlayer(WPlayer p);

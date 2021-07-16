@@ -138,9 +138,28 @@ Local<Value> Broadcast(const Arguments& args)
 }
 
 //成员函数
+void PlayerClass::set(Player* player)
+{
+    id = ((Actor*)player)->getUniqueID();
+}
+
+Player* PlayerClass::get()
+{
+    Player* player = SymCall("?getPlayer@Level@@UEBAPEAVPlayer@@UActorUniqueID@@@Z"
+        , Player*, Level*, ActorUniqueID)(mc->getLevel(), id);
+    if (player)
+        return player;
+    else
+        return nullptr;
+}
+
 Local<Value> PlayerClass::getName()
 { 
     try{
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         return String::newString(Raw_GetPlayerName(player));
     }
     CATCH("Fail in getPlayerName!")
@@ -149,6 +168,10 @@ Local<Value> PlayerClass::getName()
 Local<Value> PlayerClass::getPos()
 { 
     try{
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         return FloatPos::newPos(Raw_GetPlayerPos(player));
     }
     CATCH("Fail in getPlayerPos!")
@@ -157,6 +180,10 @@ Local<Value> PlayerClass::getPos()
 Local<Value> PlayerClass::getXuid()
 {
     try{
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         return String::newString(Raw_GetXuid(player));
     }
     CATCH("Fail in getXuid!")
@@ -165,6 +192,10 @@ Local<Value> PlayerClass::getXuid()
 Local<Value> PlayerClass::getUuid()
 {
     try{
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         return String::newString(Raw_GetUuid(player));
     }
     CATCH("Fail in getXuid!")
@@ -173,6 +204,10 @@ Local<Value> PlayerClass::getUuid()
 Local<Value> PlayerClass::getRealName()
 {
     try{
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         return String::newString(Raw_GetRealName(player));
     }
     CATCH("Fail in getRealName!")
@@ -181,6 +216,10 @@ Local<Value> PlayerClass::getRealName()
 Local<Value> PlayerClass::getIP()
 {
     try{
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         return String::newString(Raw_GetIP(player));
     }
     CATCH("Fail in GetIP!")
@@ -189,6 +228,10 @@ Local<Value> PlayerClass::getIP()
 Local<Value> PlayerClass::getPermLevel()
 {
     try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         return Number::newNumber(Raw_GetPlayerPermLevel(player));
     }
     CATCH("Fail in getPlayerPermLevel!")
@@ -197,6 +240,10 @@ Local<Value> PlayerClass::getPermLevel()
 Local<Value> PlayerClass::getGameMode()
 {
     try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         return Number::newNumber(Raw_GetGameMode(player));
     }
     CATCH("Fail in getGameMode!")
@@ -205,6 +252,10 @@ Local<Value> PlayerClass::getGameMode()
 Local<Value> PlayerClass::getSneaking()
 {
     try{
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         return Boolean::newBoolean(Raw_GetSneaking(player));
     }
     CATCH("Fail in getSneaking!")
@@ -213,6 +264,10 @@ Local<Value> PlayerClass::getSneaking()
 Local<Value> PlayerClass::getMaxHealth()
 {
     try{
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         return Number::newNumber(Raw_GetMaxHealth((Actor*)player));
     }
     CATCH("Fail in GetMaxHealth!")
@@ -221,6 +276,10 @@ Local<Value> PlayerClass::getMaxHealth()
 Local<Value> PlayerClass::getHealth()
 {
     try{
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         return Number::newNumber(Raw_GetHealth((Actor*)player));
     }
     CATCH("Fail in GetHealth!")
@@ -229,6 +288,10 @@ Local<Value> PlayerClass::getHealth()
 Local<Value> PlayerClass::getInAir()
 {
     try{
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         return Boolean::newBoolean(Raw_GetIsInAir((Actor*)player));
     }
     CATCH("Fail in GetInAir!")
@@ -239,6 +302,10 @@ Local<Value> PlayerClass::teleport(const Arguments& args)
     CHECK_ARGS_COUNT(args,1)
     
     try{
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         FloatPos *pos = FloatPos::extractPos(args[0]);
         if(!pos)
             return Local<Value>();
@@ -251,6 +318,10 @@ Local<Value> PlayerClass::teleport(const Arguments& args)
 Local<Value> PlayerClass::kill(const Arguments& args)
 {
     try{
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         return Boolean::newBoolean(Raw_KillPlayer(player));
     }
     CATCH("Fail in KillPlayer!")
@@ -259,6 +330,10 @@ Local<Value> PlayerClass::kill(const Arguments& args)
 Local<Value> PlayerClass::isOP(const Arguments& args)
 {
     try{
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         return Boolean::newBoolean(Raw_GetPlayerPermLevel(player) >= 1);
     }
     CATCH("Fail in IsOP!")
@@ -270,6 +345,10 @@ Local<Value> PlayerClass::setPermLevel(const Arguments& args)
     CHECK_ARG_TYPE(args[0],ValueKind::kNumber)
     
     try{
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         bool res = false;
         int newPerm = args[0].asNumber().toInt32();
         if(newPerm>=0 || newPerm<=4)
@@ -285,6 +364,10 @@ Local<Value> PlayerClass::setGameMode(const Arguments& args)
     CHECK_ARG_TYPE(args[0], ValueKind::kNumber)
 
     try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         bool res = false;
         int newMode = args[0].asNumber().toInt32();
         if (newMode >= 0 || newMode <= 3)
@@ -300,6 +383,10 @@ Local<Value> PlayerClass::runcmd(const Arguments& args)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
     
     try{
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         return Boolean::newBoolean(Raw_RuncmdAs(player,args[0].toStr()));
     }
     CATCH("Fail in runcmd!")
@@ -311,6 +398,10 @@ Local<Value> PlayerClass::kick(const Arguments& args)
         CHECK_ARG_TYPE(args[0],ValueKind::kString);
 
     try{
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         string msg="正在从服务器断开连接";
         if(args.size() >= 1)
             msg = args[0].toStr();
@@ -326,6 +417,10 @@ Local<Value> PlayerClass::tell(const Arguments& args)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
 
     try{
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         TextType type = TextType::RAW;
         if(args.size() >= 2 && args[1].isNumber())
         {
@@ -341,6 +436,10 @@ Local<Value> PlayerClass::tell(const Arguments& args)
 Local<Value> PlayerClass::getAllItems(const Arguments& args)
 {
     try{
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         ItemStack* hand;
         ItemStack* offHand;
         vector<ItemStack*> inventory;
@@ -394,6 +493,10 @@ Local<Value> PlayerClass::rename(const Arguments& args)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
     
     try{
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         return Boolean::newBoolean(Raw_RenamePlayer(player,args[0].toStr()));
     }
     CATCH("Fail in RenamePlayer!")
@@ -405,6 +508,10 @@ Local<Value> PlayerClass::addLevel(const Arguments& args)
     CHECK_ARG_TYPE(args[0], ValueKind::kNumber)
 
     try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         return Boolean::newBoolean(Raw_AddLevel(player, args[0].toInt()));
     }
     CATCH("Fail in addLevel!")
@@ -417,6 +524,10 @@ Local<Value> PlayerClass::transServer(const Arguments& args)
     CHECK_ARG_TYPE(args[1], ValueKind::kNumber)
 
     try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         return Boolean::newBoolean(Raw_TransServer(player, args[0].toStr(), (short) args[1].toInt()));
     }
     CATCH("Fail in transServer!")
@@ -425,6 +536,10 @@ Local<Value> PlayerClass::transServer(const Arguments& args)
 Local<Value> PlayerClass::crash(const Arguments& args)
 {
     try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         return Boolean::newBoolean(Raw_CrashPlayer(player));
     }
     CATCH("Fail in crashPlayer!")
@@ -436,6 +551,10 @@ Local<Value> PlayerClass::getScore(const Arguments& args)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
     
     try{
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         return Number::newNumber(Raw_GetScore(player,args[0].toStr()));
     }
     CATCH("Fail in getScore!")
@@ -448,6 +567,10 @@ Local<Value> PlayerClass::setScore(const Arguments& args)
     CHECK_ARG_TYPE(args[1],ValueKind::kNumber)
     
     try{
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         return Boolean::newBoolean(Raw_SetScore(player,args[0].toStr(),args[1].toInt()));
     }
     CATCH("Fail in getScore!")
@@ -460,6 +583,10 @@ Local<Value> PlayerClass::addScore(const Arguments& args)
     CHECK_ARG_TYPE(args[1],ValueKind::kNumber)
     
     try{
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         return Boolean::newBoolean(Raw_AddScore(player,args[0].toStr(),args[1].toInt()));
     }
     CATCH("Fail in addScore!")
@@ -471,6 +598,10 @@ Local<Value> PlayerClass::removeScore(const Arguments& args)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
     
     try{
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         return Boolean::newBoolean(Raw_RemoveScore(player,args[0].toStr()));
     }
     CATCH("Fail in removeScore!")
@@ -484,6 +615,10 @@ Local<Value> PlayerClass::setSidebar(const Arguments& args)
     
     try
     {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         std::vector<std::pair<std::string, int>> data;
         auto source = args[1].asObject();
         auto keys = source.getKeyNames();
@@ -500,6 +635,10 @@ Local<Value> PlayerClass::setSidebar(const Arguments& args)
 Local<Value> PlayerClass::removeSidebar(const Arguments& args)
 {
     try{
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         return Boolean::newBoolean(Raw_RemoveSidebar(player));
     }
     CATCH("Fail in removeSidebar!")
@@ -512,6 +651,10 @@ Local<Value> PlayerClass::setBossBar(const Arguments& args)
     CHECK_ARG_TYPE(args[1],ValueKind::kNumber)
     
     try{
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         int percent = args[1].toInt();
         if(percent < 0)
             percent = 0;
@@ -527,6 +670,10 @@ Local<Value> PlayerClass::setBossBar(const Arguments& args)
 Local<Value> PlayerClass::removeBossBar(const Arguments& args)
 {
     try{
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         return Boolean::newBoolean(Raw_RemoveBossBar(player));
     }
     CATCH("Fail in removeBossBar!")
@@ -544,6 +691,10 @@ Local<Value> PlayerClass::sendSimpleForm(const Arguments& args)
 
     try
     {   
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         auto textsArr = args[2].asArray();
         if (textsArr.size() == 0 || !textsArr.get(0).isString())
             return Local<Value>();
@@ -577,6 +728,10 @@ Local<Value> PlayerClass::sendModalForm(const Arguments& args)
     CHECK_ARG_TYPE(args[4],ValueKind::kFunction)
 
     try{
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         int formId = Raw_SendModalForm(player, args[0].toStr(), args[1].toStr(), args[2].toStr(), args[3].toStr());
         FormCallbackKey key{ LXL_SCRIPT_LANG_TYPE,(unsigned)formId };
         engineGlobalData->formCallbacks[key] = { EngineScope::currentEngine(),Global<Function>(args[4].asFunction()) };
@@ -593,6 +748,10 @@ Local<Value> PlayerClass::sendForm(const Arguments& args)
     CHECK_ARG_TYPE(args[1],ValueKind::kFunction)
 
     try{
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         string data;
         if(args[0].getKind() == ValueKind::kString)
         {
@@ -629,12 +788,20 @@ Local<Value> PlayerClass::setExtraData(const Arguments& args)
     CHECK_ARGS_COUNT(args,2)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
 
-    string key = args[0].toStr();
-    if(key.empty())
-        return Boolean::newBoolean(false);
+    try
+    {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        string key = args[0].toStr();
+        if(key.empty())
+            return Boolean::newBoolean(false);
     
-    ENGINE_OWN_DATA()->playerDataDB[Raw_GetPlayerName(player) + "-" + key] = args[1];
-    return Boolean::newBoolean(true);
+        ENGINE_OWN_DATA()->playerDataDB[Raw_GetPlayerName(player) + "-" + key] = args[1];
+        return Boolean::newBoolean(true);
+    }
+    CATCH("Fail in setExtraData!")
 }
 
 Local<Value> PlayerClass::getExtraData(const Arguments& args)
@@ -642,19 +809,19 @@ Local<Value> PlayerClass::getExtraData(const Arguments& args)
     CHECK_ARGS_COUNT(args,1)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
 
-    string key = args[0].toStr();
-    if(key.empty())
-        return Boolean::newBoolean(false);
-
     try
     {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        string key = args[0].toStr();
+        if (key.empty())
+            return Boolean::newBoolean(false);
+
         return ENGINE_OWN_DATA()->playerDataDB.at(Raw_GetPlayerName(player) + "-" + key).get();
     }
-    catch(...)
-    {
-        return Local<Value>();  //Null
-    }
-    
+    CATCH("Fail in getExtraData!")
 }
 
 Local<Value> PlayerClass::delExtraData(const Arguments& args)
@@ -662,10 +829,18 @@ Local<Value> PlayerClass::delExtraData(const Arguments& args)
     CHECK_ARGS_COUNT(args,1)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
 
-    string key = args[0].toStr();
-    if(key.empty())
-        return Boolean::newBoolean(false);
+    try
+    {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        string key = args[0].toStr();
+        if(key.empty())
+            return Boolean::newBoolean(false);
     
-    ENGINE_OWN_DATA()->playerDataDB.erase(Raw_GetPlayerName(player) + "-" + key);
-    return Boolean::newBoolean(true);
+        ENGINE_OWN_DATA()->playerDataDB.erase(Raw_GetPlayerName(player) + "-" + key);
+        return Boolean::newBoolean(true);
+    }
+    CATCH("Fail in delExtraData!")
 }
