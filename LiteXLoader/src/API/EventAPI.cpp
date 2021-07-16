@@ -302,14 +302,14 @@ Level* level;
 ActorUniqueID aid;
 
 // ===== onAttack =====
-THook(bool, "?attack@Player@@UEAA_NAEAVActor@@@Z",
-    Player* pl,  Actor* ac)
+THook(bool, "?attack@Player@@UEAA_NAEAVActor@@AEBW4ActorDamageCause@@@Z",
+    Player* _this, Actor* ac, int *damageCause)
 {
     IF_LISTENED(EVENT_TYPES::onAttack)
     {
-        CallEventEx(EVENT_TYPES::onAttack, PlayerClass::newPlayer(pl), EntityClass::newEntity(ac));
+        CallEventEx(EVENT_TYPES::onAttack, PlayerClass::newPlayer(_this), EntityClass::newEntity(ac));
     }
-    return original(pl, ac);
+    return original(_this, ac, damageCause);
 }
 
 // ===== onEat =====
