@@ -111,6 +111,22 @@ Local<Value> PathMove(const Arguments& args)
     CATCH("Fail in MovePath!")
 }
 
+Local<Value> GetFilesList(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+
+    try {
+        auto fileList = Raw_GetFilesList(args[0].toStr());
+
+        Local<Array> arr = Array::newArray();
+        for (auto& file : fileList)
+            arr.add(String::newString(file));
+        return arr;
+    }
+    CATCH("Fail in GetFilesList!")
+}
+
 Local<Value> FileReadFrom(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)

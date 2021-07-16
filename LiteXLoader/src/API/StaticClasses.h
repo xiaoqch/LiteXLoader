@@ -37,7 +37,8 @@ public:
     static Local<Value> setOnlinePlayer(const Arguments& args) { return SetOnlinePlayer(args); }
     static Local<Value> sendCmdOutput(const Arguments& args) { return SendCmdOutput(args); }
 };
-ClassDefine<void> McClassBuilder =
+
+static ClassDefine<void> McClassBuilder =
     defineClass("mc")
         .function("runcmd", &McClass::runcmd)
         .function("runcmdEx", &McClass::runcmdEx)
@@ -68,7 +69,7 @@ public:
     static Local<Value> cmd(const Arguments& args) { return SystemCmd(args); }
 };
 
-ClassDefine<void> SystemClassBuilder =
+static ClassDefine<void> SystemClassBuilder =
     defineClass("system")
         .function("getTimeStr", &SystemClass::getTimeStr)
         .function("getTimeObj", &SystemClass::getTimeObj)
@@ -90,9 +91,10 @@ public:
     static Local<Value> rename(const Arguments& args) { return PathRename(args); }
     static Local<Value> del(const Arguments& args) { return PathDelete(args); }
     static Local<Value> exists(const Arguments& args) { return PathExists(args); }
+    static Local<Value> getFilesList(const Arguments& args) { return GetFilesList(args); }
 };
 
-ClassDefine<void> FileClassBuilder =
+static ClassDefine<void> FileClassBuilder =
     defineClass("file")
         .function("readFrom", &FileClass::readFrom)
         .function("writeTo", &FileClass::writeTo)
@@ -104,6 +106,7 @@ ClassDefine<void> FileClassBuilder =
         .function("rename", &FileClass::rename)
         .function("delete", &FileClass::del)
         .function("exists", &FileClass::exists)
+        .function("getFilesList", &FileClass::getFilesList)
         .build();
 
 class LoggerClass
@@ -124,7 +127,7 @@ public:
     static Local<Value> setLogLevel(const Arguments& args) { return SetLogLevel(args); }
 };
 
-ClassDefine<void> LoggerClassBuilder =
+static ClassDefine<void> LoggerClassBuilder =
     defineClass("logger")
         .function("log", &LoggerClass::log)
         .function("debug", &LoggerClass::debug)
@@ -150,7 +153,7 @@ public:
     static Local<Value> toJson(const Arguments& args) { return ToJson(args); }
 };
 
-ClassDefine<void> DataClassBuilder =
+static ClassDefine<void> DataClassBuilder =
     defineClass("data")
         .function("openConfig", &DataClass::openConfig)
         .function("openDB", &DataClass::openDB)
@@ -171,7 +174,7 @@ public:
     static Local<Value> clearHistory(const Arguments& args) { return MoneyClearHistory(args); }
 };
 
-ClassDefine<void> MoneyClassBuilder =
+static ClassDefine<void> MoneyClassBuilder =
     defineClass("money")
         .function("set", &MoneyClass::set)
         .function("get", &MoneyClass::get)
@@ -189,7 +192,7 @@ public:
     static Local<Value> httpPost(const Arguments& args) { return HttpPost(args); }
 };
 
-ClassDefine<void> NetworkClassBuilder =
+static ClassDefine<void> NetworkClassBuilder =
     defineClass("network")
         .function("httpGet", &NetworkClass::httpGet)
         .function("httpPost", &NetworkClass::httpPost)
@@ -202,12 +205,14 @@ public:
     static Local<Value> listPlugins(const Arguments& args) { return LxlListPlugins(args); }
     static Local<Value> importFunc(const Arguments& args) { return LxlImport(args); }
     static Local<Value> exportFunc(const Arguments& args) { return LxlExport(args); }
+    static Local<Value> require(const Arguments& args) { return LxlRequire(args); }
 };
 
-ClassDefine<void> LxlClassBuilder =
+static ClassDefine<void> LxlClassBuilder =
     defineClass("lxl")
         .function("version", &LxlClass::version)
         .function("listPlugins", &LxlClass::listPlugins)
         .function("import", &LxlClass::importFunc)
         .function("export", &LxlClass::exportFunc)
+        .function("require", &LxlClass::require)
         .build();

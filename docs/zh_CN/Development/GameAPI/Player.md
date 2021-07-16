@@ -244,6 +244,13 @@ pl.rename("newname");
 
 ```
 
+#### 查询玩家手中的物品  
+
+`pl.getHand()`
+
+- 返回值：玩家主手中的物品对象
+- 返回值类型：`Item`
+
 #### 查询玩家所有物品  
 
 `pl.getAllItems()`

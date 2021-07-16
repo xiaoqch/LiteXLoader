@@ -111,29 +111,6 @@ ItemStack* Raw_GetHand(Player* player)
     return (ItemStack*)&(player->getSelectedItem());
 }
 
-ItemStack* Raw_GetOffHand(Player* player)
-{
-    return SymCall("?getOffhandSlot@Actor@@QEBAAEBVItemStack@@XZ", ItemStack*, Player*)(player);
-}
-
-vector<ItemStack*> Raw_GetPack(Player* player)
-{
-    vector<ItemStack*> res;
-
-    //参考Player::die
-
-    auto v9 = *((uintptr_t*)player + 401);
-	auto v13 = (*(__int64(__fastcall**)(uintptr_t))(**(uintptr_t**)(v9 + 176) + 112i64))(*(uintptr_t*)(v9 + 176));
-	for (int i = 0; i < v13; ++i)
-	{
-		auto v15 = (*(__int64(__fastcall**)(uintptr_t, uintptr_t))(**(uintptr_t**)(v9 + 176) + 40i64))(
-			*(uintptr_t*)(v9 + 176),
-			(unsigned int)i);
-		res.push_back((ItemStack*)v15);
-	}
-    return res;
-}
-
 bool Raw_GetAllItems(Player* player, ItemStack** hand, ItemStack** offHand, vector<ItemStack*>* inventory,
     vector<ItemStack*>* armor, vector<ItemStack*>* endChest)
 {

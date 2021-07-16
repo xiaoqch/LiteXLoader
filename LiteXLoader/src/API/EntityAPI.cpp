@@ -46,17 +46,23 @@ Actor* EntityClass::extractEntity(Local<Value> v)
 //成员函数
 void EntityClass::set(Actor* actor)
 {
-    id = actor->getUniqueID();
+    __try
+    {
+        id = actor->getUniqueID();
+    }
+    __except(EXCEPTION_EXECUTE_HANDLER)
+    {
+        isValid = false;
+    }
 }
 
 Actor* EntityClass::get()
 {
-    Actor *actor = SymCall("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z"
-        , Actor*, Level*, ActorUniqueID, bool)(mc->getLevel(), id, 0);
-    if (actor)
-        return actor;
-    else
+    if (!isValid)
         return nullptr;
+    else
+        return SymCall("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z"
+        , Actor*, Level*, ActorUniqueID, bool)(mc->getLevel(), id, 0);
 }
 
 Local<Value> EntityClass::getName()
