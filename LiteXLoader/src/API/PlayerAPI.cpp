@@ -43,6 +43,7 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceFunction("disconnect", &PlayerClass::kick)
         .instanceFunction("tell", &PlayerClass::tell)
         .instanceFunction("sendText", &PlayerClass::tell)
+        .instanceFunction("getHand", &PlayerClass::getHand)
         .instanceFunction("getAllItems", &PlayerClass::getAllItems)
         .instanceFunction("rename", &PlayerClass::rename)
         .instanceFunction("addLevel", &PlayerClass::addLevel)
@@ -140,17 +141,23 @@ Local<Value> Broadcast(const Arguments& args)
 //成员函数
 void PlayerClass::set(Player* player)
 {
-    id = ((Actor*)player)->getUniqueID();
+    __try
+    {
+        id = ((Actor*)player)->getUniqueID();
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    {
+        isValid = false;
+    }
 }
 
 Player* PlayerClass::get()
 {
-    Player* player = SymCall("?getPlayer@Level@@UEBAPEAVPlayer@@UActorUniqueID@@@Z"
-        , Player*, Level*, ActorUniqueID)(mc->getLevel(), id);
-    if (player)
-        return player;
-    else
+    if (!isValid)
         return nullptr;
+    else
+        return SymCall("?getPlayer@Level@@UEBAPEAVPlayer@@UActorUniqueID@@@Z"
+        , Player*, Level*, ActorUniqueID)(mc->getLevel(), id);
 }
 
 Local<Value> PlayerClass::getName()
@@ -431,6 +438,18 @@ Local<Value> PlayerClass::tell(const Arguments& args)
         return Boolean::newBoolean(Raw_Tell(player,args[0].toStr(),type));
     }
     CATCH("Fail in tell!")
+}
+
+Local<Value> PlayerClass::getHand(const Arguments& args)
+{
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        return ItemClass::newItem(Raw_GetHand(player));
+    }
+    CATCH("Fail in getHand!")
 }
 
 Local<Value> PlayerClass::getAllItems(const Arguments& args)

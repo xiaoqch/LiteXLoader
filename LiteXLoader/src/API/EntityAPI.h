@@ -8,6 +8,7 @@ class EntityClass : public ScriptClass
 {
 private:
     ActorUniqueID id;
+    bool isValid = true;
 
 public:
 	explicit EntityClass(Actor *p)

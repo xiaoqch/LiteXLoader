@@ -20,6 +20,7 @@ bool Raw_SetGameMode(Player* player, int gameMode);
 bool Raw_KickPlayer(Player* player, const std::string &msg);
 bool Raw_Tell(Player* player, const std::string &text, TextType type = TextType::RAW);
 bool Raw_Broadcast(const std::string& text, TextType type = TextType::RAW);
+ItemStack* Raw_GetHand(Player* player);
 bool Raw_GetAllItems(Player* player, ItemStack** hand, ItemStack** offHand, std::vector<ItemStack*>* inventory,
     std::vector<ItemStack*>* armor, std::vector<ItemStack*>* endChest);
 bool Raw_RenamePlayer(Player* player, const std::string &name);
