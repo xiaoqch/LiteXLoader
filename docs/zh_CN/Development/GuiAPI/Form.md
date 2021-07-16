@@ -30,10 +30,10 @@
 - 返回值类型：`Integer`
   - 如果返回值为`Null`，则代表发送失败
 
-参数`callback`的回调函数原型：`function(data)`  
+参数`callback`的回调函数原型：`function(id)`  
 
-- data : `String`    
-  表单返回的互动结果字符串
+- id : `Integer`    
+  玩家点击的表单按钮的ID
 
 <br>
 
@@ -67,10 +67,10 @@
 - 返回值类型：`Integer`
   - 如果返回值为`Null`，则代表发送失败
 
-参数`callback`的回调函数原型：`function(data)`  
-
-- data : `String`    
-  表单返回的互动结果字符串
+- 参数`callback`的回调函数原型：`function(id)`  
+  
+  - id : `Integer`    
+    玩家点击的表单按钮的ID
 
 <br>
 
@@ -91,8 +91,9 @@
 
 参数`callback`的回调函数原型：`function(data)`  
 
-- data : `String`    
-  表单返回的互动结果字符串
+- data : `Array<...>`    
+  返回的表单内容数组  
+  数组中中按表单上的控件顺序储存了每一个控件的内容
 
 <br>
 
