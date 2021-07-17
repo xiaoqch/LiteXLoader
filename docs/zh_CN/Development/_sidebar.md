@@ -33,7 +33,7 @@
   - [🔨 配置文件](zh_CN/Development/DataAPI/ConfigFile.md)
   - [📦 数据库](zh_CN/Development/DataAPI/DataBase.md)
   - [💰 经济系统](zh_CN/Development/DataAPI/Economy.md)
-  - [🏃‍♂️ 玩家绑定数据](zh_CN/Development/DataAPI/PlayerData.md)
+  - [🏃‍♂️ 玩家相关数据](zh_CN/Development/DataAPI/PlayerData.md)
   - [🧰 其他数据处理接口](zh_CN/Development/DataAPI/OtherData.md)
 - 系统调用与网络
   - [📝 文件读写](zh_CN/Development/SystemAPI/File.md)

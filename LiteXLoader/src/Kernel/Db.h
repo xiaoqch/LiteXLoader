@@ -50,3 +50,7 @@ bool Raw_ReduceMoney(xuid_t player, money_t money);
 bool Raw_TransMoney(xuid_t player1, xuid_t player2, money_t money, string const& notes);
 std::string Raw_GetMoneyHist(xuid_t player, int time);
 bool Raw_ClearMoneyHist(int time);
+
+//XuidDB
+string Raw_Xuid2Name(string xuid);
+string Raw_Name2Xuid(string name);

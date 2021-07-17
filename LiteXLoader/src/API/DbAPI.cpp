@@ -584,6 +584,30 @@ Local<Value> MoneyClearHistory(const Arguments& args)
     CATCH("Fail in MoneyClearHistory!")
 }
 
+Local<Value> Xuid2Name(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+
+    try
+    {
+        return String::newString(Raw_Xuid2Name(args[0].toStr()));
+    }
+    CATCH("Fail in Xuid2Name!")
+}
+
+Local<Value> Name2Xuid(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+
+    try
+    {
+        return String::newString(Raw_Name2Xuid(args[0].toStr()));
+    }
+    CATCH("Fail in Name2Xuid!")
+}
+
 Local<Value> ToJson(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1)

@@ -527,4 +527,3 @@ pl.removeBossBar();
 [Lua]
 
 ```
-

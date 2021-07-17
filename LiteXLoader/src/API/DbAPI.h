@@ -98,5 +98,8 @@ Local<Value> MoneyTrans(const Arguments& args);
 Local<Value> MoneyGetHintory(const Arguments& args);
 Local<Value> MoneyClearHistory(const Arguments& args);
 
+Local<Value> Xuid2Name(const Arguments& args);
+Local<Value> Name2Xuid(const Arguments& args);
+
 Local<Value> ToJson(const Arguments& args);
 Local<Value> ParseJson(const Arguments& args);

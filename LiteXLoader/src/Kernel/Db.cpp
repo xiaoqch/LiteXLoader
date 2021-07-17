@@ -359,3 +359,15 @@ bool Raw_ClearMoneyHist(int time)
         return false;
     }
 }
+
+string Raw_Xuid2Name(string xuid)
+{
+    auto name = XIDREG::id2str(stoull(xuid));
+    return name.set ? name.val() : "";
+}
+
+string Raw_Name2Xuid(string name)
+{
+    auto xuid = XIDREG::str2id(name);
+    return xuid.set ? to_string(xuid.val()) : "";
+}
