@@ -79,4 +79,7 @@ void BindAPIs(std::shared_ptr<ScriptEngine> engine)
 
     extern ClassDefine<PlayerClass> PlayerClassBuilder;
     engine->registerNativeClass<PlayerClass>(PlayerClassBuilder);
+
+    extern ClassDefine<NBTClass> NBTClassBuilder;
+    engine->registerNativeClass<NBTClass>(NBTClassBuilder);
 }
