@@ -4,25 +4,27 @@
 using namespace script;
 
 ClassDefine<NBTClass> NBTClassBuilder =
-defineClass<NBTClass>("NBT")
-.constructor(nullptr)
-.instanceFunction("readInt", &NBTClass::readInt)
-.instanceFunction("readLong", &NBTClass::readLong)
-.instanceFunction("readString", &NBTClass::readString)
-.instanceFunction("readFloat", &NBTClass::readFloat)
-.instanceFunction("readDouble", &NBTClass::readDouble)
-.instanceFunction("readBoolean", &NBTClass::readBoolean)
-.instanceFunction("readByte", &NBTClass::readByte)
-.instanceFunction("readList", &NBTClass::readList)
-.instanceFunction("readCompound", &NBTClass::read)
-.instanceFunction("getType", &NBTClass::getType)
-.build();
+    defineClass<NBTClass>("NBT")
+        .constructor(nullptr)
+        .instanceFunction("readInt", &NBTClass::readInt)
+        .instanceFunction("readLong", &NBTClass::readLong)
+        .instanceFunction("readString", &NBTClass::readString)
+        .instanceFunction("readFloat", &NBTClass::readFloat)
+        .instanceFunction("readDouble", &NBTClass::readDouble)
+        .instanceFunction("readBoolean", &NBTClass::readBoolean)
+        .instanceFunction("readByte", &NBTClass::readByte)
+        .instanceFunction("readList", &NBTClass::readList)
+        .instanceFunction("readCompound", &NBTClass::readCompound)
+        .instanceFunction("getType", &NBTClass::getType)
+        .build();
 
-NBTClass::NBTClass(Tag* p) :ScriptClass(ScriptClass::ConstructFromCpp<NBTClass>{}), nbt(p) {
+NBTClass::NBTClass(Tag* p) :ScriptClass(ScriptClass::ConstructFromCpp<NBTClass>{})
+{
 	this->nbt = p;
 }
 
-Tag* NBTClass::extractNBT(Local<Value> v) {
+Tag* NBTClass::extractNBT(Local<Value> v)
+{
     if (EngineScope::currentEngine()->isInstanceOf<NBTClass>(v))
         return EngineScope::currentEngine()->getNativeInstance<NBTClass>(v)->nbt;
     else
@@ -35,7 +37,7 @@ Local<Object> NBTClass::newNBT(Tag* p)
     return tmp->getScriptObject();
 }
 
-Local<Value> NBTClass::readInt()
+Local<Value> NBTClass::readInt(const Arguments& args)
 {
     try {
         auto v = nbt->getValue<int>();
@@ -44,7 +46,7 @@ Local<Value> NBTClass::readInt()
     CATCH("Fail in NBTreadInt!")
 }
 
-Local<Value> NBTClass::readLong()
+Local<Value> NBTClass::readLong(const Arguments& args)
 {
     try {
         auto v = nbt->getValue<__int64>();
@@ -53,7 +55,7 @@ Local<Value> NBTClass::readLong()
     CATCH("Fail in NBTreadLong!")
 }
 
-Local<Value> NBTClass::readFloat()
+Local<Value> NBTClass::readFloat(const Arguments& args)
 {
     try {
         auto v = nbt->getValue<float>();
@@ -62,7 +64,7 @@ Local<Value> NBTClass::readFloat()
     CATCH("Fail in NBTreadFloat!")
 }
 
-Local<Value> NBTClass::readDouble()
+Local<Value> NBTClass::readDouble(const Arguments& args)
 {
     try {
         auto v = nbt->getValue<double>();
@@ -71,7 +73,7 @@ Local<Value> NBTClass::readDouble()
     CATCH("Fail in NBTreadDouble!")
 }
 
-Local<Value> NBTClass::readBoolean()
+Local<Value> NBTClass::readBoolean(const Arguments& args)
 {
     try {
         auto v = nbt->getValue<char>();
@@ -80,7 +82,7 @@ Local<Value> NBTClass::readBoolean()
     CATCH("Fail in NBTreadBoolean!")
 }
 
-Local<Value> NBTClass::readString()
+Local<Value> NBTClass::readString(const Arguments& args)
 {
     try {
         auto v = nbt->getValue<string>();
@@ -89,7 +91,7 @@ Local<Value> NBTClass::readString()
     CATCH("Fail in NBTreadString!")
 }
 
-Local<Value> NBTClass::readList()
+Local<Value> NBTClass::readList(const Arguments& args)
 {
     try {
         auto v = nbt->getValue<std::vector<Tag*>>();
@@ -103,7 +105,7 @@ Local<Value> NBTClass::readList()
     CATCH("Fail in NBTreadList!")
 }
 
-Local<Value> NBTClass::readCompound()
+Local<Value> NBTClass::readCompound(const Arguments& args)
 {
     try {
         auto v = nbt->getValue<std::map<string, Tag>>();
@@ -119,7 +121,7 @@ Local<Value> NBTClass::readCompound()
 }
 
 
-Local<Value> NBTClass::readByte()
+Local<Value> NBTClass::readByte(const Arguments& args)
 {
     try {
         auto v = nbt->getValue<char>();
@@ -128,13 +130,13 @@ Local<Value> NBTClass::readByte()
     CATCH("Fail in NBTreadByte!")
 }
 
-Local<Value> NBTClass::getType()
+Local<Value> NBTClass::getType(const Arguments& args)
 {
     auto type = nbt->getTagType();
     switch (type)
     {
     case TagType::End:
-        return String::newString("end");
+        return String::newString("End");
     case TagType::Byte:
         return String::newString("Byte/Boolean");
     case TagType::Short:
@@ -155,5 +157,7 @@ Local<Value> NBTClass::getType()
         return String::newString("List");
     case TagType::Compound:
         return String::newString("Compound");
+    default:
+        return String::newString("Unknown");
     }
 }
