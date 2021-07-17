@@ -96,7 +96,7 @@ Local<Value> EntityClass::getId()
         if (!entity)
             return Local<Value>();
 
-        return Number::newNumber(Raw_GetEntityId(entity));
+        return Number::newNumber(Raw_GetEntityTypeId(entity));
     }
     CATCH("Fail in getEntityId!")
 }

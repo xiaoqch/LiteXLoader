@@ -31,7 +31,7 @@ using namespace script;
 bool ProcessDebugEngine(const string& cmd);
 bool CallPlayerCmdCallback(Player *player, const string& cmd);
 bool CallServerCmdCallback(const string& cmd);
-bool CallFormCallback(unsigned formId, const string& data);
+bool CallFormCallback(Player* player, unsigned formId, const string& data);
 
 //////////////////// Listeners ////////////////////
 
@@ -718,7 +718,7 @@ THook(void, "?handle@?$PacketHandlerDispatcherInstance@VModalFormResponsePacket@
         if (data.back() == '\n')
             data.pop_back();
           
-        CallFormCallback(formId, data);
+        CallFormCallback(p, formId, data);
         // No CallEvent here
     }
 
@@ -893,7 +893,7 @@ bool CallServerCmdCallback(const string& cmd)
     return passToOriginalCmdEvent;
 }
 
-bool CallFormCallback(unsigned formId, const string& data)
+bool CallFormCallback(Player *player, unsigned formId, const string& data)
 {
     bool passToBDS = true;
 
@@ -903,7 +903,7 @@ bool CallFormCallback(unsigned formId, const string& data)
         auto callback = engineGlobalData->formCallbacks.at(key);
 
         EngineScope scope(callback.engine);
-        auto res = callback.func.get().call({}, JsonToValue(data));
+        auto res = callback.func.get().call({}, PlayerClass::newPlayer(player), JsonToValue(data));
         if (res.isNull() || (res.isBoolean() && res.asBoolean().value() == false))
             passToBDS = false;
     }

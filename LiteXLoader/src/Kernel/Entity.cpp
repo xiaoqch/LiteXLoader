@@ -14,7 +14,7 @@ std::string Raw_GetEntityTypeName(Actor* actor)
         (actor->getEntityTypeId(), 1);
 }
 
-int Raw_GetEntityId(Actor* actor)
+int Raw_GetEntityTypeId(Actor* actor)
 {
     return actor->getEntityTypeId();
 }
