@@ -6,9 +6,8 @@ string Raw_GetBlockName(Block* block)
 {
     HashedString* hashedstr = SymCall("?getName@Block@@QEBAAEBVHashedString@@XZ",
         HashedString*, void*)(block);
-    auto blockname = ((const char*)hashedstr + 8);
     
-    return string(blockname);
+    return hashedstr->getString();
 }
 
 std::string Raw_GetBlockFullName(Block* block)

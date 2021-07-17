@@ -14,7 +14,7 @@ GlobalDataType* engineGlobalData;
 
 void InitEngineGlobalData(bool *isFirstInstance)
 {
-	HANDLE hGlobalData = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(GlobalDataType), LXL_GLOBAL_DATA_NAME);
+	HANDLE hGlobalData = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(GlobalDataType), (LXL_GLOBAL_DATA_NAME + to_wstring(GetCurrentProcessId())).c_str());
 	if (hGlobalData == NULL)
 	{
 		ERROR(_TRS("init.fileMapping.fail"));

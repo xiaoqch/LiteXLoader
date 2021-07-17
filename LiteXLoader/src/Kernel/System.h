@@ -21,6 +21,7 @@ bool Raw_HttpGetSync(const std::string& url, int *status, std::string *result);
 //获取信息
 std::string Raw_GetDateTimeStr();
 std::string Raw_RandomGuid();
+std::wstring Raw_RandomGuidW();
 
 //辅助
 unsigned int Raw_GetSystemThreadIdFromStdThread(std::thread::id id);
