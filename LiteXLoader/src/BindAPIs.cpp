@@ -6,7 +6,6 @@ using namespace script;
 #include <API/BlockAPI.h>
 #include <API/ItemAPI.h>
 #include <API/EntityAPI.h>
-#include <API/EventAPI.h>
 #include <API/NbtAPI.h>
 #include <API/GuiAPI.h>
 #include <API/DbAPI.h>
@@ -19,10 +18,6 @@ using namespace script;
 
 void BindAPIs(std::shared_ptr<ScriptEngine> engine)
 {
-    //////////////// 初始化 ////////////////
-
-    InitEventListeners();
-    
     
     //////////////// 全局函数 ////////////////
 

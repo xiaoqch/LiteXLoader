@@ -1,6 +1,7 @@
 ﻿// Ignore error below
 #include <ScriptX/ScriptX.h>
 #include <API/APIhelp.h>
+#include <API/EventAPI.h>
 #include <API/EngineGlobalData.h>
 #include <API/EngineOwnData.h>
 #include <Kernel/Db.h>
@@ -81,6 +82,9 @@ void entry()
 
     //注册后台调试
     LoadDebugEngine();
+
+    //初始化事件监听
+    InitEventListeners();
 
     //GC循环
     int gcTime = Raw_IniGetInt(iniConf, "Advanced", "GCInterval", 20);
