@@ -14,7 +14,7 @@ defineClass<NBTClass>("NBT")
 .instanceFunction("readBoolean", &NBTClass::readBoolean)
 .instanceFunction("readByte", &NBTClass::readByte)
 .instanceFunction("readList", &NBTClass::readList)
-.instanceFunction("readInt", &NBTClass::readCompound)
+.instanceFunction("readCompound", &NBTClass::read)
 .instanceFunction("getType", &NBTClass::getType)
 .build();
 
