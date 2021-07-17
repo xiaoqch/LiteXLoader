@@ -45,3 +45,5 @@ public:
 //////////////////// APIs ////////////////////
 
 Local<Value> GetBlock(const Arguments& args);
+Local<Value> SetBlock(const Arguments& args);
+Local<Value> SpawnParticle(const Arguments& args);

@@ -164,7 +164,7 @@ Local<Value> EntityClass::teleport(const Arguments& args)
 
         return Boolean::newBoolean(Raw_TeleportEntity(entity,*pos));
     }
-    CATCH("Fail in TeleportEntity!")
+    CATCH("Fail in teleportEntity!")
 }
 
 Local<Value> EntityClass::kill(const Arguments& args)
@@ -176,7 +176,7 @@ Local<Value> EntityClass::kill(const Arguments& args)
 
         return Boolean::newBoolean(Raw_KillEntity(entity));
     }
-    CATCH("Fail in KillEntity!")
+    CATCH("Fail in killEntity!")
 }
 
 Local<Value> EntityClass::toPlayer(const Arguments& args)

@@ -131,3 +131,50 @@ Local<Value> GetBlock(const Arguments& args)
     }
     CATCH("Fail in GetBlock!")
 }
+
+Local<Value> SetBlock(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 2)
+
+    try
+    {
+        IntPos* pos = IntPos::extractPos(args[0]);
+        if (!pos)
+            return Local<Value>();
+        if (pos->dim < 0)
+            return Boolean::newBoolean(false);
+
+        if (args[1].isString())
+        {
+            //方块名
+            return Boolean::newBoolean(Raw_SetBlockByName(*pos, args[1].toStr()));
+        }
+        else
+        {
+            //其他方块对象
+            Block* bl = BlockClass::extractBlock(args[1]);
+            if (!bl)
+                return Local<Value>();
+            return Boolean::newBoolean(Raw_SetBlockByBlock(*pos, bl));
+        }
+    }
+    CATCH("Fail in SetBlock!")
+}
+
+Local<Value> SpawnParticle(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 2)
+    CHECK_ARG_TYPE(args[1], ValueKind::kString)
+
+    try
+    {
+        IntPos* pos = IntPos::extractPos(args[0]);
+        if (!pos)
+            return Local<Value>();
+        if (pos->dim < 0)
+            return Boolean::newBoolean(false);
+
+        return Boolean::newBoolean(Raw_SpawnParticle(*pos, args[1].toStr()));
+    }
+    CATCH("Fail in SpawnParticle!")
+}

@@ -41,3 +41,42 @@
 这些对象属性都是只读的，无法被修改
 
 <br>
+
+
+
+### 其他方块函数
+
+下面这些API提供了与游戏中指定位置方块互动的API
+
+#### 设置指定位置的方块
+
+`mc.setBlock(pos,block)`
+
+- 参数：
+  - pos : `IntPos`  
+    目标方块位置
+  - block : `Block` 或 `String`  
+    要设置成的方块对象或者方块名
+- 返回值：是否成功设置
+- 返回值类型：`Boolean`
+
+通过此函数，将一个坐标对应的方块设置成另一个，类似于命令 /setblock
+
+如果使用方块名称，则方块名称须为标准类型名，且首字母大写，类似于 **Stone**  
+否则，函数将执行失败
+
+<br>
+
+#### 在指定位置生成粒子效果
+
+`mc.spawnParticle(pos,type)`
+
+- 参数：
+  - pos : `IntPos`  
+    目标方块位置
+  - type : `String`  
+    要生成的粒子效果名称（可查阅wiki得知）
+- 返回值：是否成功生成
+- 返回值类型：`Boolean`
+
+粒子效果名称可以查阅Minecraft Wiki得知，在传入参数的时候不要忘记命名空间前缀。类似于 `minecraft:heart_particle`
