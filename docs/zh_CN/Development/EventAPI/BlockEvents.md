@@ -44,7 +44,7 @@
 #### `"onBlockInteracted"` - 方块接受玩家互动
 
 - 监听函数原型
-  `function(player,pos)`
+  `function(player,block)`
 - 参数：
   - player : `Player`  
     与方块互动的玩家对象

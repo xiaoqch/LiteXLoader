@@ -116,7 +116,7 @@
 #### `"onAttack"` - 玩家攻击实体
 
 - 监听函数原型
-  `function(player,entiey)`
+  `function(player,entity)`
 - 参数：
   - player : `Player`  
     攻击实体的玩家对象
