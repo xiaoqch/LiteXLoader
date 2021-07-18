@@ -12,18 +12,9 @@
 #include <filesystem>
 #include <memory>
 #include <Configs.h>
+#include <Loader.h>
 #include "LoaderHelper.h"
 using namespace script;
-
-//基础库 & 依赖库
-extern std::vector<std::string> depends;
-
-//前置声明
-extern std::list<std::shared_ptr<ScriptEngine>> lxlModules;
-extern void BindAPIs(std::shared_ptr<ScriptEngine> engine);
-
-//配置文件
-extern INI_ROOT iniConf;
 
 //读取辅助函数
 std::string ReadFileFrom(const std::string &filePath)
@@ -134,4 +125,10 @@ bool LxlLoadPlugin(const std::string& filePath)
         ERROR("Fail to load " + filePath + "!");
     }
     return false;
+}
+
+//卸载插件
+bool LxlUnloadPlugin(const std::string& filePath)
+{
+    return true;
 }

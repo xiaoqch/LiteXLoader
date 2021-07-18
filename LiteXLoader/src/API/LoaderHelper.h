@@ -5,3 +5,4 @@ std::string ReadFileFrom(const std::string& filePath);
 std::shared_ptr<ScriptEngine> NewEngine();
 
 bool LxlLoadPlugin(const std::string& filePath);
+bool LxlUnloadPlugin(const std::string& filePath);

@@ -250,6 +250,9 @@
     <ClInclude Include="..\src\API\CommandAPI.h">
       <Filter>API</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Loader.h">
+      <Filter>Main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\third-party\Lua\lib\lua.lib">

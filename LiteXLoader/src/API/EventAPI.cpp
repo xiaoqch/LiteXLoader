@@ -174,6 +174,14 @@ Local<Value> Listen(const Arguments& args)
 
 void InitEventListeners()
 {
+// ===== onLeft =====
+    Event::addEventListener([](LeftEV ev)
+    {
+        IF_LISTENED(EVENT_TYPES::onLeft)
+        {
+            CallEvent(EVENT_TYPES::onLeft, PlayerClass::newPlayer(ev.Player));
+        }
+    });
 
 // ===== onChat =====
     Event::addEventListener([](ChatEV ev)
@@ -269,20 +277,6 @@ THook(bool, "?_loadNewPlayer@ServerNetworkHandler@@AEAA_NAEAVServerPlayer@@_N@Z"
     }
     return original(_this, pl, a3);
 }
-
-// ===== onLeft =====
-THook(void, "?_onPlayerLeft@ServerNetworkHandler@@AEAAXPEAVServerPlayer@@_N@Z",
-    ServerNetworkHandler* _this, Player* pl, char a3)
-{
-    IF_LISTENED(EVENT_TYPES::onLeft)
-    {
-        CallEvent(EVENT_TYPES::onLeft, PlayerClass::newPlayer(pl));
-    }
-    return original(_this, pl, a3);
-}
-
-Level* level;
-ActorUniqueID aid;
 
 // ===== onAttack =====
 THook(bool, "?attack@Player@@UEAA_NAEAVActor@@AEBW4ActorDamageCause@@@Z",
