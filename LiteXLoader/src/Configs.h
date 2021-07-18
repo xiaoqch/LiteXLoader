@@ -28,7 +28,6 @@
 
 // 基础库 & 依赖库
 #define LXL_DEPENDS_DIR "./plugins/lib"
-#define LXL_SCRIPT_BASE_LIB_PATH "./plugins/LiteXLoader/BaseLib" ## LXL_PLUGINS_SUFFIX
 
 // 全局调试
 #if defined(SCRIPTX_LANG_JAVASCRIPT)

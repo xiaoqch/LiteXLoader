@@ -25,7 +25,6 @@ INI_ROOT iniConf;
 // 日志等级
 int lxlLogLevel = 1;
 
-extern void LoadBaseLib();
 extern void LoadDepends();
 extern void LoadMain();
 extern void BindAPIs(std::shared_ptr<ScriptEngine> engine);
@@ -74,7 +73,6 @@ void entry()
     Raw_InitEcnonmicSystem();
 
     //预加载库
-    LoadBaseLib();
     LoadDepends();
     
     //加载插件

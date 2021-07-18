@@ -16,7 +16,6 @@
 using namespace script;
 
 //基础库 & 依赖库
-std::string baseLib;
 std::vector<std::string> depends;
 
 //调试引擎
@@ -64,19 +63,6 @@ std::shared_ptr<ScriptEngine> NewEngine()
 
     engine->setData(make_shared<EngineOwnData>());
     return engine;
-}
-
-//预加载基础库
-void LoadBaseLib()
-{
-    std::ifstream scriptBaseLib(LXL_SCRIPT_BASE_LIB_PATH);
-    if(scriptBaseLib)
-    {
-        baseLib = string((std::istreambuf_iterator<char>(scriptBaseLib)),
-            std::istreambuf_iterator<char>());
-        scriptBaseLib.close();
-        INFO("Script BaseLib Loaded.");
-    }
 }
 
 //预加载依赖库
@@ -130,16 +116,29 @@ bool LoadPlugin(const std::string& filePath)
             throw;
         }
 
-        //加载基础库
-        engine->eval(baseLib);
-
         //加载libs依赖库
-        for (auto& i : depends) {
-            engine->eval(i);
+        try
+        {
+            for (auto& i : depends) {
+                engine->eval(i);
+            }
+        }
+        catch (Exception& e)
+        {
+            ERROR("Fail in Loading Dependence Lib!\n");
+            throw;
         }
 
         //加载脚本
-        engine->eval(scripts);
+        try
+        {
+            engine->eval(scripts);
+        }
+        catch (Exception& e)
+        {
+            ERROR("Fail in Loading Script Plugin!\n");
+            throw;
+        }
 
         engineGlobalData->pluginsList.push_back(pluginName);
         return true;
@@ -186,12 +185,17 @@ void LoadDebugEngine()
         throw;
     }
 
-    //加载基础库
-    debugEngine->eval(baseLib);
-
     //加载libs依赖库
-    for (auto& i : depends) {
-        debugEngine->eval(i);
+    try
+    {
+        for (auto& i : depends) {
+            debugEngine->eval(i);
+        }
+    }
+    catch (Exception& e)
+    {
+        ERROR("Fail in Loading Dependence Lib!\n");
+        throw;
     }
 }
 
