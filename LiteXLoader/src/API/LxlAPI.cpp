@@ -29,7 +29,8 @@ Local<Value> LxlListPlugins(const Arguments& args)
     try
     {
         Local<Array> plugins = Array::newArray();
-        for(auto pluginName : engineGlobalData->pluginsList)
+        auto list = LxlListAllPlugins();
+        for(auto pluginName : list)
         {
             plugins.add(String::newString(pluginName));
         }

@@ -17,7 +17,7 @@ using namespace script;
 #include <API/ServerAPI.h>
 #include <API/StaticClasses.h>
 
-void BindAPIs(std::shared_ptr<ScriptEngine> engine)
+void BindAPIs(ScriptEngine *engine)
 {
     
     //////////////// 全局函数 ////////////////

@@ -19,12 +19,12 @@ using namespace script;
 std::vector<std::string> depends;
 
 //调试引擎
-std::shared_ptr<ScriptEngine> debugEngine;
+ScriptEngine *debugEngine;
 bool globalDebug = false;
 
 //前置声明
-extern std::list<std::shared_ptr<ScriptEngine>> lxlModules;
-extern void BindAPIs(std::shared_ptr<ScriptEngine> engine);
+extern std::vector<ScriptEngine*> lxlModules;
+extern void BindAPIs(ScriptEngine *engine);
 
 //配置文件
 extern INI_ROOT iniConf;
@@ -60,7 +60,7 @@ void LoadDebugEngine()
     //启动引擎
     debugEngine = NewEngine();
     lxlModules.push_back(debugEngine);
-    EngineScope enter(debugEngine.get());
+    EngineScope enter(debugEngine);
 
     //setData
     ENGINE_OWN_DATA()->pluginName = "__LXL_DEBUG_ENGINE__";
@@ -93,13 +93,14 @@ void LoadDebugEngine()
 void LoadMain()
 {
     INFO("Loading plugins...");
+    int count = 0;
     std::filesystem::directory_iterator files(Raw_IniGetString(iniConf, "Main", "PluginsDir", LXL_PLUGINS_LOAD_DIR));
     for (auto& i : files) {
         if (i.is_regular_file() && i.path().extension() == LXL_PLUGINS_SUFFIX)
         {
             if (LxlLoadPlugin(i.path().string()))
-                INFO(i.path().filename().string() + " loaded.");
-
+                ++count;
         }
     }
+    INFO(std::to_string(count) + " plugins loaded in all.");
 }

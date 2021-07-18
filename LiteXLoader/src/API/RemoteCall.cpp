@@ -147,6 +147,25 @@ Local<Value> MakeRemoteCall(ExportedFuncData* data, const string& funcName, cons
     return res;
 }
 
+bool LxlExportFunc(ScriptEngine *engine, const Local<Function> &func, const string &exportName)
+{
+    ExportedFuncData* funcData = &(engineGlobalData->exportedFuncs)[exportName];
+    funcData->engine = engine;
+    funcData->func = Global<Function>(func);
+    funcData->fromEngineType = LXL_SCRIPT_LANG_TYPE;
+    return true;
+}
+
+bool LxlRemoveAllExportedFuncs(ScriptEngine* engine)
+{
+    for (auto exp = engineGlobalData->exportedFuncs.begin(); exp != engineGlobalData->exportedFuncs.end(); ++exp)
+    {
+        if (exp->second.engine == engine)
+            engineGlobalData->exportedFuncs.erase(exp);
+    }
+    return true;
+}
+
 
 //////////////////// APIs ////////////////////
 
@@ -157,12 +176,7 @@ Local<Value> LxlExport(const Arguments& args)
     CHECK_ARG_TYPE(args[1], ValueKind::kString)
 
     try {
-        ExportedFuncData* funcData = &(engineGlobalData->exportedFuncs)[args[1].toStr()];
-        funcData->engine = EngineScope::currentEngine();
-        funcData->func = Global<Function>(args[0].asFunction());
-        funcData->fromEngineType = LXL_SCRIPT_LANG_TYPE;
-
-        return Boolean::newBoolean(true);
+        return Boolean::newBoolean(LxlExportFunc(EngineScope::currentEngine(), args[0].asFunction(), args[1].toStr()));
     }
     CATCH("Fail in LxlExport!")
 }

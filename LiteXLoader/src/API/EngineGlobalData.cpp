@@ -52,3 +52,20 @@ void InitEngineGlobalData(bool *isFirstInstance)
 
 	InitRemoteCallSystem();
 }
+
+void AddToGlobalPluginsList(const std::string& name)
+{
+	engineGlobalData->pluginsList.push_back(name);
+}
+
+void RemoveFromGlobalPluginsList(const std::string& name)
+{
+	for (int i = 0; i < engineGlobalData->pluginsList.size(); ++i)
+	{
+		if (engineGlobalData->pluginsList[i] == name)
+		{
+			engineGlobalData->pluginsList.erase(engineGlobalData->pluginsList.begin() + i);
+			break;
+		}
+	}
+}

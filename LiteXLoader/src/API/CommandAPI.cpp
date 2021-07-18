@@ -171,7 +171,7 @@ bool ProcessDebugEngine(const string& cmd)
 {
 #define OUTPUT_DEBUG_SIGN() std::cout << "LiteXLoader-" << LXL_SCRIPT_LANG_TYPE << ">" << std::flush
     extern bool globalDebug;
-    extern std::shared_ptr<ScriptEngine> debugEngine;
+    extern ScriptEngine *debugEngine;
 
     if (cmd == LXL_DEBUG_CMD)
     {
@@ -192,7 +192,7 @@ bool ProcessDebugEngine(const string& cmd)
     }
     if (globalDebug)
     {
-        EngineScope enter(debugEngine.get());
+        EngineScope enter(debugEngine);
         try
         {
             if (cmd == "stop")
@@ -231,7 +231,7 @@ bool CallPlayerCmdCallback(Player* player, const string& cmd)
 
     for (auto engine : lxlModules)
     {
-        EngineScope enter(engine.get());
+        EngineScope enter(engine);
         auto funcs = &(ENGINE_OWN_DATA()->playerCmdCallbacks);
         if (!funcs->empty())
             for (auto iter = funcs->begin(); iter != funcs->end(); ++iter)
@@ -266,7 +266,7 @@ bool CallServerCmdCallback(const string& cmd)
 
     for (auto engine : lxlModules)
     {
-        EngineScope enter(engine.get());
+        EngineScope enter(engine);
         auto funcs = &(ENGINE_OWN_DATA()->consoleCmdCallbacks);
         if (!funcs->empty())
             for (auto iter = funcs->begin(); iter != funcs->end(); ++iter)

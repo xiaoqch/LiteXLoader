@@ -8,7 +8,7 @@ using namespace script;
 void InitEngineGlobalData(bool* isFirstInstance);
 
 //主引擎表
-extern std::list<std::shared_ptr<ScriptEngine>> lxlModules;
+extern std::vector<ScriptEngine*> lxlModules;
 
 //导出函数表
 struct ExportedFuncData
@@ -69,3 +69,6 @@ extern std::vector<RegCmdQueue> toRegCmdQueue;
 
 //全局共享数据
 extern GlobalDataType* engineGlobalData;
+
+void AddToGlobalPluginsList(const std::string& name);
+void RemoveFromGlobalPluginsList(const std::string& name);

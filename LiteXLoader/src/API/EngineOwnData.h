@@ -50,5 +50,5 @@ struct EngineOwnData
 };
 
 // 引擎附加数据
-#define ENGINE_GET_DATA(e) (std::static_pointer_cast<EngineOwnData>(e->getData()))
+#define ENGINE_GET_DATA(e) (std::static_pointer_cast<EngineOwnData>((e)->getData()))
 #define ENGINE_OWN_DATA() (std::static_pointer_cast<EngineOwnData>(EngineScope::currentEngine()->getData()))

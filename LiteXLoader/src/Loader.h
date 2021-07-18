@@ -8,5 +8,5 @@ using namespace script;
 extern std::vector<std::string> depends;
 
 //前置声明
-extern std::list<std::shared_ptr<ScriptEngine>> lxlModules;
-extern void BindAPIs(std::shared_ptr<ScriptEngine> engine);
+extern std::vector<ScriptEngine*> lxlModules;
+extern void BindAPIs(ScriptEngine *engine);

@@ -154,17 +154,42 @@ Local<Value> Listen(const Arguments& args)
     CHECK_ARG_TYPE(args[1],ValueKind::kFunction)
 
     try{
-        int eventId = int(EventsMap.at(args[0].asString().toString()));
-        Global<Function> func{args[1].asFunction()};
-        listenerList[eventId].push_back({EngineScope::currentEngine(),func});
-        return Boolean::newBoolean(true);
+        return Boolean::newBoolean(LxlAddEventListener(EngineScope::currentEngine(),args[0].toStr(),args[1].asFunction()));
     }
-    catch(const std::logic_error& e)
+    CATCH("Fail to Bind Listener!")
+}
+
+
+//////////////////// Funcs ////////////////////
+
+bool LxlAddEventListener(ScriptEngine *engine, const string &eventName, const Local<Function> &func)
+{
+    try {
+        int eventId = int(EventsMap.at(eventName));
+        listenerList[eventId].push_back({ engine,Global<Function>(func) });
+        return true;
+    }
+    catch (const std::logic_error& e)
     {
-        ERROR("Event \""+ args[0].asString().toString() +"\" No Found!\n");
-        return Boolean::newBoolean(false);
+        ERROR("Event \"" + eventName + "\" No Found!\n");
+        return false;
     }
-    CATCH("Fail to bind listener!")
+}
+
+bool LxlRemoveAllEventListener(ScriptEngine* engine)
+{
+    for (auto& listeners : listenerList)
+    {
+        for (int i = 0; i < listeners.size(); ++i)
+        {
+            if (listeners[i].engine == engine)
+            {
+                listeners.erase(listeners.begin() + i);
+                --i;
+            }
+        }
+    }
+    return true;
 }
 
 

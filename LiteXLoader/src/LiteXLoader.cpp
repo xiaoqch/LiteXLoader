@@ -19,7 +19,7 @@ using namespace script;
 using namespace std;
 
 //主引擎表
-std::list<std::shared_ptr<ScriptEngine>> lxlModules;
+std::vector<ScriptEngine*> lxlModules;
 // 配置文件
 INI_ROOT iniConf;
 // 日志等级
@@ -27,7 +27,7 @@ int lxlLogLevel = 1;
 
 extern void LoadDepends();
 extern void LoadMain();
-extern void BindAPIs(std::shared_ptr<ScriptEngine> engine);
+extern void BindAPIs(ScriptEngine *engine);
 extern void LoadDebugEngine();
 
 void Welcome()
@@ -90,7 +90,7 @@ void entry()
         std::this_thread::sleep_for(std::chrono::seconds(gcTime));
         for (auto engine : lxlModules)
         {
-            EngineScope enter(engine.get());
+            EngineScope enter(engine);
             engine->messageQueue()->loopQueue(utils::MessageQueue::LoopType::kLoopOnce);
         }
     }).detach();    //############## loadPlugin加锁 ################

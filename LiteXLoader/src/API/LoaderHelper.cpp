@@ -2,6 +2,7 @@
 #include <API/APIhelp.h>
 #include <API/EngineGlobalData.h>
 #include <API/EngineOwnData.h>
+#include <API/EventAPI.h>
 #include <Kernel/Db.h>
 #include <list>
 #include <string>
@@ -14,7 +15,9 @@
 #include <Configs.h>
 #include <Loader.h>
 #include "LoaderHelper.h"
+#include "RemoteCall.h"
 using namespace script;
+using namespace std;
 
 //读取辅助函数
 std::string ReadFileFrom(const std::string &filePath)
@@ -32,20 +35,14 @@ std::string ReadFileFrom(const std::string &filePath)
 }
 
 //创建新引擎
-std::shared_ptr<ScriptEngine> NewEngine()
+ScriptEngine* NewEngine()
 {
-    std::shared_ptr<ScriptEngine> engine;
+    ScriptEngine* engine;
 
 #if !defined(SCRIPTX_BACKEND_WEBASSEMBLY)
-    engine = std::shared_ptr<ScriptEngine>{
-        new ScriptEngineImpl(),
-            ScriptEngine::Deleter()
-    };
+    engine = new ScriptEngineImpl();
 #else
-    engine = std::shared_ptr<ScriptEngine>{
-        ScriptEngineImpl::instance(),
-            [](void*) {}
-    };
+    engine = ScriptEngineImpl::instance();
 #endif
 
     engine->setData(make_shared<EngineOwnData>());
@@ -60,9 +57,9 @@ bool LxlLoadPlugin(const std::string& filePath)
         std::string scripts = ReadFileFrom(filePath);
 
         //启动引擎
-        std::shared_ptr<ScriptEngine> engine = NewEngine();
+        ScriptEngine* engine = NewEngine();
         lxlModules.push_back(engine);
-        EngineScope enter(engine.get());
+        EngineScope enter(engine);
 
         //setData
         string pluginName = std::filesystem::path(filePath).filename().u8string();
@@ -103,17 +100,24 @@ bool LxlLoadPlugin(const std::string& filePath)
             throw;
         }
 
-        engineGlobalData->pluginsList.push_back(pluginName);
+        AddToGlobalPluginsList(pluginName);
+        INFO(pluginName + " loaded.");
         return true;
     }
     catch (const Exception& e)
     {
-        EngineScope enter(lxlModules.back().get());
+        ScriptEngine* deleteEngine = lxlModules.back();
+        EngineScope enter(deleteEngine);
+
+        deleteEngine->getData().reset();
         ERROR("Fail to load " + filePath + "!\n");
         ERRPRINT(e);
         ExitEngineScope exit;
-        //############# Js delete v8崩溃
-        //lxlModules.pop_back();
+
+        lxlModules.pop_back();
+
+        //############# Js delete v8崩溃 #############
+        //deleteEngine->destroy();
     }
     catch (const std::exception& e)
     {
@@ -128,7 +132,49 @@ bool LxlLoadPlugin(const std::string& filePath)
 }
 
 //卸载插件
-bool LxlUnloadPlugin(const std::string& filePath)
+string LxlUnloadPlugin(const std::string& name)
 {
-    return true;
+    string unloadedPath = "";
+    for (int i = 0; i < lxlModules.size(); ++i)
+    {
+        ScriptEngine* engine = lxlModules[i];
+        if (ENGINE_GET_DATA(engine)->pluginName == name)
+        {
+            unloadedPath = ENGINE_GET_DATA(engine)->pluginPath;
+
+            RemoveFromGlobalPluginsList(name);
+            LxlRemoveAllEventListener(engine);
+            LxlRemoveAllExportedFuncs(engine);
+            engine->getData().reset();
+            lxlModules.erase(lxlModules.begin() + i);
+            //############# Js delete v8崩溃 #############
+            //engine->destory();
+
+            INFO("Plugin " + name + " unloaded.")
+            break;
+        }
+    }
+    return unloadedPath;
+}
+
+//重载插件
+bool LxlReloadPlugin(const std::string& name)
+{
+    string unloadedPath = LxlUnloadPlugin(name);
+    if (unloadedPath.empty())
+        return false;
+    return LxlLoadPlugin(unloadedPath);
+}
+
+//重载全部插件
+bool LxlReloadAllPlugin(const std::string& name)
+{
+    auto pluginsList = lxlModules;
+    for (auto& engine : lxlModules)
+        LxlReloadPlugin(ENGINE_GET_DATA(engine)->pluginName);
+}
+
+vector<string> LxlListAllPlugins()
+{
+    return engineGlobalData->pluginsList;
 }
