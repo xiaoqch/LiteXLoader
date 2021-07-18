@@ -107,7 +107,7 @@ static std::vector<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)]
         catch(const Exception& e) \
         { \
             ERROR("Event Callback Failed!"); \
-            ERRPRINT(e.message()); \
+            ERRPRINT(e); \
         } \
     }
 
@@ -125,7 +125,7 @@ static std::vector<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)]
         catch(const Exception& e) \
         { \
             ERROR("Event Callback Failed!"); \
-            ERRPRINT(e.message()); \
+            ERRPRINT(e); \
         } \
     }\
     if(!passToBDS) { return false; }
@@ -144,7 +144,7 @@ static std::vector<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)]
         catch(const Exception& e) \
         { \
             ERROR("Event Callback Failed!"); \
-            ERRPRINT(e.message()); \
+            ERRPRINT(e); \
         } \
     }\
     if(!passToBDS) { return RETURN_VALUE; }
