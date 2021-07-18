@@ -116,9 +116,6 @@
     <ClCompile Include="..\src\LiteXLoader.cpp">
       <Filter>Main</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Loader.cpp">
-      <Filter>Main</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\Kernel\SymbolHelper.cpp">
       <Filter>Kernel</Filter>
     </ClCompile>
@@ -136,6 +133,9 @@
     </ClCompile>
     <ClCompile Include="..\src\API\CommandAPI.cpp">
       <Filter>API</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Loader.cpp">
+      <Filter>Main</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -240,9 +240,6 @@
     </ClInclude>
     <ClInclude Include="..\src\API\RemoteCall.h">
       <Filter>API</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Loader.h">
-      <Filter>Main</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Kernel\i18n.h">
       <Filter>Kernel</Filter>

@@ -27,6 +27,7 @@ struct EngineOwnData
 {
     //BaseInfo
     std::string pluginName = "";
+    std::string pluginPath = "";
 
     //BaseAPI
     std::map<std::string, Global<Function> ,EngineOwnData_MapCmp> playerCmdCallbacks;
