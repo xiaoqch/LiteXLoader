@@ -87,7 +87,7 @@ void entry()
     InitEventListeners();
 
     //GC循环
-    int gcTime = Raw_IniGetInt(iniConf, "Advanced", "GCInterval", 20);
+    int gcTime = Raw_IniGetInt(iniConf, "Advanced", "GCInterval", 10);
     std::thread([gcTime]() {
         std::this_thread::sleep_for(std::chrono::seconds(gcTime));
         for (auto engine : lxlModules)
