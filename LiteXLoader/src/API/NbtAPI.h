@@ -2,7 +2,7 @@
 #include <ScriptX/ScriptX.h>
 using namespace script;
 
-extern class Tag;
+extern struct Tag;
 class NBTClass : public ScriptClass
 {
 private:
@@ -22,5 +22,19 @@ public:
     Local<Value> readList(const Arguments& args);
     Local<Value> readCompound(const Arguments& args);
     Local<Value> readByte(const Arguments& args);
+
+    Local<Value> writeInt(const Arguments& args);
+    Local<Value> writeLong(const Arguments& args);
+    Local<Value> writeFloat(const Arguments& args);
+    Local<Value> writeBoolean(const Arguments& args);
+    Local<Value> writeString(const Arguments& args);
+    Local<Value> writeByte(const Arguments& args);
+    Local<Value> writeList(const Arguments& args);
+    Local<Value> writeCompound(const Arguments& args);
+    Local<Value> addValueToList(const Arguments& args);
+
+    Local<Value> createTag(const Arguments& args);
     Local<Value> getType(const Arguments& args);
 };
+
+

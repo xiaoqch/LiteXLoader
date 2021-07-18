@@ -1,6 +1,7 @@
 ﻿#include "APIhelp.h"
 #include "NbtAPI.h"
 #include <Kernel/NBT.h>
+#include <vector>
 using namespace script;
 
 ClassDefine<NBTClass> NBTClassBuilder =
@@ -15,8 +16,29 @@ ClassDefine<NBTClass> NBTClassBuilder =
         .instanceFunction("readByte", &NBTClass::readByte)
         .instanceFunction("readList", &NBTClass::readList)
         .instanceFunction("readCompound", &NBTClass::readCompound)
+        .instanceFunction("writeInt",&NBTClass::writeInt)
+        .instanceFunction("writeInt", &NBTClass::writeInt)
+        .instanceFunction("writeLong", &NBTClass::writeLong)
+        .instanceFunction("writeString", &NBTClass::writeString)
+        .instanceFunction("writeFloat", &NBTClass::writeFloat)
+        .instanceFunction("writeBoolean", &NBTClass::writeBoolean)
+        .instanceFunction("writeByte", &NBTClass::writeByte)
+        .instanceFunction("writeList", &NBTClass::writeList)
+        .instanceFunction("writeCompound", &NBTClass::writeCompound)
         .instanceFunction("getType", &NBTClass::getType)
+        .instanceFunction("createNBT", &NBTClass::createTag)
         .build();
+
+
+constexpr unsigned int H(const char* str)
+{
+    unsigned int hash = 5381;
+    while (*str) {
+        hash = ((hash << 5) + hash) + (*str++); /* times 33 */
+    }
+    hash &= ~(1 << 31); /* strip the highest bit */
+    return hash;
+}
 
 NBTClass::NBTClass(Tag* p) :ScriptClass(ScriptClass::ConstructFromCpp<NBTClass>{})
 {
@@ -130,6 +152,97 @@ Local<Value> NBTClass::readByte(const Arguments& args)
     CATCH("Fail in NBTreadByte!")
 }
 
+Local<Value> NBTClass::writeInt(const Arguments& args) {
+    CHECK_ARGS_COUNT(args, 2)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARG_TYPE(args[1], ValueKind::kNumber)
+    auto k = args[0].asString().toString();
+    int v = args[1].asNumber().toInt32();
+    nbt->put(k, v);
+}
+
+Local<Value> NBTClass::writeLong(const Arguments& args) {
+    CHECK_ARGS_COUNT(args, 2)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARG_TYPE(args[1], ValueKind::kNumber)
+    auto k = args[0].asString().toString();
+    __int64 v = args[1].asNumber().toInt64();
+    nbt->put(k, v);
+}
+
+Local<Value> NBTClass::writeFloat(const Arguments& args) {
+    CHECK_ARGS_COUNT(args, 2)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARG_TYPE(args[1], ValueKind::kNumber)
+    auto k = args[0].asString().toString();
+    auto v = args[1].asNumber().toFloat();
+    nbt->put(k, v);
+}
+
+Local<Value> NBTClass::writeBoolean(const Arguments& args) {
+    CHECK_ARGS_COUNT(args, 2)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARG_TYPE(args[1], ValueKind::kBoolean)
+    auto k = args[0].asString().toString();
+    auto v = args[1].asBoolean().value();
+    nbt->put(k, (char)v);
+}
+
+Local<Value> NBTClass::writeByte(const Arguments& args) {
+    CHECK_ARGS_COUNT(args, 2)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARG_TYPE(args[1], ValueKind::kNumber)
+    auto k = args[0].asString().toString();
+    auto v = args[1].asNumber().toInt32();
+    nbt->put(k, (char)v);
+}
+
+Local<Value> NBTClass::writeString(const Arguments& args) {
+    CHECK_ARGS_COUNT(args, 2)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARG_TYPE(args[1], ValueKind::kString)
+    auto k = args[0].asString().toString();
+    auto v = args[1].asString().toString();
+    nbt->put(k, v);
+}
+
+Local<Value> NBTClass::writeList(const Arguments& args) {
+    CHECK_ARGS_COUNT(args, 2)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARG_TYPE(args[1], ValueKind::kArray)
+    auto k = args[0].asString().toString();
+    auto arr = args[1].asArray();
+    auto v = Tag::createTag(TagType::List);
+    for (int i = 0; i < arr.size(); ++i)
+    {
+        auto nbt = NBTClass::extractNBT(arr.get(i));
+        v->addValue2List(nbt);
+    }
+    nbt->put(k, v);
+}
+
+Local<Value> NBTClass::writeCompound(const Arguments& args) {
+    CHECK_ARGS_COUNT(args, 2)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARG_TYPE(args[1], ValueKind::kObject)
+    auto k = args[0].asString().toString();
+    auto tmp = args[1].asObject();
+    auto keys = tmp.getKeys();
+    auto v = Tag::createTag(TagType::Compound);
+    for (auto& i : keys) {
+        auto nbt = NBTClass::extractNBT(tmp.get(i));
+        v->put(i.toString(), nbt);
+    }
+    nbt->put(k, &v);
+}
+
+Local<Value> NBTClass::addValueToList(const Arguments& args) {
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kObject)
+    auto tag = NBTClass::extractNBT(args[1].asValue());
+    nbt->addValue2List(tag);
+}
+
 Local<Value> NBTClass::getType(const Arguments& args)
 {
     auto type = nbt->getTagType();
@@ -157,6 +270,62 @@ Local<Value> NBTClass::getType(const Arguments& args)
         return String::newString("List");
     case TagType::Compound:
         return String::newString("Compound");
+    default:
+        return String::newString("Unknown");
+    }
+}
+
+Local<Value> NBTClass::createTag(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    auto type = args[0].asString().toString();
+    switch (H(type.c_str()))
+    {
+    case H("End"): {
+        auto tag = Tag::createTag(TagType::End);
+        return NBTClass::newNBT(tag);
+    }
+    case H("Byte"): {
+        auto tag = Tag::createTag(TagType::Byte);
+        return NBTClass::newNBT(tag);
+    }
+    case H("Short"): {
+        auto tag = Tag::createTag(TagType::Short);
+        return NBTClass::newNBT(tag);
+    }
+    case H("Int"): {
+        auto tag = Tag::createTag(TagType::Int);
+        return NBTClass::newNBT(tag);
+    }
+    case H("Long"): {
+        auto tag = Tag::createTag(TagType::Int64);
+        return NBTClass::newNBT(tag);
+    }
+    case H("Float"): {
+        auto tag = Tag::createTag(TagType::Float);
+        return NBTClass::newNBT(tag);
+    }
+    case H("Double"): {
+        auto tag = Tag::createTag(TagType::Double);
+        return NBTClass::newNBT(tag);
+    }
+    case H("String"): {
+        auto tag = Tag::createTag(TagType::String);
+        return NBTClass::newNBT(tag);
+    }
+    case H("ByteArray"): {
+        auto tag = Tag::createTag(TagType::ByteArray);
+        return NBTClass::newNBT(tag);
+    }
+    case H("List"): {
+        auto tag = Tag::createTag(TagType::List);
+        return NBTClass::newNBT(tag);
+    }
+    case H("Compound"): {
+        auto tag = Tag::createTag(TagType::Compound);
+        return NBTClass::newNBT(tag);
+    }
     default:
         return String::newString("Unknown");
     }
