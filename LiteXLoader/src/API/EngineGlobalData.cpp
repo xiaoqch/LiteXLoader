@@ -12,6 +12,9 @@ using namespace script;
 //全局共享数据
 GlobalDataType* engineGlobalData;
 
+//命令延迟注册队列
+std::vector<RegCmdQueue> toRegCmdQueue;
+
 void InitEngineGlobalData(bool *isFirstInstance)
 {
 	HANDLE hGlobalData = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(GlobalDataType), (LXL_GLOBAL_DATA_NAME + to_wstring(GetCurrentProcessId())).c_str());

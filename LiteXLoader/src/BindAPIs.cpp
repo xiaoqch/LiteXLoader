@@ -4,6 +4,7 @@
 using namespace script;
 #include <API/BaseAPI.h>
 #include <API/BlockAPI.h>
+#include <API/CommandAPI.h>
 #include <API/ItemAPI.h>
 #include <API/EntityAPI.h>
 #include <API/NbtAPI.h>

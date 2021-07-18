@@ -15,23 +15,18 @@
 #include <Kernel/Player.h>
 #include <Kernel/SymbolHelper.h>
 #include <Kernel/Packet.h>
+#include <Kernel/Global.h>
 #include "EngineOwnData.h"
 #include "EngineGlobalData.h"
 #include "APIhelp.h"
 #include "BlockAPI.h"
+#include "CommandAPI.h"
 #include "ItemAPI.h"
 #include "EntityAPI.h"
 #include "PlayerAPI.h"
 #include <Configs.h>
 using namespace std;
 using namespace script;
-
-//////////////////// Helper Funcs ////////////////////
-
-bool ProcessDebugEngine(const string& cmd);
-bool CallPlayerCmdCallback(Player *player, const string& cmd);
-bool CallServerCmdCallback(const string& cmd);
-bool CallFormCallback(Player* player, unsigned formId, const string& data);
 
 //////////////////// Listeners ////////////////////
 
@@ -172,13 +167,6 @@ Local<Value> Listen(const Arguments& args)
     CATCH("Fail to bind listener!")
 }
 
-//注册后台调试命令
-void RegisterBuiltinCmds()
-{
-    Raw_RegisterCmd(LXL_DEBUG_CMD, string(LXL_SCRIPT_LANG_TYPE) + " Engine Real-time Debugging", 4);
-    DEBUG("Builtin Cmds Registered.");
-}
-
 
 //////////////////// Hook ////////////////////
 
@@ -244,16 +232,11 @@ void InitEventListeners()
 // For RegisterCmd...
     Event::addEventListener([](RegCmdEV ev)
     {
-        extern CommandRegistry* CmdReg;
         CmdReg = ev.CMDRg;
+        isCmdRegisterEnabled = true;
 
-        //注册队列中的命令
-        extern std::vector<tuple<string, string, int>> toRegCmdQueue;
-        for(auto & cmdData : toRegCmdQueue)
-        {
-            Raw_RegisterCmd(std::get<0>(cmdData), std::get<1>(cmdData), std::get<2>(cmdData));
-        }
-        toRegCmdQueue.clear();
+        //处理延迟注册
+        ProcessRegCmdQueue();
     });
 
 
@@ -676,6 +659,7 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
         // Server Command
         if (!ProcessDebugEngine(cmd))
             return false;
+        ProcessStopServer(cmd);
 
         bool callbackRes = CallServerCmdCallback(cmd);
         IF_LISTENED(EVENT_TYPES::onConsoleCmd)
@@ -720,183 +704,4 @@ THook(ostream&, "??$_Insert_string@DU?$char_traits@D@std@@_K@std@@YAAEAV?$basic_
         CallEventRtn(EVENT_TYPES::onConsoleOutput, _this, String::newString(string(str)));
     }
     return original(_this, str, size);
-}
-
-
-//////////////////// Helper Funcs ////////////////////
-
-vector<string> SplitCmdParas(const string& paras)
-{
-    vector<string> res;
-    string now, strInQuote = "";
-    istringstream strIn(paras);
-    while (strIn >> now)
-    {
-        if (!strInQuote.empty())
-        {
-            strInQuote = strInQuote + " " + now;
-            if (now.back() == '\"')
-            {
-                strInQuote.pop_back();
-                res.push_back(strInQuote.erase(0, 1));
-                strInQuote = "";
-            }
-        }
-        else
-        {
-            if (now.front() == '\"')
-                strInQuote = now;
-            else
-                res.push_back(now);
-        }
-    }
-    if (!strInQuote.empty())
-    {
-        istringstream leftIn(strInQuote);
-        while (leftIn >> now)
-            res.push_back(now);
-    }
-    return res;
-}
-
-bool ProcessDebugEngine(const string& cmd)
-{
-    #define OUTPUT_DEBUG_SIGN() std::cout << "LiteXLoader-" << LXL_SCRIPT_LANG_TYPE << ">" << std::flush
-    extern bool globalDebug;
-    extern std::shared_ptr<ScriptEngine> debugEngine;
-
-    if (cmd == LXL_DEBUG_CMD)
-    {
-        if (globalDebug)
-        {   
-            //EndDebug
-            INFO("Debug mode ended");
-            globalDebug = false;
-        }
-        else
-        {   
-            //StartDebug
-            INFO("Debug mode begin");
-            globalDebug = true;
-            OUTPUT_DEBUG_SIGN();
-        }
-        return false;
-    }
-    if (globalDebug)
-    {
-        EngineScope enter(debugEngine.get());
-        try
-        {
-            if (cmd == "stop")
-            {
-                WARN("请先退出Debug实时调试模式再使用stop！");
-            }
-            else
-            {
-                auto result = debugEngine->eval(cmd);
-                PrintValue(std::cout, result);
-                cout << endl;
-                OUTPUT_DEBUG_SIGN();
-            }
-        }
-        catch (Exception& e)
-        {
-            ERRPRINT(e);
-            OUTPUT_DEBUG_SIGN();
-        }
-        return false;
-    }
-    return true;
-}
-
-bool CallPlayerCmdCallback(Player* player, const string& cmd)
-{
-    bool passToOriginalCmdEvent = true;
-
-    for (auto engine : lxlModules)
-    {
-        EngineScope enter(engine.get());
-        auto funcs = &(ENGINE_OWN_DATA()->playerCmdCallbacks);
-        if (!funcs->empty())
-            for (auto iter = funcs->begin(); iter != funcs->end(); ++iter)
-            {
-                string prefix = iter->first;
-                if (cmd == prefix || (cmd.find_first_of(prefix) == 0 && cmd[prefix.size()] == ' '))
-                    //如果命令与注册前缀全匹配，或者目标前缀后面为空格
-                {
-                    //Matched
-                    Local<Array> args = Array::newArray();
-                    if (cmd.size() > prefix.size())
-                    {
-                        //除了注册前缀之外还有额外参数
-                        auto paras = SplitCmdParas(cmd.substr(prefix.size() + 1));
-                        for (string para : paras)
-                            args.add(String::newString(para));
-                    }
-
-                    auto res = iter->second.get().call({}, PlayerClass::newPlayer(player), args);
-                    if (res.isNull() || (res.isBoolean() && res.asBoolean().value() == false))
-                        passToOriginalCmdEvent = false;
-                    break;
-                }
-            }
-    }
-    return passToOriginalCmdEvent;
-}
-
-bool CallServerCmdCallback(const string& cmd)
-{
-    bool passToOriginalCmdEvent = true;
-
-    for (auto engine : lxlModules)
-    {
-        EngineScope enter(engine.get());
-        auto funcs = &(ENGINE_OWN_DATA()->consoleCmdCallbacks);
-        if (!funcs->empty())
-            for (auto iter = funcs->begin(); iter != funcs->end(); ++iter)
-            {
-                string prefix = iter->first;
-                if (cmd == prefix || (cmd.find_first_of(prefix) == 0 && cmd[prefix.size()] == ' '))
-                    //如果命令与注册前缀全匹配，或者目标前缀后面为空格
-                {
-                    //Matched
-                    Local<Array> args = Array::newArray();
-                    if (cmd.size() > prefix.size())
-                    {
-                        //除了注册前缀之外还有额外参数
-                        auto paras = SplitCmdParas(cmd.substr(prefix.size() + 1));
-                        for (string para : paras)
-                            args.add(String::newString(para));
-                    }
-
-                    auto res = iter->second.get().call({}, args);
-                    if (res.isNull() || (res.isBoolean() && res.asBoolean().value() == false))
-                        passToOriginalCmdEvent = false;
-                    break;
-                }
-            }
-    }
-    return passToOriginalCmdEvent;
-}
-
-bool CallFormCallback(Player *player, unsigned formId, const string& data)
-{
-    bool passToBDS = true;
-
-    FormCallbackKey key{ LXL_SCRIPT_LANG_TYPE,formId };
-    try
-    {
-        auto callback = engineGlobalData->formCallbacks.at(key);
-
-        EngineScope scope(callback.engine);
-        auto res = callback.func.get().call({}, PlayerClass::newPlayer(player), JsonToValue(data));
-        if (res.isNull() || (res.isBoolean() && res.asBoolean().value() == false))
-            passToBDS = false;
-    }
-    catch (...)
-    {
-        ;
-    }
-
-    return passToBDS;
 }

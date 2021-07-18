@@ -62,5 +62,14 @@ struct GlobalDataType
 	std::map<FormCallbackKey, FormCallbackData> formCallbacks;
 };
 
+//命令延迟注册队列
+struct RegCmdQueue
+{
+	std::string cmd;
+	std::string describe;
+	int level;
+};
+extern std::vector<RegCmdQueue> toRegCmdQueue;
+
 //全局共享数据
 extern GlobalDataType* engineGlobalData;

@@ -7,6 +7,7 @@
 #include "EngineOwnData.h"
 #include <Kernel/Base.h>
 #include <Kernel/System.h>
+#include <Kernel/Global.h>
 #include <windows.h>
 #include <chrono>
 #include <map>
@@ -168,94 +169,6 @@ Local<Value> FloatPos::getDim()
 }
 
 //////////////////// APIs ////////////////////
-
-Local<Value> Runcmd(const Arguments& args)
-{
-    CHECK_ARGS_COUNT(args,1)
-    CHECK_ARG_TYPE(args[0],ValueKind::kString)
-
-    try{
-        return Boolean::newBoolean(Raw_Runcmd(args[0].asString().toString()));
-    }
-    CATCH("Fail in RunCmd!")
-}
-
-Local<Value> RuncmdEx(const Arguments& args)
-{
-    CHECK_ARGS_COUNT(args,1)
-    CHECK_ARG_TYPE(args[0],ValueKind::kString)
-
-    try{
-        std::pair<bool, string> result = Raw_RuncmdEx(args[0].asString().toString());
-        Local<Object> resObj = Object::newObject();
-        resObj.set("result",result.first);
-        resObj.set("output",result.second);
-        return resObj;
-    }
-    CATCH("Fail in RunCmdEx!")
-}
-
-Local<Value> RegisterPlayerCmd(const Arguments& args)
-{
-    CHECK_ARGS_COUNT(args,3)
-    CHECK_ARG_TYPE(args[0],ValueKind::kString)
-    CHECK_ARG_TYPE(args[1],ValueKind::kString)
-    CHECK_ARG_TYPE(args[2],ValueKind::kFunction)
-        
-    if(args.size() >= 4)
-        CHECK_ARG_TYPE(args[3],ValueKind::kNumber)
-
-    try{
-        string cmd = args[0].asString().toString();
-        int level = 0;
-
-        if(args.size() >= 4)
-        {
-            int newLevel = args[3].asNumber().toInt32();
-            if(newLevel >= 0 && newLevel <= 3)
-                level = newLevel;
-        }
-
-        if (cmd[0] == '/')
-            cmd = cmd.erase(0, 1);
-        (ENGINE_OWN_DATA()->playerCmdCallbacks)[cmd] = args[2].asFunction();
-        Raw_RegisterCmd(cmd,args[1].asString().toString(),level);
-
-        return Boolean::newBoolean(true);
-    }
-    CATCH("Fail in RegisterPlayerCmd!")
-}
-
-Local<Value> RegisterConsoleCmd(const Arguments& args)
-{
-    CHECK_ARGS_COUNT(args,3)
-    CHECK_ARG_TYPE(args[0],ValueKind::kString)
-    CHECK_ARG_TYPE(args[1],ValueKind::kString)
-    CHECK_ARG_TYPE(args[2],ValueKind::kFunction)
-
-    try{
-        string cmd = args[0].asString().toString();
-
-        if (cmd[0] == '/')
-            cmd = cmd.erase(0, 1);
-        (ENGINE_OWN_DATA()->consoleCmdCallbacks)[cmd] = args[2].asFunction();
-        Raw_RegisterCmd(cmd,args[1].asString().toString(),4);
-
-        return Boolean::newBoolean(true);
-    }
-    CATCH("Fail in RegisterConsoleCmd!")
-}
-
-Local<Value> SendCmdOutput(const Arguments& args)
-{
-    CHECK_ARGS_COUNT(args, 1)
-    CHECK_ARG_TYPE(args[0], ValueKind::kString)
-
-    try {
-        return Boolean::newBoolean(Raw_SendCmdOutput(args[0].toStr()));
-    }
-    CATCH("Fail in SendCmdOutput!")
-}
 
 Local<Value> Log(const Arguments& args)
 {

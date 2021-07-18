@@ -38,6 +38,7 @@
     <ClCompile Include="..\src\API\APIhelp.cpp" />
     <ClCompile Include="..\src\API\BaseAPI.cpp" />
     <ClCompile Include="..\src\API\BlockAPI.cpp" />
+    <ClCompile Include="..\src\API\CommandAPI.cpp" />
     <ClCompile Include="..\src\API\DbAPI.cpp" />
     <ClCompile Include="..\src\API\EngineGlobalData.cpp" />
     <ClCompile Include="..\src\API\EntityAPI.cpp" />
@@ -78,6 +79,7 @@
     <ClInclude Include="..\src\API\APIhelp.h" />
     <ClInclude Include="..\src\API\BaseAPI.h" />
     <ClInclude Include="..\src\API\BlockAPI.h" />
+    <ClInclude Include="..\src\API\CommandAPI.h" />
     <ClInclude Include="..\src\API\DbAPI.h" />
     <ClInclude Include="..\src\API\EngineGlobalData.h" />
     <ClInclude Include="..\src\API\EngineOwnData.h" />
