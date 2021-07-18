@@ -400,31 +400,6 @@ THook(bool, "?take@Player@@QEAA_NAEAVActor@@HH@Z",
     return original(_this, actor, a2, a3);
 }
 
-// ===== onPlayerCmd =====
-THook(void, "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVCommandRequestPacket@@@Z",
-    ServerNetworkHandler* _this, NetworkIdentifier* id, Packet* pkt)
-{
-    Player* player = Raw_GetPlayerFromPacket(_this, id, pkt);
-
-    if (player)
-    {   
-        // Player Command
-        auto cmd = std::string(*(std::string*)((uintptr_t)pkt + 48));
-        if (cmd.front() == '/')
-            cmd = cmd.substr(1);
-     
-        bool callbackRes = CallPlayerCmdCallback(player,cmd);
-        IF_LISTENED(EVENT_TYPES::onPlayerCmd)
-        {
-            CallEvent(EVENT_TYPES::onPlayerCmd, PlayerClass::newPlayer(player), cmd);
-        }
-        if (!callbackRes)
-            return;
-    }
-    
-    return original(_this, id, pkt);
-}
-
 // ===== onUseItem =====
 THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@PEBVBlock@@@Z",
     void* _this,  ItemStack* item, BlockPos* bp, unsigned __int8 a4, Vec3* a5,  Block* bl)
@@ -676,18 +651,29 @@ THook(bool, "?_trySpawnBlueFire@FireBlock@@AEBA_NAEAVBlockSource@@AEBVBlockPos@@
     return original(_this, bs, bp);
 }
 
-// ===== onConsoleCmd =====
+// ===== onPlayerCmd & onConsoleCmd =====
 THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@VCommandContext@@@std@@_N@Z",
     MinecraftCommands* _this, unsigned int* a2, std::shared_ptr<CommandContext> x, char a4)
 {
     Player* player = MakeSP(x->getOrigin());
-    if (!player)
+    string cmd = x->getCmd();
+    if (cmd.front() == '/')
+        cmd = cmd.substr(1);
+
+    if (player)
+    {
+        // Player Command
+        bool callbackRes = CallPlayerCmdCallback(player, cmd);
+        IF_LISTENED(EVENT_TYPES::onPlayerCmd)
+        {
+            CallEvent(EVENT_TYPES::onPlayerCmd, PlayerClass::newPlayer(player), cmd);
+        }
+        if (!callbackRes)
+            return false;
+    }
+    else
     {
         // Server Command
-        string cmd = x->getCmd();
-        if (cmd.front() == '/')
-            cmd = cmd.substr(1);
-
         if (!ProcessDebugEngine(cmd))
             return false;
 
