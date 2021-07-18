@@ -131,6 +131,9 @@
     <ClCompile Include="..\src\Kernel\i18n.cpp">
       <Filter>Kernel</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\API\LoaderHelper.cpp">
+      <Filter>API</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Configs.h">
@@ -240,6 +243,9 @@
     </ClInclude>
     <ClInclude Include="..\src\Kernel\i18n.h">
       <Filter>Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\API\LoaderHelper.h">
+      <Filter>API</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

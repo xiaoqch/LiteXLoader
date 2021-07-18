@@ -45,6 +45,7 @@
     <ClCompile Include="..\src\API\FileSystemAPI.cpp" />
     <ClCompile Include="..\src\API\GuiAPI.cpp" />
     <ClCompile Include="..\src\API\ItemAPI.cpp" />
+    <ClCompile Include="..\src\API\LoaderHelper.cpp" />
     <ClCompile Include="..\src\API\LoggerAPI.cpp" />
     <ClCompile Include="..\src\API\LxlAPI.cpp" />
     <ClCompile Include="..\src\API\NbtAPI.cpp" />
@@ -85,6 +86,7 @@
     <ClInclude Include="..\src\API\FileSystemAPI.h" />
     <ClInclude Include="..\src\API\GuiAPI.h" />
     <ClInclude Include="..\src\API\ItemAPI.h" />
+    <ClInclude Include="..\src\API\LoaderHelper.h" />
     <ClInclude Include="..\src\API\LoggerAPI.h" />
     <ClInclude Include="..\src\API\LxlAPI.h" />
     <ClInclude Include="..\src\API\NbtAPI.h" />
