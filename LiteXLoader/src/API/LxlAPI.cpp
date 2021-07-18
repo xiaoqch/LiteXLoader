@@ -2,6 +2,7 @@
 #include "LxlAPI.h"
 #include "EngineGlobalData.h"
 #include "EngineOwnData.h"
+#include "LoaderHelper.h"
 #include <Kernel/System.h>
 #include <Loader.h>
 #include <Configs.h>
@@ -78,7 +79,7 @@ Local<Value> LxlRequire(const Arguments& args)
         }
         if (existing)
         { 
-            bool success = LoadPlugin(string(LXL_PLUGINS_LOAD_DIR) + "/" + require);
+            bool success = LxlLoadPlugin(string(LXL_PLUGINS_LOAD_DIR) + "/" + require);
             if (success)
             {
                 INFO(thisName + _TRS("lxlapi.require.success") + require);
@@ -104,7 +105,7 @@ Local<Value> LxlRequire(const Arguments& args)
         }
         if (existing)
         {
-            bool success = LoadPlugin(string(LXL_DEPENDS_DIR) + "/" + require);
+            bool success = LxlLoadPlugin(string(LXL_DEPENDS_DIR) + "/" + require);
             if (success)
             {
                 INFO(thisName + _TRS("lxlapi.require.success") + require);
@@ -138,7 +139,7 @@ Local<Value> LxlRequire(const Arguments& args)
         INFO(thisName + _TRS("lxlapi.require.download.success") + downloadPath);
 
         //下载完毕安装
-        bool success = LoadPlugin(downloadPath);
+        bool success = LxlLoadPlugin(downloadPath);
         if (success)
         {
             INFO(thisName + _TRS("lxlapi.require.success") + require);

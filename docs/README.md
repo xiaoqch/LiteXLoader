@@ -144,13 +144,16 @@ but if you modified the framework, or write a new framework based on this framew
 
 ## 🏆 鸣谢
 - 开源 [ScriptX](https://github.com/Tencent/ScriptX) 项目提供的跨语言引擎支持
-- [LiteLoader](https://github.com/LiteLDev/LiteLoaderBDS) 项目提供的加载服务与基础API  
+- ScriptX开发者 [@LanderlYoung](https://github.com/Tencent/ScriptX/commits?author=LanderlYoung) 在开发过程中给予的很多帮助
+- LiteLDev 开发组 [LiteLoader](https://github.com/LiteLDev/LiteLoaderBDS) 项目提供的加载服务与基础API  
 - [LiteLuaLoader](https://github.com/wzyyyyyyy) 项目 和 [BDSPyRunner](https://github.com/twoone-3/BDSpyrunner)项目 提供的很多底层接口实现
+- 感谢整个BDS开源社区对项目做出的大大小小的贡献。感谢他们！ 💖💖
 
-> 特别鸣谢：感谢 [LiteLDev](https://github.com/orgs/LiteLDev/people) 各位大佬们的技术援助   
-> [@wzy](https://github.com/wzyyyyyyy) [@twoone-3](https://github.com/twoone-3) [@dreamguxiang](https://github.com/dreamguxiang) [@Sysca11](https://github.com/Sysca11) [@RedbeanW](https://github.com/Redbeanw44602) 的代码贡献  
-> 以及 ScriptX开发者 [@LanderlYoung](https://github.com/Tencent/ScriptX/commits?author=LanderlYoung)   
-> 在开发过程中给予了作者以非常大的支持。感谢他们！ 💖💖
+#### 重要贡献者
+
+| ![yqs112358](https://avatars.githubusercontent.com/u/37969157?s=96&v=4) | ![wzy](https://avatars.githubusercontent.com/u/59381521?s=96&v=4) | ![twoone-3](https://avatars.githubusercontent.com/u/62778573?s=96&v=4) | ![dreamguxiang](https://avatars.githubusercontent.com/u/62042544?s=96&v=4) | ![Sysca11](https://avatars.githubusercontent.com/u/46832985?s=96&v=4) | ![RedbeanW](https://avatars.githubusercontent.com/u/29711228?s=96&v=4) |
+| :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+|          [@yqs112358](https://github.com/yqs112358)          |             [@wzy](https://github.com/wzyyyyyyy)             |           [@twoone-3](https://github.com/twoone-3)           |       [@dreamguxiang](https://github.com/dreamguxiang)       |            [@Sysca11](https://github.com/Sysca11)            |        [@RedbeanW](https://github.com/Redbeanw44602)         |
 
 ## 📞 联系我们
 

@@ -208,7 +208,6 @@ Local<Value> RegisterPlayerCmd(const Arguments& args)
     try{
         string cmd = args[0].asString().toString();
         int level = 0;
-        (ENGINE_OWN_DATA()->playerCmdCallbacks)[cmd] = args[2].asFunction();
 
         if(args.size() >= 4)
         {
@@ -217,7 +216,11 @@ Local<Value> RegisterPlayerCmd(const Arguments& args)
                 level = newLevel;
         }
 
+        if (cmd[0] == '/')
+            cmd = cmd.erase(0, 1);
+        (ENGINE_OWN_DATA()->playerCmdCallbacks)[cmd] = args[2].asFunction();
         Raw_RegisterCmd(cmd,args[1].asString().toString(),level);
+
         return Boolean::newBoolean(true);
     }
     CATCH("Fail in RegisterPlayerCmd!")
@@ -232,8 +235,10 @@ Local<Value> RegisterConsoleCmd(const Arguments& args)
 
     try{
         string cmd = args[0].asString().toString();
-        (ENGINE_OWN_DATA()->consoleCmdCallbacks)[cmd] = args[2].asFunction();
 
+        if (cmd[0] == '/')
+            cmd = cmd.erase(0, 1);
+        (ENGINE_OWN_DATA()->consoleCmdCallbacks)[cmd] = args[2].asFunction();
         Raw_RegisterCmd(cmd,args[1].asString().toString(),4);
 
         return Boolean::newBoolean(true);

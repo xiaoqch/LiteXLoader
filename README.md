@@ -68,8 +68,8 @@ VS项目采用多目标构建，构建的每种配置对应一种脚本语言
 1. Install newest **Microsoft Visual Studio** with standard C++ building suite
 2. Install the newest version of **Windows SDK**
 3. 打开 LiteXLoader 目录下的 `LiteXLoader.sln` 项目文件，点击 **生成** 菜单中的 **批生成** 项
-4. 弹出批生成对话框，选中每种语言配置对应的 **x64** 平台右侧的生成复选框
-5. 选择完毕之后，点击对话框中的 **生成** 按钮，进行批生成
+4. 弹出批生成对话框，选中每种语言配置对应的 **x64** 平台右侧的生成复选框
+5. 选择完毕之后，点击对话框中的 **生成** 按钮，进行批生成
 6. 编译生成成功之后，返回到项目根目录，执行根目录中的 `MakeRelease.cmd`，执行完之后根目录 `RELEASE` 文件夹内的内容即为完整的`LiteXLoader`及所有的依赖库
 
 ## 💻 安装
@@ -150,13 +150,16 @@ but if you modified the framework, or write a new framework based on this framew
 
 ## 🏆 鸣谢
 - 开源 [ScriptX](https://github.com/Tencent/ScriptX) 项目提供的跨语言引擎支持
-- [LiteLoader](https://github.com/LiteLDev/LiteLoaderBDS) 项目提供的加载服务与基础API  
+- ScriptX开发者 [@LanderlYoung](https://github.com/Tencent/ScriptX/commits?author=LanderlYoung) 在开发过程中给予的很多帮助
+- LiteLDev 开发组 [LiteLoader](https://github.com/LiteLDev/LiteLoaderBDS) 项目提供的加载服务与基础API  
 - [LiteLuaLoader](https://github.com/wzyyyyyyy) 项目 和 [BDSPyRunner](https://github.com/twoone-3/BDSpyrunner)项目 提供的很多底层接口实现
+- 感谢整个BDS开源社区对项目做出的大大小小的贡献。感谢他们！ 💖💖
 
-> 特别鸣谢：感谢 [LiteLDev](https://github.com/orgs/LiteLDev/people) 各位大佬们的技术援助   
-> [@wzy](https://github.com/wzyyyyyyy) [@twoone-3](https://github.com/twoone-3) [@dreamguxiang](https://github.com/dreamguxiang) [@Sysca11](https://github.com/Sysca11) [@RedbeanW](https://github.com/Redbeanw44602) 的代码贡献  
-> 以及 ScriptX开发者 [@LanderlYoung](https://github.com/Tencent/ScriptX/commits?author=LanderlYoung)   
-> 在开发过程中给予了作者以非常大的支持。感谢他们！ 💖💖
+#### 重要贡献者
+
+| ![yqs112358](https://avatars.githubusercontent.com/u/37969157?s=96&v=4) | ![wzy](https://avatars.githubusercontent.com/u/59381521?s=96&v=4) | ![twoone-3](https://avatars.githubusercontent.com/u/62778573?s=96&v=4) | ![dreamguxiang](https://avatars.githubusercontent.com/u/62042544?s=96&v=4) | ![Sysca11](https://avatars.githubusercontent.com/u/46832985?s=96&v=4) | ![RedbeanW](https://avatars.githubusercontent.com/u/29711228?s=96&v=4) |
+| :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+|          [@yqs112358](https://github.com/yqs112358)          |             [@wzy](https://github.com/wzyyyyyyy)             |           [@twoone-3](https://github.com/twoone-3)           |       [@dreamguxiang](https://github.com/dreamguxiang)       |            [@Sysca11](https://github.com/Sysca11)            |        [@RedbeanW](https://github.com/Redbeanw44602)         |
 
 ## 📞 联系我们
 
