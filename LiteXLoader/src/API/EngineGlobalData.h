@@ -24,15 +24,12 @@ struct RemoteEngineData
 	unsigned threadId;
 };
 
+
+//表单回调信息
 struct FormCallbackKey
 {
 	std::string fromEngineType;
 	unsigned formId;
-
-	bool operator<(const FormCallbackKey& b)
-	{
-		return fromEngineType == b.fromEngineType ? formId < b.formId : fromEngineType < b.fromEngineType;
-	}
 };
 
 bool inline operator<(const FormCallbackKey& a, const FormCallbackKey& b)
@@ -40,7 +37,6 @@ bool inline operator<(const FormCallbackKey& a, const FormCallbackKey& b)
 	return a.fromEngineType == b.fromEngineType ? a.formId < b.formId : a.fromEngineType < b.fromEngineType;
 }
 
-//表单回调信息
 struct FormCallbackData
 {
 	script::ScriptEngine* engine;

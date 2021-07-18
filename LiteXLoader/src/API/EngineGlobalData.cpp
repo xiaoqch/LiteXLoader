@@ -1,6 +1,8 @@
 #include "EngineGlobalData.h"
 #include "RemoteCall.h"
 #include <ScriptX/ScriptX.h>
+#include <cstdlib>
+#include <ctime>
 #include <string>
 #include <vector>
 #include <map>
@@ -17,6 +19,8 @@ std::vector<RegCmdQueue> toRegCmdQueue;
 
 void InitEngineGlobalData(bool *isFirstInstance)
 {
+	srand(clock());
+
 	HANDLE hGlobalData = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(GlobalDataType), (LXL_GLOBAL_DATA_NAME + to_wstring(GetCurrentProcessId())).c_str());
 	if (hGlobalData == NULL)
 	{

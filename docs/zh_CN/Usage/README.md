@@ -33,7 +33,8 @@
 
 ```ini
 [Main]
-LxlLogLevel=1				# LXL日志等级，默认为1，即不显示debug信息
+Language=zh_CN				# LXL语言环境，默认为zh_CN，即中文
+LxlLogLevel=4				# LXL日志等级，默认为4，即显示除了debug信息以外的其他所有信息
 PluginsDir=./plugins		# LXL插件目录，默认为plugins
 DependsDir=./plugins/lib	# LXL依赖库目录，默认为plugins/lib
 
@@ -71,4 +72,5 @@ GCInterval=20				# 引擎垃圾回收周期，默认为20秒
 - `lxl reload`  
   重新加载插件列表中的所有插件
 
-提示：热卸载插件时，插件注册的命令不会被删除。玩家调用时会提示命令不存在。
+提示：热卸载插件时，插件注册的命令不会被删除。玩家调用时会提示命令不存在。  
+请勿在服务器尚未启动完毕，或者服务器中有大量玩家时卸载或者重载插件！否则服务器有可能发生崩溃

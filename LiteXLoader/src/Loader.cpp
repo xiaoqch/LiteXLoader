@@ -99,18 +99,18 @@ bool LoadPlugin(const std::string& filePath)
 
         //启动引擎
         std::shared_ptr<ScriptEngine> engine = NewEngine();
-        //setData
-        string pluginName = std::filesystem::path(filePath).filename().u8string();
-        std::static_pointer_cast<EngineOwnData>(engine->getData())->pluginName = pluginName;
-
         lxlModules.push_back(engine);
         EngineScope enter(engine.get());
+
+        //setData
+        string pluginName = std::filesystem::path(filePath).filename().u8string();
+        ENGINE_OWN_DATA()->pluginName = pluginName;
 
         //绑定API
         try {
             BindAPIs(engine);
         }
-        catch (Exception& e)
+        catch (const Exception& e)
         {
             ERROR("Fail in Binding APIs!\n");
             throw;
@@ -123,7 +123,7 @@ bool LoadPlugin(const std::string& filePath)
                 engine->eval(i);
             }
         }
-        catch (Exception& e)
+        catch (const Exception& e)
         {
             ERROR("Fail in Loading Dependence Lib!\n");
             throw;
@@ -134,7 +134,7 @@ bool LoadPlugin(const std::string& filePath)
         {
             engine->eval(scripts);
         }
-        catch (Exception& e)
+        catch (const Exception& e)
         {
             ERROR("Fail in Loading Script Plugin!\n");
             throw;
@@ -143,7 +143,7 @@ bool LoadPlugin(const std::string& filePath)
         engineGlobalData->pluginsList.push_back(pluginName);
         return true;
     }
-    catch (Exception& e)
+    catch (const Exception& e)
     {
         EngineScope enter(lxlModules.back().get());
         ERROR("Fail to load " + filePath + "!\n");
@@ -152,7 +152,7 @@ bool LoadPlugin(const std::string& filePath)
         //############# Js delete v8崩溃
         //lxlModules.pop_back();
     }
-    catch (std::exception& e)
+    catch (const std::exception& e)
     {
         ERROR("Fail to load " + filePath + "!");
         ERROR(e.what());
@@ -169,17 +169,17 @@ void LoadDebugEngine()
 {
     //启动引擎
     debugEngine = NewEngine();
-    //setData
-    std::static_pointer_cast<EngineOwnData>(debugEngine->getData())->pluginName = "__DEBUG_ENGINE__";
-
     lxlModules.push_back(debugEngine);
     EngineScope enter(debugEngine.get());
+
+    //setData
+    ENGINE_OWN_DATA()->pluginName = "__DEBUG_ENGINE__";
 
     //绑定API
     try {
         BindAPIs(debugEngine);
     }
-    catch (Exception& e)
+    catch (const Exception& e)
     {
         ERROR("Fail in binding Debug Engine!\n");
         throw;
@@ -192,7 +192,7 @@ void LoadDebugEngine()
             debugEngine->eval(i);
         }
     }
-    catch (Exception& e)
+    catch (const Exception& e)
     {
         ERROR("Fail in Loading Dependence Lib!\n");
         throw;
