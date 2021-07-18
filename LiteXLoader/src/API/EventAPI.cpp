@@ -176,7 +176,7 @@ bool LxlAddEventListener(ScriptEngine *engine, const string &eventName, const Lo
     }
 }
 
-bool LxlRemoveAllEventListener(ScriptEngine* engine)
+bool LxlRemoveAllEventListeners(ScriptEngine* engine)
 {
     for (auto& listeners : listenerList)
     {

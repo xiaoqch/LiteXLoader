@@ -143,7 +143,7 @@ string LxlUnloadPlugin(const std::string& name)
             unloadedPath = ENGINE_GET_DATA(engine)->pluginPath;
 
             RemoveFromGlobalPluginsList(name);
-            LxlRemoveAllEventListener(engine);
+            LxlRemoveAllEventListeners(engine);
             LxlRemoveAllExportedFuncs(engine);
             engine->getData().reset();
             lxlModules.erase(lxlModules.begin() + i);
