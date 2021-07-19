@@ -43,7 +43,7 @@ enum class EVENT_TYPES : int
     onDestroyingBlock, onDestroyBlock, onPlaceBlock,
     onOpenContainer, onCloseContainer, onContainerChangeSlot,
     onMobDie, onMobHurt, onExplode, onBlockExploded, onCmdBlockExecute,
-    onProjectileHit, onBlockInteractd, onUseRespawnAnchor, onFarmLandDecay,
+    onProjectileHit, onBlockInteracted, onUseRespawnAnchor, onFarmLandDecay,
     onPistonPush, onHopperSearchItem, onHopperPushOut, onFireSpread, 
     onServerStarted, onConsoleCmd, onFormSelected, onConsoleOutput,
     EVENT_COUNT
@@ -76,7 +76,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onContainerChangeSlot",EVENT_TYPES::onContainerChangeSlot},
     {"onCmdBlockExecute",EVENT_TYPES::onCmdBlockExecute},
     {"onProjectileHit",EVENT_TYPES::onProjectileHit},
-    {"onBlockInteractd",EVENT_TYPES::onBlockInteractd},
+    {"onBlockInteracted",EVENT_TYPES::onBlockInteracted},
     {"onUseRespawnAnchor",EVENT_TYPES::onUseRespawnAnchor},
     {"onFarmLandDecay",EVENT_TYPES::onFarmLandDecay},
     {"onPistonPush",EVENT_TYPES::onPistonPush},
@@ -567,15 +567,15 @@ THook(void, "?onProjectileHit@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@AEBVAct
     return original(_this, bs, bp, actor);
 }
 
-// ===== onBlockInteractd =====
+// ===== onBlockInteracted =====
 THook(unsigned short, "?onBlockInteractedWith@VanillaServerGameplayEventListener@@UEAA?AW4EventResult@@AEAVPlayer@@AEBVBlockPos@@@Z",
     void* _this, Player* pl, BlockPos* bp)
 {
-    IF_LISTENED(EVENT_TYPES::onBlockInteractd)
+    IF_LISTENED(EVENT_TYPES::onBlockInteracted)
     {
         BlockSource* bs = Raw_GetBlockSourceByActor((Actor*)pl);
 
-        CallEventRtn(EVENT_TYPES::onBlockInteractd, 0, PlayerClass::newPlayer(pl), 
+        CallEventRtn(EVENT_TYPES::onBlockInteracted, 0, PlayerClass::newPlayer(pl), 
             BlockClass::newBlock(Raw_GetBlockByPos(bp->x, bp->y, bp->z, bs), bp, bs));
     }
     return original(_this, pl, bp);
