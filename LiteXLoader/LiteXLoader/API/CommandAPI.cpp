@@ -120,6 +120,9 @@ Local<Value> SendCmdOutput(const Arguments& args)
 // Helper
 vector<string> SplitCmdParas(const string& paras)
 {
+    if (paras.empty())
+        return vector<string>();
+
     vector<string> res;
     string now, strInQuote = "";
     istringstream strIn(paras);
@@ -294,7 +297,7 @@ bool CallPlayerCmdCallback(Player* player, const string& cmd)
             for (auto iter = funcs->begin(); iter != funcs->end(); ++iter)
             {
                 string prefix = iter->first;
-                if (cmd == prefix || (cmd.find_first_of(prefix) == 0 && cmd[prefix.size()] == ' '))
+                if (cmd == prefix || (cmd.find(prefix) == 0 && cmd[prefix.size()] == ' '))
                     //如果命令与注册前缀全匹配，或者目标前缀后面为空格
                 {
                     //Matched
@@ -329,7 +332,7 @@ bool CallServerCmdCallback(const string& cmd)
             for (auto iter = funcs->begin(); iter != funcs->end(); ++iter)
             {
                 string prefix = iter->first;
-                if (cmd == prefix || (cmd.find_first_of(prefix) == 0 && cmd[prefix.size()] == ' '))
+                if (cmd == prefix || (cmd.find(prefix) == 0 && cmd[prefix.size()] == ' '))
                     //如果命令与注册前缀全匹配，或者目标前缀后面为空格
                 {
                     //Matched

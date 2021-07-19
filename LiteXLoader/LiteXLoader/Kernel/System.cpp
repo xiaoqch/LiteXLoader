@@ -183,9 +183,9 @@ void SplitHttpUrl(const std::string& url, string& host, string& path)
 {
     host = url;
 
-    bool foundProcotol = host.find_first_of('//') != string::npos;
+    bool foundProcotol = host.find('//') != string::npos;
 
-    auto splitPos = host.find('/', foundProcotol ? host.find_first_of('//') + 2 : 0);    //查找协议后的第一个/分割host与路径
+    auto splitPos = host.find('/', foundProcotol ? host.find('//') + 2 : 0);    //查找协议后的第一个/分割host与路径
     if (splitPos == string::npos)
     {
         path = "/";
