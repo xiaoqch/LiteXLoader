@@ -68,5 +68,5 @@ bool Raw_IsPlayer(Actor* actor)
 
 Player* Raw_ToPlayer(Actor* actor)
 {
-    return Raw_IsPlayer ? (Player*)actor : nullptr;
+    return Raw_IsPlayer(actor) ? (Player*)actor : nullptr;
 }

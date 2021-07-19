@@ -20,7 +20,7 @@
 - 图形界面与表单
   
   - [📊 表单](zh_CN/Development/GuiAPI/Form.md)
-  - [💼 表单构建器](zh_CN/Development/GuiAPI/FormBuilder.md)
+  - [📰 表单构建器](zh_CN/Development/GuiAPI/FormBuilder.md)
 - NBT
 - 脚本辅助接口
 

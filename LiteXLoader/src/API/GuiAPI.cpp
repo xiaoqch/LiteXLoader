@@ -7,46 +7,142 @@ using namespace std;
 
 //////////////////// Class Definition ////////////////////
 
-ClassDefine<FormClass> FormClassBuilder =
-    defineClass<FormClass>("Form")
+ClassDefine<SimpleFormClass> SimpleFormClassBuilder =
+    defineClass<SimpleFormClass>("SimpleForm")
         .constructor(nullptr)
-        .instanceFunction("setTitle", &FormClass::setTitle)
-        .instanceFunction("addLabel", &FormClass::addLabel)
-        .instanceFunction("addInput", &FormClass::addInput)
-        .instanceFunction("addSwitch", &FormClass::addSwitch)
-        .instanceFunction("addDropdown", &FormClass::addDropdown)
-        .instanceFunction("addSlider", &FormClass::addSlider)
-        .instanceFunction("addStepSlider", &FormClass::addStepSlider)
+        .instanceFunction("setTitle", &SimpleFormClass::setTitle)
+        .instanceFunction("setContent", &SimpleFormClass::setContent)
+        .instanceFunction("addButton", &SimpleFormClass::addButton)
         .build();
 
+ClassDefine<CustomFormClass> CustomFormClassBuilder =
+    defineClass<CustomFormClass>("CustomForm")
+        .constructor(nullptr)
+        .instanceFunction("setTitle", &CustomFormClass::setTitle)
+        .instanceFunction("addLabel", &CustomFormClass::addLabel)
+        .instanceFunction("addInput", &CustomFormClass::addInput)
+        .instanceFunction("addSwitch", &CustomFormClass::addSwitch)
+        .instanceFunction("addDropdown", &CustomFormClass::addDropdown)
+        .instanceFunction("addSlider", &CustomFormClass::addSlider)
+        .instanceFunction("addStepSlider", &CustomFormClass::addStepSlider)
+        .build();
 
-//////////////////// Classes ////////////////////
+//////////////////// Simple Form ////////////////////
 
-FormClass::FormClass()
-    :ScriptClass(ScriptClass::ConstructFromCpp<FormClass>{})
+SimpleFormClass::SimpleFormClass()
+    :ScriptClass(ScriptClass::ConstructFromCpp<SimpleFormClass>{})
+{
+    form = JSON_VALUE::parse(R"({"title":"","content":"","buttons":[],"type":"form"})");
+}
+
+//生成函数
+Local<Object> SimpleFormClass::newForm()
+{
+    auto newp = new SimpleFormClass();
+    return newp->getScriptObject();
+}
+
+JSON_ROOT* SimpleFormClass::extractForm(Local<Value> v)
+{
+    if (EngineScope::currentEngine()->isInstanceOf<SimpleFormClass>(v))
+        return EngineScope::currentEngine()->getNativeInstance<SimpleFormClass>(v)->get();
+    else
+        return nullptr;
+}
+
+//成员函数
+Local<Value> SimpleFormClass::setTitle(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+
+    try {
+        form["title"] = args[0].toStr();
+        return Boolean::newBoolean(true);
+    }
+    catch (JSON_VALUE::exception& e) {
+        ERROR("Fail to Form currect Form string!");
+        ERRPRINT(e.what());
+        return Boolean::newBoolean(false);
+    }
+    CATCH("Fail in setTitle!")
+}
+
+Local<Value> SimpleFormClass::setContent(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+
+    try {
+        form["content"] = args[0].toStr();
+        return Boolean::newBoolean(true);
+    }
+    catch (JSON_VALUE::exception& e) {
+        ERROR("Fail to Form currect Form string!");
+        ERRPRINT(e.what());
+        return Boolean::newBoolean(false);
+    }
+    CATCH("Fail in setContent!")
+}
+
+Local<Value> SimpleFormClass::addButton(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    if (args.size() >= 2)
+        CHECK_ARG_TYPE(args[1], ValueKind::kString);
+
+    try {
+        JSON_VALUE oneButton;
+        oneButton["text"] = args[0].toStr();
+        if (args.size() >= 2)
+        {
+            string path = args[1].toStr();
+            JSON_VALUE image;
+            image["type"] = path.find("textures/") == 0 ? "path" : "url";
+            image["data"] = path;
+            oneButton["image"] = image;
+        }
+        form["buttons"].push_back(oneButton);
+        return Boolean::newBoolean(true);
+    }
+    catch (JSON_VALUE::exception& e) {
+        ERROR("Fail to Form currect Form string!");
+        ERRPRINT(e.what());
+        return Boolean::newBoolean(false);
+    }
+    CATCH("Fail in addButton!")
+}
+
+
+
+//////////////////// Custom Form ////////////////////
+
+CustomFormClass::CustomFormClass()
+    :ScriptClass(ScriptClass::ConstructFromCpp<CustomFormClass>{})
 { 
     form = JSON_VALUE::parse(R"({ "title":"", "type":"custom_form", "content":[], "buttons":[] })");
 }
 
 
 //生成函数
-Local<Object> FormClass::newForm()
+Local<Object> CustomFormClass::newForm()
 {
-    auto newp = new FormClass();
+    auto newp = new CustomFormClass();
     return newp->getScriptObject();
 }
 
-JSON_ROOT* FormClass::extractForm(Local<Value> v)
+JSON_ROOT* CustomFormClass::extractForm(Local<Value> v)
 {
-    if(EngineScope::currentEngine()->isInstanceOf<FormClass>(v))
-        return EngineScope::currentEngine()->getNativeInstance<FormClass>(v)->get();
+    if(EngineScope::currentEngine()->isInstanceOf<CustomFormClass>(v))
+        return EngineScope::currentEngine()->getNativeInstance<CustomFormClass>(v)->get();
     else
         return nullptr;
 }
 
 
 //成员函数
-Local<Value> FormClass::setTitle(const Arguments& args)
+Local<Value> CustomFormClass::setTitle(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
@@ -63,7 +159,7 @@ Local<Value> FormClass::setTitle(const Arguments& args)
     CATCH("Fail in setTitle!")
 }
 
-Local<Value> FormClass::addLabel(const Arguments& args)
+Local<Value> CustomFormClass::addLabel(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
@@ -84,7 +180,7 @@ Local<Value> FormClass::addLabel(const Arguments& args)
     CATCH("Fail in addLabel!")
 }
 
-Local<Value> FormClass::addInput(const Arguments& args)
+Local<Value> CustomFormClass::addInput(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
@@ -111,7 +207,7 @@ Local<Value> FormClass::addInput(const Arguments& args)
     CATCH("Fail in addInput!")
 }
 
-Local<Value> FormClass::addSwitch(const Arguments& args)
+Local<Value> CustomFormClass::addSwitch(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
@@ -136,7 +232,7 @@ Local<Value> FormClass::addSwitch(const Arguments& args)
     CATCH("Fail in addSwitch!")
 }
 
-Local<Value> FormClass::addDropdown(const Arguments& args)
+Local<Value> CustomFormClass::addDropdown(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,2)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
@@ -162,7 +258,7 @@ Local<Value> FormClass::addDropdown(const Arguments& args)
     CATCH("Fail in addDropdown!")
 }
 
-Local<Value> FormClass::addSlider(const Arguments& args)
+Local<Value> CustomFormClass::addSlider(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,3)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
@@ -206,7 +302,7 @@ Local<Value> FormClass::addSlider(const Arguments& args)
     CATCH("Fail in addSlider!")
 }
 
-Local<Value> FormClass::addStepSlider(const Arguments& args)
+Local<Value> CustomFormClass::addStepSlider(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,2)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
@@ -248,7 +344,12 @@ Local<Value> CancelForm(const Arguments& args)
     return Boolean::newBoolean(true);
 }
 
-Local<Value> NewForm(const Arguments& args)
+Local<Value> NewSimpleForm(const Arguments& args)
 {
-    return FormClass::newForm();
+    return SimpleFormClass::newForm();
+}
+
+Local<Value> NewCustomForm(const Arguments& args)
+{
+    return CustomFormClass::newForm();
 }

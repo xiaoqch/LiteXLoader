@@ -44,6 +44,11 @@ int Raw_SendCustomForm(Player* player,const std::string &data)
     return Raw_SendFormPacket(player,data);
 }
 
+int Raw_SendRawForm(Player* player, const std::string& data)
+{
+    return Raw_SendFormPacket(player, data);
+}
+
 bool Raw_CancelForm(int formId)
 {
     //################# Add code here #################

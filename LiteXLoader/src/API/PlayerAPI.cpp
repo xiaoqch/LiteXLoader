@@ -61,6 +61,7 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
 
         .instanceFunction("sendSimpleForm", &PlayerClass::sendSimpleForm)
         .instanceFunction("sendModalForm", &PlayerClass::sendModalForm)
+        .instanceFunction("sendCustomForm", &PlayerClass::sendCustomForm)
         .instanceFunction("sendForm", &PlayerClass::sendForm)
 
         .instanceFunction("setExtraData", &PlayerClass::setExtraData)
@@ -701,7 +702,6 @@ Local<Value> PlayerClass::removeBossBar(const Arguments& args)
     CATCH("Fail in removeBossBar!")
 }
 
-
 Local<Value> PlayerClass::sendSimpleForm(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,4)
@@ -717,11 +717,12 @@ Local<Value> PlayerClass::sendSimpleForm(const Arguments& args)
         if (!player)
             return Local<Value>();
 
+        // 普通格式
         auto textsArr = args[2].asArray();
         if (textsArr.size() == 0 || !textsArr.get(0).isString())
             return Local<Value>();
         auto imagesArr = args[3].asArray();
-        if(imagesArr.size() != textsArr.size() || !imagesArr.get(0).isString())
+        if (imagesArr.size() != textsArr.size() || !imagesArr.get(0).isString())
             return Local<Value>();
 
         vector<string> texts, images;
@@ -732,6 +733,8 @@ Local<Value> PlayerClass::sendSimpleForm(const Arguments& args)
         }
 
         int formId = Raw_SendSimpleForm(player, args[0].toStr(), args[1].toStr(), texts, images);
+
+        
         FormCallbackKey key{ LXL_SCRIPT_LANG_TYPE,(unsigned)formId };
         engineGlobalData->formCallbacks[key] = { EngineScope::currentEngine(),Global<Function>(args[4].asFunction()) };
 
@@ -742,14 +745,14 @@ Local<Value> PlayerClass::sendSimpleForm(const Arguments& args)
 
 Local<Value> PlayerClass::sendModalForm(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args,5)
-    CHECK_ARG_TYPE(args[0],ValueKind::kString)
-    CHECK_ARG_TYPE(args[1],ValueKind::kString)
-    CHECK_ARG_TYPE(args[2],ValueKind::kString)
-    CHECK_ARG_TYPE(args[3],ValueKind::kString)
-    CHECK_ARG_TYPE(args[4],ValueKind::kFunction)
+    CHECK_ARGS_COUNT(args, 5)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARG_TYPE(args[1], ValueKind::kString)
+    CHECK_ARG_TYPE(args[2], ValueKind::kString)
+    CHECK_ARG_TYPE(args[3], ValueKind::kString)
+    CHECK_ARG_TYPE(args[4], ValueKind::kFunction)
 
-    try{
+    try {
         Player* player = get();
         if (!player)
             return Local<Value>();
@@ -757,16 +760,16 @@ Local<Value> PlayerClass::sendModalForm(const Arguments& args)
         int formId = Raw_SendModalForm(player, args[0].toStr(), args[1].toStr(), args[2].toStr(), args[3].toStr());
         FormCallbackKey key{ LXL_SCRIPT_LANG_TYPE,(unsigned)formId };
         engineGlobalData->formCallbacks[key] = { EngineScope::currentEngine(),Global<Function>(args[4].asFunction()) };
-        
+
         return Number::newNumber(formId);
     }
     CATCH("Fail in sendModalForm!")
 }
 
-Local<Value> PlayerClass::sendForm(const Arguments& args)
+Local<Value> PlayerClass::sendCustomForm(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,2)
-    //CHECK_ARG_TYPE(args[0],ValueKind::kString)
+    CHECK_ARG_TYPE(args[0],ValueKind::kString)
     CHECK_ARG_TYPE(args[1],ValueKind::kFunction)
 
     try{
@@ -774,26 +777,52 @@ Local<Value> PlayerClass::sendForm(const Arguments& args)
         if (!player)
             return Local<Value>();
 
-        string data;
-        if(args[0].getKind() == ValueKind::kString)
-        {
-            // Json格式
-            data = JSON_VALUE::parse(args[0].toStr()).dump();
-        }
-        else
-        {
-            // Form对象
-            auto jsonForm = FormClass::extractForm(args[0]);
-            if(jsonForm == nullptr)
-                throw "Unknown Type of Parameter!";
-            data = jsonForm->dump();
-        }
+        string data = JSON_VALUE::parse(args[0].toStr()).dump();
+        int formId = Raw_SendCustomForm(player, data);
         
-        int formId = Raw_SendCustomForm(player,data);
         FormCallbackKey key{ LXL_SCRIPT_LANG_TYPE,(unsigned)formId };
         engineGlobalData->formCallbacks[key] = { EngineScope::currentEngine(),Global<Function>(args[1].asFunction()) };
         
         return Number::newNumber(formId);
+    }
+    catch (const JSON_VALUE::exception& e)
+    {
+        ERROR("Fail to parse Json string in sendCustomForm!");
+        ERRPRINT(e.what());
+
+        return Local<Value>();
+    }
+    CATCH("Fail in sendCustomForm!")
+}
+
+Local<Value> PlayerClass::sendForm(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 2)
+    CHECK_ARG_TYPE(args[1], ValueKind::kFunction)
+
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        int formId = 0;
+        auto jsonForm = SimpleFormClass::extractForm(args[0]);
+        if(jsonForm == nullptr)
+            jsonForm = CustomFormClass::extractForm(args[0]);
+
+        if (jsonForm != nullptr)
+        {
+            int formId = Raw_SendRawForm(player, jsonForm->dump());
+            FormCallbackKey key{ LXL_SCRIPT_LANG_TYPE,(unsigned)formId };
+            engineGlobalData->formCallbacks[key] = { EngineScope::currentEngine(),Global<Function>(args[1].asFunction()) };
+
+            return Number::newNumber(formId);
+        }
+        else
+        {
+            ERROR("Unknown Type of Form Parameter!");
+            return Local<Value>();
+        }
     }
     catch (const JSON_VALUE::exception& e)
     {
@@ -802,7 +831,7 @@ Local<Value> PlayerClass::sendForm(const Arguments& args)
 
         return Local<Value>();
     }
-    CATCH("Fail in sendCustomForm!")
+    CATCH("Fail in sendForm!")
 }
 
 Local<Value> PlayerClass::setExtraData(const Arguments& args)
