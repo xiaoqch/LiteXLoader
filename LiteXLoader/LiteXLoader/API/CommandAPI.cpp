@@ -243,14 +243,14 @@ bool ProcessHotManagement(const std::string& cmd)
     else if (cmd.find(LXL_HOT_LOAD) == 0 && cmdList.size() == 3)
     {
         //load
-        if (!filesystem::exists(cmdList[1]))
+        if (!filesystem::exists(cmdList[2]))
             ERROR("Plugin no found!");
-        LxlLoadPlugin(cmdList[1]);
+        LxlLoadPlugin(cmdList[2]);
     }
     else if (cmd.find(LXL_HOT_UNLOAD) == 0 && cmdList.size() == 3)
     {
         //unload
-        if (LxlUnloadPlugin(cmdList[1]) == "")
+        if (LxlUnloadPlugin(cmdList[2]) == "")
             ERROR("Plugin no found!");
     }
     else if (cmd.find(LXL_HOT_RELOAD) == 0)
@@ -263,7 +263,7 @@ bool ProcessHotManagement(const std::string& cmd)
         else if(cmdList.size() == 3)
         {
             //reload one
-            if(!LxlReloadPlugin(cmdList[1]))
+            if(!LxlReloadPlugin(cmdList[2]))
                 ERROR("Plugin no found!");
         }
         else
@@ -365,6 +365,8 @@ bool CallFormCallback(Player* player, unsigned formId, const string& data)
         auto res = callback.func.get().call({}, PlayerClass::newPlayer(player), JsonToValue(data));
         if (res.isNull() || (res.isBoolean() && res.asBoolean().value() == false))
             passToBDS = false;
+
+        engineGlobalData->formCallbacks.erase(key);
     }
     catch (...)
     {

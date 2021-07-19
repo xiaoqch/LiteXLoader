@@ -71,23 +71,7 @@ IntPos* IntPos::extractPos(Local<Value> v)
 
 Local<Value> IntPos::getDim()
 {
-    string name;
-    switch (dim)
-    {
-    case 0:
-        name = _TRS("base.getDimName.0");
-        break;
-    case 1:
-        name = _TRS("base.getDimName.1");
-        break;
-    case 2:
-        name = _TRS("base.getDimName.2");
-        break;
-    default:
-        name = _TRS("base.getDimName.unknown");
-        break;
-    }
-    return String::newString(name);
+    return String::newString(DimId2Name(dim));
 }
 
 //////////////////// FloatPos ////////////////////

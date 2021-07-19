@@ -1,4 +1,4 @@
-﻿﻿#include "pch.h"
+﻿#include "pch.h"
 #include "NbtAPI.h"
 #include <Kernel/NBT.h>
 #include <vector>

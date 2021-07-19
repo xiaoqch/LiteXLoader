@@ -21,6 +21,8 @@
 #include <LiteLoader/httplib.h>
 #include <LiteLoader/api/myPacket.h>
 #include <Configs.h>
+#include "i18n.h"
+#include <string>
 
 class IntVec4
 {
@@ -35,6 +37,27 @@ public:
 	float x,y,z;
     int dim;
 };
+
+inline std::string DimId2Name(int dimid)
+{
+    std::string name;
+    switch (dimid)
+    {
+    case 0:
+        name = _TRS("base.getDimName.0");
+        break;
+    case 1:
+        name = _TRS("base.getDimName.1");
+        break;
+    case 2:
+        name = _TRS("base.getDimName.2");
+        break;
+    default:
+        name = _TRS("base.getDimName.unknown");
+        break;
+    }
+    return name;
+}
 
 //全局变量
 extern bool isServerStarted;

@@ -82,11 +82,31 @@ void PrintValue(std::ostream &out, Local<Value> v)
             break;
         }
         case ValueKind::kFunction:
+        {
             out << "<Function>";
             break;
+        }
         default:
+        {
+            //IntPos
+            IntPos* intpos = IntPos::extractPos(v);
+            if (intpos != nullptr)
+            {
+                out << DimId2Name(intpos->dim) << " (" << intpos->x << "," << intpos->y << "," << intpos->z << ")";
+                break;
+            }
+
+            //FloatPos
+            FloatPos* floatpos = FloatPos::extractPos(v);
+            if (floatpos != nullptr)
+            {
+                out << DimId2Name(floatpos->dim) << " (" << floatpos->x << "," << floatpos->y << "," << floatpos->z << ")";
+                break;
+            }
+
             out << "<Unknown>";
             break;
+        }
     }
 }
 
