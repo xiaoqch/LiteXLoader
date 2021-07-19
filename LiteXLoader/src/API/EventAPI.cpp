@@ -661,6 +661,8 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
     string cmd = x->getCmd();
     if (cmd.front() == '/')
         cmd = cmd.substr(1);
+    if (cmd.empty())
+        return true;
 
     if (player)
     {
