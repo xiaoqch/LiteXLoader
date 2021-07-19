@@ -48,15 +48,3 @@ public:
     void setZ(const Local<Value>& value) { z = value.asNumber().toInt64(); }
     void setDimId(const Local<Value>& value) { dim = value.asNumber().toInt32(); }
 };
-
-
-//////////////////// APIs ////////////////////
-
-Local<Value> Log(const Arguments& args);
-Local<Value> GetTimeStr(const Arguments& args);
-Local<Value> GetTimeObj(const Arguments& args);
-Local<Value> RandomGuid(const Arguments& args);
-
-Local<Value> SetTimeout(const Arguments& args);
-Local<Value> SetInterval(const Arguments& args);
-Local<Value> ClearInterval(const Arguments& args);

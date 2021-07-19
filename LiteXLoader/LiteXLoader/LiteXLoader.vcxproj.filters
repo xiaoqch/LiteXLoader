@@ -134,6 +134,9 @@
     <ClCompile Include="Loader.cpp">
       <Filter>Main</Filter>
     </ClCompile>
+    <ClCompile Include="API\ScriptAPI.cpp">
+      <Filter>API</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="API\BaseAPI.h">
@@ -255,6 +258,9 @@
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="API\ScriptAPI.h">
+      <Filter>API</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

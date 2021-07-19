@@ -9,6 +9,7 @@
 #include "LoggerAPI.h"
 #include "ServerAPI.h"
 #include "PlayerAPI.h"
+#include "ScriptAPI.h"
 #include "DbAPI.h"
 #include "NetworkAPI.h"
 #include "GuiAPI.h"

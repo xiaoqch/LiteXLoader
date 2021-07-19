@@ -14,6 +14,7 @@ using namespace script;
 #include <API/NetworkAPI.h>
 #include <API/PlayerAPI.h>
 #include <API/ServerAPI.h>
+#include <API/ScriptAPI.h>
 #include <API/StaticClasses.h>
 
 void BindAPIs(ScriptEngine *engine)

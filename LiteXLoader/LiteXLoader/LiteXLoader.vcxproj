@@ -53,6 +53,7 @@
     <ClCompile Include="API\NetworkAPI.cpp" />
     <ClCompile Include="API\PlayerAPI.cpp" />
     <ClCompile Include="API\RemoteCall.cpp" />
+    <ClCompile Include="API\ScriptAPI.cpp" />
     <ClCompile Include="API\ServerAPI.cpp" />
     <ClCompile Include="BindAPIs.cpp" />
     <ClCompile Include="dllmain.cpp" />
@@ -94,6 +95,7 @@
     <ClInclude Include="API\pch.h" />
     <ClInclude Include="API\PlayerAPI.h" />
     <ClInclude Include="API\RemoteCall.h" />
+    <ClInclude Include="API\ScriptAPI.h" />
     <ClInclude Include="API\ServerAPI.h" />
     <ClInclude Include="API\StaticClasses.h" />
     <ClInclude Include="Configs.h" />

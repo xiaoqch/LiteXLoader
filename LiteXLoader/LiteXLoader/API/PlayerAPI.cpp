@@ -310,15 +310,39 @@ Local<Value> PlayerClass::teleport(const Arguments& args)
     CHECK_ARGS_COUNT(args,1)
     
     try{
+        FloatVec4 pos;
+
+        if (args.size() == 1)
+        {
+            // FloatPos
+            FloatPos* posObj = FloatPos::extractPos(args[0]);
+            if (!posObj)
+                return Local<Value>();
+            pos = *posObj;
+        }
+        else if (args.size() == 4)
+        {
+            // number pos
+            CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
+            CHECK_ARG_TYPE(args[1], ValueKind::kNumber);
+            CHECK_ARG_TYPE(args[2], ValueKind::kNumber);
+            CHECK_ARG_TYPE(args[3], ValueKind::kNumber);
+
+            pos.x = args[0].asNumber().toFloat();
+            pos.y = args[1].asNumber().toFloat();
+            pos.z = args[2].asNumber().toFloat();
+            pos.dim = args[3].toInt();
+        }
+        else
+        {
+            ERROR("Wrong type of argument in teleport!");
+            return Local<Value>();
+        }
+
         Player* player = get();
         if (!player)
             return Local<Value>();
-
-        FloatPos *pos = FloatPos::extractPos(args[0]);
-        if(!pos)
-            return Local<Value>();
-        
-        return Boolean::newBoolean(Raw_TeleportPlayer(player,*pos));
+        return Boolean::newBoolean(Raw_TeleportPlayer(player, pos));
     }
     CATCH("Fail in TeleportPlayer!")
 }
