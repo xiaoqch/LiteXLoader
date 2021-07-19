@@ -64,6 +64,7 @@ public:
 
     Local<Value> sendSimpleForm(const Arguments& args);
     Local<Value> sendModalForm(const Arguments& args);
+    Local<Value> sendCustomForm(const Arguments& args);
     Local<Value> sendForm(const Arguments& args);
 
     Local<Value> setExtraData(const Arguments& args);

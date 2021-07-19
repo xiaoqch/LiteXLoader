@@ -67,8 +67,11 @@ void BindAPIs(ScriptEngine *engine)
     extern ClassDefine<EntityClass> EntityClassBuilder;
     engine->registerNativeClass<EntityClass>(EntityClassBuilder);
 
-    extern ClassDefine<FormClass> FormClassBuilder;
-    engine->registerNativeClass<FormClass>(FormClassBuilder);
+    extern ClassDefine<SimpleFormClass> SimpleFormClassBuilder;
+    engine->registerNativeClass<SimpleFormClass>(SimpleFormClassBuilder);
+
+    extern ClassDefine<CustomFormClass> CustomFormClassBuilder;
+    engine->registerNativeClass<CustomFormClass>(CustomFormClassBuilder);
 
     extern ClassDefine<ItemClass> ItemClassBuilder;
     engine->registerNativeClass<ItemClass>(ItemClassBuilder);

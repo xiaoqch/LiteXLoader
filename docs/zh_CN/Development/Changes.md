@@ -6,7 +6,7 @@
 
 #### 20210719 - v 0.0.9
 
-- `sendForm`接口统一更名为`sendCustomForm`，`mc.newForm`更名为`mc.newCustomForm`
+- `mc.newForm`更名为`mc.newCustomForm`，增加 `SimpleForm` 普通表单构建器
 
 #### 20210717 - v 0.0.8
 
