@@ -205,7 +205,7 @@ var open = pl.runcmd("tp ~ ~+50 ~");
 
 ```clike
 [Js]
-//对于一个玩家对象pl，一个位置坐标对象pos
+//对于一个玩家对象pl，一个坐标对象pos
 pl.teleport(pos);
 [Lua]
 

@@ -1,7 +1,3 @@
-# LiteXLoader - 游戏元素接口文档
-
-> 下列这些API，提供了对游戏内容进行 **修改** 和 **扩展** 的能力。  
-
 ## 🎯 命令相关 API
 
 下面这些API提供了在游戏中注册、监听自定义命令的接口
@@ -76,7 +72,7 @@ log(result.output);
   执行命令的玩家对象
 - args : `Array<String,String...>`    
   目标命令后面的参数。按空格为分界分割，组成字符串数组。  
-  如注册了自定义命令 `land set`，当执行 `/land set abc 2333` 时，args的值将为 `[ "abc","2333" ]`
+  如注册了自定义命令 `land set`，当执行 `/land set abc 2333` 时，args的值将为 `[ "abc","2333" ]`
 
 ```clike
 [Js]
