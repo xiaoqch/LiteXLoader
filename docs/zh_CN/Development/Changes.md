@@ -7,6 +7,8 @@
 #### 20210719 - v 0.0.9
 
 - `mc.newForm`更名为`mc.newCustomForm`，增加 `SimpleForm` 普通表单构建器
+- `onUseItem`事件删除 block 参数，如果有需要监听点击方块请使用 `onBlockInteracted` 事件  
+  useitem 事件不再会不停的刷了
 
 #### 20210717 - v 0.0.8
 

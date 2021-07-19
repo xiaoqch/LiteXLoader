@@ -200,6 +200,11 @@ bool LxlRemoveAllEventListeners(ScriptEngine* engine)
 
 void InitEventListeners()
 {
+
+    Event::addEventListener([](PlayerUseItemEV ev) {
+        cout << "use item " << ev.Player->getNameTag() << endl;
+    });
+
 // ===== onLeft =====
     Event::addEventListener([](LeftEV ev)
     {
@@ -404,17 +409,15 @@ THook(bool, "?take@Player@@QEAA_NAEAVActor@@HH@Z",
 }
 
 // ===== onUseItem =====
-THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@PEBVBlock@@@Z",
-    void* _this,  ItemStack* item, BlockPos* bp, unsigned __int8 a4, Vec3* a5,  Block* bl)
+THook(bool, "?baseUseItem@GameMode@@QEAA_NAEAVItemStack@@@Z", void* _this, ItemStack& item)
 {
     IF_LISTENED(EVENT_TYPES::onUseItem)
     {
-        auto sp = *reinterpret_cast<Player**>(reinterpret_cast<unsigned long long>(_this) + 8);
+        auto sp = dAccess<ServerPlayer*, 8>(_this);
 
-        CallEventEx(EVENT_TYPES::onUseItem, PlayerClass::newPlayer(sp), ItemClass::newItem(item),
-            BlockClass::newBlock(bl, bp, WPlayer(*sp).getDimID()));
+        CallEventEx(EVENT_TYPES::onUseItem, PlayerClass::newPlayer(sp), ItemClass::newItem(&item));
     }
-    return original(_this, item, bp, a4, a5, bl);
+    return original(_this, item);
 }
 
 // ===== onDestroyingBlock =====
