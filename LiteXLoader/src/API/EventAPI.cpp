@@ -451,8 +451,6 @@ THook(bool, "?mayPlace@BlockSource@@QEAA_NAEBVBlock@@AEBVBlockPos@@EPEAVActor@@_
     return original(bs, bl, bp, a4, pl, a6);
 }
 
-
-
 // ===== onOpenContainer_Chest =====
 THook(bool, "?use@ChestBlock@@UEBA_NAEAVPlayer@@AEBVBlockPos@@E@Z",
     void* _this, Player* pl , BlockPos* bp)
@@ -661,35 +659,35 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
     string cmd = x->getCmd();
     if (cmd.front() == '/')
         cmd = cmd.substr(1);
-    if (cmd.empty())
-        return true;
-
-    if (player)
+    if (!cmd.empty())
     {
-        // Player Command
-        bool callbackRes = CallPlayerCmdCallback(player, cmd);
-        IF_LISTENED(EVENT_TYPES::onPlayerCmd)
+        if (player)
         {
-            CallEvent(EVENT_TYPES::onPlayerCmd, PlayerClass::newPlayer(player), cmd);
+            // Player Command
+            bool callbackRes = CallPlayerCmdCallback(player, cmd);
+            IF_LISTENED(EVENT_TYPES::onPlayerCmd)
+            {
+                CallEvent(EVENT_TYPES::onPlayerCmd, PlayerClass::newPlayer(player), cmd);
+            }
+            if (!callbackRes)
+                return false;
         }
-        if (!callbackRes)
-            return false;
-    }
-    else
-    {
-        // Server Command
-        if (!ProcessDebugEngine(cmd))
-            return false;
-        ProcessStopServer(cmd);
-        ProcessHotManagement(cmd);
+        else
+        {
+            // Server Command
+            if (!ProcessDebugEngine(cmd))
+                return false;
+            ProcessStopServer(cmd);
+            ProcessHotManagement(cmd);
 
-        bool callbackRes = CallServerCmdCallback(cmd);
-        IF_LISTENED(EVENT_TYPES::onConsoleCmd)
-        {
-            CallEventEx(EVENT_TYPES::onConsoleCmd, cmd);
+            bool callbackRes = CallServerCmdCallback(cmd);
+            IF_LISTENED(EVENT_TYPES::onConsoleCmd)
+            {
+                CallEventEx(EVENT_TYPES::onConsoleCmd, cmd);
+            }
+            if (!callbackRes)
+                return false;
         }
-        if (!callbackRes)
-            return false;
     }
     return original(_this, a2, x, a4);
 }
