@@ -29,7 +29,7 @@ Local<Value> LxlListPlugins(const Arguments& args)
     try
     {
         Local<Array> plugins = Array::newArray();
-        auto list = LxlListAllPlugins();
+        auto list = LxlListGlocalAllPlugins();
         for(auto pluginName : list)
         {
             plugins.add(String::newString(pluginName));

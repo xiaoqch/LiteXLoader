@@ -3,8 +3,10 @@
 #include "PlayerAPI.h"
 #include "EngineGlobalData.h"
 #include "EngineOwnData.h"
+#include "LoaderHelper.h"
 #include <Kernel/Base.h>
 #include <Kernel/Global.h>
+#include <filesystem>
 #include <Configs.h>
 #include <vector>
 #include <string>
@@ -154,8 +156,16 @@ vector<string> SplitCmdParas(const string& paras)
 
 void RegisterBuiltinCmds()
 {
-    Raw_RegisterCmd(LXL_DEBUG_CMD, string(LXL_SCRIPT_LANG_TYPE) + " Engine Real-time Debugging", 4);
-    DEBUG("Builtin Cmds Registered.");
+    //调试引擎
+    Raw_RegisterCmd(LXL_DEBUG_CMD, "LXL " + string(LXL_SCRIPT_LANG_TYPE) + " Engine Real-time Debugging", 4);
+    
+    //热管理
+    Raw_RegisterCmd(LXL_HOT_LIST, "List current loaded LXL plugins", 4);
+    Raw_RegisterCmd(LXL_HOT_LOAD, "Load a new LXL plugin", 4);
+    Raw_RegisterCmd(LXL_HOT_UNLOAD, "Unload an existing LXL plugin", 4);
+    Raw_RegisterCmd(LXL_HOT_RELOAD, "Reload an existing LXL plugin / all LXL plugins", 4);
+
+    INFO("Builtin Cmds Registered.");
 }
 
 void ProcessRegCmdQueue()
@@ -215,6 +225,53 @@ bool ProcessDebugEngine(const string& cmd)
         return false;
     }
     return true;
+}
+
+bool ProcessHotManagement(const std::string& cmd)
+{
+    auto cmdList = SplitCmdParas(cmd);
+    if (cmdList[0] != LXL_HOT_MANAGE_PREFIX)
+        return true;
+
+    if (cmd.find(LXL_HOT_LIST) == 0)
+    {
+        //list
+        auto list = LxlListLocalAllPlugins();
+        for (auto& name : list)
+            PRINT(name);
+    }
+    else if (cmd.find(LXL_HOT_LOAD) == 0 && cmdList.size() == 3)
+    {
+        //load
+        if (!filesystem::exists(cmdList[1]))
+            ERROR("Plugin no found!");
+        LxlLoadPlugin(cmdList[1]);
+    }
+    else if (cmd.find(LXL_HOT_UNLOAD) == 0 && cmdList.size() == 3)
+    {
+        //unload
+        if (LxlUnloadPlugin(cmdList[1]) == "")
+            ERROR("Plugin no found!");
+    }
+    else if (cmd.find(LXL_HOT_RELOAD) == 0)
+    {
+        if (cmdList.size() == 2)
+        {
+            //reload all
+            LxlReloadAllPlugins();
+        }
+        else if(cmdList.size() == 3)
+        {
+            //reload one
+            if(!LxlReloadPlugin(cmdList[1]))
+                ERROR("Plugin no found!");
+        }
+        else
+            ERROR("Bad Command!");
+    }
+    else
+        ERROR("Bad Command!");
+    return false;
 }
 
 void ProcessStopServer(const string& cmd)

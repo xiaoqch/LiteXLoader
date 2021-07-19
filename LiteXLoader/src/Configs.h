@@ -6,7 +6,7 @@
 // 版本记录
 #define LXL_VERSION_MAJOR 0
 #define LXL_VERSION_MINOR 0
-#define LXL_VERSION_BUILD 8
+#define LXL_VERSION_BUILD 9
 #define LXL_VERSION_IS_BETA true
 
 // 后端宏
@@ -35,6 +35,14 @@
 #elif defined(SCRIPTX_LANG_LUA)
 	#define LXL_DEBUG_CMD "luadebug"
 #endif
+#define LXL_DEBUG_ENGINE_NAME "__LXL_DEBUG_ENGINE__"
+
+// 热管理命令
+#define LXL_HOT_MANAGE_PREFIX "lxl"
+#define LXL_HOT_LIST "lxl list"
+#define LXL_HOT_LOAD "lxl load"
+#define LXL_HOT_UNLOAD "lxl unload"
+#define LXL_HOT_RELOAD "lxl reload"
 
 // 全局通信
 #define LXL_GLOBAL_DATA_NAME L"LITEXLOADER_GLOBAL_DATA_SECTION"

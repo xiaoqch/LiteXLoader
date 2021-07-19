@@ -52,6 +52,8 @@ ScriptEngine* NewEngine()
 //加载插件
 bool LxlLoadPlugin(const std::string& filePath)
 {
+    if (filePath == LXL_DEBUG_ENGINE_NAME)
+        return true;
     try
     {
         std::string scripts = ReadFileFrom(filePath);
@@ -134,6 +136,9 @@ bool LxlLoadPlugin(const std::string& filePath)
 //卸载插件
 string LxlUnloadPlugin(const std::string& name)
 {
+    if (name == LXL_DEBUG_ENGINE_NAME)
+        return LXL_DEBUG_ENGINE_NAME;
+
     string unloadedPath = "";
     for (int i = 0; i < lxlModules.size(); ++i)
     {
@@ -150,7 +155,7 @@ string LxlUnloadPlugin(const std::string& name)
             //############# Js delete v8崩溃 #############
             //engine->destory();
 
-            INFO("Plugin " + name + " unloaded.")
+            INFO(name + " unloaded.")
             break;
         }
     }
@@ -160,6 +165,9 @@ string LxlUnloadPlugin(const std::string& name)
 //重载插件
 bool LxlReloadPlugin(const std::string& name)
 {
+    if (name == LXL_DEBUG_ENGINE_NAME)
+        return true;
+
     string unloadedPath = LxlUnloadPlugin(name);
     if (unloadedPath.empty())
         return false;
@@ -167,14 +175,30 @@ bool LxlReloadPlugin(const std::string& name)
 }
 
 //重载全部插件
-bool LxlReloadAllPlugin(const std::string& name)
+bool LxlReloadAllPlugins()
 {
-    auto pluginsList = lxlModules;
-    for (auto& engine : lxlModules)
-        LxlReloadPlugin(ENGINE_GET_DATA(engine)->pluginName);
+    auto pluginsList = LxlListLocalAllPlugins();
+    for (auto& name : pluginsList)
+        LxlReloadPlugin(name);
+    return true;
 }
 
-vector<string> LxlListAllPlugins()
+//获取当前语言的所有插件
+vector<string> LxlListLocalAllPlugins()
+{
+    vector<string> list;
+
+    for (auto& engine : lxlModules)
+    {
+        string name = ENGINE_GET_DATA(engine)->pluginName;
+        if (name != LXL_DEBUG_ENGINE_NAME)
+            list.push_back(name);
+    }
+    return list;
+}
+
+//获取整个LXL所有的插件
+vector<string> LxlListGlocalAllPlugins()
 {
     return engineGlobalData->pluginsList;
 }

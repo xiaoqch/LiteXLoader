@@ -63,7 +63,7 @@ void LoadDebugEngine()
     EngineScope enter(debugEngine);
 
     //setData
-    ENGINE_OWN_DATA()->pluginName = "__LXL_DEBUG_ENGINE__";
+    ENGINE_OWN_DATA()->pluginName = LXL_DEBUG_ENGINE_NAME;
 
     //绑定API
     try {

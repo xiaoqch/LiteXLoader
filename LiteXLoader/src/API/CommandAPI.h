@@ -24,6 +24,8 @@ void RegisterBuiltinCmds();
 void ProcessRegCmdQueue();
 // 处理调试引擎事件
 bool ProcessDebugEngine(const std::string& cmd);
+// 处理热管理系统
+bool ProcessHotManagement(const std::string& cmd);
 // 处理关服事件
 void ProcessStopServer(const std::string& cmd);
 // 玩家自定义命令注册回调
