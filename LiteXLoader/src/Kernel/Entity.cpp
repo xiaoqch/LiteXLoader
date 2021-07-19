@@ -1,4 +1,5 @@
 #include "Entity.h"
+#include "Player.h"
 using namespace std;
 
 string Raw_GetEntityName(Actor* actor)
@@ -52,10 +53,20 @@ bool Raw_KillEntity(Actor* actor)
     return true;
 }
 
+bool Raw_IsPlayer(Actor* actor)
+{
+    Player* pl = (Player*)actor;
+    auto plList = Raw_GetOnlinePlayers();
+
+    for (auto& player : plList)
+        if (player == pl)
+        {
+            return true;
+        }
+    return false;
+}
+
 Player* Raw_ToPlayer(Actor* actor)
 {
-    if (Raw_GetEntityTypeName(actor) == "entity.player.name")
-        return dAccess<Player*>(actor, 0);
-    else
-        return nullptr;
+    return Raw_IsPlayer ? (Player*)actor : nullptr;
 }
