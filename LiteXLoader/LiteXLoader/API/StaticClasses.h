@@ -42,6 +42,9 @@ public:
     static Local<Value> setMotd(const Arguments& args) { return SetMotd(args); }
     static Local<Value> setOnlinePlayer(const Arguments& args) { return SetOnlinePlayer(args); }
     static Local<Value> sendCmdOutput(const Arguments& args) { return SendCmdOutput(args); }
+
+    static Local<Value> newIntPos(const Arguments& args) { return NewIntPos(args); }
+    static Local<Value> newFloatPos(const Arguments& args) { return NewFloatPos(args); }
 };
 
 static ClassDefine<void> McClassBuilder =
@@ -63,6 +66,8 @@ static ClassDefine<void> McClassBuilder =
         .function("setMotd", &McClass::setMotd)
         .function("setOnlinePlayer", &McClass::setOnlinePlayer)
         .function("sendCmdOutput", &McClass::sendCmdOutput)
+        .function("newIntPos", &McClass::newIntPos)
+        .function("newFloatPos", &McClass::newFloatPos)
         .function("crash", CrashBDS)
         .build();
 

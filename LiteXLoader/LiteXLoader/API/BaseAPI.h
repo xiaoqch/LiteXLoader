@@ -48,3 +48,8 @@ public:
     void setZ(const Local<Value>& value) { z = value.asNumber().toInt64(); }
     void setDimId(const Local<Value>& value) { dim = value.asNumber().toInt32(); }
 };
+
+//////////////////// APIs ////////////////////
+
+Local<Value> NewIntPos(const Arguments& args);
+Local<Value> NewFloatPos(const Arguments& args);

@@ -154,3 +154,35 @@ Local<Value> FloatPos::getDim()
     }
     return String::newString(name);
 }
+
+//////////////////// APIs ////////////////////
+
+Local<Value> NewIntPos(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 4)
+    CHECK_ARG_TYPE(args[0], ValueKind::kNumber)
+    CHECK_ARG_TYPE(args[1], ValueKind::kNumber)
+    CHECK_ARG_TYPE(args[2], ValueKind::kNumber)
+    CHECK_ARG_TYPE(args[3], ValueKind::kNumber)
+
+    try
+    {
+        return IntPos::newPos(args[0].toInt(), args[1].toInt(), args[2].toInt(), args[3].toInt());
+    }
+    CATCH("Fail in NewIntPos!")
+}
+
+Local<Value> NewFloatPos(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 4)
+    CHECK_ARG_TYPE(args[0], ValueKind::kNumber)
+    CHECK_ARG_TYPE(args[1], ValueKind::kNumber)
+    CHECK_ARG_TYPE(args[2], ValueKind::kNumber)
+    CHECK_ARG_TYPE(args[3], ValueKind::kNumber)
+
+    try
+    {
+        return FloatPos::newPos(args[0].asNumber().toFloat(), args[1].asNumber().toFloat(), args[2].asNumber().toFloat(), args[3].toInt());
+    }
+    CATCH("Fail in NewFloatPos!")
+}
