@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿﻿#include "pch.h"
 #include "NbtAPI.h"
 #include <Kernel/NBT.h>
 #include <vector>
@@ -404,4 +404,3 @@ Local<Value> NBTClass::createTag(const Arguments& args)
     }
     CATCH("Fail in NBTwriteInt!")
 }
->>>>>>> Stashed changes

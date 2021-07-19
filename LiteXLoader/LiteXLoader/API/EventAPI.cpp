@@ -568,7 +568,7 @@ THook(void, "?onProjectileHit@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@AEBVAct
     return original(_this, bs, bp, actor);
 }
 
-// ===== onBlockInteractd =====
+// ===== onBlockInteracted =====
 THook(unsigned short, "?onBlockInteractedWith@VanillaServerGameplayEventListener@@UEAA?AW4EventResult@@AEAVPlayer@@AEBVBlockPos@@@Z",
     void* _this, Player* pl, BlockPos* bp)
 {
