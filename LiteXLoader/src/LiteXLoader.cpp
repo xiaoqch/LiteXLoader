@@ -19,26 +19,25 @@ using namespace script;
 using namespace std;
 
 //主引擎表
-std::list<std::shared_ptr<ScriptEngine>> lxlModules;
+std::vector<ScriptEngine*> lxlModules;
 // 配置文件
 INI_ROOT iniConf;
 // 日志等级
 int lxlLogLevel = 1;
 
-extern void LoadBaseLib();
 extern void LoadDepends();
 extern void LoadMain();
-extern void BindAPIs(std::shared_ptr<ScriptEngine> engine);
+extern void BindAPIs(ScriptEngine *engine);
 extern void LoadDebugEngine();
 
 void Welcome()
 {
-    cout << R"(     _       _  _         __   __  _                        _             )" << endl;
-    cout << R"(    | |     (_)| |        \ \ / / | |                      | |            )" << endl;
-    cout << R"(    | |      _ | |_  ___   \ V /  | |      ___    __ _   __| |  ___  _ __ )" << endl;
-    cout << R"(    | |     | || __|/ _ \   > <   | |     / _ \  / _` | / _` | / _ \| '__|)" << endl;
-    cout << R"(    | |____ | || |_|  __/  / . \  | |____| (_) || (_| || (_| ||  __/| |   )" << endl;
-    cout << R"(    |______||_| \__|\___| /_/ \_\ |______|\___/  \__,_| \__,_| \___||_|   )" << endl;
+    cout << R"(     _       _  _         __   __  _                        _             )" << endl
+         << R"(    | |     (_)| |        \ \ / / | |                      | |            )" << endl
+         << R"(    | |      _ | |_  ___   \ V /  | |      ___    __ _   __| |  ___  _ __ )" << endl
+         << R"(    | |     | || __|/ _ \   > <   | |     / _ \  / _` | / _` | / _ \| '__|)" << endl
+         << R"(    | |____ | || |_|  __/  / . \  | |____| (_) || (_| || (_| ||  __/| |   )" << endl
+         << R"(    |______||_| \__|\___| /_/ \_\ |______|\___/  \__,_| \__,_| \___||_|   )" << endl;
 
     cout << "\n\n      =========   LiteXLoader Script Plugin Loader   =========\n" << endl;
 }
@@ -74,7 +73,6 @@ void entry()
     Raw_InitEcnonmicSystem();
 
     //预加载库
-    LoadBaseLib();
     LoadDepends();
     
     //加载插件
@@ -92,7 +90,7 @@ void entry()
         std::this_thread::sleep_for(std::chrono::seconds(gcTime));
         for (auto engine : lxlModules)
         {
-            EngineScope enter(engine.get());
+            EngineScope enter(engine);
             engine->messageQueue()->loopQueue(utils::MessageQueue::LoopType::kLoopOnce);
         }
     }).detach();    //############## loadPlugin加锁 ################

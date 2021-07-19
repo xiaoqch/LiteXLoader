@@ -38,6 +38,8 @@ public:
 
 //全局变量
 extern bool isServerStarted;
+extern bool isCmdRegisterEnabled;
+extern CommandRegistry* CmdReg;
 extern Minecraft* mc;
 
 // 输出

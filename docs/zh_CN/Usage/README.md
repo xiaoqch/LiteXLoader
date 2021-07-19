@@ -33,12 +33,13 @@
 
 ```ini
 [Main]
-LxlLogLevel=1				# LXL日志等级，默认为1，即不显示debug信息
+Language=zh_CN				# LXL语言环境，默认为zh_CN，即中文
+LxlLogLevel=4				# LXL日志等级，默认为4，即显示除了debug信息以外的其他所有信息
 PluginsDir=./plugins		# LXL插件目录，默认为plugins
 DependsDir=./plugins/lib	# LXL依赖库目录，默认为plugins/lib
 
 [Advanced]
-GCInterval=20				# 引擎垃圾回收周期，默认为20秒
+GCInterval=10				# 引擎垃圾回收周期，默认为10秒
 ```
 
 
@@ -55,3 +56,26 @@ GCInterval=20				# 引擎垃圾回收周期，默认为20秒
 实时调试模式下，标准输入会被当做对应类型的脚本语言执行，并实时输出结果。  
 如果发生错误，引擎将输出错误信息与堆栈跟踪信息。  
 再次输入对应的`jsdebug`或`luadebug`将退出实时调试模式。
+
+## 🔌 插件热管理
+
+不用关闭服务端，就可以对LXL装载的脚本插件进行热管理。LXL提供了下面这些后台控制台命令
+
+- `lxl list`  
+  列出LXL当前加载的所有插件列表
+- `lxl load ./plugins/xxxx.js`  
+  加载位于指定路径的插件。路径是相对于BDS根目录的相对路径。
+- `lxl unload xxxx.lua`  
+  卸载在插件列表中名为 xxxx.lua 的插件
+- `lxl reload xxxx.js`  
+  重新加载在插件列表中名为 xxxx.js 的插件
+- `lxl reload`  
+  重新加载插件列表中的所有插件
+
+热管理使用提示：
+
+- 热卸载插件时，插件注册的命令不会被删除。玩家调用时会提示命令不存在
+- 如果你的插件有导出的函数被其他插件 Import，则当你卸载 / 重载此插件后，其他插件的 Import 都会失效  
+- 请勿在服务器尚未启动完毕，或者服务器中有大量玩家时卸载或者重载插件！否则服务器有可能发生崩溃
+
+插件热管理机制仅供调试插件时使用。在生产环境中最好避免使用，以免出现一些奇奇怪怪的问题。

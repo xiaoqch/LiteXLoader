@@ -4,7 +4,7 @@
 #include "EngineOwnData.h"
 #include "LoaderHelper.h"
 #include <Kernel/System.h>
-#include <Loader.h>
+#include "LoaderHelper.h"
 #include <Configs.h>
 #include <string>
 #include <filesystem>
@@ -29,7 +29,8 @@ Local<Value> LxlListPlugins(const Arguments& args)
     try
     {
         Local<Array> plugins = Array::newArray();
-        for(auto pluginName : engineGlobalData->pluginsList)
+        auto list = LxlListGlocalAllPlugins();
+        for(auto pluginName : list)
         {
             plugins.add(String::newString(pluginName));
         }

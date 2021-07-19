@@ -8,7 +8,7 @@ using namespace script;
 void InitEngineGlobalData(bool* isFirstInstance);
 
 //主引擎表
-extern std::list<std::shared_ptr<ScriptEngine>> lxlModules;
+extern std::vector<ScriptEngine*> lxlModules;
 
 //导出函数表
 struct ExportedFuncData
@@ -24,15 +24,12 @@ struct RemoteEngineData
 	unsigned threadId;
 };
 
+
+//表单回调信息
 struct FormCallbackKey
 {
 	std::string fromEngineType;
 	unsigned formId;
-
-	bool operator<(const FormCallbackKey& b)
-	{
-		return fromEngineType == b.fromEngineType ? formId < b.formId : fromEngineType < b.fromEngineType;
-	}
 };
 
 bool inline operator<(const FormCallbackKey& a, const FormCallbackKey& b)
@@ -40,7 +37,6 @@ bool inline operator<(const FormCallbackKey& a, const FormCallbackKey& b)
 	return a.fromEngineType == b.fromEngineType ? a.formId < b.formId : a.fromEngineType < b.fromEngineType;
 }
 
-//表单回调信息
 struct FormCallbackData
 {
 	script::ScriptEngine* engine;
@@ -62,5 +58,17 @@ struct GlobalDataType
 	std::map<FormCallbackKey, FormCallbackData> formCallbacks;
 };
 
+//命令延迟注册队列
+struct RegCmdQueue
+{
+	std::string cmd;
+	std::string describe;
+	int level;
+};
+extern std::vector<RegCmdQueue> toRegCmdQueue;
+
 //全局共享数据
 extern GlobalDataType* engineGlobalData;
+
+void AddToGlobalPluginsList(const std::string& name);
+void RemoveFromGlobalPluginsList(const std::string& name);

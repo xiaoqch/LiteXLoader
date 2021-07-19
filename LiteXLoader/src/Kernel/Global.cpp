@@ -1,5 +1,4 @@
 #include "Global.h"
-#include <tuple>
 using namespace std;
 
 //声明
@@ -7,13 +6,11 @@ class Scoreboard;
 
 //全局变量
 bool isServerStarted = false;
+bool isCmdRegisterEnabled = false;
 
 Minecraft* mc = nullptr;
 Scoreboard* g_scoreboard = nullptr;
 CommandRegistry* CmdReg = nullptr;
-
-//命令注册等待队列
-std::vector<tuple<string, string, int>> toRegCmdQueue;
 
 
 //初始化

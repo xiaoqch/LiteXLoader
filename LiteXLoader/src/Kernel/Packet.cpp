@@ -1,5 +1,6 @@
 #include "Packet.h"
 #include "SymbolHelper.h"
+#include <cstdlib>
 using namespace std;
 
 void* Raw_CreatePacket(int type)
@@ -18,8 +19,9 @@ bool Raw_SendPacket(Player *player,void *packet)
 
 int Raw_SendFormPacket(Player* player, const string &data)
 {
-    static int id = 0;
-    ++id;
+    //static unsigned id = 0;
+    //++id;
+    unsigned id = (unsigned)((rand()<<16)+rand());
 
     void *packet = Raw_CreatePacket(100);   //表单数据包
     dAccess<unsigned>(packet, 48) = id;
