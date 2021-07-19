@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "Entity.h"
 #include "Player.h"
 using namespace std;

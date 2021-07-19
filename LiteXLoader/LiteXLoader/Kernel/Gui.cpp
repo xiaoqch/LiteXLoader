@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "Gui.h"
 #include "Db.h"
 #include "Packet.h"

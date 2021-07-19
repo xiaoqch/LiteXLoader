@@ -1,3 +1,4 @@
+#include "pch.h"
 #include <ScriptX/ScriptX.h>
 #include <API/pch.h>
 #include <API/EngineGlobalData.h>

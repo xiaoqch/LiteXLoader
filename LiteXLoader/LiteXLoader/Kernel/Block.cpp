@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "Block.h"
 #include "SymbolHelper.h"
 using namespace std;

@@ -35,86 +35,86 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\API\APIHelp.cpp" />
-    <ClCompile Include="..\src\API\BaseAPI.cpp" />
-    <ClCompile Include="..\src\API\BlockAPI.cpp" />
-    <ClCompile Include="..\src\API\CommandAPI.cpp" />
-    <ClCompile Include="..\src\API\DbAPI.cpp" />
-    <ClCompile Include="..\src\API\EngineGlobalData.cpp" />
-    <ClCompile Include="..\src\API\EntityAPI.cpp" />
-    <ClCompile Include="..\src\API\EventAPI.cpp" />
-    <ClCompile Include="..\src\API\FileSystemAPI.cpp" />
-    <ClCompile Include="..\src\API\GuiAPI.cpp" />
-    <ClCompile Include="..\src\API\ItemAPI.cpp" />
-    <ClCompile Include="..\src\API\LoaderHelper.cpp" />
-    <ClCompile Include="..\src\API\LoggerAPI.cpp" />
-    <ClCompile Include="..\src\API\LxlAPI.cpp" />
-    <ClCompile Include="..\src\API\NbtAPI.cpp" />
-    <ClCompile Include="..\src\API\NetworkAPI.cpp" />
-    <ClCompile Include="..\src\API\PlayerAPI.cpp" />
-    <ClCompile Include="..\src\API\RemoteCall.cpp" />
-    <ClCompile Include="..\src\API\ServerAPI.cpp" />
-    <ClCompile Include="..\src\API\StaticClasses.h" />
-    <ClCompile Include="..\src\BindAPIs.cpp" />
-    <ClCompile Include="..\src\dllmain.cpp" />
-    <ClCompile Include="..\src\Kernel\Base.cpp" />
-    <ClCompile Include="..\src\Kernel\Block.cpp" />
-    <ClCompile Include="..\src\Kernel\Db.cpp" />
-    <ClCompile Include="..\src\Kernel\Entity.cpp" />
-    <ClCompile Include="..\src\Kernel\Event.cpp" />
-    <ClCompile Include="..\src\Kernel\Global.cpp" />
-    <ClCompile Include="..\src\Kernel\i18n.cpp" />
-    <ClCompile Include="..\src\Kernel\SymbolHelper.cpp" />
-    <ClCompile Include="..\src\Kernel\Gui.cpp" />
-    <ClCompile Include="..\src\Kernel\Item.cpp" />
-    <ClCompile Include="..\src\Kernel\NBT.cpp" />
-    <ClCompile Include="..\src\Kernel\Packet.cpp" />
-    <ClCompile Include="..\src\Kernel\Player.cpp" />
-    <ClCompile Include="..\src\Kernel\Server.cpp" />
-    <ClCompile Include="..\src\Kernel\System.cpp" />
-    <ClCompile Include="..\src\LiteXLoader.cpp" />
-    <ClCompile Include="..\src\Loader.cpp" />
+    <ClCompile Include="API\APIHelp.cpp" />
+    <ClCompile Include="API\BaseAPI.cpp" />
+    <ClCompile Include="API\BlockAPI.cpp" />
+    <ClCompile Include="API\CommandAPI.cpp" />
+    <ClCompile Include="API\DbAPI.cpp" />
+    <ClCompile Include="API\EngineGlobalData.cpp" />
+    <ClCompile Include="API\EntityAPI.cpp" />
+    <ClCompile Include="API\EventAPI.cpp" />
+    <ClCompile Include="API\FileSystemAPI.cpp" />
+    <ClCompile Include="API\GuiAPI.cpp" />
+    <ClCompile Include="API\ItemAPI.cpp" />
+    <ClCompile Include="API\LoaderHelper.cpp" />
+    <ClCompile Include="API\LoggerAPI.cpp" />
+    <ClCompile Include="API\LxlAPI.cpp" />
+    <ClCompile Include="API\NbtAPI.cpp" />
+    <ClCompile Include="API\NetworkAPI.cpp" />
+    <ClCompile Include="API\PlayerAPI.cpp" />
+    <ClCompile Include="API\RemoteCall.cpp" />
+    <ClCompile Include="API\ServerAPI.cpp" />
+    <ClCompile Include="BindAPIs.cpp" />
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="Kernel\Base.cpp" />
+    <ClCompile Include="Kernel\Block.cpp" />
+    <ClCompile Include="Kernel\Db.cpp" />
+    <ClCompile Include="Kernel\Entity.cpp" />
+    <ClCompile Include="Kernel\Event.cpp" />
+    <ClCompile Include="Kernel\Global.cpp" />
+    <ClCompile Include="Kernel\Gui.cpp" />
+    <ClCompile Include="Kernel\i18n.cpp" />
+    <ClCompile Include="Kernel\Item.cpp" />
+    <ClCompile Include="Kernel\NBT.cpp" />
+    <ClCompile Include="Kernel\Packet.cpp" />
+    <ClCompile Include="Kernel\Player.cpp" />
+    <ClCompile Include="Kernel\Server.cpp" />
+    <ClCompile Include="Kernel\SymbolHelper.cpp" />
+    <ClCompile Include="Kernel\System.cpp" />
+    <ClCompile Include="LiteXLoader.cpp" />
+    <ClCompile Include="Loader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\API\pch.h" />
-    <ClInclude Include="..\src\API\BaseAPI.h" />
-    <ClInclude Include="..\src\API\BlockAPI.h" />
-    <ClInclude Include="..\src\API\CommandAPI.h" />
-    <ClInclude Include="..\src\API\DbAPI.h" />
-    <ClInclude Include="..\src\API\EngineGlobalData.h" />
-    <ClInclude Include="..\src\API\EngineOwnData.h" />
-    <ClInclude Include="..\src\API\EntityAPI.h" />
-    <ClInclude Include="..\src\API\EventAPI.h" />
-    <ClInclude Include="..\src\API\FileSystemAPI.h" />
-    <ClInclude Include="..\src\API\GuiAPI.h" />
-    <ClInclude Include="..\src\API\ItemAPI.h" />
-    <ClInclude Include="..\src\API\LoaderHelper.h" />
-    <ClInclude Include="..\src\API\LoggerAPI.h" />
-    <ClInclude Include="..\src\API\LxlAPI.h" />
-    <ClInclude Include="..\src\API\NbtAPI.h" />
-    <ClInclude Include="..\src\API\NetworkAPI.h" />
-    <ClInclude Include="..\src\API\PlayerAPI.h" />
-    <ClInclude Include="..\src\API\RemoteCall.h" />
-    <ClInclude Include="..\src\API\ServerAPI.h" />
-    <ClInclude Include="..\src\Configs.h" />
-    <ClInclude Include="..\src\Kernel\Base.h" />
-    <ClInclude Include="..\src\Kernel\Block.h" />
-    <ClInclude Include="..\src\Kernel\Db.h" />
-    <ClInclude Include="..\src\Kernel\Entity.h" />
-    <ClInclude Include="..\src\Kernel\Event.h" />
-    <ClInclude Include="..\src\Kernel\pch.h" />
-    <ClInclude Include="..\src\Kernel\Gui.h" />
-    <ClInclude Include="..\src\Kernel\i18n.h" />
-    <ClInclude Include="..\src\Kernel\Item.h" />
-    <ClInclude Include="..\src\Kernel\NBT.h" />
-    <ClInclude Include="..\src\Kernel\Packet.h" />
-    <ClInclude Include="..\src\Kernel\Player.h" />
-    <ClInclude Include="..\src\Kernel\Server.h" />
-    <ClInclude Include="..\src\Kernel\SymbolHelper.h" />
-    <ClInclude Include="..\src\Kernel\System.h" />
-    <ClInclude Include="..\src\Kernel\ThirdParty.h" />
-    <ClInclude Include="..\src\Loader.h" />
-    <ClInclude Include="..\src\pch.h" />
+    <ClInclude Include="API\BaseAPI.h" />
+    <ClInclude Include="API\BlockAPI.h" />
+    <ClInclude Include="API\CommandAPI.h" />
+    <ClInclude Include="API\DbAPI.h" />
+    <ClInclude Include="API\EngineGlobalData.h" />
+    <ClInclude Include="API\EngineOwnData.h" />
+    <ClInclude Include="API\EntityAPI.h" />
+    <ClInclude Include="API\EventAPI.h" />
+    <ClInclude Include="API\FileSystemAPI.h" />
+    <ClInclude Include="API\GuiAPI.h" />
+    <ClInclude Include="API\ItemAPI.h" />
+    <ClInclude Include="API\LoaderHelper.h" />
+    <ClInclude Include="API\LoggerAPI.h" />
+    <ClInclude Include="API\LxlAPI.h" />
+    <ClInclude Include="API\NbtAPI.h" />
+    <ClInclude Include="API\NetworkAPI.h" />
+    <ClInclude Include="API\pch.h" />
+    <ClInclude Include="API\PlayerAPI.h" />
+    <ClInclude Include="API\RemoteCall.h" />
+    <ClInclude Include="API\ServerAPI.h" />
+    <ClInclude Include="API\StaticClasses.h" />
+    <ClInclude Include="Configs.h" />
+    <ClInclude Include="Kernel\Base.h" />
+    <ClInclude Include="Kernel\Block.h" />
+    <ClInclude Include="Kernel\Db.h" />
+    <ClInclude Include="Kernel\Entity.h" />
+    <ClInclude Include="Kernel\Event.h" />
+    <ClInclude Include="Kernel\Gui.h" />
+    <ClInclude Include="Kernel\i18n.h" />
+    <ClInclude Include="Kernel\Item.h" />
+    <ClInclude Include="Kernel\NBT.h" />
+    <ClInclude Include="Kernel\Packet.h" />
+    <ClInclude Include="Kernel\pch.h" />
+    <ClInclude Include="Kernel\Player.h" />
+    <ClInclude Include="Kernel\Server.h" />
+    <ClInclude Include="Kernel\SymbolHelper.h" />
+    <ClInclude Include="Kernel\System.h" />
+    <ClInclude Include="Kernel\ThirdParty.h" />
+    <ClInclude Include="Loader.h" />
+    <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\third-party\dyncall\lib\libdyncallback_s.lib" />
@@ -186,6 +186,7 @@
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <EnableUnitySupport>false</EnableUnitySupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Js|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -193,6 +194,7 @@
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <EnableUnitySupport>false</EnableUnitySupport>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -250,13 +252,13 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Release\</OutDir>
     <TargetName>$(ProjectName).Lua</TargetName>
-    <IncludePath>$(SolutionDir)third-party\ScriptX\src\include\ScriptX;$(SolutionDir)third-party\ScriptX\src\include;$(SolutionDir)third-party\LiteLoader;$(SolutionDir)third-party;$(SolutionDir);$(SolutionDir)src;$(SolutionDir)third-party\Lua\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)third-party\ScriptX\src\include\ScriptX;$(SolutionDir)third-party\ScriptX\src\include;$(SolutionDir)third-party\LiteLoader;$(SolutionDir)third-party;$(SolutionDir);$(SolutionDir)LiteXLoader;$(SolutionDir)third-party\Lua\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Js|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Release\</OutDir>
     <TargetName>$(ProjectName).Js</TargetName>
-    <IncludePath>$(SolutionDir)third-party\ScriptX\src\include\ScriptX;$(SolutionDir)third-party\ScriptX\src\include;$(SolutionDir)third-party\LiteLoader;$(SolutionDir)third-party;$(SolutionDir);$(SolutionDir)src;$(SolutionDir)third-party\V8\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)third-party\ScriptX\src\include\ScriptX;$(SolutionDir)third-party\ScriptX\src\include;$(SolutionDir)third-party\LiteLoader;$(SolutionDir)third-party;$(SolutionDir);$(SolutionDir)LiteXLoader;$(SolutionDir)third-party\V8\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -366,6 +368,8 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -386,7 +390,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>

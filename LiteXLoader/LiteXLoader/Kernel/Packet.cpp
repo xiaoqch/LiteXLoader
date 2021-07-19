@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "Packet.h"
 #include "SymbolHelper.h"
 #include <cstdlib>

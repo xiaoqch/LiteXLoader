@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "EngineGlobalData.h"
 #include "RemoteCall.h"
 #include <ScriptX/ScriptX.h>
