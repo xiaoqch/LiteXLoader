@@ -1,5 +1,5 @@
 #include "BaseAPI.h"
-#include "pch.h"
+#include "APIHelp.h"
 using namespace script;
 
 //////////////////// Class Definition ////////////////////

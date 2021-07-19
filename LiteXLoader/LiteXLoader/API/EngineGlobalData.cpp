@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "APIHelp.h"
 #include "EngineGlobalData.h"
 #include "RemoteCall.h"
 #include <ScriptX/ScriptX.h>
@@ -8,7 +8,7 @@
 #include <vector>
 #include <map>
 #include <Configs.h>
-#include "pch.h"
+#include "APIHelp.h"
 using namespace std;
 using namespace script;
 

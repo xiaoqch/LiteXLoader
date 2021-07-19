@@ -1,8 +1,8 @@
-#include "pch.h"
+#include "Global.h"
 #include "Player.h"
 #include "Packet.h"
 #include "SymbolHelper.h"
-#include "pch.h"
+#include "Global.h"
 using namespace std;
 
 string  Raw_GetPlayerName(Player* player)

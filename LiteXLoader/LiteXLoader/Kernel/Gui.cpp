@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "Global.h"
 #include "Gui.h"
 #include "Db.h"
 #include "Packet.h"

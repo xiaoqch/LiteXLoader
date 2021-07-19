@@ -1,6 +1,5 @@
-#include "pch.h"
 #include <ScriptX/ScriptX.h>
-#include <API/pch.h>
+#include <API/APIHelp.h>
 #include <API/EngineGlobalData.h>
 #include <API/EngineOwnData.h>
 #include <API/LoaderHelper.h>

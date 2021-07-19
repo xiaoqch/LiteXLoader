@@ -1,6 +1,6 @@
-#include "pch.h"
+#include "Global.h"
 #include "Server.h"
-#include "pch.h"
+#include "Global.h"
 using namespace std;
 
 bool Raw_SetServerMotd(const std::string &motd)

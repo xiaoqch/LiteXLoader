@@ -1,5 +1,5 @@
 #include "ScriptAPI.h"
-#include "pch.h"
+#include "APIHelp.h"
 #include <Kernel/System.h>
 #include "EngineOwnData.h"
 #include <windows.h>

@@ -187,7 +187,7 @@
     <ClInclude Include="API\NetworkAPI.h">
       <Filter>API</Filter>
     </ClInclude>
-    <ClInclude Include="API\pch.h">
+    <ClInclude Include="API\APIHelp.h">
       <Filter>API</Filter>
     </ClInclude>
     <ClInclude Include="API\PlayerAPI.h">
@@ -232,7 +232,7 @@
     <ClInclude Include="Kernel\Packet.h">
       <Filter>Kernel</Filter>
     </ClInclude>
-    <ClInclude Include="Kernel\pch.h">
+    <ClInclude Include="Kernel\Global.h">
       <Filter>Kernel</Filter>
     </ClInclude>
     <ClInclude Include="Kernel\Player.h">
@@ -254,9 +254,6 @@
       <Filter>Main</Filter>
     </ClInclude>
     <ClInclude Include="Loader.h">
-      <Filter>Main</Filter>
-    </ClInclude>
-    <ClInclude Include="pch.h">
       <Filter>Main</Filter>
     </ClInclude>
     <ClInclude Include="API\ScriptAPI.h">

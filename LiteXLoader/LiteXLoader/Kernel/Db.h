@@ -1,5 +1,5 @@
 #pragma once
-#include "pch.h"
+#include "Global.h"
 #include "ThirdParty.h"
 #include <string>
 #include <vector>

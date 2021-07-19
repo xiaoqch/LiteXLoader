@@ -7,7 +7,7 @@
 #include <sstream>
 #include <exception>
 #include <cstdarg>
-#include <Kernel/pch.h>
+#include <Kernel/Global.h>
 #include <Kernel/Base.h>
 #include <Kernel/Block.h>
 #include <Kernel/Item.h>
@@ -15,10 +15,10 @@
 #include <Kernel/Player.h>
 #include <Kernel/SymbolHelper.h>
 #include <Kernel/Packet.h>
-#include <Kernel/pch.h>
+#include <Kernel/Global.h>
 #include "EngineOwnData.h"
 #include "EngineGlobalData.h"
-#include "pch.h"
+#include "APIHelp.h"
 #include "BaseAPI.h"
 #include "BlockAPI.h"
 #include "CommandAPI.h"

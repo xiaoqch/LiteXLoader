@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "Global.h"
 #include "Entity.h"
 #include "Player.h"
 using namespace std;

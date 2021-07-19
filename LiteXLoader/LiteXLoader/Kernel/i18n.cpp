@@ -1,5 +1,5 @@
 #include "i18n.h"
-#include "pch.h"
+#include "Global.h"
 #include <string>
 using namespace std;
 

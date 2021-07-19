@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "Global.h"
 #include "Db.h"
 #include "System.h"
 #include "ThirdParty.h"

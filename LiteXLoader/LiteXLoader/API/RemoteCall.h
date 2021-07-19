@@ -1,5 +1,6 @@
 #pragma once
-#include "pch.h"
+#include <ScriptX/ScriptX.h>
+#include <string>
 
 //////////////////// Funcs ////////////////////
 

@@ -1,11 +1,11 @@
 #include "CommandAPI.h"
-#include "pch.h"
+#include "APIHelp.h"
 #include "PlayerAPI.h"
 #include "EngineGlobalData.h"
 #include "EngineOwnData.h"
 #include "LoaderHelper.h"
 #include <Kernel/Base.h>
-#include <Kernel/pch.h>
+#include <Kernel/Global.h>
 #include <filesystem>
 #include <Configs.h>
 #include <vector>

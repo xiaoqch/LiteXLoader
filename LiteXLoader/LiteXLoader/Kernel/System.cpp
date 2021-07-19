@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "Global.h"
 #include "System.h"
 #include <string>
 #include <ctime>

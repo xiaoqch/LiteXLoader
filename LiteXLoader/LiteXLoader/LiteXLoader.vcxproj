@@ -92,7 +92,7 @@
     <ClInclude Include="API\LxlAPI.h" />
     <ClInclude Include="API\NbtAPI.h" />
     <ClInclude Include="API\NetworkAPI.h" />
-    <ClInclude Include="API\pch.h" />
+    <ClInclude Include="API\APIHelp.h" />
     <ClInclude Include="API\PlayerAPI.h" />
     <ClInclude Include="API\RemoteCall.h" />
     <ClInclude Include="API\ScriptAPI.h" />
@@ -109,14 +109,13 @@
     <ClInclude Include="Kernel\Item.h" />
     <ClInclude Include="Kernel\NBT.h" />
     <ClInclude Include="Kernel\Packet.h" />
-    <ClInclude Include="Kernel\pch.h" />
+    <ClInclude Include="Kernel\Global.h" />
     <ClInclude Include="Kernel\Player.h" />
     <ClInclude Include="Kernel\Server.h" />
     <ClInclude Include="Kernel\SymbolHelper.h" />
     <ClInclude Include="Kernel\System.h" />
     <ClInclude Include="Kernel\ThirdParty.h" />
     <ClInclude Include="Loader.h" />
-    <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\third-party\dyncall\lib\libdyncallback_s.lib" />
