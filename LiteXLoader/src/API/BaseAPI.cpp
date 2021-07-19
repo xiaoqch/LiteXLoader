@@ -1,5 +1,5 @@
 #include "BaseAPI.h"
-#include "APIhelp.h"
+#include "pch.h"
 #include "PlayerAPI.h"
 #include "ItemAPI.h"
 #include "BlockAPI.h"
@@ -7,7 +7,7 @@
 #include "EngineOwnData.h"
 #include <Kernel/Base.h>
 #include <Kernel/System.h>
-#include <Kernel/Global.h>
+#include <Kernel/pch.h>
 #include <windows.h>
 #include <chrono>
 #include <map>

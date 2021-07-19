@@ -2,7 +2,7 @@
 #include <ScriptX/ScriptX.h>
 using namespace script;
 
-#include <Kernel/Global.h>
+#include <Kernel/pch.h>
 #include <string>
 
 

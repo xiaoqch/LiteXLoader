@@ -20,7 +20,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\API\APIhelp.cpp">
+    <ClCompile Include="..\src\API\APIHelp.cpp">
       <Filter>API</Filter>
     </ClCompile>
     <ClCompile Include="..\src\API\BaseAPI.cpp">
@@ -142,7 +142,7 @@
     <ClInclude Include="..\src\Configs.h">
       <Filter>Main</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\API\APIhelp.h">
+    <ClInclude Include="..\src\API\pch.h">
       <Filter>API</Filter>
     </ClInclude>
     <ClInclude Include="..\src\API\BaseAPI.h">
@@ -208,7 +208,7 @@
     <ClInclude Include="..\src\Kernel\Event.h">
       <Filter>Kernel</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Kernel\Global.h">
+    <ClInclude Include="..\src\Kernel\pch.h">
       <Filter>Kernel</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Kernel\Gui.h">
@@ -251,6 +251,9 @@
       <Filter>API</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Loader.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\pch.h">
       <Filter>Main</Filter>
     </ClInclude>
   </ItemGroup>

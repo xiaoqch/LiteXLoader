@@ -1,6 +1,6 @@
 #pragma once
 #include <ScriptX/ScriptX.h>
-#include "APIHelp.h"
+#include "pch.h"
 using namespace script;
 
 //////////////////// Classes ////////////////////

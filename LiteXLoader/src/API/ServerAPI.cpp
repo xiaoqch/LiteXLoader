@@ -1,4 +1,4 @@
-#include "APIhelp.h"
+#include "pch.h"
 #include <ScriptX/ScriptX.h>
 #include <Kernel/Server.h>
 using namespace script;

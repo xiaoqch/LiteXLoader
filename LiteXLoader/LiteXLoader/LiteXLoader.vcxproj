@@ -35,7 +35,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\API\APIhelp.cpp" />
+    <ClCompile Include="..\src\API\APIHelp.cpp" />
     <ClCompile Include="..\src\API\BaseAPI.cpp" />
     <ClCompile Include="..\src\API\BlockAPI.cpp" />
     <ClCompile Include="..\src\API\CommandAPI.cpp" />
@@ -76,7 +76,7 @@
     <ClCompile Include="..\src\Loader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\API\APIhelp.h" />
+    <ClInclude Include="..\src\API\pch.h" />
     <ClInclude Include="..\src\API\BaseAPI.h" />
     <ClInclude Include="..\src\API\BlockAPI.h" />
     <ClInclude Include="..\src\API\CommandAPI.h" />
@@ -102,7 +102,7 @@
     <ClInclude Include="..\src\Kernel\Db.h" />
     <ClInclude Include="..\src\Kernel\Entity.h" />
     <ClInclude Include="..\src\Kernel\Event.h" />
-    <ClInclude Include="..\src\Kernel\Global.h" />
+    <ClInclude Include="..\src\Kernel\pch.h" />
     <ClInclude Include="..\src\Kernel\Gui.h" />
     <ClInclude Include="..\src\Kernel\i18n.h" />
     <ClInclude Include="..\src\Kernel\Item.h" />
@@ -114,6 +114,7 @@
     <ClInclude Include="..\src\Kernel\System.h" />
     <ClInclude Include="..\src\Kernel\ThirdParty.h" />
     <ClInclude Include="..\src\Loader.h" />
+    <ClInclude Include="..\src\pch.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\third-party\dyncall\lib\libdyncallback_s.lib" />
@@ -385,6 +386,8 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

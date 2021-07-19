@@ -1,6 +1,6 @@
-﻿// Ignore error below
+﻿#include "pch.h"
 #include <ScriptX/ScriptX.h>
-#include <API/APIhelp.h>
+#include <API/pch.h>
 #include <API/EventAPI.h>
 #include <API/EngineGlobalData.h>
 #include <API/EngineOwnData.h>

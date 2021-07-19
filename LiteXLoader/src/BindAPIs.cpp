@@ -1,5 +1,4 @@
-#include <list>
-// Ignore error below
+#include "pch.h"
 #include <ScriptX/ScriptX.h>
 using namespace script;
 #include <API/BaseAPI.h>

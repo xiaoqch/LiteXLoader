@@ -1,4 +1,4 @@
-#include "APIhelp.h"
+#include "pch.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -11,7 +11,7 @@
 #include "EntityAPI.h"
 #include "ItemAPI.h"
 #include "PlayerAPI.h"
-#include <Kernel/Global.h>
+#include <Kernel/pch.h>
 #include "EngineOwnData.h"
 using namespace script;
 using namespace std;

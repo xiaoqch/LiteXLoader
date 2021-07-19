@@ -1,5 +1,5 @@
 #include <ScriptX/ScriptX.h>
-#include <API/APIhelp.h>
+#include <API/pch.h>
 #include <API/EngineGlobalData.h>
 #include <API/EngineOwnData.h>
 #include <API/EventAPI.h>

@@ -1,4 +1,4 @@
-#include "Global.h"
+#include "pch.h"
 #include <string>
 
 bool Raw_Runcmd(const std::string &cmd);

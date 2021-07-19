@@ -1,4 +1,4 @@
-#include "Global.h"
+#include "pch.h"
 #include <string>
 
 //类定义
