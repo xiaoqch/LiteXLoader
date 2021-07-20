@@ -244,7 +244,7 @@ Local<Value> CustomFormClass::addDropdown(const Arguments& args)
         JSON_VALUE itemAdd;
         itemAdd["type"] = "dropdown";
         itemAdd["text"] = args[0].toStr();
-        itemAdd["options"] = ValueToJson(args[1].asArray());
+        itemAdd["options"] = JSON_VALUE::parse(ValueToJson(args[1].asArray()));
         itemAdd["default"] = args.size() >= 3 ? args[2].asNumber().toInt32() : 0;
         
         form["content"].push_back(itemAdd);
@@ -314,7 +314,7 @@ Local<Value> CustomFormClass::addStepSlider(const Arguments& args)
         JSON_VALUE itemAdd;
         itemAdd["type"] = "step_slider";
         itemAdd["text"] = args[0].toStr();
-        itemAdd["steps"] = ValueToJson(args[1].asArray());
+        itemAdd["steps"] = JSON_VALUE::parse(ValueToJson(args[1].asArray()));
         int maxIndex = args[1].asArray().size()-1;
         if(args.size() >= 3)
         {
