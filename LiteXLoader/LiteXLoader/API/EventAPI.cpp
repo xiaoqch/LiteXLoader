@@ -201,10 +201,6 @@ bool LxlRemoveAllEventListeners(ScriptEngine* engine)
 void InitEventListeners()
 {
 
-    Event::addEventListener([](PlayerUseItemEV ev) {
-        cout << "use item " << ev.Player->getNameTag() << endl;
-    });
-
 // ===== onLeft =====
     Event::addEventListener([](LeftEV ev)
     {
