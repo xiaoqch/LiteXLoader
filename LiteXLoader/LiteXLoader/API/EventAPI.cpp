@@ -33,7 +33,7 @@ using namespace script;
 
 enum class EVENT_TYPES : int
 {
-    onJoin=0, onLeft, onPlayerCmd, onChat, 
+    onJoin=0, onPlayerInitialized, onLeft, onPlayerCmd, onChat,
     onRespawn, onChangeDim, onJump, onSneak, onAttack, onEat, onMove, onSetArmor,
     onUseItem, onTakeItem, onDropItem, onUseItemOn,
     onDestroyingBlock, onDestroyBlock, onPlaceBlock,
@@ -46,6 +46,7 @@ enum class EVENT_TYPES : int
 };
 static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onJoin",EVENT_TYPES::onJoin},
+    {"onPlayerInitialized",EVENT_TYPES::onPlayerInitialized},
     {"onLeft",EVENT_TYPES::onLeft},
     {"onPlayerCmd",EVENT_TYPES::onPlayerCmd},
     {"onChat",EVENT_TYPES::onChat},
@@ -304,6 +305,16 @@ THook(bool, "?_loadNewPlayer@ServerNetworkHandler@@AEAA_NAEAVServerPlayer@@_N@Z"
         CallEvent(EVENT_TYPES::onJoin, PlayerClass::newPlayer(pl));
     }
     return original(_this, pl, a3);
+}
+// ===== onPlayerInitialized =====
+THook(bool, "?setLocalPlayerAsInitialized@ServerPlayer@@QEAAXXZ",
+    ServerPlayer* _this)
+{
+    IF_LISTENED(EVENT_TYPES::onPlayerInitialized)
+    {
+        CallEvent(EVENT_TYPES::onPlayerInitialized, PlayerClass::newPlayer(_this));
+    }
+    return original(_this);
 }
 
 // ===== onAttack =====
