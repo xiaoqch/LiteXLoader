@@ -6,7 +6,7 @@ std::string ReadFileFrom(const std::string& filePath);
 ScriptEngine* NewEngine();
 
 //加载插件
-bool LxlLoadPlugin(const std::string& filePath);
+bool LxlLoadPlugin(const std::string& filePath, bool isHotLoad = false);
 //卸载插件
 std::string LxlUnloadPlugin(const std::string& name);
 //重载插件
