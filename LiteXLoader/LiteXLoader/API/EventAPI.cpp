@@ -33,7 +33,7 @@ using namespace script;
 
 enum class EVENT_TYPES : int
 {
-    onJoin=0, onLeft, onPlayerCmd, onChat, 
+    onPreJoin=0, onJoin, onLeft, onPlayerCmd, onChat,
     onRespawn, onChangeDim, onJump, onSneak, onAttack, onEat, onMove, onSetArmor,
     onUseItem, onTakeItem, onDropItem, onUseItemOn,
     onDestroyingBlock, onDestroyBlock, onPlaceBlock,
@@ -45,6 +45,7 @@ enum class EVENT_TYPES : int
     EVENT_COUNT
 };
 static const std::unordered_map<string, EVENT_TYPES> EventsMap{
+    {"onPreJoin",EVENT_TYPES::onPreJoin},
     {"onJoin",EVENT_TYPES::onJoin},
     {"onLeft",EVENT_TYPES::onLeft},
     {"onPlayerCmd",EVENT_TYPES::onPlayerCmd},
@@ -223,6 +224,14 @@ bool LxlRecallOnServerStartedAtHotLoad(ScriptEngine* engine)
 
 void InitEventListeners()
 {
+// ===== onPreJoin =====
+    Event::addEventListener([](JoinEV ev)
+    {
+        IF_LISTENED(EVENT_TYPES::onPreJoin)
+        {
+            CallEvent(EVENT_TYPES::onPreJoin, PlayerClass::newPlayer(ev.Player));
+        }
+    });
 
 // ===== onLeft =====
     Event::addEventListener([](LeftEV ev)
@@ -318,14 +327,14 @@ void InitEventListeners()
 }
 
 // ===== onJoin =====
-THook(bool, "?_loadNewPlayer@ServerNetworkHandler@@AEAA_NAEAVServerPlayer@@_N@Z",
-    ServerNetworkHandler* _this, ServerPlayer* pl, bool a3)
+THook(bool, "?setLocalPlayerAsInitialized@ServerPlayer@@QEAAXXZ",
+    ServerPlayer* _this)
 {
     IF_LISTENED(EVENT_TYPES::onJoin)
     {
-        CallEvent(EVENT_TYPES::onJoin, PlayerClass::newPlayer(pl));
+        CallEvent(EVENT_TYPES::onJoin, PlayerClass::newPlayer(_this));
     }
-    return original(_this, pl, a3);
+    return original(_this);
 }
 
 // ===== onAttack =====
@@ -730,7 +739,7 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
 
 // ===== onFormSelected =====
 THook(void, "?handle@?$PacketHandlerDispatcherInstance@VModalFormResponsePacket@@$0A@@@UEBAXAEBVNetworkIdentifier@@AEAVNetEventCallback@@AEAV?$shared_ptr@VPacket@@@std@@@Z",
-	void* _this, NetworkIdentifier* id, ServerNetworkHandler* handler, void* pPacket)
+    void* _this, NetworkIdentifier* id, ServerNetworkHandler* handler, void* pPacket)
 {
     //IF_LISTENED(EVENT_TYPES::onFormSelected)
     Packet* packet = *(Packet**)pPacket;
