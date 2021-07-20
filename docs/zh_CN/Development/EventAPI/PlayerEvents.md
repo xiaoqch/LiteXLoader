@@ -21,6 +21,18 @@
 
 <br>
 
+#### `"onPlayerInitialized"` - 玩家进入游戏(加载完成世界时)
+
+- 监听函数原型
+  `function(player)`
+- 参数：
+  - player : `Player`  
+    离开服务器的玩家对象
+
+- 拦截事件：不可以拦截
+
+<br>
+
 #### `"onLeft"` - 玩家离开服务器
 
 - 监听函数原型
