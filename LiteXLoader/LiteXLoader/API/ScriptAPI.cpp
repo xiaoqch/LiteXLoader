@@ -124,15 +124,25 @@ Local<Value> SetInterval(const Arguments& args)
             func{ std::move(func) }, timeout{ std::move(timeout) }, id{ timeTaskId }]()
         {
             auto sleepTime = std::chrono::milliseconds(timeout);
-            while (timeTaskMap[id])
+            try
             {
-                std::this_thread::sleep_for(sleepTime);
-                EngineScope enter(engine);
-                if (isFunc)
-                    func.get().asFunction().call();
-                else
-                    engine->eval(func.get().toStr());
-                ExitEngineScope exit;
+                while (timeTaskMap[id])
+                {
+                    std::this_thread::sleep_for(sleepTime);
+                    if (!timeTaskMap[id])
+                        break;
+                    EngineScope enter(engine);
+                    if (isFunc)
+                        func.get().asFunction().call();
+                    else
+                        engine->eval(func.get().toStr());
+                    ExitEngineScope exit;
+                }
+            }
+            catch (Exception& e)
+            { 
+                ERROR("Error occurred in Timeout!");
+                ERRPRINT(e);
             }
         });
         task.detach();
@@ -152,10 +162,10 @@ Local<Value> ClearInterval(const Arguments& args)
         timeTaskMap.at(args[0].toInt()) = false;
         return Boolean::newBoolean(true);
     }
-    CATCH("Fail in ClearInterval!")
-        catch (const std::out_of_range& e)
+    catch (const std::out_of_range& e)
     {
         ERROR("Time task id no found!");
+        return Boolean::newBoolean(false);
     }
-    return Boolean::newBoolean(false);
+    CATCH("Fail in ClearInterval!")
 }

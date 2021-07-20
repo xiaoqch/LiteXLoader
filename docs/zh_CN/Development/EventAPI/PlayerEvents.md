@@ -144,14 +144,14 @@
 #### `"onTakeItem"` - 玩家捡起物品
 
 - 监听函数原型
-  `function(player,item)`
+  `function(player,entity)`
 - 参数：
 
   - player : `Player`  
     捡起物品的玩家对象
 
-  - item : `Item`  
-    被捡起的物品对象
+  - entity: `Entity`  
+    被捡起的物品的掉落物实体
 
 - 拦截事件：函数返回`false`
 
