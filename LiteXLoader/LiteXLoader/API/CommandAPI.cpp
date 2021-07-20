@@ -248,7 +248,8 @@ bool ProcessHotManagement(const std::string& cmd)
         //load
         if (!filesystem::exists(cmdList[2]))
             ERROR("Plugin no found!");
-        LxlLoadPlugin(cmdList[2]);
+        if(filesystem::path(cmdList[2]).extension() == LXL_PLUGINS_SUFFIX)
+            LxlLoadPlugin(cmdList[2]);
     }
     else if (cmd.find(LXL_HOT_UNLOAD) == 0 && cmdList.size() == 3)
     {
