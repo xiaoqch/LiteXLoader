@@ -35,7 +35,7 @@ enum class EVENT_TYPES : int
 {
     onJoin=0, onLeft, onPlayerCmd, onChat, 
     onRespawn, onChangeDim, onJump, onSneak, onAttack, onEat, onMove, onSetArmor,
-    onUseItem, onTakeItem, onDropItem,
+    onUseItem, onTakeItem, onDropItem, onUseItemOn,
     onDestroyingBlock, onDestroyBlock, onPlaceBlock,
     onOpenContainer, onCloseContainer, onContainerChangeSlot,
     onMobDie, onMobHurt, onExplode, onBlockExploded, onCmdBlockExecute,
@@ -62,6 +62,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onUseItem",EVENT_TYPES::onUseItem},
     {"onTakeItem",EVENT_TYPES::onTakeItem},
     {"onDropItem",EVENT_TYPES::onDropItem},
+    {"onUseItemOn",EVENT_TYPES::onUseItemOn},
     {"onDestroyingBlock",EVENT_TYPES::onDestroyingBlock},
     {"onDestroyBlock",EVENT_TYPES::onDestroyBlock},
     {"onPlaceBlock",EVENT_TYPES::onPlaceBlock},
@@ -414,6 +415,19 @@ THook(bool, "?baseUseItem@GameMode@@QEAA_NAEAVItemStack@@@Z", void* _this, ItemS
         CallEventEx(EVENT_TYPES::onUseItem, PlayerClass::newPlayer(sp), ItemClass::newItem(&item));
     }
     return original(_this, item);
+}
+
+// ===== onUseItemOn =====
+THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@PEBVBlock@@@Z",
+    void* _this, ItemStack* item, BlockPos* bp, unsigned char side, Vec3* a5, Block* bl)
+{
+    IF_LISTENED(EVENT_TYPES::onUseItemOn)
+    {
+        auto sp = dAccess<ServerPlayer*, 8>(_this);
+
+        CallEventEx(EVENT_TYPES::onUseItemOn, PlayerClass::newPlayer(sp), ItemClass::newItem(item), BlockClass::newBlock(bl, bp, WPlayer(*sp).getDimID()));
+    }
+    return original(_this, item, bp, side, a5, bl);
 }
 
 // ===== onDestroyingBlock =====
