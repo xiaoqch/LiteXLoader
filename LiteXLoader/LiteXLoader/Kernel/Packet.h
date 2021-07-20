@@ -14,4 +14,5 @@ bool Raw_SendSetScorePacket(Player* player, char type, const std::vector<ScorePa
 
 bool Raw_SendBossEventPacket(Player* player, std::string name, float percent, int type);
 
+Player* Raw_GetPlayerFromPacket(NetworkIdentifier* id, Packet* packet);
 Player* Raw_GetPlayerFromPacket(ServerNetworkHandler* handler, NetworkIdentifier* id, Packet* packet);

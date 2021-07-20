@@ -194,6 +194,28 @@ bool LxlRemoveAllEventListeners(ScriptEngine* engine)
     return true;
 }
 
+bool LxlRecallOnServerStartedAtHotLoad(ScriptEngine* engine)
+{
+    std::vector<ListenerListType>& nowList = listenerList[int(EVENT_TYPES::onServerStarted)];
+    for (int i = 0; i < nowList.size(); ++i)
+    {
+        if (nowList[i].engine == engine)
+        {
+            EngineScope enter(nowList[i].engine);
+            try {
+                nowList[i].func.get().call();
+            }
+            catch (const Exception& e)
+            {
+                ERROR("Event Callback Failed!");
+                ERRPRINT(e);
+                return false;
+            }
+            break;
+        }
+    }
+    return true;
+}
 
 //////////////////// Hook ////////////////////
 
@@ -733,9 +755,12 @@ THook(void, "?handle@?$PacketHandlerDispatcherInstance@VModalFormResponsePacket@
 THook(ostream&, "??$_Insert_string@DU?$char_traits@D@std@@_K@std@@YAAEAV?$basic_ostream@DU?$char_traits@D@std@@@0@AEAV10@QEBD_K@Z",
     ostream& _this, const char* str, unsigned size)
 {
-    IF_LISTENED(EVENT_TYPES::onConsoleOutput)
+    if (&_this == &cout)
     {
-        CallEventRtn(EVENT_TYPES::onConsoleOutput, _this, String::newString(string(str)));
+        IF_LISTENED(EVENT_TYPES::onConsoleOutput)
+        {
+            CallEventRtn(EVENT_TYPES::onConsoleOutput, _this, String::newString(string(str)));
+        }
     }
     return original(_this, str, size);
 }

@@ -79,3 +79,9 @@ Player* Raw_GetPlayerFromPacket(ServerNetworkHandler* handler, NetworkIdentifier
     return SymCall("?_getServerPlayer@ServerNetworkHandler@@AEAAPEAVServerPlayer@@AEBVNetworkIdentifier@@E@Z",
         Player*, ServerNetworkHandler*, NetworkIdentifier*, char)(handler, id, dAccess<char>(packet,16));
 }
+
+Player* Raw_GetPlayerFromPacket(NetworkIdentifier* id, Packet* packet)
+{
+    return SymCall("?_getServerPlayer@ServerNetworkHandler@@AEAAPEAVServerPlayer@@AEBVNetworkIdentifier@@E@Z",
+        Player*, ServerNetworkHandler*, NetworkIdentifier*, char)(mc->getServerNetworkHandler(), id, dAccess<char>(packet, 16));
+}

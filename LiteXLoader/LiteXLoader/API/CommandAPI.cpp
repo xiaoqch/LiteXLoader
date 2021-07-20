@@ -249,13 +249,14 @@ bool ProcessHotManagement(const std::string& cmd)
         if (!filesystem::exists(cmdList[2]))
             ERROR("Plugin no found!");
         if(filesystem::path(cmdList[2]).extension() == LXL_PLUGINS_SUFFIX)
-            LxlLoadPlugin(cmdList[2]);
+            LxlLoadPlugin(cmdList[2],true);
     }
     else if (cmd.find(LXL_HOT_UNLOAD) == 0 && cmdList.size() == 3)
     {
         //unload
-        if (LxlUnloadPlugin(cmdList[2]) == "")
-            ERROR("Plugin no found!");
+        if (filesystem::path(cmdList[2]).extension() == LXL_PLUGINS_SUFFIX)
+            if (LxlUnloadPlugin(cmdList[2]) == "")
+                ERROR("Plugin no found!");
     }
     else if (cmd.find(LXL_HOT_RELOAD) == 0)
     {
@@ -267,8 +268,9 @@ bool ProcessHotManagement(const std::string& cmd)
         else if(cmdList.size() == 3)
         {
             //reload one
-            if(!LxlReloadPlugin(cmdList[2]))
-                ERROR("Plugin no found!");
+            if (filesystem::path(cmdList[2]).extension() == LXL_PLUGINS_SUFFIX)
+                if(!LxlReloadPlugin(cmdList[2]))
+                    ERROR("Plugin no found!");
         }
         else
             ERROR("Bad Command!");
