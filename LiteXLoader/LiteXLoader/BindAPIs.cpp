@@ -23,10 +23,6 @@ void BindAPIs(ScriptEngine *engine)
 
 	engine->set("log", Function::newFunction(Log));
 
-#if defined(SCRIPTX_LANG_LUA)
-    engine->set("print", Function::newFunction(Log));
-#endif
-
     engine->set("setTimeout",Function::newFunction(SetTimeout));
     engine->set("setInterval",Function::newFunction(SetInterval));
     engine->set("clearInterval",Function::newFunction(ClearInterval));
