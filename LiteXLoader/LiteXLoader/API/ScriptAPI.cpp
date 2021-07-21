@@ -60,6 +60,61 @@ Local<Value> RandomGuid(const Arguments& args)
 int timeTaskId = 0;
 std::unordered_map<int, bool> timeTaskMap;
 
+#define TIMETASK_INTERVAL data0
+#define TIMETASK_TASKID data1
+#define TIMETASK_IS_FUNC data2
+#define TIMETASK_FUNC data3
+
+void HandleTimeTaskMessage(utils::Message& msg);
+void CleanUpTimeTaskMessage(utils::Message& msg);
+
+
+void NewTimeTask(int timeTaskId, int timeout, bool isInterval, bool isFunc, Local<Value> func)
+{
+    utils::Message timeTask(HandleTimeTaskMessage, CleanUpTimeTaskMessage);
+    timeTask.TIMETASK_INTERVAL = isInterval ? timeout : 0;
+    timeTask.TIMETASK_IS_FUNC = isFunc;
+    timeTask.TIMETASK_FUNC = (uintptr_t) new Global<Value>(func);
+    timeTask.TIMETASK_TASKID = timeTaskId;
+
+    EngineScope::currentEngine()->messageQueue()->postMessage(timeTask, std::chrono::milliseconds(timeout));
+}
+
+void HandleTimeTaskMessage(utils::Message& msg)
+{
+    int nextInterval = msg.TIMETASK_INTERVAL;
+    bool isInterval = (nextInterval != 0);
+    int id = msg.TIMETASK_TASKID;
+
+    bool isFunc = (bool) msg.TIMETASK_IS_FUNC;
+    Global<Value>* func = (Global<Value>*)(msg.TIMETASK_FUNC);
+
+    if (timeTaskMap[id])
+    {
+        if (isFunc)
+            func->get().asFunction().call();
+        else
+            EngineScope::currentEngine()->eval(func->get().toStr());
+
+        if (isInterval)
+        {
+            NewTimeTask(id, nextInterval, true, isFunc, func->get());
+        }
+        else
+        {
+            timeTaskMap[id] = false;
+        }
+    }
+}
+
+void CleanUpTimeTaskMessage(utils::Message& msg)
+{
+    delete ((Global<Value>*)(msg.TIMETASK_FUNC));
+}
+
+
+//////////////////// APIs ////////////////////
+
 Local<Value> SetTimeout(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 2)
@@ -73,28 +128,12 @@ Local<Value> SetTimeout(const Arguments& args)
             return Local<Value>();
         }
 
-        Global<Value> func{ args[0] };
         int timeout = args[1].toInt();
         if (timeout <= 0)
             timeout = 1;
 
         timeTaskMap[++timeTaskId] = true;
-        std::thread task([engine{ EngineScope::currentEngine() }, isFunc{ std::move(isFunc) },
-            func{ std::move(func) }, timeout{ std::move(timeout) }, id{ timeTaskId }]()
-        {
-            std::this_thread::sleep_for(std::chrono::milliseconds(timeout));
-
-            if (timeTaskMap[id])
-            {
-                EngineScope enter(engine);
-                if (isFunc)
-                    func.get().asFunction().call();
-                else
-                    engine->eval(func.get().toStr());
-            }
-            timeTaskMap[id] = false;
-        });
-        task.detach();
+        NewTimeTask(timeTaskId, timeout, false, isFunc, args[0]);
 
         return Number::newNumber(timeTaskId);
     }
@@ -120,32 +159,7 @@ Local<Value> SetInterval(const Arguments& args)
             timeout = 1;
 
         timeTaskMap[++timeTaskId] = true;
-        std::thread task([engine{ EngineScope::currentEngine() }, isFunc{ std::move(isFunc) },
-            func{ std::move(func) }, timeout{ std::move(timeout) }, id{ timeTaskId }]()
-        {
-            auto sleepTime = std::chrono::milliseconds(timeout);
-            try
-            {
-                while (timeTaskMap[id])
-                {
-                    std::this_thread::sleep_for(sleepTime);
-                    if (!timeTaskMap[id])
-                        break;
-                    EngineScope enter(engine);
-                    if (isFunc)
-                        func.get().asFunction().call();
-                    else
-                        engine->eval(func.get().toStr());
-                    ExitEngineScope exit;
-                }
-            }
-            catch (Exception& e)
-            { 
-                ERROR("Error occurred in Timeout!");
-                ERRPRINT(e);
-            }
-        });
-        task.detach();
+        NewTimeTask(timeTaskId, timeout, true, isFunc, args[0]);
 
         return Number::newNumber(timeTaskId);
     }
@@ -159,13 +173,8 @@ Local<Value> ClearInterval(const Arguments& args)
     CHECK_ARG_TYPE(args[0], ValueKind::kNumber)
 
     try {
-        timeTaskMap.at(args[0].toInt()) = false;
+        timeTaskMap[args[0].toInt()] = false;
         return Boolean::newBoolean(true);
-    }
-    catch (const std::out_of_range& e)
-    {
-        ERROR("Time task id no found!");
-        return Boolean::newBoolean(false);
     }
     CATCH("Fail in ClearInterval!")
 }
