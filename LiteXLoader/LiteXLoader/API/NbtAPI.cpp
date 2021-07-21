@@ -2,7 +2,9 @@
 #include "NbtAPI.h"
 #include <Kernel/NBT.h>
 #include <vector>
+#include <LiteXLoader/API/ItemAPI.h>
 using namespace script;
+
 
 ClassDefine<NBTClass> NBTClassBuilder =
     defineClass<NBTClass>("NBT")
@@ -27,6 +29,8 @@ ClassDefine<NBTClass> NBTClassBuilder =
         .instanceFunction("writeCompound", &NBTClass::writeCompound)
         .instanceFunction("getType", &NBTClass::getType)
         .instanceFunction("createNBT", &NBTClass::createTag)
+        .instanceFunction("setItem",&NBTClass::setItem)
+        .function("fromItem",&fromItem)
         .build();
 
 
@@ -403,4 +407,29 @@ Local<Value> NBTClass::createTag(const Arguments& args)
         return Boolean::newBoolean(true);
     }
     CATCH("Fail in NBTwriteInt!")
+}
+
+Local<Value> NBTClass::setItem(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kObject)
+
+    try {
+        auto item = ItemClass::extractItem(args[0].asObject());
+        nbt->setItem(item);
+    }
+    CATCH("Fail in NBT.setItem")
+}
+
+Local<Value> fromItem(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kObject)
+
+    try {
+        auto item = ItemClass::extractItem(args[0].asObject());
+        auto nbt = Tag::fromItem(item);
+        NBTClass::newNBT(nbt);
+    }
+    CATCH("Fail in NBT.fromItem")
 }
