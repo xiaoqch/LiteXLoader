@@ -759,8 +759,8 @@ Local<Value> PlayerClass::sendSimpleForm(const Arguments& args)
         int formId = Raw_SendSimpleForm(player, args[0].toStr(), args[1].toStr(), texts, images);
 
         
-        FormCallbackKey key{ LXL_SCRIPT_LANG_TYPE,(unsigned)formId };
-        engineGlobalData->formCallbacks[key] = { EngineScope::currentEngine(),Global<Function>(args[4].asFunction()) };
+        ENGINE_OWN_DATA()->formCallbacks[(unsigned)formId].engine = EngineScope::currentEngine();
+        ENGINE_OWN_DATA()->formCallbacks[(unsigned)formId].func = args[4].asFunction();
 
         return Number::newNumber(formId);
     }
@@ -782,8 +782,8 @@ Local<Value> PlayerClass::sendModalForm(const Arguments& args)
             return Local<Value>();
 
         int formId = Raw_SendModalForm(player, args[0].toStr(), args[1].toStr(), args[2].toStr(), args[3].toStr());
-        FormCallbackKey key{ LXL_SCRIPT_LANG_TYPE,(unsigned)formId };
-        engineGlobalData->formCallbacks[key] = { EngineScope::currentEngine(),Global<Function>(args[4].asFunction()) };
+        ENGINE_OWN_DATA()->formCallbacks[(unsigned)formId].engine = EngineScope::currentEngine();
+        ENGINE_OWN_DATA()->formCallbacks[(unsigned)formId].func = args[4].asFunction();
 
         return Number::newNumber(formId);
     }
@@ -804,8 +804,8 @@ Local<Value> PlayerClass::sendCustomForm(const Arguments& args)
         string data = JSON_VALUE::parse(args[0].toStr()).dump();
         int formId = Raw_SendCustomForm(player, data);
         
-        FormCallbackKey key{ LXL_SCRIPT_LANG_TYPE,(unsigned)formId };
-        engineGlobalData->formCallbacks[key] = { EngineScope::currentEngine(),Global<Function>(args[1].asFunction()) };
+        ENGINE_OWN_DATA()->formCallbacks[(unsigned)formId].engine = EngineScope::currentEngine();
+        ENGINE_OWN_DATA()->formCallbacks[(unsigned)formId].func = args[1].asFunction();
         
         return Number::newNumber(formId);
     }
@@ -837,8 +837,7 @@ Local<Value> PlayerClass::sendForm(const Arguments& args)
         if (jsonForm != nullptr)
         {
             int formId = Raw_SendRawForm(player, jsonForm->dump());
-            FormCallbackKey key{ LXL_SCRIPT_LANG_TYPE,(unsigned)formId };
-            engineGlobalData->formCallbacks[key] = { EngineScope::currentEngine(),Global<Function>(args[1].asFunction()) };
+            ENGINE_OWN_DATA()->formCallbacks[(unsigned)formId] = { EngineScope::currentEngine(),Global<Function>(args[1].asFunction()) };
 
             return Number::newNumber(formId);
         }
