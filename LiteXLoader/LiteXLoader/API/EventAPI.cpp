@@ -25,6 +25,7 @@
 #include "ItemAPI.h"
 #include "EntityAPI.h"
 #include "PlayerAPI.h"
+#include <Loader.h>
 #include <Configs.h>
 using namespace std;
 using namespace script;
@@ -148,6 +149,9 @@ static std::vector<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)]
     if(!passToBDS) { return RETURN_VALUE; }
 
 
+#define IF_LISTENED(EVENT) if(!listenerList[int(EVENT)].empty())
+
+
 //////////////////// APIs ////////////////////
 
 Local<Value> Listen(const Arguments& args)
@@ -219,8 +223,6 @@ bool LxlRecallOnServerStartedAtHotLoad(ScriptEngine* engine)
 }
 
 //////////////////// Hook ////////////////////
-
-#define IF_LISTENED(EVENT) if(!listenerList[int(EVENT)].empty())
 
 void InitEventListeners()
 {
@@ -324,6 +326,25 @@ void InitEventListeners()
             }
         }
     });
+}
+
+// 植入tick
+THook(void, "?tick@ServerLevel@@UEAAXXZ",
+    void* _this)
+{
+    try
+    {
+        for (auto engine : lxlModules)
+        {
+            EngineScope enter(engine);
+            engine->messageQueue()->loopQueue(utils::MessageQueue::LoopType::kLoopOnce);
+        }
+    }
+    catch (...)
+    {
+        ;
+    }
+    return original(_this);
 }
 
 // ===== onJoin =====
