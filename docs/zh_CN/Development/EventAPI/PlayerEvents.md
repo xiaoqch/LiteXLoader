@@ -9,25 +9,37 @@
 
 ## 🏃‍♂️ 玩家相关事件
 
-#### `"onJoin"` - 玩家连接服务器
+#### `"onPreJoin"` - 玩家开始连接服务器
 
 - 监听函数原型
   `function(player)`
 - 参数：
   - player : `Player`  
-    进入服务器的玩家对象
+    正在连接服务器的玩家对象
+- 拦截事件：不可以拦截一些
 
+注：在这个监听函数中只能获取一些玩家的基础信息，比如名字、IP、xuid等。因为此时玩家尚未完全进服
+
+<br>
+
+#### `"onJoin"` - 玩家进入游戏（加载世界完成）
+
+- 监听函数原型
+  `function(player)`
+- 参数：
+  - player : `Player`  
+    进入游戏的玩家对象
 - 拦截事件：不可以拦截
 
 <br>
 
-#### `"onLeft"` - 玩家离开服务器
+#### `"onLeft"` - 玩家离开游戏
 
 - 监听函数原型
   `function(player)`
 - 参数：
   - player : `Player`  
-    离开服务器的玩家对象
+    离开游戏的玩家对象
 
 - 拦截事件：不可以拦截
 
@@ -128,7 +140,7 @@
 
 <br>
 
-#### `"onUseItem"` - 玩家使用物品 / 点击右键
+#### `"onUseItem"` - 玩家使用物品 
 
 - 监听函数原型
   `function(player,item)`
@@ -141,17 +153,34 @@
 
 <br>
 
+#### `"onUseItemOn"` - 玩家对方块使用物品（点击右键）
+
+- 监听函数原型
+  `function(player,item,block)`
+- 参数：
+  - player : `Player`  
+    使用物品的玩家对象
+  - item : `Item`  
+    被使用的物品对象
+  - block : `Block`  
+    被点击到的方块对象
+- 拦截事件：函数返回`false`
+
+注：Win10客户端玩家右键会在服务端连续多次激发这个事件
+
+<br>
+
 #### `"onTakeItem"` - 玩家捡起物品
 
 - 监听函数原型
-  `function(player,item)`
+  `function(player,entity)`
 - 参数：
 
   - player : `Player`  
     捡起物品的玩家对象
 
-  - item : `Item`  
-    被捡起的物品对象
+  - entity: `Entity`  
+    被捡起的物品的掉落物实体
 
 - 拦截事件：函数返回`false`
 

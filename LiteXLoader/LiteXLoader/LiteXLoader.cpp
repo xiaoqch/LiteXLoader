@@ -50,6 +50,10 @@ void LoaderInfo()
 
 void entry()
 {
+    //设置全局SEH处理
+    _set_se_translator(seh_excpetion::TranslateSEHtoCE);
+
+    //读取配置文件
     Raw_DirCreate(std::filesystem::path(LXL_CONFIG_PATH).remove_filename().u8string());
     iniConf = Raw_IniOpen(LXL_CONFIG_PATH);
     if (!iniConf)
@@ -82,17 +86,6 @@ void entry()
 
     //初始化事件监听
     InitEventListeners();
-
-    //GC循环
-    int gcTime = Raw_IniGetInt(iniConf, "Advanced", "GCInterval", 10);
-    std::thread([gcTime]() {
-        std::this_thread::sleep_for(std::chrono::seconds(gcTime));
-        for (auto engine : lxlModules)
-        {
-            EngineScope enter(engine);
-            engine->messageQueue()->loopQueue(utils::MessageQueue::LoopType::kLoopOnce);
-        }
-    }).detach();    //############## loadPlugin加锁 ################
 
     Raw_IniClose(iniConf);
 }

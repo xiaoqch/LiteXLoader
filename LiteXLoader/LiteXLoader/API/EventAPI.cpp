@@ -25,6 +25,7 @@
 #include "ItemAPI.h"
 #include "EntityAPI.h"
 #include "PlayerAPI.h"
+#include <Loader.h>
 #include <Configs.h>
 using namespace std;
 using namespace script;
@@ -33,9 +34,9 @@ using namespace script;
 
 enum class EVENT_TYPES : int
 {
-    onJoin=0, onLeft, onPlayerCmd, onChat, 
+    onPreJoin=0, onJoin, onLeft, onPlayerCmd, onChat,
     onRespawn, onChangeDim, onJump, onSneak, onAttack, onEat, onMove, onSetArmor,
-    onUseItem, onTakeItem, onDropItem,
+    onUseItem, onTakeItem, onDropItem, onUseItemOn,
     onDestroyingBlock, onDestroyBlock, onPlaceBlock,
     onOpenContainer, onCloseContainer, onContainerChangeSlot,
     onMobDie, onMobHurt, onExplode, onBlockExploded, onCmdBlockExecute,
@@ -45,6 +46,7 @@ enum class EVENT_TYPES : int
     EVENT_COUNT
 };
 static const std::unordered_map<string, EVENT_TYPES> EventsMap{
+    {"onPreJoin",EVENT_TYPES::onPreJoin},
     {"onJoin",EVENT_TYPES::onJoin},
     {"onLeft",EVENT_TYPES::onLeft},
     {"onPlayerCmd",EVENT_TYPES::onPlayerCmd},
@@ -62,6 +64,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onUseItem",EVENT_TYPES::onUseItem},
     {"onTakeItem",EVENT_TYPES::onTakeItem},
     {"onDropItem",EVENT_TYPES::onDropItem},
+    {"onUseItemOn",EVENT_TYPES::onUseItemOn},
     {"onDestroyingBlock",EVENT_TYPES::onDestroyingBlock},
     {"onDestroyBlock",EVENT_TYPES::onDestroyBlock},
     {"onPlaceBlock",EVENT_TYPES::onPlaceBlock},
@@ -146,6 +149,9 @@ static std::vector<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)]
     if(!passToBDS) { return RETURN_VALUE; }
 
 
+#define IF_LISTENED(EVENT) if(!listenerList[int(EVENT)].empty())
+
+
 //////////////////// APIs ////////////////////
 
 Local<Value> Listen(const Arguments& args)
@@ -193,13 +199,41 @@ bool LxlRemoveAllEventListeners(ScriptEngine* engine)
     return true;
 }
 
+bool LxlRecallOnServerStartedAtHotLoad(ScriptEngine* engine)
+{
+    std::vector<ListenerListType>& nowList = listenerList[int(EVENT_TYPES::onServerStarted)];
+    for (int i = 0; i < nowList.size(); ++i)
+    {
+        if (nowList[i].engine == engine)
+        {
+            EngineScope enter(nowList[i].engine);
+            try {
+                nowList[i].func.get().call();
+            }
+            catch (const Exception& e)
+            {
+                ERROR("Event Callback Failed!");
+                ERRPRINT(e);
+                return false;
+            }
+            break;
+        }
+    }
+    return true;
+}
 
 //////////////////// Hook ////////////////////
 
-#define IF_LISTENED(EVENT) if(!listenerList[int(EVENT)].empty())
-
 void InitEventListeners()
 {
+// ===== onPreJoin =====
+    Event::addEventListener([](JoinEV ev)
+    {
+        IF_LISTENED(EVENT_TYPES::onPreJoin)
+        {
+            CallEvent(EVENT_TYPES::onPreJoin, PlayerClass::newPlayer(ev.Player));
+        }
+    });
 
 // ===== onLeft =====
     Event::addEventListener([](LeftEV ev)
@@ -294,15 +328,34 @@ void InitEventListeners()
     });
 }
 
+// 植入tick
+THook(void, "?tick@ServerLevel@@UEAAXXZ",
+    void* _this)
+{
+    try
+    {
+        for (auto engine : lxlModules)
+        {
+            EngineScope enter(engine);
+            engine->messageQueue()->loopQueue(utils::MessageQueue::LoopType::kLoopOnce);
+        }
+    }
+    catch (...)
+    {
+        ;
+    }
+    return original(_this);
+}
+
 // ===== onJoin =====
-THook(bool, "?_loadNewPlayer@ServerNetworkHandler@@AEAA_NAEAVServerPlayer@@_N@Z",
-    ServerNetworkHandler* _this, ServerPlayer* pl, bool a3)
+THook(bool, "?setLocalPlayerAsInitialized@ServerPlayer@@QEAAXXZ",
+    ServerPlayer* _this)
 {
     IF_LISTENED(EVENT_TYPES::onJoin)
     {
-        CallEvent(EVENT_TYPES::onJoin, PlayerClass::newPlayer(pl));
+        CallEvent(EVENT_TYPES::onJoin, PlayerClass::newPlayer(_this));
     }
-    return original(_this, pl, a3);
+    return original(_this);
 }
 
 // ===== onAttack =====
@@ -414,6 +467,19 @@ THook(bool, "?baseUseItem@GameMode@@QEAA_NAEAVItemStack@@@Z", void* _this, ItemS
         CallEventEx(EVENT_TYPES::onUseItem, PlayerClass::newPlayer(sp), ItemClass::newItem(&item));
     }
     return original(_this, item);
+}
+
+// ===== onUseItemOn =====
+THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@PEBVBlock@@@Z",
+    void* _this, ItemStack* item, BlockPos* bp, unsigned char side, Vec3* a5, Block* bl)
+{
+    IF_LISTENED(EVENT_TYPES::onUseItemOn)
+    {
+        auto sp = dAccess<ServerPlayer*, 8>(_this);
+
+        CallEventEx(EVENT_TYPES::onUseItemOn, PlayerClass::newPlayer(sp), ItemClass::newItem(item), BlockClass::newBlock(bl, bp, WPlayer(*sp).getDimID()));
+    }
+    return original(_this, item, bp, side, a5, bl);
 }
 
 // ===== onDestroyingBlock =====
@@ -694,7 +760,7 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
 
 // ===== onFormSelected =====
 THook(void, "?handle@?$PacketHandlerDispatcherInstance@VModalFormResponsePacket@@$0A@@@UEBAXAEBVNetworkIdentifier@@AEAVNetEventCallback@@AEAV?$shared_ptr@VPacket@@@std@@@Z",
-	void* _this, NetworkIdentifier* id, ServerNetworkHandler* handler, void* pPacket)
+    void* _this, NetworkIdentifier* id, ServerNetworkHandler* handler, void* pPacket)
 {
     //IF_LISTENED(EVENT_TYPES::onFormSelected)
     Packet* packet = *(Packet**)pPacket;
@@ -719,9 +785,12 @@ THook(void, "?handle@?$PacketHandlerDispatcherInstance@VModalFormResponsePacket@
 THook(ostream&, "??$_Insert_string@DU?$char_traits@D@std@@_K@std@@YAAEAV?$basic_ostream@DU?$char_traits@D@std@@@0@AEAV10@QEBD_K@Z",
     ostream& _this, const char* str, unsigned size)
 {
-    IF_LISTENED(EVENT_TYPES::onConsoleOutput)
+    if (&_this == &cout)
     {
-        CallEventRtn(EVENT_TYPES::onConsoleOutput, _this, String::newString(string(str)));
+        IF_LISTENED(EVENT_TYPES::onConsoleOutput)
+        {
+            CallEventRtn(EVENT_TYPES::onConsoleOutput, _this, String::newString(string(str)));
+        }
     }
     return original(_this, str, size);
 }

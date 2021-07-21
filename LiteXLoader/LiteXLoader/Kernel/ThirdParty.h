@@ -35,3 +35,6 @@ public:
 #include <dyncall/include/dyncall_signature.h>
 #include <dyncall/include/dyncall_types.h>
 #include <dyncall/include/dyncall_value.h>
+
+//////////////// SEH Exception ////////////////
+#include <seh_exception/seh_exception.hpp>

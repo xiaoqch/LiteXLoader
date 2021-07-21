@@ -51,7 +51,7 @@ ScriptEngine* NewEngine()
 }
 
 //加载插件
-bool LxlLoadPlugin(const std::string& filePath)
+bool LxlLoadPlugin(const std::string& filePath, bool isHotLoad)
 {
     if (filePath == LXL_DEBUG_ENGINE_NAME)
         return true;
@@ -102,8 +102,11 @@ bool LxlLoadPlugin(const std::string& filePath)
             ERROR("Fail in Loading Script Plugin!\n");
             throw;
         }
+        ExitEngineScope exit;
 
         AddToGlobalPluginsList(pluginName);
+        if (isHotLoad)
+            LxlRecallOnServerStartedAtHotLoad(engine);
         INFO(pluginName + " loaded.");
         return true;
     }
@@ -172,7 +175,7 @@ bool LxlReloadPlugin(const std::string& name)
     string unloadedPath = LxlUnloadPlugin(name);
     if (unloadedPath.empty())
         return false;
-    return LxlLoadPlugin(unloadedPath);
+    return LxlLoadPlugin(unloadedPath,true);
 }
 
 //重载全部插件

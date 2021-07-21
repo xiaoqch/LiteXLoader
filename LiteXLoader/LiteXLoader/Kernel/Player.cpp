@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "Packet.h"
 #include "SymbolHelper.h"
+#include "ThirdParty.h"
 #include "Global.h"
 using namespace std;
 
@@ -250,7 +251,14 @@ bool Raw_RemoveBossBar(Player *player)
 
 vector<Player*> Raw_GetOnlinePlayers()
 {
-    return isServerStarted ? liteloader::getAllPlayers() : vector<Player*>();
+    try
+    {
+        return isServerStarted ? liteloader::getAllPlayers() : vector<Player*>();
+    }
+    catch (const seh_excpetion& e)
+    {
+        return vector<Player*>();
+    }
 }
 
 bool Raw_IsPlayerValid(Player *player)
