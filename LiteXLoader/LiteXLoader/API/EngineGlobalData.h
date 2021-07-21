@@ -24,25 +24,6 @@ struct RemoteEngineData
 	unsigned threadId;
 };
 
-
-//表单回调信息
-struct FormCallbackKey
-{
-	std::string fromEngineType;
-	unsigned formId;
-};
-
-bool inline operator<(const FormCallbackKey& a, const FormCallbackKey& b)
-{
-	return a.fromEngineType == b.fromEngineType ? a.formId < b.formId : a.fromEngineType < b.fromEngineType;
-}
-
-struct FormCallbackData
-{
-	script::ScriptEngine* engine;
-	script::Global<script::Function> func;
-};
-
 struct GlobalDataType
 {
 	//所有插件名单
@@ -53,9 +34,6 @@ struct GlobalDataType
 
 	//远程调用信息
 	std::unordered_map<std::string, RemoteEngineData> remoteEngineList;
-
-	//全局表单监听
-	std::map<FormCallbackKey, FormCallbackData> formCallbacks;
 };
 
 //命令延迟注册队列

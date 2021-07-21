@@ -362,17 +362,28 @@ bool CallFormCallback(Player* player, unsigned formId, const string& data)
 {
     bool passToBDS = true;
 
-    FormCallbackKey key{ LXL_SCRIPT_LANG_TYPE,formId };
     try
     {
-        auto callback = engineGlobalData->formCallbacks.at(key);
+        for (auto engine : lxlModules)
+        {
+            EngineScope enter(engine);
+            FormCallbackData callback;
+            try
+            {
+                callback = ENGINE_GET_DATA(engine)->formCallbacks.at(formId);
+            }
+            catch (...)
+            {
+                continue;
+            }
 
-        EngineScope scope(callback.engine);
-        auto res = callback.func.get().call({}, PlayerClass::newPlayer(player), JsonToValue(data));
-        if (res.isNull() || (res.isBoolean() && res.asBoolean().value() == false))
-            passToBDS = false;
+            EngineScope scope(callback.engine);
+            auto res = callback.func.get().call({}, PlayerClass::newPlayer(player), JsonToValue(data));
+            if (res.isNull() || (res.isBoolean() && res.asBoolean().value() == false))
+                passToBDS = false;
 
-        engineGlobalData->formCallbacks.erase(key);
+            ENGINE_OWN_DATA()->formCallbacks.erase(formId);
+        }
     }
     catch (...)
     {
