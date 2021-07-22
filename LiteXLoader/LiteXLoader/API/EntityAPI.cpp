@@ -8,7 +8,7 @@ using namespace script;
 //////////////////// Class Definition ////////////////////
 
 ClassDefine<EntityClass> EntityClassBuilder =
-    defineClass<EntityClass>("Entity")
+    defineClass<EntityClass>("LXL_Entity")
         .constructor(nullptr)
         .instanceProperty("name", &EntityClass::getName)
         .instanceProperty("type", &EntityClass::getType)

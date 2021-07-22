@@ -5,7 +5,7 @@
 using namespace script;
 
 ClassDefine<NBTClass> NBTClassBuilder =
-    defineClass<NBTClass>("NBT")
+    defineClass<NBTClass>("LXL_NBT")
         .constructor(nullptr)
         .instanceFunction("readInt", &NBTClass::readInt)
         .instanceFunction("readLong", &NBTClass::readLong)

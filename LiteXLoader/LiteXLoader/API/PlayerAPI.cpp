@@ -17,7 +17,7 @@ using namespace script;
 //////////////////// Class Definition ////////////////////
 
 ClassDefine<PlayerClass> PlayerClassBuilder =
-    defineClass<PlayerClass>("Player")
+    defineClass<PlayerClass>("LXL_Player")
         .constructor(nullptr)
         .instanceProperty("name", &PlayerClass::getName)
         .instanceProperty("pos", &PlayerClass::getPos)

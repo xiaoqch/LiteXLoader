@@ -8,7 +8,7 @@ using namespace script;
 //////////////////// Class Definition ////////////////////
 
 ClassDefine<ItemClass> ItemClassBuilder =
-    defineClass<ItemClass>("Item")
+    defineClass<ItemClass>("LXL_Item")
         .constructor(nullptr)
         .instanceProperty("name", &ItemClass::getName)
         .instanceProperty("type", &ItemClass::getType)

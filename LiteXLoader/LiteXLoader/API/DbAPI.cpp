@@ -13,7 +13,7 @@ using namespace std;
 //////////////////// Class Definition ////////////////////
 
 ClassDefine<DbClass> DbClassBuilder =
-    defineClass<DbClass>("Db")
+    defineClass<DbClass>("LXL_Db")
         .constructor(nullptr)
         .instanceFunction("get", &DbClass::get)
         .instanceFunction("set", &DbClass::set)
@@ -22,7 +22,7 @@ ClassDefine<DbClass> DbClassBuilder =
         .build();
 
 ClassDefine<ConfJsonClass> ConfJsonClassBuilder =
-    defineClass<ConfJsonClass>("ConfJson")
+    defineClass<ConfJsonClass>("LXL_ConfJson")
         .constructor(nullptr)
         .instanceFunction("get", &ConfJsonClass::get)
         .instanceFunction("set", &ConfJsonClass::set)
@@ -35,7 +35,7 @@ ClassDefine<ConfJsonClass> ConfJsonClassBuilder =
         .build();
 
 ClassDefine<ConfIniClass> ConfIniClassBuilder =
-    defineClass<ConfIniClass>("ConfIni")
+    defineClass<ConfIniClass>("LXL_ConfIni")
         .constructor(nullptr)
         .instanceFunction("set", &ConfIniClass::set)
         .instanceFunction("getStr", &ConfIniClass::getStr)

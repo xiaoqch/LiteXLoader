@@ -8,7 +8,7 @@ using namespace script;
 //////////////////// Class Definition ////////////////////
 
 ClassDefine<BlockClass> BlockClassBuilder =
-    defineClass<BlockClass>("Block")
+    defineClass<BlockClass>("LXL_Block")
         .constructor(nullptr)
         .instanceProperty("name", &BlockClass::getName)
         .instanceProperty("type", &BlockClass::getType)
