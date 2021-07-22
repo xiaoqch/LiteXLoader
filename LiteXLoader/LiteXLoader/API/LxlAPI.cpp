@@ -154,3 +154,14 @@ Local<Value> LxlRequire(const Arguments& args)
     }
     CATCH("Fail in LxlRequire!")
 }
+
+Local<Value> LxlEval(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+    try
+    {
+        return EngineScope::currentEngine()->eval(args[0].toStr());
+    }
+    CATCH("Fail in LxlEval!")
+}

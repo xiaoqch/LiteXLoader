@@ -8,18 +8,18 @@ using namespace std;
 
 DB_ROOT Raw_NewDB(const string &dir)
 {
+    if (!filesystem::exists(dir))
+        if (!filesystem::create_directories(dir))
+            return nullptr;
     if(!filesystem::is_directory(dir))
         return nullptr;
-    else
+    try
     {
-        try
-        {
-            return MakeKVDB(dir);
-        }
-        catch(...)
-        {
-            return nullptr;
-        }
+        return MakeKVDB(dir);
+    }
+    catch(...)
+    {
+        return nullptr;
     }
 }
 
@@ -63,6 +63,8 @@ JSON_ROOT Raw_JsonOpen(const std::string& path, const std::string& defContent)
     if (!Raw_PathExists(path))
     {
         //创建新的
+        filesystem::create_directories(filesystem::path(path).remove_filename().u8string());
+
         if (defContent != "")
         {
             try
@@ -111,6 +113,8 @@ INI_ROOT Raw_IniOpen(const string &path, const std::string& defContent)
     if (!Raw_PathExists(path))
     {
         //创建新的
+        filesystem::create_directories(filesystem::path(path).remove_filename().u8string());
+
         ofstream iniFile(path);
         if (iniFile.is_open() && defContent != "")
             iniFile << defContent;

@@ -418,7 +418,7 @@ Local<Value> NBTClass::setItem(const Arguments& args)
         auto item = ItemClass::extractItem(args[0].asObject());
         nbt->setItem(item);
     }
-    CATCH("Fail in NBT.setItem")
+    CATCH("Fail in NBTsetItem")
 }
 
 Local<Value> fromItem(const Arguments& args)
@@ -431,5 +431,5 @@ Local<Value> fromItem(const Arguments& args)
         auto nbt = Tag::fromItem(item);
         NBTClass::newNBT(nbt);
     }
-    CATCH("Fail in NBT.fromItem")
+    CATCH("Fail in NBTfromItem")
 }

@@ -5,16 +5,14 @@
 - 游戏内容接口
 
   - [🎨 基础游戏接口](zh_CN/Development/GameAPI/Basic.md)
-
   - [🎯 命令系统](zh_CN/Development/GameAPI/Command.md)
-
   - [🏃‍♂️ 玩家](zh_CN/Development/GameAPI/Player.md)
-
   - [📦 方块](zh_CN/Development/GameAPI/Block.md)
   - [🎈 实体](zh_CN/Development/GameAPI/Entity.md)
   - [🧰 物品](zh_CN/Development/GameAPI/Item.md)
+  - [🎊 游戏机制](zh_CN/Development/GameAPI/GameSystem.md)
   - [💻 服务端设置](zh_CN/Development/GameAPI/Server.md)
-
+  
 - 事件系统
 
   - [🔔 监听事件](zh_CN/Development/EventAPI/Listen.md)
@@ -33,9 +31,9 @@
 - 脚本辅助接口
 
   - [💼 通用脚本接口](zh_CN/Development/ScriptAPI/ScriptHelp.md)
-
   - [📅 日志系统](zh_CN/Development/ScriptAPI/Logger.md)
   - [💡 加载器相关](zh_CN/Development/ScriptAPI/Lxl.md)
+  - [🛫 国际化](zh_CN/Development/ScriptAPI/i18n.md)
   
 - 配置文件与数据处理
 

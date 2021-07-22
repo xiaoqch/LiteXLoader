@@ -223,6 +223,7 @@ public:
     static Local<Value> importFunc(const Arguments& args) { return LxlImport(args); }
     static Local<Value> exportFunc(const Arguments& args) { return LxlExport(args); }
     static Local<Value> require(const Arguments& args) { return LxlRequire(args); }
+    static Local<Value> eval(const Arguments& args) { return LxlEval(args); }
 };
 
 static ClassDefine<void> LxlClassBuilder =
@@ -232,4 +233,5 @@ static ClassDefine<void> LxlClassBuilder =
         .function("import", &LxlClass::importFunc)
         .function("export", &LxlClass::exportFunc)
         .function("require", &LxlClass::require)
+        .function("eval", &LxlClass::eval)
         .build();
