@@ -137,6 +137,7 @@
     <ClCompile Include="API\ScriptAPI.cpp">
       <Filter>API</Filter>
     </ClCompile>
+    <ClCompile Include="Kernel\UnlockCmd.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="API\BaseAPI.h">

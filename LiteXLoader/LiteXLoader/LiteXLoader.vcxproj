@@ -72,6 +72,7 @@
     <ClCompile Include="Kernel\Server.cpp" />
     <ClCompile Include="Kernel\SymbolHelper.cpp" />
     <ClCompile Include="Kernel\System.cpp" />
+    <ClCompile Include="Kernel\UnlockCmd.cpp" />
     <ClCompile Include="LiteXLoader.cpp" />
     <ClCompile Include="Loader.cpp" />
   </ItemGroup>
