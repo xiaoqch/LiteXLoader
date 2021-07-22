@@ -156,9 +156,9 @@ static std::vector<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)]
 
 Local<Value> Listen(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args,2)
-    CHECK_ARG_TYPE(args[0],ValueKind::kString)
-    CHECK_ARG_TYPE(args[1],ValueKind::kFunction)
+    CHECK_ARGS_COUNT(args, 2);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+    CHECK_ARG_TYPE(args[1], ValueKind::kFunction);
 
     try{
         return Boolean::newBoolean(LxlAddEventListener(EngineScope::currentEngine(),args[0].toStr(),args[1].asFunction()));
@@ -269,21 +269,6 @@ void InitEventListeners()
         IF_LISTENED(EVENT_TYPES::onCmdBlockExecute)
         {
             CallEventEx(EVENT_TYPES::onCmdBlockExecute, ev.cmd, IntPos::newPos(ev.bpos.x, ev.bpos.y, ev.bpos.z));
-        }
-        return true;
-    });
-
-// ===== onMobHurt =====
-    Event::addEventListener([](MobHurtedEV ev)
-    {
-        IF_LISTENED(EVENT_TYPES::onMobHurt)
-        {
-            auto level = offPlayer::getLevel(ev.Mob);
-            auto source = SymCall("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z"
-                , Actor*, Level*, ActorDamageSource*, bool)(level, ev.ActorDamageSource, 0);
-
-            CallEventEx(EVENT_TYPES::onMobHurt, EntityClass::newEntity(ev.Mob), EntityClass::newEntity(source),
-                Number::newNumber(ev.Damage));
         }
         return true;
     });
@@ -598,6 +583,22 @@ THook(void, "?_onItemChanged@LevelContainerModel@@MEAAXHAEBVItemStack@@0@Z",
             slotNumber, isPutIn, ItemClass::newItem(isPutIn ? newItem : oldItem));
     }
     return original(_this, slotNumber, oldItem, newItem);
+}
+
+// ===== onMobHurt =====
+THook(bool, "?_hurt@Mob@@MEAA_NAEBVActorDamageSource@@H_N1@Z",
+    Mob* ac, ActorDamageSource* src, int damage, bool unk1_1, bool unk2_0)
+{
+    IF_LISTENED(EVENT_TYPES::onMobHurt)
+    {
+        auto level = offPlayer::getLevel(ac);
+        auto source = SymCall("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z"
+            , Actor*, Level*, ActorDamageSource*, bool)(level, src, 0);
+
+        CallEventEx(EVENT_TYPES::onMobHurt, EntityClass::newEntity(ac), EntityClass::newEntity(source),
+            Number::newNumber(damage));
+    }
+    return original(ac, src, damage, unk1_1, unk2_0);
 }
 
 // ===== onExplode =====
