@@ -199,7 +199,7 @@ bool LxlRemoveAllEventListeners(ScriptEngine* engine)
     return true;
 }
 
-bool LxlRecallOnServerStartedAtHotLoad(ScriptEngine* engine)
+bool LxlRecallOnServerStarted(ScriptEngine* engine)
 {
     std::vector<ListenerListType>& nowList = listenerList[int(EVENT_TYPES::onServerStarted)];
     for (int i = 0; i < nowList.size(); ++i)
