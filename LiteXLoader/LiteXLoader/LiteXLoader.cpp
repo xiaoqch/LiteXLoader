@@ -61,11 +61,10 @@ void entry()
     lxlLogLevel = Raw_IniGetInt(iniConf,"Main","LxlLogLevel",1);
 
     //初始化全局数据
-    bool isFirstInstance;
-    InitEngineGlobalData(&isFirstInstance);
+    InitEngineGlobalData();
 
     //欢迎
-    if(isFirstInstance)
+    if(engineLocalData->isFirstInstance)
         Welcome();
     LoaderInfo();
 

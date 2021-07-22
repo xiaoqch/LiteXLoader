@@ -15,18 +15,23 @@ using namespace script;
 //全局共享数据
 GlobalDataType* engineGlobalData;
 
+//DLL本地共享数据
+LocalDataType* engineLocalData;
+
 //命令延迟注册队列
 std::vector<RegCmdQueue> toRegCmdQueue;
 
-void InitEngineGlobalData(bool *isFirstInstance)
+void InitEngineGlobalData()
 {
 	srand(clock());
+
+	engineLocalData = new LocalDataType;
 
 	HANDLE hGlobalData = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(GlobalDataType), (LXL_GLOBAL_DATA_NAME + to_wstring(GetCurrentProcessId())).c_str());
 	if (hGlobalData == NULL)
 	{
 		ERROR(_TRS("init.fileMapping.fail"));
-		*isFirstInstance = true;
+		engineLocalData->isFirstInstance = true;
 		return;
 	}
 
@@ -34,20 +39,20 @@ void InitEngineGlobalData(bool *isFirstInstance)
 	if (address == NULL)
 	{
 		ERROR(_TRS("init.mapFile.fail"));
-		*isFirstInstance = true;
+		engineLocalData->isFirstInstance = true;
 		return;
 	}
 
 	if (GetLastError() != ERROR_ALREADY_EXISTS)
 	{
 		//First Time
-		*isFirstInstance = true;
+		engineLocalData->isFirstInstance = true;
 		engineGlobalData = new (address) GlobalDataType;
 	}
 	else
 	{
 		//Existing
-		*isFirstInstance = false;
+		engineLocalData->isFirstInstance = false;
 		engineGlobalData = (GlobalDataType*)address;
 	}
 
