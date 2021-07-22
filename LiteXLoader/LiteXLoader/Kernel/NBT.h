@@ -75,4 +75,16 @@ public:
 		SymCall("?add@ListTag@@QEAAXV?$unique_ptr@VTag@@U?$default_delete@VTag@@@std@@@std@@@Z",
 			void, void*, Tag**)(this, &t);
 	}
+
+    static inline Tag* fromItem(ItemStack* item) {
+		Tag* tmp = 0;
+		SymCall("?save@ItemStackBase@@QEBA?AV?$unique_ptr@VCompoundTag@@U?$default_delete@VCompoundTag@@@std@@@std@@XZ",
+			void*, void*, Tag**)(item, &tmp);
+		return tmp;
+	}
+
+    inline void setItem(ItemStack* item) {
+		SymCall("?fromTag@ItemStack@@SA?AV1@AEBVCompoundTag@@@Z",
+			void, void*, void*)(item, this);
+	}
 };

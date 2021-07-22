@@ -35,6 +35,8 @@ public:
 
     Local<Value> createTag(const Arguments& args);
     Local<Value> getType(const Arguments& args);
+
+    Local<Value> setItem(const Arguments& args);
 };
 
-
+Local<Value> fromItem(const Arguments& args);
