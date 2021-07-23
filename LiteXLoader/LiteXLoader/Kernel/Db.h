@@ -7,7 +7,7 @@
 
 class KVDBImpl;
 class minIni;
-#define DB_ROOT std::unique_ptr<KVDBImpl>
+#define DB_ROOT KVDBImpl*
 
 //LevelDB
 DB_ROOT Raw_NewDB(const std::string &dir);

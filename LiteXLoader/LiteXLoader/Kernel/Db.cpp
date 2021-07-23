@@ -15,7 +15,7 @@ DB_ROOT Raw_NewDB(const string &dir)
         return nullptr;
     try
     {
-        return MakeKVDB(dir);
+        return MakeKVDB(dir).release();
     }
     catch(...)
     {
@@ -53,7 +53,7 @@ vector<string> Raw_DBListKey(DB_ROOT &db)
 
 bool Raw_DBClose(DB_ROOT& db)
 {
-    db.reset();
+    delete db;
     return true;
 }
 

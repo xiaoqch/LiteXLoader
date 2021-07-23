@@ -73,6 +73,15 @@ DbClass::DbClass(const string &dir)
     kvdb = Raw_NewDB(dir);
 }
 
+DbClass::~DbClass()
+{
+    if (isValid())
+    {
+        Raw_DBClose(kvdb);
+        kvdb = nullptr;
+    }
+}
+
 Local<Value> DbClass::get(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
@@ -80,6 +89,9 @@ Local<Value> DbClass::get(const Arguments& args)
 
     try
     {
+        if (!isValid())
+            return Local<Value>();
+
         string res;
         if(!Raw_DBGet(kvdb,args[0].asString().toString(),res))
             return Local<Value>();
@@ -96,6 +108,9 @@ Local<Value> DbClass::set(const Arguments& args)
 
     try
     {
+        if (!isValid())
+            return Local<Value>();
+
         return Boolean::newBoolean(Raw_DBSet(kvdb,args[0].asString().toString(),ValueToJson(args[1])));
     }
     CATCH("Fail in DbSet!")
@@ -108,6 +123,9 @@ Local<Value> DbClass::del(const Arguments& args)
 
     try
     {
+        if (!isValid())
+            return Local<Value>();
+
         return Boolean::newBoolean(Raw_DBDel(kvdb,args[0].asString().toString()));
     }
     CATCH("Fail in DbDel!")
@@ -117,7 +135,12 @@ Local<Value> DbClass::close(const Arguments& args)
 {
     try
     {
-        return Boolean::newBoolean(Raw_DBClose(kvdb));
+        if (isValid())
+        {
+            Raw_DBClose(kvdb);
+            kvdb = nullptr;
+        }
+        return Boolean::newBoolean(true);
     }
     CATCH("Fail in DbClose!")
 }
@@ -126,6 +149,9 @@ Local<Value> DbClass::listKey(const Arguments& args)
 {
     try
     {
+        if (!isValid())
+            return Local<Value>();
+
         auto list = Raw_DBListKey(kvdb);
         Local<Array> arr = Array::newArray();
         for (auto& key : list)
@@ -191,6 +217,11 @@ ConfJsonClass::ConfJsonClass(const string& path, const string& defContent)
     :ScriptClass(ScriptClass::ConstructFromCpp<ConfJsonClass>{}), ConfBaseClass(path)
 {
     jsonConf = Raw_JsonOpen(path, defContent);
+}
+
+ConfJsonClass::~ConfJsonClass()
+{
+    flush();
 }
 
 Local<Value> ConfJsonClass::get(const Arguments& args)
@@ -307,6 +338,11 @@ ConfIniClass::ConfIniClass(const string& path, const string& defContent)
     iniConf = Raw_IniOpen(path, defContent);
 }
 
+ConfIniClass::~ConfIniClass()
+{
+    Raw_IniClose(iniConf);
+}
+
 Local<Value> ConfIniClass::set(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 3);
@@ -315,6 +351,9 @@ Local<Value> ConfIniClass::set(const Arguments& args)
 
     try
     {
+        if (!isValid())
+            return Local<Value>();
+
         switch (args[2].getKind())
         {
         case ValueKind::kString:
@@ -346,6 +385,9 @@ Local<Value> ConfIniClass::getStr(const Arguments& args)
 
     try
     {
+        if (!isValid())
+            return Local<Value>();
+
         return String::newString(Raw_IniGetString(iniConf, args[0].toStr(), args[1].toStr(), 
             args.size() >= 3 ? args[2].toStr() : ""));
     }
@@ -362,6 +404,9 @@ Local<Value> ConfIniClass::getInt(const Arguments& args)
 
     try
     {
+        if (!isValid())
+            return Local<Value>();
+
         return Number::newNumber(Raw_IniGetInt(iniConf, args[0].toStr(), args[1].toStr(), 
             args.size() >= 3 ? args[2].asNumber().toInt32() : 0));
     }
@@ -378,6 +423,9 @@ Local<Value> ConfIniClass::getFloat(const Arguments& args)
 
     try
     {
+        if (!isValid())
+            return Local<Value>();
+
         return Number::newNumber(Raw_IniGetFloat(iniConf, args[0].toStr(), args[1].toStr(), 
             args.size() >= 3 ? (float)args[2].asNumber().toDouble() : 0.0));
     }
@@ -394,6 +442,9 @@ Local<Value> ConfIniClass::getBool(const Arguments& args)
 
     try
     {
+        if (!isValid())
+            return Local<Value>();
+
         return Boolean::newBoolean(Raw_IniGetBool(iniConf, args[0].toStr(), args[1].toStr(), 
             args.size() >= 3 ? args[2].asBoolean().value() : false));
     }
@@ -408,6 +459,9 @@ Local<Value> ConfIniClass::del(const Arguments& args)
 
     try
     {
+        if (!isValid())
+            return Local<Value>();
+
         return Boolean::newBoolean(Raw_IniDeleteKey(iniConf, args[0].toStr(), args[1].toStr()));
     }
     CATCH("Fail in confIniDelete!");
@@ -417,6 +471,9 @@ Local<Value> ConfIniClass::reload(const Arguments& args)
 {
     try
     {
+        if (!isValid())
+            return Local<Value>();
+
         Raw_IniClose(iniConf);
         iniConf = Raw_IniOpen(confPath);
         return Boolean::newBoolean(true);
@@ -428,7 +485,11 @@ Local<Value> ConfIniClass::close(const Arguments& args)
 {
     try
     {
-        Raw_IniClose(iniConf);
+        if (isValid())
+        {
+            Raw_IniClose(iniConf);
+            iniConf = nullptr;
+        }
         return Boolean::newBoolean(true);
     }
     CATCH("Fail in confClose!")
@@ -452,10 +513,6 @@ Local<Value> OpenConfig(const Arguments& args)
 
         if(path.empty())
             return Boolean::newBoolean(false);  
-
-        //自动创建路径
-        filesystem::path dir(path);
-        filesystem::create_directories(dir.remove_filename());
 
         if(args.size() >= 2)
         {

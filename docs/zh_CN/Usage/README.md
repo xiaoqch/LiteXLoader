@@ -64,9 +64,9 @@ GCInterval=10				# 引擎垃圾回收周期，默认为10秒
 - `lxl list`  
   列出LXL当前加载的所有插件列表
 - `lxl load ./plugins/xxxx.js`  
-  加载位于指定路径的插件。路径是相对于BDS根目录的相对路径。
+  热加载位于指定路径的插件。路径是相对于BDS根目录的相对路径。
 - `lxl unload xxxx.lua`  
-  卸载在插件列表中名为 xxxx.lua 的插件
+  热卸载在插件列表中名为 xxxx.lua 的插件
 - `lxl reload xxxx.js`  
   重新加载在插件列表中名为 xxxx.js 的插件
 - `lxl reload`  

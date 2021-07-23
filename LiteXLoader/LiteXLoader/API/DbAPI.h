@@ -15,6 +15,7 @@ private:
 
 public:
 	explicit DbClass(const string &dir);
+    ~DbClass();
 
     bool isValid()
     { return kvdb != nullptr; }
@@ -53,6 +54,7 @@ private:
 
 public:
     explicit ConfJsonClass(const string& path, const string& defContent);
+    ~ConfJsonClass();
 
     Local<Value> get(const Arguments& args);
     Local<Value> set(const Arguments& args);
@@ -71,6 +73,12 @@ private:
 
 public:
     explicit ConfIniClass(const string& path, const string& defContent);
+    ~ConfIniClass();
+
+    bool isValid()
+    {
+        return iniConf != nullptr;
+    }
 
     Local<Value> set(const Arguments& args);
     Local<Value> getStr(const Arguments& args);
