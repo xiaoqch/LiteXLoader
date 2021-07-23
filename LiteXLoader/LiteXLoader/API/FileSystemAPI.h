@@ -13,5 +13,3 @@ Local<Value> PathRename(const Arguments& args);
 Local<Value> PathDelete(const Arguments& args);
 Local<Value> PathExists(const Arguments& args);
 Local<Value> GetFilesList(const Arguments& args);
-
-Local<Value> SystemCmd(const Arguments& args);

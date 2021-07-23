@@ -138,6 +138,7 @@
       <Filter>API</Filter>
     </ClCompile>
     <ClCompile Include="Kernel\UnlockCmd.cpp" />
+    <ClCompile Include="API\SystemAPI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="API\BaseAPI.h">
@@ -259,6 +260,9 @@
     </ClInclude>
     <ClInclude Include="API\ScriptAPI.h">
       <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="API\SystemAPI.h">
+      <Filter>Main</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

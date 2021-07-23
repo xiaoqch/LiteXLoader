@@ -10,7 +10,7 @@ bool Raw_FileWriteTo(const std::string &path, const std::string &data);
 std::vector<std::string> Raw_GetFilesList(const std::string& path);
 
 //系统调用
-bool Raw_SystemCmd(const std::string &cmd, std::function<void(int,std::string)> callback, int timeLimit);
+bool Raw_NewProcess(const std::string &cmd, std::function<void(int,std::string)> callback, int timeLimit);
 
 //网络
 bool Raw_HttpGet(const std::string &url, std::function<void(int,std::string)> callback);

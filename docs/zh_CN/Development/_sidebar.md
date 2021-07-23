@@ -10,7 +10,7 @@
   - [📦 方块](zh_CN/Development/GameAPI/Block.md)
   - [🎈 实体](zh_CN/Development/GameAPI/Entity.md)
   - [🧰 物品](zh_CN/Development/GameAPI/Item.md)
-  - [🎊 游戏机制](zh_CN/Development/GameAPI/GameSystem.md)
+  - [🎄 游戏机制](zh_CN/Development/GameAPI/GameSystem.md)
   - [💻 服务端设置](zh_CN/Development/GameAPI/Server.md)
   
 - 事件系统

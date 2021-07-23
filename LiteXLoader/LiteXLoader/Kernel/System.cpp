@@ -98,29 +98,31 @@ vector<string> Raw_GetFilesList(const std::string& path)
 }
 
 /////////////////// String Helper ///////////////////
-wchar_t* str2wstr(string str)  
-{  
-    auto len = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), (int)str.size(), NULL, 0);  
+wchar_t* str2wstr(string str)
+{
+    auto len = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, NULL, 0);
     wchar_t* buffer = new wchar_t[len + 1];
-    MultiByteToWideChar(CP_UTF8, 0, str.c_str(), (int)str.size(), buffer, len);  
-    buffer[len] = '\0';
+    MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, buffer, len + 1);
+    buffer[len] = L'\0';
 
     return buffer;
 }
-string wstr2str(wstring wstr)  
-{  
-    auto len = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.size(), NULL, 0, NULL, NULL);  
-    char* buffer = new char[len + 1];  
-    WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.size(), buffer, len, NULL, NULL);  
-    buffer[len] = '\0';  
+string wstr2str(wstring wstr)
+{
+    auto len = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, NULL, 0, NULL, NULL);
+    char* buffer = new char[len + 1];
+    WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, buffer, len + 1, NULL, NULL);
+    buffer[len] = '\0';
 
-    string result = string(buffer);  
-    delete[] buffer;  
-    return result;  
+    string result = string(buffer);
+    delete[] buffer;
+    return result;
 }
 /////////////////// String Helper ///////////////////
 
-bool Raw_SystemCmd(const std::string &cmd, std::function<void(int,std::string)> callback, int timeLimit)
+#define READ_BUFFER_SIZE 4096
+
+bool Raw_NewProcess(const std::string &cmd, std::function<void(int,std::string)> callback, int timeLimit)
 {
     SECURITY_ATTRIBUTES sa;
 	HANDLE hRead,hWrite;
@@ -157,22 +159,23 @@ bool Raw_SystemCmd(const std::string &cmd, std::function<void(int,std::string)> 
             WaitForSingleObject(hProcess,timeLimit);
             TerminateProcess(hProcess,-1);
         }
-        wchar_t buffer[4096] = {0};
-        wstring strOutput;
+        char buffer[READ_BUFFER_SIZE];
+        string strOutput;
         DWORD bytesRead,exitCode;
 
         delete [] wCmd;
         GetExitCodeProcess(hProcess,&exitCode);
         while (true)
         {
-            if (!ReadFile(hRead,buffer,4096,&bytesRead,NULL))
+            ZeroMemory(buffer, READ_BUFFER_SIZE);
+            if (!ReadFile(hRead,buffer, READ_BUFFER_SIZE,&bytesRead,NULL))
                 break;
             strOutput.append(buffer,bytesRead);
         }
         CloseHandle(hRead);
         CloseHandle(hProcess);
 
-        callback((int)exitCode,wstr2str(strOutput));
+        callback((int)exitCode,strOutput);
     }).detach();
 
     return true;

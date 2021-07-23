@@ -14,6 +14,7 @@
 #include "NetworkAPI.h"
 #include "GuiAPI.h"
 #include "LxlAPI.h"
+#include "SystemAPI.h"
 #include "RemoteCall.h"
 using namespace script;
 
@@ -80,6 +81,7 @@ public:
     static Local<Value> randomGuid(const Arguments& args) { return RandomGuid(args); }
 
     static Local<Value> cmd(const Arguments& args) { return SystemCmd(args); }
+    static Local<Value> newProcess(const Arguments& args) { return SystemNewProcess(args); }
 };
 
 static ClassDefine<void> SystemClassBuilder =
@@ -88,6 +90,7 @@ static ClassDefine<void> SystemClassBuilder =
         .function("getTimeObj", &SystemClass::getTimeObj)
         .function("randomGuid", &SystemClass::randomGuid)
         .function("cmd", &SystemClass::cmd)
+        .function("newProcess", &SystemClass::newProcess)
         .build();
 
 
