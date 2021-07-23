@@ -114,6 +114,7 @@ static ClassDefine<void> FileClassBuilder =
         .function("writeLine", &FileClass::writeLine)
 
         .function("createDir", &FileClass::createDir)
+        .function("mkdir", &FileClass::createDir)
         .function("copy", &FileClass::copy)
         .function("move", &FileClass::move)
         .function("rename", &FileClass::rename)

@@ -4,12 +4,14 @@
 #include <cstdlib>
 using namespace std;
 
+#define RAND_FORM_ID() (unsigned)((rand()<<16)+rand())
+
 void* Raw_CreatePacket(int type)
 {
     unsigned long long packet[2];
     SymCall("?createPacket@MinecraftPackets@@SA?AV?$shared_ptr@VPacket@@@std@@W4MinecraftPacketIds@@@Z",
-	      void *,void*,int)(packet, type);
-	return (void*)*packet;
+        void*, void*, int)(packet, type);
+    return (void*)*packet;
 }
 
 bool Raw_SendPacket(Player *player,void *packet)
@@ -20,9 +22,7 @@ bool Raw_SendPacket(Player *player,void *packet)
 
 int Raw_SendFormPacket(Player* player, const string &data)
 {
-    //static unsigned id = 0;
-    //++id;
-    unsigned id = (unsigned)((rand()<<16)+rand());
+    unsigned id = RAND_FORM_ID();
 
     void *packet = Raw_CreatePacket(100);   //表单数据包
     dAccess<unsigned>(packet, 48) = id;
@@ -72,6 +72,16 @@ bool Raw_SendBossEventPacket(Player* player, string name, float percent, int typ
     dAccess<float>(packet, 112) = percent;
    
     return Raw_SendPacket(player, packet);
+}
+
+bool Raw_SendCrashClientPacket(Player* player)
+{
+    void* pkt = Raw_CreatePacket(58);
+    dAccess<int, 14>(pkt) = 0;
+    dAccess<int, 15>(pkt) = 0;
+    dAccess<bool, 48>(pkt) = 1;
+
+    return Raw_SendPacket(player, pkt);
 }
 
 Player* Raw_GetPlayerFromPacket(ServerNetworkHandler* handler, NetworkIdentifier* id, Packet* packet)

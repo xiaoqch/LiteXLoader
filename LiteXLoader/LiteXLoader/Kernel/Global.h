@@ -20,6 +20,7 @@
 //#include <LiteLoader/api/gui/gui.h>
 #include <LiteLoader/httplib.h>
 #include <LiteLoader/api/myPacket.h>
+#include <LiteLoader/stl/varint.h>
 #include <Configs.h>
 #include "i18n.h"
 #include <string>

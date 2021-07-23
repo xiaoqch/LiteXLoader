@@ -71,3 +71,8 @@ Player* Raw_ToPlayer(Actor* actor)
 {
     return Raw_IsPlayer(actor) ? (Player*)actor : nullptr;
 }
+
+int Raw_GetEntityDimId(Actor* actor)
+{
+    return WActor(*actor).getDimID();
+}

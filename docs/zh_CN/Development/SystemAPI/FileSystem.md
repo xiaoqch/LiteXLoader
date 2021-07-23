@@ -6,7 +6,8 @@
 
 ### 创建文件夹  
 
-`file.createDir(dir)`
+`file.createDir(dir)`  
+`file.mkdir(dir)`
 
 - 参数：
   - dir : `String`  

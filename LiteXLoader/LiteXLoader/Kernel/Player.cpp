@@ -161,12 +161,7 @@ bool Raw_TransServer(Player* player, const std::string& server, short port)
 
 bool Raw_CrashPlayer(Player* player)
 {
-    void* pkt = Raw_CreatePacket(0x3A);
-    dAccess<int, 14>(pkt) = 0;
-    dAccess<int, 15>(pkt) = 0;
-    dAccess<bool, 48>(pkt) = 1;
-
-    return Raw_SendPacket(player,pkt);
+    return Raw_SendCrashClientPacket(player);
 }
 
 int Raw_GetScore(Player* player, const std::string &key)

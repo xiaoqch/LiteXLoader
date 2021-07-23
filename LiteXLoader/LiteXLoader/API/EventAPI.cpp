@@ -607,7 +607,7 @@ THook(bool, "?explode@Level@@UEAAXAEAVBlockSource@@PEAVActor@@AEBVVec3@@M_N3M3@Z
 {
     IF_LISTENED(EVENT_TYPES::onExplode)
     {
-        CallEventEx(EVENT_TYPES::onExplode, EntityClass::newEntity(actor), FloatPos::newPos(pos.x, pos.y, pos.z));
+        CallEventEx(EVENT_TYPES::onExplode, EntityClass::newEntity(actor), FloatPos::newPos(pos.x, pos.y, pos.z, Raw_GetEntityDimId(actor)));
     }
     return original(_this, bs, actor, pos, a5, a6, a7, a8, a9);
 }
