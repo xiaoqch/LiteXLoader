@@ -313,7 +313,16 @@ bool CallPlayerCmdCallback(Player* player, const string& cmd)
                             args.add(String::newString(para));
                     }
 
-                    auto res = iter->second.get().call({}, PlayerClass::newPlayer(player), args);
+                    Local<Value> res{};
+                    try
+                    {
+                        res = iter->second.get().call({}, PlayerClass::newPlayer(player), args);
+                    }
+                    catch (const Exception& e)
+                    {
+                        ERROR("PlayerCmd Callback Failed!");
+                        ERRPRINT(e);
+                    }
                     if (res.isNull() || (res.isBoolean() && res.asBoolean().value() == false))
                         passToOriginalCmdEvent = false;
                     break;
@@ -348,7 +357,16 @@ bool CallServerCmdCallback(const string& cmd)
                             args.add(String::newString(para));
                     }
 
-                    auto res = iter->second.get().call({}, args);
+                    Local<Value> res{};
+                    try
+                    {
+                        res = iter->second.get().call({}, args);
+                    }
+                    catch (const Exception& e)
+                    {
+                        ERROR("ServerCmd Callback Failed!");
+                        ERRPRINT(e);
+                    }
                     if (res.isNull() || (res.isBoolean() && res.asBoolean().value() == false))
                         passToOriginalCmdEvent = false;
                     break;
@@ -378,7 +396,16 @@ bool CallFormCallback(Player* player, unsigned formId, const string& data)
             }
 
             EngineScope scope(callback.engine);
-            auto res = callback.func.get().call({}, PlayerClass::newPlayer(player), JsonToValue(data));
+            Local<Value> res{};
+            try
+            {
+                res = callback.func.get().call({}, PlayerClass::newPlayer(player), JsonToValue(data));
+            }
+            catch (const Exception& e)
+            {
+                ERROR("Form Callback Failed!");
+                ERRPRINT(e);
+            }
             if (res.isNull() || (res.isBoolean() && res.asBoolean().value() == false))
                 passToBDS = false;
 

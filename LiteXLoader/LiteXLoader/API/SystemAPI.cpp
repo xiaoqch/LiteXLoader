@@ -22,7 +22,15 @@ Local<Value> SystemCmd(const Arguments& args)
         (int exitCode, string output)
         {
             EngineScope scope(engine);
-            callback.get().call({}, Number::newNumber(exitCode), String::newString(output));
+            try
+            {
+                callback.get().call({}, Number::newNumber(exitCode), String::newString(output));
+            }
+            catch (const Exception& e)
+            {
+                ERROR("SystemCmd Callback Failed!");
+                ERRPRINT(e);
+            }
         }
         , args.size() >= 3 ? args[2].toInt() : -1));
     }
@@ -45,7 +53,15 @@ Local<Value> SystemNewProcess(const Arguments& args)
         (int exitCode, string output)
         {
             EngineScope scope(engine);
-            callback.get().call({}, Number::newNumber(exitCode), String::newString(output));
+            try
+            {
+                callback.get().call({}, Number::newNumber(exitCode), String::newString(output));
+            }
+            catch (const Exception& e)
+            {
+                ERROR("SystemNewProcess Callback Failed!");
+                ERRPRINT(e);
+            }
         }
         , args.size() >= 3 ? args[2].toInt() : -1));
     }
