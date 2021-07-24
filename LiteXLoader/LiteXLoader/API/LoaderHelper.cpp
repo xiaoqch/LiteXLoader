@@ -118,6 +118,7 @@ bool LxlLoadPlugin(const std::string& filePath, bool isHotLoad)
 
         deleteEngine->getData().reset();
         ERROR("Fail to load " + filePath + "!\n");
+        ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName);
         ERRPRINT(e);
         ExitEngineScope exit;
 

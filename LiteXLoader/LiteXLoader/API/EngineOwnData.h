@@ -1,3 +1,4 @@
+#pragma once
 #include <Kernel/ThirdParty.h>
 #include <Kernel/Db.h>
 #include <ScriptX/ScriptX.h>
