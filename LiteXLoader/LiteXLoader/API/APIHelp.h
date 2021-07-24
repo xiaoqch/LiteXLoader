@@ -39,7 +39,9 @@ bool CheckIsFloat(const Local<Value> &num);
 
 // 截获引擎异常
 #define CATCH(LOG) \
-    catch(Exception& e) \
+    catch(const seh_exception &e) \
+    { ERROR("SEH Exception Caught!"); ERRPRINT(e.what()); ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName); return Local<Value>(); } \
+    catch(const Exception& e) \
     { ERROR(LOG##"\n"); ERRPRINT(e); ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName); return Local<Value>();}
 
 

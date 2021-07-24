@@ -250,7 +250,7 @@ vector<Player*> Raw_GetOnlinePlayers()
     {
         return isServerStarted ? liteloader::getAllPlayers() : vector<Player*>();
     }
-    catch (const seh_excpetion& e)
+    catch (const seh_exception& e)
     {
         return vector<Player*>();
     }

@@ -5,8 +5,8 @@
 
 // 版本记录
 #define LXL_VERSION_MAJOR 0
-#define LXL_VERSION_MINOR 0
-#define LXL_VERSION_BUILD 9
+#define LXL_VERSION_MINOR 2
+#define LXL_VERSION_BUILD 1
 #define LXL_VERSION_IS_BETA true
 
 // 后端宏
