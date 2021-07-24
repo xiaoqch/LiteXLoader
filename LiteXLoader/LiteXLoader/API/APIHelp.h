@@ -5,6 +5,7 @@ using namespace script;
 #include <Kernel/Global.h>
 #include <Kernel/ThirdParty.h>
 #include <Kernel/i18n.h>
+#include "EngineOwnData.h"
 #include <string>
 #include <vector>
 
@@ -39,7 +40,7 @@ bool CheckIsFloat(const Local<Value> &num);
 // 截获引擎异常
 #define CATCH(LOG) \
     catch(Exception& e) \
-    { ERROR(LOG##"\n"); ERRPRINT(e); return Local<Value>();}
+    { ERROR(LOG##"\n"); ERRPRINT(e); ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName); return Local<Value>();}
 
 
 // 序列化

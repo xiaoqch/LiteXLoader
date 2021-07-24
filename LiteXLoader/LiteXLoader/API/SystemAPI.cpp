@@ -29,6 +29,7 @@ Local<Value> SystemCmd(const Arguments& args)
             catch (const Exception& e)
             {
                 ERROR("SystemCmd Callback Failed!");
+                ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName);
                 ERRPRINT(e);
             }
         }
@@ -60,6 +61,7 @@ Local<Value> SystemNewProcess(const Arguments& args)
             catch (const Exception& e)
             {
                 ERROR("SystemNewProcess Callback Failed!");
+                ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName);
                 ERRPRINT(e);
             }
         }

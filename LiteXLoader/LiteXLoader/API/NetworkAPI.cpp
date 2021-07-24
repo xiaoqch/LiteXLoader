@@ -28,6 +28,7 @@ Local<Value> HttpGet(const Arguments& args)
             catch (const Exception& e)
             {
                 ERROR("HttpGet Callback Failed!");
+                ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName);
                 ERRPRINT(e);
             }
         }));
@@ -59,6 +60,7 @@ Local<Value> HttpPost(const Arguments& args)
             catch (const Exception& e)
             {
                 ERROR("HttpPost Callback Failed!");
+                ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName);
                 ERRPRINT(e);
             }
         }));

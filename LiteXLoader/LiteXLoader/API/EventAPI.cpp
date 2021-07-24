@@ -106,6 +106,7 @@ static std::vector<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)]
         catch(const Exception& e) \
         { \
             ERROR("Event Callback Failed!"); \
+            ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName); \
             ERRPRINT(e); \
         } \
     }
@@ -124,6 +125,7 @@ static std::vector<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)]
         catch(const Exception& e) \
         { \
             ERROR("Event Callback Failed!"); \
+            ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName); \
             ERRPRINT(e); \
         } \
     }\
@@ -143,6 +145,7 @@ static std::vector<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)]
         catch(const Exception& e) \
         { \
             ERROR("Event Callback Failed!"); \
+            ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName); \
             ERRPRINT(e); \
         } \
     }\
@@ -213,6 +216,7 @@ bool LxlRecallOnServerStarted(ScriptEngine* engine)
             catch (const Exception& e)
             {
                 ERROR("Event Callback Failed!");
+                ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName);
                 ERRPRINT(e);
                 return false;
             }

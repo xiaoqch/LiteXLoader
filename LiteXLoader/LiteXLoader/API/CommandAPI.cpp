@@ -346,6 +346,7 @@ bool CallPlayerCmdCallback(Player* player, const string& cmdPrefix, const vector
     catch (const Exception& e)
     {
         ERROR("PlayerCmd Callback Failed!");
+        ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName);
         ERRPRINT(e);
     }
     if (res.isNull() || (res.isBoolean() && res.asBoolean().value() == false))
@@ -369,6 +370,7 @@ bool CallServerCmdCallback(const string& cmdPrefix, const vector<string>& paras)
     catch (const Exception& e)
     {
         ERROR("ServerCmd Callback Failed!");
+        ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName);
         ERRPRINT(e);
     }
     if (res.isNull() || (res.isBoolean() && res.asBoolean().value() == false))
@@ -405,6 +407,7 @@ bool CallFormCallback(Player* player, unsigned formId, const string& data)
             catch (const Exception& e)
             {
                 ERROR("Form Callback Failed!");
+                ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName);
                 ERRPRINT(e);
             }
             if (res.isNull() || (res.isBoolean() && res.asBoolean().value() == false))
