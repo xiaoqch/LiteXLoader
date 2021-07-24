@@ -731,13 +731,18 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
         if (player)
         {
             // Player Command
-            bool callbackRes = CallPlayerCmdCallback(player, cmd);
-            IF_LISTENED(EVENT_TYPES::onPlayerCmd)
+            int perm = 0;
+
+            if (Raw_GetPlayerPermLevel(player) >= perm)
             {
-                CallEvent(EVENT_TYPES::onPlayerCmd, PlayerClass::newPlayer(player), cmd);
+                bool callbackRes = CallPlayerCmdCallback(player, cmd);
+                IF_LISTENED(EVENT_TYPES::onPlayerCmd)
+                {
+                    CallEvent(EVENT_TYPES::onPlayerCmd, PlayerClass::newPlayer(player), cmd);
+                }
+                if (!callbackRes)
+                    return false;
             }
-            if (!callbackRes)
-                return false;
         }
         else
         {

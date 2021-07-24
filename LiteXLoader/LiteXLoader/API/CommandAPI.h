@@ -20,6 +20,8 @@ std::vector<std::string> SplitCmdParas(const std::string& paras);
 
 // 注册LXL内置命令
 void RegisterBuiltinCmds();
+// 删除指定引擎的所有命令
+bool LxlRemoveCmdRegister(script::ScriptEngine* engine);
 // 处理命令延迟注册
 void ProcessRegCmdQueue();
 // 处理调试引擎事件

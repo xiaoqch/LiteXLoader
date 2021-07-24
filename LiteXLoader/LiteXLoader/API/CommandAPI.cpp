@@ -33,85 +33,102 @@ Local<Value> RuncmdEx(const Arguments& args)
     try {
         std::pair<bool, string> result = Raw_RuncmdEx(args[0].asString().toString());
         Local<Object> resObj = Object::newObject();
-        resObj.set("result", result.first);
+        resObj.set("success", result.first);
         resObj.set("output", result.second);
         return resObj;
     }
     CATCH("Fail in RunCmdEx!")
 }
 
+
+// Helper
+void LxlRegisterNewCmd(bool isPlayerCmd, string cmd, const string& describe, int level, Local<Function> func)
+{
+    if (cmd[0] == '/')
+        cmd = cmd.erase(0, 1);
+
+    if(isPlayerCmd)
+        engineLocalData->playerCmdCallbacks[cmd] = { EngineScope::currentEngine(),level,Global<Function>(func) };
+    else
+        engineLocalData->consoleCmdCallbacks[cmd] = { EngineScope::currentEngine(),level,Global<Function>(func) };
+
+    //延迟注册
+    if (isCmdRegisterEnabled)
+        Raw_RegisterCmd(cmd, describe, level);
+    else
+        toRegCmdQueue.push_back({ cmd, describe, level });
+}
+
+bool LxlRemoveCmdRegister(ScriptEngine* engine)
+{
+    for (auto& cmdData : engineLocalData->playerCmdCallbacks)
+    {
+        if (cmdData.second.fromEngine == engine)
+            engineLocalData->playerCmdCallbacks.erase(cmdData.first);
+    }
+
+    for (auto& cmdData : engineLocalData->consoleCmdCallbacks)
+    {
+        if (cmdData.second.fromEngine == engine)
+            engineLocalData->playerCmdCallbacks.erase(cmdData.first);
+    }
+    return true;
+}
+// Helper
+
 Local<Value> RegisterPlayerCmd(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 3)
-    CHECK_ARG_TYPE(args[0], ValueKind::kString)
-    CHECK_ARG_TYPE(args[1], ValueKind::kString)
-    CHECK_ARG_TYPE(args[2], ValueKind::kFunction)
-
+    CHECK_ARGS_COUNT(args, 3);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+    CHECK_ARG_TYPE(args[1], ValueKind::kString);
+    CHECK_ARG_TYPE(args[2], ValueKind::kFunction);
     if (args.size() >= 4)
-        CHECK_ARG_TYPE(args[3], ValueKind::kNumber)
+        CHECK_ARG_TYPE(args[3], ValueKind::kNumber);
 
-        try {
-            string cmd = args[0].asString().toString();
-            string describe = args[1].asString().toString();
-            int level = 0;
+    try {
+        string cmd = args[0].asString().toString();
+        string describe = args[1].asString().toString();
+        int level = 0;
 
-            if (args.size() >= 4)
-            {
-                int newLevel = args[3].asNumber().toInt32();
-                if (newLevel >= 0 && newLevel <= 3)
-                    level = newLevel;
-            }
-
-            if (cmd[0] == '/')
-                cmd = cmd.erase(0, 1);
-            (ENGINE_OWN_DATA()->playerCmdCallbacks)[cmd] = args[2].asFunction();
-
-            //延迟注册
-            if(isCmdRegisterEnabled)
-                Raw_RegisterCmd(cmd, describe, level);
-            else
-                toRegCmdQueue.push_back({ cmd, describe, level });
-
-            return Boolean::newBoolean(true);
+        if (args.size() >= 4)
+        {
+            int newLevel = args[3].asNumber().toInt32();
+            if (newLevel >= 0 && newLevel <= 3)
+                level = newLevel;
         }
-    CATCH("Fail in RegisterPlayerCmd!")
+
+        LxlRegisterNewCmd(true, cmd, describe, level, args[2].asFunction());
+        return Boolean::newBoolean(true);
+    }
+    CATCH("Fail in RegisterPlayerCmd!");
 }
 
 Local<Value> RegisterConsoleCmd(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 3)
-    CHECK_ARG_TYPE(args[0], ValueKind::kString)
-    CHECK_ARG_TYPE(args[1], ValueKind::kString)
-    CHECK_ARG_TYPE(args[2], ValueKind::kFunction)
+    CHECK_ARGS_COUNT(args, 3);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+    CHECK_ARG_TYPE(args[1], ValueKind::kString);
+    CHECK_ARG_TYPE(args[2], ValueKind::kFunction);
 
     try {
         string cmd = args[0].asString().toString();
         string describe = args[1].asString().toString();
 
-        if (cmd[0] == '/')
-            cmd = cmd.erase(0, 1);
-        (ENGINE_OWN_DATA()->consoleCmdCallbacks)[cmd] = args[2].asFunction();
-
-        //延迟注册
-        if (isCmdRegisterEnabled)
-            Raw_RegisterCmd(cmd, describe, 4);
-        else
-            toRegCmdQueue.push_back({ cmd, describe, 4 });
-
+        LxlRegisterNewCmd(false, cmd, describe, 4, args[2].asFunction());
         return Boolean::newBoolean(true);
     }
-    CATCH("Fail in RegisterConsoleCmd!")
+    CATCH("Fail in RegisterConsoleCmd!");
 }
 
 Local<Value> SendCmdOutput(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 1)
-    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
 
     try {
         return Boolean::newBoolean(Raw_SendCmdOutput(args[0].toStr()));
     }
-    CATCH("Fail in SendCmdOutput!")
+    CATCH("Fail in SendCmdOutput!");
 }
 
 
@@ -288,92 +305,90 @@ void ProcessStopServer(const string& cmd)
     }
 }
 
+//helper
+string CmdPreProcess(bool isPlayerCmd, const string& cmd, vector<string> &receiveParas)
+{
+    std::map<std::string, CmdCallbackData, EngineOwnData_MapCmp>& cmdMap =
+        isPlayerCmd ? engineLocalData->playerCmdCallbacks : engineLocalData->consoleCmdCallbacks;
+
+    for (auto& cmdData : cmdMap)
+    {
+        string prefix = cmdData.first;
+        if (cmd == prefix || (cmd.find(prefix) == 0 && cmd[prefix.size()] == ' '))
+            //如果命令与注册前缀全匹配，或者目标前缀后面为空格
+        {
+            //Matched
+            if (cmd.size() > prefix.size())
+            {
+                //除了注册前缀之外还有额外参数
+                receiveParas = SplitCmdParas(cmd.substr(prefix.size() + 1));
+            }
+            else
+                receiveParas = vector<string>();
+
+            return prefix;
+        }
+    }
+    return string();
+}
+//helper
+
 bool CallPlayerCmdCallback(Player* player, const string& cmd)
 {
-    bool passToOriginalCmdEvent = true;
+    vector<string> paras;
+    string prefix = CmdPreProcess(true, cmd, paras);
 
-    for (auto engine : lxlModules)
+    if (prefix.empty())
+        return true;
+
+    auto cmdData = engineLocalData->playerCmdCallbacks[prefix];
+    EngineScope enter(cmdData.fromEngine);
+    Local<Value> res{};
+    try
     {
-        EngineScope enter(engine);
-        auto funcs = &(ENGINE_OWN_DATA()->playerCmdCallbacks);
-        if (!funcs->empty())
-            for (auto iter = funcs->begin(); iter != funcs->end(); ++iter)
-            {
-                string prefix = iter->first;
-                if (cmd == prefix || (cmd.find(prefix) == 0 && cmd[prefix.size()] == ' '))
-                    //如果命令与注册前缀全匹配，或者目标前缀后面为空格
-                {
-                    //Matched
-                    Local<Array> args = Array::newArray();
-                    if (cmd.size() > prefix.size())
-                    {
-                        //除了注册前缀之外还有额外参数
-                        auto paras = SplitCmdParas(cmd.substr(prefix.size() + 1));
-                        for (string para : paras)
-                            args.add(String::newString(para));
-                    }
-
-                    Local<Value> res{};
-                    try
-                    {
-                        res = iter->second.get().call({}, PlayerClass::newPlayer(player), args);
-                    }
-                    catch (const Exception& e)
-                    {
-                        ERROR("PlayerCmd Callback Failed!");
-                        ERRPRINT(e);
-                    }
-                    if (res.isNull() || (res.isBoolean() && res.asBoolean().value() == false))
-                        passToOriginalCmdEvent = false;
-                    break;
-                }
-            }
+        Local<Array> args = Array::newArray();
+        for (auto& para : paras)
+            args.add(String::newString(para));
+        res = cmdData.func.get().call({}, PlayerClass::newPlayer(player), args);
     }
-    return passToOriginalCmdEvent;
+    catch (const Exception& e)
+    {
+        ERROR("PlayerCmd Callback Failed!");
+        ERRPRINT(e);
+    }
+    if (res.isNull() || (res.isBoolean() && res.asBoolean().value() == false))
+        return false;
+
+    return true;
 }
 
 bool CallServerCmdCallback(const string& cmd)
 {
-    bool passToOriginalCmdEvent = true;
+    vector<string> paras;
+    string prefix = CmdPreProcess(false, cmd, paras);
 
-    for (auto engine : lxlModules)
+    if (prefix.empty())
+        return true;
+
+    auto cmdData = engineLocalData->consoleCmdCallbacks[prefix];
+    EngineScope enter(cmdData.fromEngine);
+    Local<Value> res{};
+    try
     {
-        EngineScope enter(engine);
-        auto funcs = &(ENGINE_OWN_DATA()->consoleCmdCallbacks);
-        if (!funcs->empty())
-            for (auto iter = funcs->begin(); iter != funcs->end(); ++iter)
-            {
-                string prefix = iter->first;
-                if (cmd == prefix || (cmd.find(prefix) == 0 && cmd[prefix.size()] == ' '))
-                    //如果命令与注册前缀全匹配，或者目标前缀后面为空格
-                {
-                    //Matched
-                    Local<Array> args = Array::newArray();
-                    if (cmd.size() > prefix.size())
-                    {
-                        //除了注册前缀之外还有额外参数
-                        auto paras = SplitCmdParas(cmd.substr(prefix.size() + 1));
-                        for (string para : paras)
-                            args.add(String::newString(para));
-                    }
-
-                    Local<Value> res{};
-                    try
-                    {
-                        res = iter->second.get().call({}, args);
-                    }
-                    catch (const Exception& e)
-                    {
-                        ERROR("ServerCmd Callback Failed!");
-                        ERRPRINT(e);
-                    }
-                    if (res.isNull() || (res.isBoolean() && res.asBoolean().value() == false))
-                        passToOriginalCmdEvent = false;
-                    break;
-                }
-            }
+        Local<Array> args = Array::newArray();
+        for (auto& para : paras)
+            args.add(String::newString(para));
+        res = cmdData.func.get().call({}, args);
     }
-    return passToOriginalCmdEvent;
+    catch (const Exception& e)
+    {
+        ERROR("ServerCmd Callback Failed!");
+        ERRPRINT(e);
+    }
+    if (res.isNull() || (res.isBoolean() && res.asBoolean().value() == false))
+        return false;
+
+    return true;
 }
 
 bool CallFormCallback(Player* player, unsigned formId, const string& data)
