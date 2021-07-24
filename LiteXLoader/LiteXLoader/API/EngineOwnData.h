@@ -8,17 +8,6 @@
 #include <unordered_map>
 #include <memory>
 
-static struct EngineOwnData_MapCmp
-{
-    bool operator() (std::string const &a, std::string const &b) const
-    {
-        if(a.size()!=b.size())
-            return a.size()>b.size();
-        else
-            return a>b;
-    }
-};
-
 struct FormCallbackData
 {
     script::ScriptEngine* engine;
@@ -33,12 +22,6 @@ struct EngineOwnData
     //基础信息
     std::string pluginName = "";
     std::string pluginPath = "";
-
-    //玩家命令回调
-    std::map<std::string, Global<Function> ,EngineOwnData_MapCmp> playerCmdCallbacks;
-
-    //控制台命令回调
-    std::map<std::string, Global<Function> ,EngineOwnData_MapCmp> consoleCmdCallbacks;
 
     //表单回调
     std::map<unsigned, FormCallbackData> formCallbacks;

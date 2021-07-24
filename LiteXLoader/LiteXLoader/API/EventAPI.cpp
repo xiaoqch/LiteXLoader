@@ -731,29 +731,48 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
         if (player)
         {
             // Player Command
-            bool callbackRes = CallPlayerCmdCallback(player, cmd);
-            IF_LISTENED(EVENT_TYPES::onPlayerCmd)
+            vector<string> paras;
+            string prefix = LxlFindCmdReg(true, cmd, paras);
+
+            if (!prefix.empty())
             {
-                CallEvent(EVENT_TYPES::onPlayerCmd, PlayerClass::newPlayer(player), cmd);
+                //found
+                int perm = engineLocalData->playerCmdCallbacks[prefix].perm;
+
+                if (Raw_GetPlayerPermLevel(player) >= perm)
+                {
+                    bool callbackRes = CallPlayerCmdCallback(player, prefix, paras);
+                    IF_LISTENED(EVENT_TYPES::onPlayerCmd)
+                    {
+                        CallEvent(EVENT_TYPES::onPlayerCmd, PlayerClass::newPlayer(player), cmd);
+                    }
+                    if (!callbackRes)
+                        return false;
+                }
             }
-            if (!callbackRes)
-                return false;
         }
         else
         {
-            // Server Command
+            // PreProcess
             if (!ProcessDebugEngine(cmd))
                 return false;
             ProcessStopServer(cmd);
             ProcessHotManagement(cmd);
 
-            bool callbackRes = CallServerCmdCallback(cmd);
-            IF_LISTENED(EVENT_TYPES::onConsoleCmd)
+            //CallEvents
+            vector<string> paras;
+            string prefix = LxlFindCmdReg(false, cmd, paras);
+
+            if (!prefix.empty())
             {
-                CallEventEx(EVENT_TYPES::onConsoleCmd, cmd);
+                bool callbackRes = CallServerCmdCallback(prefix,paras);
+                IF_LISTENED(EVENT_TYPES::onConsoleCmd)
+                {
+                    CallEventEx(EVENT_TYPES::onConsoleCmd, cmd);
+                }
+                if (!callbackRes)
+                    return false;
             }
-            if (!callbackRes)
-                return false;
         }
     }
     return original(_this, a2, x, a4);

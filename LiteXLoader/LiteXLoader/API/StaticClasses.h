@@ -150,6 +150,7 @@ static ClassDefine<void> LoggerClassBuilder =
         .function("debug", &LoggerClass::debug)
         .function("info", &LoggerClass::info)
         .function("warn", &LoggerClass::warn)
+        .function("warning", & LoggerClass::warn)
         .function("error", &LoggerClass::error)
         .function("fatal", &LoggerClass::fatal)
 

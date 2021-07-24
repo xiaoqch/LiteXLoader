@@ -137,8 +137,12 @@
     <ClCompile Include="API\ScriptAPI.cpp">
       <Filter>API</Filter>
     </ClCompile>
-    <ClCompile Include="Kernel\UnlockCmd.cpp" />
-    <ClCompile Include="API\SystemAPI.cpp" />
+    <ClCompile Include="Kernel\UnlockCmd.cpp">
+      <Filter>Kernel</Filter>
+    </ClCompile>
+    <ClCompile Include="API\SystemAPI.cpp">
+      <Filter>API</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="API\BaseAPI.h">
@@ -262,7 +266,7 @@
       <Filter>API</Filter>
     </ClInclude>
     <ClInclude Include="API\SystemAPI.h">
-      <Filter>Main</Filter>
+      <Filter>API</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

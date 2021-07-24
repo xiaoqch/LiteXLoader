@@ -17,6 +17,7 @@
 #include <Loader.h>
 #include "LoaderHelper.h"
 #include "RemoteCall.h"
+#include "CommandAPI.h"
 using namespace script;
 using namespace std;
 
@@ -153,6 +154,7 @@ string LxlUnloadPlugin(const std::string& name)
 
             RemoveFromGlobalPluginsList(name);
             LxlRemoveAllEventListeners(engine);
+            LxlRemoveCmdRegister(engine);
             LxlRemoveAllExportedFuncs(engine);
             engine->getData().reset();
             lxlModules.erase(lxlModules.begin() + i);
