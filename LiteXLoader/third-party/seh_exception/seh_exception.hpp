@@ -10,12 +10,12 @@
 #include <windows.h>
 #include <exception>
 
-class seh_excpetion : std::exception
+class seh_exception : std::exception
 {
 	typedef ULONG(WINAPI* fpRtlNtStatusToDosError)(DWORD Status);
 
 public:
-	seh_excpetion(unsigned int nExceptionCode, _EXCEPTION_POINTERS* pstExcptionInfor) :
+	seh_exception(unsigned int nExceptionCode, _EXCEPTION_POINTERS* pstExcptionInfor) :
 		m_nExceptionCode(0),
 		m_pExcptionInfor(NULL),
 		m_szMsgBuff(NULL),
@@ -31,7 +31,7 @@ public:
 		}
 	}
 
-	virtual ~seh_excpetion()
+	virtual ~seh_exception()
 	{
 		m_nExceptionCode = 0;
 		m_pExcptionInfor = NULL;
@@ -87,7 +87,7 @@ private:
 public:
 	static void(__cdecl TranslateSEHtoCE)(unsigned int nExceptionCode, struct _EXCEPTION_POINTERS* pstExcptionInfor)
 	{
-		throw seh_excpetion(nExceptionCode, pstExcptionInfor);
+		throw seh_exception(nExceptionCode, pstExcptionInfor);
 	}
 
 };

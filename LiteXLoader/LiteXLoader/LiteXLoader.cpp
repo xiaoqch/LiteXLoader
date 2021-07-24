@@ -51,7 +51,7 @@ void LoaderInfo()
 void entry()
 {
     //设置全局SEH处理
-    _set_se_translator(seh_excpetion::TranslateSEHtoCE);
+    _set_se_translator(seh_exception::TranslateSEHtoCE);
 
     //读取配置文件
     Raw_DirCreate(std::filesystem::path(LXL_CONFIG_PATH).remove_filename().u8string());

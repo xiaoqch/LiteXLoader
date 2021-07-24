@@ -32,7 +32,7 @@ LXL提供了**普通表单对象**来方便地创建一个自定义表单并发�
 
 <br>
 
-#### 设置表单的标题
+#### 设置表单的内容
 
 `fm.setContent(content)`
 
@@ -78,7 +78,7 @@ LXL提供了**普通表单对象**来方便地创建一个自定义表单并发�
 `pl.sendForm(fm,callback)`
 
 - 参数：
-  - fm : `CustomForm`  
+  - fm : `SimpleForm`  
     配置好的表单对象  
   - callback : `Function`  
     玩家与表单元素互动之后被调用的回调函数。  
@@ -161,7 +161,7 @@ LXL提供了**自定义表单对象**来方便地创建一个自定义表单并�
 
 #### 向表单内增加一行开关选项  
 
-`fm.addSwitch(title[,default]])`
+`fm.addSwitch(title[,default])`
 
 - 参数：
   - title : `String`  
