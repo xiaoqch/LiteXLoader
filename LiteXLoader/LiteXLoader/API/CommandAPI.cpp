@@ -305,8 +305,7 @@ void ProcessStopServer(const string& cmd)
     }
 }
 
-//helper
-string CmdPreProcess(bool isPlayerCmd, const string& cmd, vector<string> &receiveParas)
+string LxlFindCmdReg(bool isPlayerCmd, const string& cmd, vector<string> &receiveParas)
 {
     std::map<std::string, CmdCallbackData, EngineOwnData_MapCmp>& cmdMap =
         isPlayerCmd ? engineLocalData->playerCmdCallbacks : engineLocalData->consoleCmdCallbacks;
@@ -331,17 +330,10 @@ string CmdPreProcess(bool isPlayerCmd, const string& cmd, vector<string> &receiv
     }
     return string();
 }
-//helper
 
-bool CallPlayerCmdCallback(Player* player, const string& cmd)
+bool CallPlayerCmdCallback(Player* player, const string& cmdPrefix, const vector<string> &paras)
 {
-    vector<string> paras;
-    string prefix = CmdPreProcess(true, cmd, paras);
-
-    if (prefix.empty())
-        return true;
-
-    auto cmdData = engineLocalData->playerCmdCallbacks[prefix];
+    auto cmdData = engineLocalData->playerCmdCallbacks[cmdPrefix];
     EngineScope enter(cmdData.fromEngine);
     Local<Value> res{};
     try
@@ -362,15 +354,9 @@ bool CallPlayerCmdCallback(Player* player, const string& cmd)
     return true;
 }
 
-bool CallServerCmdCallback(const string& cmd)
+bool CallServerCmdCallback(const string& cmdPrefix, const vector<string>& paras)
 {
-    vector<string> paras;
-    string prefix = CmdPreProcess(false, cmd, paras);
-
-    if (prefix.empty())
-        return true;
-
-    auto cmdData = engineLocalData->consoleCmdCallbacks[prefix];
+    auto cmdData = engineLocalData->consoleCmdCallbacks[cmdPrefix];
     EngineScope enter(cmdData.fromEngine);
     Local<Value> res{};
     try
