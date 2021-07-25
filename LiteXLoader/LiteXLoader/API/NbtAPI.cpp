@@ -3,6 +3,7 @@
 #include <Kernel/NBT.h>
 #include <vector>
 #include <LiteXLoader/API/ItemAPI.h>
+#include <LiteXLoader/API/BlockAPI.h>
 using namespace script;
 
 
@@ -31,8 +32,10 @@ ClassDefine<NBTClass> NBTClassBuilder =
         .instanceFunction("getType", &NBTClass::getType)
         .instanceFunction("createNBT", &NBTClass::createTag)
         .instanceFunction("setItem",&NBTClass::setItem)
+        .instanceFunction("setBlock", &NBTClass::setBlock)
         .function("fromItem",&fromItem)
         .function("fromPtr", &fromPtr)
+        .function("fromBlock", &fromBlock)
         .build();
 
 
@@ -445,12 +448,36 @@ Local<Value> fromItem(const Arguments& args)
     CATCH("Fail in NBT.fromItem")
 }
 
+Local<Value> NBTClass::setBlock(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kObject)
+
+    try {
+        auto item = BlockClass::extractBlock(args[0].asObject());
+        nbt->setBlock(item);
+    }
+    CATCH("Fail in NBT.setItem")
+}
+
+Local<Value> fromBlock(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kObject)
+
+    try {
+        auto ptr = BlockClass::extractBlock(args[0]);
+        return NBTClass::newNBT(Tag::fromBlock(ptr));
+    }
+    CATCH("Fail in NBT.fromBlock")
+}
+
 Local<Value> fromPtr(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1)
-    CHECK_ARG_TYPE(args[0], ValueKind::kNumber)
+        CHECK_ARG_TYPE(args[0], ValueKind::kNumber)
 
-    try {
+        try {
         auto ptr = (Tag*)(args[0].asNumber().toInt64());
         return NBTClass::newNBT(ptr);
     }

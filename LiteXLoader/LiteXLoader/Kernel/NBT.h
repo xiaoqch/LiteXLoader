@@ -87,4 +87,12 @@ public:
 		SymCall("?fromTag@ItemStack@@SA?AV1@AEBVCompoundTag@@@Z",
 			void, void*, void*)(item, this);
 	}
+
+	static inline Tag* fromBlock(Block* blk) {
+		return (Tag*)((uintptr_t)blk + 96);
+	}
+
+	inline void setBlock(Block* blk) {
+		*(Tag*)((uintptr_t)blk + 96) = *this;
+	}
 };

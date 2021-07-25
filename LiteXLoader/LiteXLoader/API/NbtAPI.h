@@ -38,7 +38,9 @@ public:
     Local<Value> getType(const Arguments& args);
 
     Local<Value> setItem(const Arguments& args);
+    Local<Value> setBlock(const Arguments& args);
 };
 
 Local<Value> fromItem(const Arguments& args);
 Local<Value> fromPtr(const Arguments& args);
+Local<Value> fromBlock(const Arguments& args);
