@@ -333,8 +333,8 @@ string LxlFindCmdReg(bool isPlayerCmd, const string& cmd, vector<string> &receiv
 
 bool CallPlayerCmdCallback(Player* player, const string& cmdPrefix, const vector<string> &paras)
 {
+    EngineScope enter(engineLocalData->playerCmdCallbacks[cmdPrefix].fromEngine);
     auto cmdData = engineLocalData->playerCmdCallbacks[cmdPrefix];
-    EngineScope enter(cmdData.fromEngine);
     Local<Value> res{};
     try
     {
@@ -357,8 +357,8 @@ bool CallPlayerCmdCallback(Player* player, const string& cmdPrefix, const vector
 
 bool CallServerCmdCallback(const string& cmdPrefix, const vector<string>& paras)
 {
+    EngineScope enter(engineLocalData->consoleCmdCallbacks[cmdPrefix].fromEngine);
     auto cmdData = engineLocalData->consoleCmdCallbacks[cmdPrefix];
-    EngineScope enter(cmdData.fromEngine);
     Local<Value> res{};
     try
     {
