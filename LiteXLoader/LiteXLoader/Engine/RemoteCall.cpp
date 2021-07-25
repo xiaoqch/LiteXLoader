@@ -194,16 +194,10 @@ Local<Value> LxlImport(const Arguments &args)
         funcName = args[0].toStr();
         ExportedFuncData* funcData = &(globalShareData->exportedFuncs).at(funcName);
 
-        string alias = funcName;
-        if (args.size() >= 2)
-            alias = args[1].toStr();
-
-
         if (funcData->fromEngineType == LXL_SCRIPT_LANG_TYPE)
         {
             //自身DLL调用
-            EngineScope::currentEngine()->set(alias, Function::newFunction(
-                [engine{ funcData->engine }, func{ funcData->func }]
+            return Function::newFunction([fromEngine{EngineScope::currentEngine()}, engine{ funcData->engine }, funcName]
                 (const Arguments& args) -> Local<Value>
             {
                 EngineScope enter(engine);
@@ -212,15 +206,25 @@ Local<Value> LxlImport(const Arguments &args)
                 for (int i = 0; i < args.size(); ++i)
                     argsList.push_back(args[i]);
 
-                return func.get().call({}, argsList);
-                ExitEngineScope exit;
-            }));
+                try
+                {
+                    string res = ValueToJson(globalShareData->exportedFuncs.at(funcName).func.get().call({}, argsList));
+                    ExitEngineScope exit;
+                    EngineScope rtnResult(fromEngine);
+                    return JsonToValue(res);
+                }
+                catch (const std::out_of_range& e)
+                {
+                    ERROR(string("Fail to find imported Function [") + funcName + "] !");
+                    return Local<Value>();
+                }
+                CATCH("Fail in imported func!")
+            });
         }
         else
         {
             //远程调用
-            EngineScope::currentEngine()->set(alias, Function::newFunction(
-                [curEngine{ EngineScope::currentEngine() }, funcData{ funcData }, funcName{ funcName }]
+            return Function::newFunction([curEngine{ EngineScope::currentEngine() }, funcData{ funcData }, funcName{ funcName }]
                 (const Arguments& args)->Local<Value>
             {
                 EngineScope enter(curEngine);
@@ -234,7 +238,7 @@ Local<Value> LxlImport(const Arguments &args)
                     return res.asArray().get(0);
                 else
                     return res;
-            }));
+            });
         }
         return Boolean::newBoolean(true);
     }

@@ -268,6 +268,8 @@ Local<Value> JsonToValue(std::string jsonStr)
 {
     try
     {
+        if (jsonStr.empty())
+            return String::newString("");
         auto j = JSON_VALUE::parse(jsonStr);
         return JsonToValue(j);
     }

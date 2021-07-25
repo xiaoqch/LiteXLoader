@@ -635,22 +635,25 @@ THook(void, "?_onItemChanged@LevelContainerModel@@MEAAXHAEBVItemStack@@0@Z",
 
 // ===== onMobHurt =====
 THook(bool, "?_hurt@Mob@@MEAA_NAEBVActorDamageSource@@H_N1@Z",
-    Mob* ac, ActorDamageSource* src, int damage, bool unk1_1, bool unk2_0)
+    Mob* ac, ActorDamageSource* ads, int damage, bool unk1_1, bool unk2_0)
 {
     IF_LISTENED(EVENT_TYPES::onMobHurt)
     {
         if (ac)
         {
             auto level = offPlayer::getLevel(ac);
-            auto source = SymCall("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z"
-                , Actor*, Level*, ActorDamageSource*, bool)(level, src, 0);
+            char v83;
+            auto v6 = *(void**)(*(__int64(__fastcall**)(void*, char*))(*(uintptr_t*)ads + 64))(ads, &v83);
+            auto src = SymCall("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z", Actor*, Level*,
+                void*, bool)(level, v6, 0);
+            
 
-            CallEventEx(EVENT_TYPES::onMobHurt, EntityClass::newEntity(ac), EntityClass::newEntity(source),
+            CallEventEx(EVENT_TYPES::onMobHurt, EntityClass::newEntity(ac), EntityClass::newEntity(src),
                 Number::newNumber(damage));
         }
     }
     IF_LISTENDED_END();
-    return original(ac, src, damage, unk1_1, unk2_0);
+    return original(ac, ads, damage, unk1_1, unk2_0);
 }
 
 // ===== onExplode =====
