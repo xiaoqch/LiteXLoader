@@ -1,6 +1,6 @@
 ## 🎈 实体相关事件
 
-#### `"onMobDie"` - 生物死亡（包括玩家）
+#### `"onMobDie"` - 生物死亡
 
 - 监听函数原型
   `function(mob,source)`
@@ -10,8 +10,9 @@
 
   - source : `Entity`  
     伤害来源的实体对象
-
 - 拦截事件：函数返回`false`
+
+注意，当玩家死亡时，除了触发`onPlayerDie`事件，这个事件同样也会被触发一次
 
 <br>
 

@@ -34,7 +34,7 @@ using namespace script;
 
 enum class EVENT_TYPES : int
 {
-    onPreJoin=0, onJoin, onLeft, onPlayerCmd, onChat,
+    onPreJoin=0, onJoin, onLeft, onPlayerCmd, onChat, onPlayerDie, 
     onRespawn, onChangeDim, onJump, onSneak, onAttack, onEat, onMove, onSetArmor,
     onUseItem, onTakeItem, onDropItem, onUseItemOn,
     onDestroyingBlock, onDestroyBlock, onPlaceBlock,
@@ -51,6 +51,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onLeft",EVENT_TYPES::onLeft},
     {"onPlayerCmd",EVENT_TYPES::onPlayerCmd},
     {"onChat",EVENT_TYPES::onChat},
+    {"onPlayerDie",EVENT_TYPES::onPlayerDie},
     {"onRespawn",EVENT_TYPES::onRespawn},
     {"onChangeDim",EVENT_TYPES::onChangeDim},
     {"onJump",EVENT_TYPES::onJump},
@@ -262,6 +263,16 @@ void InitEventListeners()
         return true;
     });
 
+// ===== onPlayerDie =====
+    Event::addEventListener([](PlayerDeathEV ev)
+    {
+        IF_LISTENED(EVENT_TYPES::onPlayerDie)
+        {
+            CallEvent(EVENT_TYPES::onPlayerDie, PlayerClass::newPlayer(ev.Player));
+        }
+        IF_LISTENDED_END();
+    });
+
 // ===== onChangeDimension =====
     Event::addEventListener([](ChangeDimEV ev)
     {
@@ -290,11 +301,10 @@ void InitEventListeners()
         {
             if (ev.mob && ev.DamageSource)
             {
-                CallEventEx(EVENT_TYPES::onMobDie, EntityClass::newEntity(ev.mob), EntityClass::newEntity(ev.DamageSource));
+                CallEvent(EVENT_TYPES::onMobDie, EntityClass::newEntity(ev.mob), EntityClass::newEntity(ev.DamageSource));
             }
         }
         IF_LISTENDED_END();
-        return true;
     });
 
 // For RegisterCmd...
