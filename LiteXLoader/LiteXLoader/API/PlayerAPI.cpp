@@ -3,8 +3,8 @@
 #include "PlayerAPI.h"
 #include "ItemAPI.h"
 #include "GuiAPI.h"
-#include "EngineOwnData.h"
-#include "EngineGlobalData.h"
+#include <Engine/EngineOwnData.h>
+#include <Engine/GlobalShareData.h>
 #include <Kernel/Player.h>
 #include <Kernel/Entity.h>
 #include <Kernel/Gui.h>

@@ -1,6 +1,6 @@
-#include "APIHelp.h"
-#include "EngineGlobalData.h"
-#include "RemoteCall.h"
+#include <API/APIHelp.h>
+#include <Engine/GlobalShareData.h>
+#include <Engine/RemoteCall.h>
 #include <ScriptX/ScriptX.h>
 #include <cstdlib>
 #include <ctime>
@@ -8,15 +8,14 @@
 #include <vector>
 #include <map>
 #include <Configs.h>
-#include "APIHelp.h"
 using namespace std;
 using namespace script;
 
 //全局共享数据
-GlobalDataType* engineGlobalData;
+GlobalDataType* globalShareData;
 
 //DLL本地共享数据
-LocalDataType* engineLocalData;
+LocalDataType* localShareData;
 
 //命令延迟注册队列
 std::vector<RegCmdQueue> toRegCmdQueue;
@@ -25,13 +24,13 @@ void InitEngineGlobalData()
 {
 	srand(clock());
 
-	engineLocalData = new LocalDataType;
+	localShareData = new LocalDataType;
 
 	HANDLE hGlobalData = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(GlobalDataType), (LXL_GLOBAL_DATA_NAME + to_wstring(GetCurrentProcessId())).c_str());
 	if (hGlobalData == NULL)
 	{
 		ERROR(_TRS("init.fileMapping.fail"));
-		engineLocalData->isFirstInstance = true;
+		localShareData->isFirstInstance = true;
 		return;
 	}
 
@@ -39,21 +38,21 @@ void InitEngineGlobalData()
 	if (address == NULL)
 	{
 		ERROR(_TRS("init.mapFile.fail"));
-		engineLocalData->isFirstInstance = true;
+		localShareData->isFirstInstance = true;
 		return;
 	}
 
 	if (GetLastError() != ERROR_ALREADY_EXISTS)
 	{
 		//First Time
-		engineLocalData->isFirstInstance = true;
-		engineGlobalData = new (address) GlobalDataType;
+		localShareData->isFirstInstance = true;
+		globalShareData = new (address) GlobalDataType;
 	}
 	else
 	{
 		//Existing
-		engineLocalData->isFirstInstance = false;
-		engineGlobalData = (GlobalDataType*)address;
+		localShareData->isFirstInstance = false;
+		globalShareData = (GlobalDataType*)address;
 	}
 
 	InitRemoteCallSystem();
@@ -61,16 +60,16 @@ void InitEngineGlobalData()
 
 void AddToGlobalPluginsList(const std::string& name)
 {
-	engineGlobalData->pluginsList.push_back(name);
+	globalShareData->pluginsList.push_back(name);
 }
 
 void RemoveFromGlobalPluginsList(const std::string& name)
 {
-	for (int i = 0; i < engineGlobalData->pluginsList.size(); ++i)
+	for (int i = 0; i < globalShareData->pluginsList.size(); ++i)
 	{
-		if (engineGlobalData->pluginsList[i] == name)
+		if (globalShareData->pluginsList[i] == name)
 		{
-			engineGlobalData->pluginsList.erase(engineGlobalData->pluginsList.begin() + i);
+			globalShareData->pluginsList.erase(globalShareData->pluginsList.begin() + i);
 			break;
 		}
 	}

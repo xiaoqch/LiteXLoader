@@ -3,6 +3,7 @@
 #include <Kernel/NBT.h>
 #include <vector>
 #include <LiteXLoader/API/ItemAPI.h>
+#include <LiteXLoader/API/BlockAPI.h>
 using namespace script;
 
 
@@ -10,6 +11,7 @@ ClassDefine<NBTClass> NBTClassBuilder =
     defineClass<NBTClass>("NBT")
         .constructor(nullptr)
         .instanceFunction("readInt", &NBTClass::readInt)
+        .instanceFunction("readShort",&NBTClass::readShort)
         .instanceFunction("readLong", &NBTClass::readLong)
         .instanceFunction("readString", &NBTClass::readString)
         .instanceFunction("readFloat", &NBTClass::readFloat)
@@ -30,7 +32,10 @@ ClassDefine<NBTClass> NBTClassBuilder =
         .instanceFunction("getType", &NBTClass::getType)
         .instanceFunction("createNBT", &NBTClass::createTag)
         .instanceFunction("setItem",&NBTClass::setItem)
+        .instanceFunction("setBlock", &NBTClass::setBlock)
         .function("fromItem",&fromItem)
+        .function("fromPtr", &fromPtr)
+        .function("fromBlock", &fromBlock)
         .build();
 
 
@@ -70,6 +75,15 @@ Local<Value> NBTClass::readInt(const Arguments& args)
         return Number::newNumber(v);
     }
     CATCH("Fail in NBTreadInt!")
+}
+
+Local<Value> NBTClass::readShort(const Arguments& args)
+{
+    try {
+        auto v = nbt->getValue<short>();
+        return Number::newNumber(v);
+    }
+    CATCH("Fail in NBTreadShort!")
 }
 
 Local<Value> NBTClass::readLong(const Arguments& args)
@@ -136,7 +150,7 @@ Local<Value> NBTClass::readCompound(const Arguments& args)
     try {
         auto v = nbt->getValue<std::map<string, Tag>>();
         auto obj = Object::newObject();
-        for (auto i : v) {
+        for (auto& i : v) {
             auto k = String::newString(i.first);
             auto v = NBTClass::newNBT(&(i.second));
             obj.set(k, v);
@@ -158,9 +172,9 @@ Local<Value> NBTClass::readByte(const Arguments& args)
 
 Local<Value> NBTClass::writeInt(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 2);
-    CHECK_ARG_TYPE(args[0], ValueKind::kString);
-    CHECK_ARG_TYPE(args[1], ValueKind::kNumber);
+    CHECK_ARGS_COUNT(args, 2)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARG_TYPE(args[1], ValueKind::kNumber)
 
     try {
         auto k = args[0].asString().toString();
@@ -174,9 +188,9 @@ Local<Value> NBTClass::writeInt(const Arguments& args)
 
 Local<Value> NBTClass::writeLong(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 2);
-    CHECK_ARG_TYPE(args[0], ValueKind::kString);
-    CHECK_ARG_TYPE(args[1], ValueKind::kNumber);
+    CHECK_ARGS_COUNT(args, 2)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARG_TYPE(args[1], ValueKind::kNumber)
 
     try {
         auto k = args[0].asString().toString();
@@ -190,9 +204,9 @@ Local<Value> NBTClass::writeLong(const Arguments& args)
 
 Local<Value> NBTClass::writeFloat(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 2);
-    CHECK_ARG_TYPE(args[0], ValueKind::kString);
-    CHECK_ARG_TYPE(args[1], ValueKind::kNumber);
+    CHECK_ARGS_COUNT(args, 2)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARG_TYPE(args[1], ValueKind::kNumber)
 
     try {
         auto k = args[0].asString().toString();
@@ -206,9 +220,9 @@ Local<Value> NBTClass::writeFloat(const Arguments& args)
 
 Local<Value> NBTClass::writeBoolean(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 2);
-    CHECK_ARG_TYPE(args[0], ValueKind::kString);
-    CHECK_ARG_TYPE(args[1], ValueKind::kBoolean);
+    CHECK_ARGS_COUNT(args, 2)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARG_TYPE(args[1], ValueKind::kBoolean)
 
     try {
         auto k = args[0].asString().toString();
@@ -222,9 +236,9 @@ Local<Value> NBTClass::writeBoolean(const Arguments& args)
 
 Local<Value> NBTClass::writeByte(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 2);
-    CHECK_ARG_TYPE(args[0], ValueKind::kString);
-    CHECK_ARG_TYPE(args[1], ValueKind::kNumber);
+    CHECK_ARGS_COUNT(args, 2)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARG_TYPE(args[1], ValueKind::kNumber)
 
     try {
         auto k = args[0].asString().toString();
@@ -238,9 +252,9 @@ Local<Value> NBTClass::writeByte(const Arguments& args)
 
 Local<Value> NBTClass::writeString(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 2);
-    CHECK_ARG_TYPE(args[0], ValueKind::kString);
-    CHECK_ARG_TYPE(args[1], ValueKind::kString);
+    CHECK_ARGS_COUNT(args, 2)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARG_TYPE(args[1], ValueKind::kString)
 
     try {
         auto k = args[0].asString().toString();
@@ -254,9 +268,9 @@ Local<Value> NBTClass::writeString(const Arguments& args)
 
 Local<Value> NBTClass::writeList(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 2);
-    CHECK_ARG_TYPE(args[0], ValueKind::kString);
-    CHECK_ARG_TYPE(args[1], ValueKind::kArray);
+    CHECK_ARGS_COUNT(args, 2)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARG_TYPE(args[1], ValueKind::kArray)
 
     try {
         auto k = args[0].asString().toString();
@@ -276,9 +290,9 @@ Local<Value> NBTClass::writeList(const Arguments& args)
 
 Local<Value> NBTClass::writeCompound(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 2);
-    CHECK_ARG_TYPE(args[0], ValueKind::kString);
-    CHECK_ARG_TYPE(args[1], ValueKind::kObject);
+    CHECK_ARGS_COUNT(args, 2)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARG_TYPE(args[1], ValueKind::kObject)
 
     try {
         auto k = args[0].asString().toString();
@@ -298,8 +312,8 @@ Local<Value> NBTClass::writeCompound(const Arguments& args)
 
 Local<Value> NBTClass::addValueToList(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 1);
-    CHECK_ARG_TYPE(args[0], ValueKind::kObject);
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kObject)
 
     try {
         auto tag = NBTClass::extractNBT(args[1].asValue());
@@ -349,8 +363,8 @@ Local<Value> NBTClass::getType(const Arguments& args)
 
 Local<Value> NBTClass::createTag(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 1);
-    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
 
     try {
         auto type = args[0].asString().toString();
@@ -411,25 +425,61 @@ Local<Value> NBTClass::createTag(const Arguments& args)
 
 Local<Value> NBTClass::setItem(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 1);
-    CHECK_ARG_TYPE(args[0], ValueKind::kObject);
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kObject)
 
     try {
         auto item = ItemClass::extractItem(args[0].asObject());
         nbt->setItem(item);
     }
-    CATCH("Fail in NBTsetItem")
+    CATCH("Fail in NBT.setItem")
 }
 
 Local<Value> fromItem(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 1);
-    CHECK_ARG_TYPE(args[0], ValueKind::kObject);
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kObject)
 
     try {
         auto item = ItemClass::extractItem(args[0].asObject());
         auto nbt = Tag::fromItem(item);
-        NBTClass::newNBT(nbt);
+        return NBTClass::newNBT(nbt);
     }
-    CATCH("Fail in NBTfromItem")
+    CATCH("Fail in NBT.fromItem")
+}
+
+Local<Value> NBTClass::setBlock(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kObject)
+
+    try {
+        auto item = BlockClass::extractBlock(args[0].asObject());
+        nbt->setBlock(item);
+    }
+    CATCH("Fail in NBT.setItem")
+}
+
+Local<Value> fromBlock(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kObject)
+
+    try {
+        auto ptr = BlockClass::extractBlock(args[0]);
+        return NBTClass::newNBT(Tag::fromBlock(ptr));
+    }
+    CATCH("Fail in NBT.fromBlock")
+}
+
+Local<Value> fromPtr(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1)
+        CHECK_ARG_TYPE(args[0], ValueKind::kNumber)
+
+        try {
+        auto ptr = (Tag*)(args[0].asNumber().toInt64());
+        return NBTClass::newNBT(ptr);
+    }
+    CATCH("Fail in NBT.fromPtt")
 }

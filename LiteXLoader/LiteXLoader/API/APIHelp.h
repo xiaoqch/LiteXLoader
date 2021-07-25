@@ -5,7 +5,7 @@ using namespace script;
 #include <Kernel/Global.h>
 #include <Kernel/ThirdParty.h>
 #include <Kernel/i18n.h>
-#include "EngineOwnData.h"
+#include <Engine/EngineOwnData.h>
 #include <string>
 #include <vector>
 

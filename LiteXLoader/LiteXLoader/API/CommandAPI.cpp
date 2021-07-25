@@ -1,9 +1,9 @@
 #include "CommandAPI.h"
 #include "APIHelp.h"
 #include "PlayerAPI.h"
-#include "EngineGlobalData.h"
-#include "EngineOwnData.h"
-#include "LoaderHelper.h"
+#include <Engine/GlobalShareData.h>
+#include <Engine/EngineOwnData.h>
+#include <Engine/LoaderHelper.h>
 #include <Kernel/Base.h>
 #include <Kernel/Global.h>
 #include <filesystem>
@@ -48,9 +48,9 @@ void LxlRegisterNewCmd(bool isPlayerCmd, string cmd, const string& describe, int
         cmd = cmd.erase(0, 1);
 
     if(isPlayerCmd)
-        engineLocalData->playerCmdCallbacks[cmd] = { EngineScope::currentEngine(),level,Global<Function>(func) };
+        localShareData->playerCmdCallbacks[cmd] = { EngineScope::currentEngine(),level,Global<Function>(func) };
     else
-        engineLocalData->consoleCmdCallbacks[cmd] = { EngineScope::currentEngine(),level,Global<Function>(func) };
+        localShareData->consoleCmdCallbacks[cmd] = { EngineScope::currentEngine(),level,Global<Function>(func) };
 
     //延迟注册
     if (isCmdRegisterEnabled)
@@ -61,16 +61,16 @@ void LxlRegisterNewCmd(bool isPlayerCmd, string cmd, const string& describe, int
 
 bool LxlRemoveCmdRegister(ScriptEngine* engine)
 {
-    for (auto& cmdData : engineLocalData->playerCmdCallbacks)
+    for (auto& cmdData : localShareData->playerCmdCallbacks)
     {
         if (cmdData.second.fromEngine == engine)
-            engineLocalData->playerCmdCallbacks.erase(cmdData.first);
+            localShareData->playerCmdCallbacks.erase(cmdData.first);
     }
 
-    for (auto& cmdData : engineLocalData->consoleCmdCallbacks)
+    for (auto& cmdData : localShareData->consoleCmdCallbacks)
     {
         if (cmdData.second.fromEngine == engine)
-            engineLocalData->playerCmdCallbacks.erase(cmdData.first);
+            localShareData->playerCmdCallbacks.erase(cmdData.first);
     }
     return true;
 }
@@ -308,7 +308,7 @@ void ProcessStopServer(const string& cmd)
 string LxlFindCmdReg(bool isPlayerCmd, const string& cmd, vector<string> &receiveParas)
 {
     std::map<std::string, CmdCallbackData, EngineOwnData_MapCmp>& cmdMap =
-        isPlayerCmd ? engineLocalData->playerCmdCallbacks : engineLocalData->consoleCmdCallbacks;
+        isPlayerCmd ? localShareData->playerCmdCallbacks : localShareData->consoleCmdCallbacks;
 
     for (auto& cmdData : cmdMap)
     {
@@ -333,8 +333,8 @@ string LxlFindCmdReg(bool isPlayerCmd, const string& cmd, vector<string> &receiv
 
 bool CallPlayerCmdCallback(Player* player, const string& cmdPrefix, const vector<string> &paras)
 {
-    EngineScope enter(engineLocalData->playerCmdCallbacks[cmdPrefix].fromEngine);
-    auto cmdData = engineLocalData->playerCmdCallbacks[cmdPrefix];
+    EngineScope enter(localShareData->playerCmdCallbacks[cmdPrefix].fromEngine);
+    auto cmdData = localShareData->playerCmdCallbacks[cmdPrefix];
     Local<Value> res{};
     try
     {
@@ -357,8 +357,8 @@ bool CallPlayerCmdCallback(Player* player, const string& cmdPrefix, const vector
 
 bool CallServerCmdCallback(const string& cmdPrefix, const vector<string>& paras)
 {
-    EngineScope enter(engineLocalData->consoleCmdCallbacks[cmdPrefix].fromEngine);
-    auto cmdData = engineLocalData->consoleCmdCallbacks[cmdPrefix];
+    EngineScope enter(localShareData->consoleCmdCallbacks[cmdPrefix].fromEngine);
+    auto cmdData = localShareData->consoleCmdCallbacks[cmdPrefix];
     Local<Value> res{};
     try
     {

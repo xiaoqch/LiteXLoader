@@ -1,6 +1,6 @@
-#include "APIHelp.h"
-#include "RemoteCall.h"
-#include "EngineGlobalData.h"
+#include <API/APIHelp.h>
+#include <Engine/RemoteCall.h>
+#include <Engine/GlobalShareData.h>
 #include <string>
 #include <map>
 #include <process.h>
@@ -54,7 +54,7 @@ unsigned __stdcall MessageLoop(void* pParam)
 
                 try
                 {
-                    ExportedFuncData* funcData = &(engineGlobalData->exportedFuncs).at(callData->funcName);
+                    ExportedFuncData* funcData = &(globalShareData->exportedFuncs).at(callData->funcName);
                     EngineScope enter(funcData->engine);
 
                     Local<Array> args = JsonToValue(callData->args).asArray();
@@ -112,7 +112,7 @@ bool InitRemoteCallSystem()
         return false;
     }
 
-    (engineGlobalData->remoteEngineList)[LXL_SCRIPT_LANG_TYPE].threadId = threadId;
+    (globalShareData->remoteEngineList)[LXL_SCRIPT_LANG_TYPE].threadId = threadId;
     return true;
 }
 
@@ -121,9 +121,9 @@ Local<Value> MakeRemoteCall(ExportedFuncData* data, const string& funcName, cons
     RemoteCallData* callData = new RemoteCallData;
     callData->args = argsList;
     callData->funcName = funcName;
-    callData->threadFrom = (engineGlobalData->remoteEngineList)[LXL_SCRIPT_LANG_TYPE].threadId;
+    callData->threadFrom = (globalShareData->remoteEngineList)[LXL_SCRIPT_LANG_TYPE].threadId;
 
-    if (!PostThreadMessage((engineGlobalData->remoteEngineList)[data->fromEngineType].threadId,
+    if (!PostThreadMessage((globalShareData->remoteEngineList)[data->fromEngineType].threadId,
         LXL_REMOTE_CALL, (WPARAM)callData, NULL))
     {
         ERROR(_TRS("remoteCall.postMessage.fail"));
@@ -150,7 +150,7 @@ Local<Value> MakeRemoteCall(ExportedFuncData* data, const string& funcName, cons
 
 bool LxlExportFunc(ScriptEngine *engine, const Local<Function> &func, const string &exportName)
 {
-    ExportedFuncData* funcData = &(engineGlobalData->exportedFuncs)[exportName];
+    ExportedFuncData* funcData = &(globalShareData->exportedFuncs)[exportName];
     funcData->engine = engine;
     funcData->func = Global<Function>(func);
     funcData->fromEngineType = LXL_SCRIPT_LANG_TYPE;
@@ -159,10 +159,10 @@ bool LxlExportFunc(ScriptEngine *engine, const Local<Function> &func, const stri
 
 bool LxlRemoveAllExportedFuncs(ScriptEngine* engine)
 {
-    for (auto exp = engineGlobalData->exportedFuncs.begin(); exp != engineGlobalData->exportedFuncs.end(); ++exp)
+    for (auto exp = globalShareData->exportedFuncs.begin(); exp != globalShareData->exportedFuncs.end(); ++exp)
     {
         if (exp->second.engine == engine)
-            engineGlobalData->exportedFuncs.erase(exp);
+            globalShareData->exportedFuncs.erase(exp);
     }
     return true;
 }
@@ -192,7 +192,7 @@ Local<Value> LxlImport(const Arguments &args)
     string funcName;
     try {
         funcName = args[0].toStr();
-        ExportedFuncData* funcData = &(engineGlobalData->exportedFuncs).at(funcName);
+        ExportedFuncData* funcData = &(globalShareData->exportedFuncs).at(funcName);
 
         string alias = funcName;
         if (args.size() >= 2)

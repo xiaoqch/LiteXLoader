@@ -67,7 +67,7 @@
 4. 编译生成成功之后，在同目录下 `Release` 文件夹中的几个DLL文件即是生成的 LiteXLoader 加载器
 
 ## 💻 安装
-项目主要发布于**MineBBS**，请[移步MineBBS](https://www.minebbs.com/)下载。注意，本项目需要 `LiteLoader` 作为前置加载器。
+项目主要发布于**MineBBS**，请[点击这里 前往MineBBS](https://www.minebbs.com/resources/litexloader-x-bds.2670/)下载。注意，本项目需要 `LiteLoader` 作为前置加载器。
 
 1. 正确安装`LiteLoader`插件加载器
 2. 下载`LiteXLoader`，解压，把全部内容复制到 **BDS** 的`plugins`目录中。如果有冲突，选择覆盖即可。
@@ -79,12 +79,7 @@
 
 > 没错，就这么简单 o(*￣▽￣*)ブ
 
-关于具体的**安装与使用指南** ，请👉[移步文档站](https://lxl.litetitle.com/#/zh_CN/Usage/)👈查看
-
-## 💡 兼容性与可扩展性
-兼容`旧LiteLuaRunner`的大部分插件。  
-小部分API并未适配，仅为了方便用户而设计兼容层。  
-请[移步文档站](https://lxl.litetitle.com/#/)查看详细的分析  
+关于具体的**安装与使用指南** ，请👉[移步LXL文档站](https://lxl.litetitle.com/#/zh_CN/Usage/)👈查看
 
 ## 📡 实时调试
 在BDS后台控制台执行
@@ -116,7 +111,7 @@
 4. 帮助我们宣传LXL，对我们的开发给予支持
 
 ⭐⭐⭐我们欢迎你对LiteXLoader做出自己的贡献！⭐⭐⭐  
-如果你有意为LXL贡献代码，欢迎👉[移步文档站](https://lxl.litetitle.com/#/zh_CN/Maintance/)👈查看 **项目维护与支持文档**  
+如果你有意为LXL贡献代码，欢迎👉[移步LXL文档站](https://lxl.litetitle.com/#/zh_CN/Maintance/)👈查看 **项目维护与支持文档**  
 
 有你们，LiteXLoader将变得更好~
 

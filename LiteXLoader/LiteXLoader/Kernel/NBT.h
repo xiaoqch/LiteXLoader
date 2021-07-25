@@ -8,11 +8,11 @@ enum TagType {
 
 class Tag {
 private:
-	char filler[40];
+	char filler[0x28];
 public:
 	template<typename T>
 	T inline getValue() {
-		return *(T*)((uintptr_t)this + 8);
+		return std::move( *(T*)((uintptr_t)this + 8));
 	}
 
 	template<typename T>
@@ -86,5 +86,13 @@ public:
     inline void setItem(ItemStack* item) {
 		SymCall("?fromTag@ItemStack@@SA?AV1@AEBVCompoundTag@@@Z",
 			void, void*, void*)(item, this);
+	}
+
+	static inline Tag* fromBlock(Block* blk) {
+		return (Tag*)((uintptr_t)blk + 96);
+	}
+
+	inline void setBlock(Block* blk) {
+		*(Tag*)((uintptr_t)blk + 96) = *this;
 	}
 };

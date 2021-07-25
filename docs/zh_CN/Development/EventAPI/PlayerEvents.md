@@ -56,6 +56,18 @@
 
 <br>
 
+#### `"onPlayerDie"` - 玩家死亡
+
+- 监听函数原型
+  `function(player)`
+- 参数：
+  - player : `Player`  
+    死亡的玩家对象
+
+- 拦截事件：不可以拦截
+
+<br>
+
 #### `"onPlayerCmd"` - 玩家执行命令
 
 - 监听函数原型
