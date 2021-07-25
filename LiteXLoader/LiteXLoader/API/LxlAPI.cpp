@@ -1,10 +1,10 @@
 #include "APIHelp.h"
 #include "LxlAPI.h"
-#include "EngineGlobalData.h"
-#include "EngineOwnData.h"
-#include "LoaderHelper.h"
+#include <Engine/GlobalShareData.h>
+#include <Engine/EngineOwnData.h>
+#include <Engine/LoaderHelper.h>
 #include <Kernel/System.h>
-#include "LoaderHelper.h"
+#include <Engine/LoaderHelper.h>
 #include <Configs.h>
 #include <string>
 #include <filesystem>
@@ -53,7 +53,7 @@ Local<Value> LxlRequire(const Arguments& args)
         string thisName = ENGINE_OWN_DATA()->pluginName;
 
         //已加载插件
-        for (auto pluginName : engineGlobalData->pluginsList)
+        for (auto pluginName : globalShareData->pluginsList)
         {
             if (pluginName == require)
             {

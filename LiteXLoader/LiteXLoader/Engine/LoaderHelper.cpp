@@ -1,8 +1,7 @@
-#include "APIHelp.h"
-#include <ScriptX/ScriptX.h>
 #include <API/APIHelp.h>
-#include <API/EngineGlobalData.h>
-#include <API/EngineOwnData.h>
+#include <ScriptX/ScriptX.h>
+#include <Engine/GlobalShareData.h>
+#include <Engine/EngineOwnData.h>
 #include <API/EventAPI.h>
 #include <Kernel/Db.h>
 #include <list>
@@ -15,9 +14,9 @@
 #include <memory>
 #include <Configs.h>
 #include <Loader.h>
-#include "LoaderHelper.h"
-#include "RemoteCall.h"
-#include "CommandAPI.h"
+#include <Engine/LoaderHelper.h>
+#include <Engine/RemoteCall.h>
+#include <API/CommandAPI.h>
 using namespace script;
 using namespace std;
 
@@ -56,6 +55,15 @@ bool LxlLoadPlugin(const std::string& filePath, bool isHotLoad)
 {
     if (filePath == LXL_DEBUG_ENGINE_NAME)
         return true;
+
+    //判重
+    string pluginName = std::filesystem::path(filePath).filename().u8string();
+    for (auto plugin : globalShareData->pluginsList)
+    {
+        if (pluginName == plugin)
+            return true;
+    }
+
     try
     {
         std::string scripts = ReadFileFrom(filePath);
@@ -66,7 +74,6 @@ bool LxlLoadPlugin(const std::string& filePath, bool isHotLoad)
         EngineScope enter(engine);
 
         //setData
-        string pluginName = std::filesystem::path(filePath).filename().u8string();
         ENGINE_OWN_DATA()->pluginName = pluginName;
         ENGINE_OWN_DATA()->pluginPath = filePath;
 
@@ -207,5 +214,5 @@ vector<string> LxlListLocalAllPlugins()
 //获取整个LXL所有的插件
 vector<string> LxlListGlocalAllPlugins()
 {
-    return engineGlobalData->pluginsList;
+    return globalShareData->pluginsList;
 }

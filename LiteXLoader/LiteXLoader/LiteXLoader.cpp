@@ -1,8 +1,8 @@
 ﻿#include <ScriptX/ScriptX.h>
 #include <API/APIHelp.h>
 #include <API/EventAPI.h>
-#include <API/EngineGlobalData.h>
-#include <API/EngineOwnData.h>
+#include <Engine/GlobalShareData.h>
+#include <Engine/EngineOwnData.h>
 #include <Kernel/Db.h>
 #include <Kernel/System.h>
 #include <Kernel/i18n.h>
@@ -64,7 +64,7 @@ void entry()
     InitEngineGlobalData();
 
     //欢迎
-    if(engineLocalData->isFirstInstance)
+    if(localShareData->isFirstInstance)
         Welcome();
     LoaderInfo();
 

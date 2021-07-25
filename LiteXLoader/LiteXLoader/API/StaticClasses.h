@@ -15,7 +15,7 @@
 #include "GuiAPI.h"
 #include "LxlAPI.h"
 #include "SystemAPI.h"
-#include "RemoteCall.h"
+#include <Engine/RemoteCall.h>
 using namespace script;
 
 class McClass

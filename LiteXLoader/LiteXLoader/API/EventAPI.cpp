@@ -16,8 +16,8 @@
 #include <Kernel/SymbolHelper.h>
 #include <Kernel/Packet.h>
 #include <Kernel/Global.h>
-#include "EngineOwnData.h"
-#include "EngineGlobalData.h"
+#include <Engine/EngineOwnData.h>
+#include <Engine/GlobalShareData.h>
 #include "APIHelp.h"
 #include "BaseAPI.h"
 #include "BlockAPI.h"
@@ -795,7 +795,7 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
             if (!prefix.empty())
             {
                 //found
-                int perm = engineLocalData->playerCmdCallbacks[prefix].perm;
+                int perm = localShareData->playerCmdCallbacks[prefix].perm;
 
                 if (Raw_GetPlayerPermLevel(player) >= perm)
                 {

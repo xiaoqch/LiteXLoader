@@ -86,10 +86,10 @@ struct LocalDataType
 extern std::vector<ScriptEngine*> lxlModules;
 
 //全局共享数据
-extern GlobalDataType* engineGlobalData;
+extern GlobalDataType* globalShareData;
 
 //DLL本地共享数据
-extern LocalDataType* engineLocalData;
+extern LocalDataType* localShareData;
 
 //命令延迟注册队列
 extern std::vector<RegCmdQueue> toRegCmdQueue;
