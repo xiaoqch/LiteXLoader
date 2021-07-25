@@ -59,15 +59,12 @@
 #### `"onPlayerDie"` - 玩家死亡
 
 - 监听函数原型
-  `function(player,source)`
+  `function(player)`
 - 参数：
   - player : `Player`  
     死亡的玩家对象
 
-  - source : `Entity`  
-    伤害来源的实体对象
-
-- 拦截事件：函数返回`false`
+- 拦截事件：不可以拦截
 
 <br>
 
