@@ -397,15 +397,15 @@ THook(void, "?eat@Player@@QEAAXAEBVItemStack@@@Z",
 }
 
 // ===== onMove =====
-THook(void, "??0MovePlayerPacket@@QEAA@AEAVPlayer@@AEBVVec3@@@Z",
-    void *_this, Player * pl, Vec3 * to)
+THook(void, "?sendPlayerMove@PlayerEventCoordinator@@QEAAXAEAVPlayer@@@Z",
+    void *_this, Player* pl)
 {
     IF_LISTENED(EVENT_TYPES::onMove)
     {
-        CallEvent(EVENT_TYPES::onMove, PlayerClass::newPlayer(pl), FloatPos::newPos(*to, Raw_GetPlayerDimId(pl)));
+        CallEvent(EVENT_TYPES::onMove, PlayerClass::newPlayer(pl), FloatPos::newPos(Raw_GetPlayerPos(pl)));
     }
     IF_LISTENDED_END();
-    return original(_this, pl, to);
+    return original(_this, pl);
 }
 
 // ===== onSetArmor =====
