@@ -31,7 +31,7 @@
     <ClCompile Include="API\CommandAPI.cpp">
       <Filter>API</Filter>
     </ClCompile>
-    <ClCompile Include="API\DbAPI.cpp">
+    <ClCompile Include="API\DataAPI.cpp">
       <Filter>API</Filter>
     </ClCompile>
     <ClCompile Include="API\EntityAPI.cpp">
@@ -73,7 +73,7 @@
     <ClCompile Include="Kernel\Block.cpp">
       <Filter>Kernel</Filter>
     </ClCompile>
-    <ClCompile Include="Kernel\Db.cpp">
+    <ClCompile Include="Kernel\Data.cpp">
       <Filter>Kernel</Filter>
     </ClCompile>
     <ClCompile Include="Kernel\Entity.cpp">
@@ -153,7 +153,7 @@
     <ClInclude Include="API\CommandAPI.h">
       <Filter>API</Filter>
     </ClInclude>
-    <ClInclude Include="API\DbAPI.h">
+    <ClInclude Include="API\DataAPI.h">
       <Filter>API</Filter>
     </ClInclude>
     <ClInclude Include="API\EntityAPI.h">
@@ -201,7 +201,7 @@
     <ClInclude Include="Kernel\Block.h">
       <Filter>Kernel</Filter>
     </ClInclude>
-    <ClInclude Include="Kernel\Db.h">
+    <ClInclude Include="Kernel\Data.h">
       <Filter>Kernel</Filter>
     </ClInclude>
     <ClInclude Include="Kernel\Entity.h">
