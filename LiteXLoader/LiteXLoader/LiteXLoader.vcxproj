@@ -39,7 +39,7 @@
     <ClCompile Include="API\BaseAPI.cpp" />
     <ClCompile Include="API\BlockAPI.cpp" />
     <ClCompile Include="API\CommandAPI.cpp" />
-    <ClCompile Include="API\DbAPI.cpp" />
+    <ClCompile Include="API\DataAPI.cpp" />
     <ClCompile Include="API\EntityAPI.cpp" />
     <ClCompile Include="API\EventAPI.cpp" />
     <ClCompile Include="API\FileSystemAPI.cpp" />
@@ -60,7 +60,7 @@
     <ClCompile Include="Engine\RemoteCall.cpp" />
     <ClCompile Include="Kernel\Base.cpp" />
     <ClCompile Include="Kernel\Block.cpp" />
-    <ClCompile Include="Kernel\Db.cpp" />
+    <ClCompile Include="Kernel\Data.cpp" />
     <ClCompile Include="Kernel\Entity.cpp" />
     <ClCompile Include="Kernel\Event.cpp" />
     <ClCompile Include="Kernel\Global.cpp" />
@@ -81,7 +81,7 @@
     <ClInclude Include="API\BaseAPI.h" />
     <ClInclude Include="API\BlockAPI.h" />
     <ClInclude Include="API\CommandAPI.h" />
-    <ClInclude Include="API\DbAPI.h" />
+    <ClInclude Include="API\DataAPI.h" />
     <ClInclude Include="API\EntityAPI.h" />
     <ClInclude Include="API\EventAPI.h" />
     <ClInclude Include="API\FileSystemAPI.h" />
@@ -104,7 +104,7 @@
     <ClInclude Include="Engine\RemoteCall.h" />
     <ClInclude Include="Kernel\Base.h" />
     <ClInclude Include="Kernel\Block.h" />
-    <ClInclude Include="Kernel\Db.h" />
+    <ClInclude Include="Kernel\Data.h" />
     <ClInclude Include="Kernel\Entity.h" />
     <ClInclude Include="Kernel\Event.h" />
     <ClInclude Include="Kernel\Gui.h" />
