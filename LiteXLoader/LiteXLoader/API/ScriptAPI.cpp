@@ -91,10 +91,18 @@ void HandleTimeTaskMessage(utils::Message& msg)
 
     if (timeTaskMap[id])
     {
-        if (isFunc)
-            func->get().asFunction().call();
-        else
-            EngineScope::currentEngine()->eval(func->get().toStr());
+        try
+        {
+            if (isFunc)
+                func->get().asFunction().call();
+            else
+                EngineScope::currentEngine()->eval(func->get().toStr());
+        }
+        catch (const Exception& e)
+        {
+            ERROR(string("Error occurred in ") + (isInterval ? "setInterval" : "setTimeout"));
+            ERRPRINT(e);
+        }
 
         if (isInterval)
         {
