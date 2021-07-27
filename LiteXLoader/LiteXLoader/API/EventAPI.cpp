@@ -553,6 +553,7 @@ THook(bool, "?checkBlockDestroyPermissions@BlockSource@@QEAA_NAEAVActor@@AEBVBlo
 }
 
 // ===== onWitherBossDestroy =====
+
 THook(bool, "?canDestroy@WitherBoss@@SA_NAEBVBlock@@@Z",
     Block* a1)
 {
@@ -574,6 +575,26 @@ THook(bool, "?canDestroyBlock@WitherSkull@@UEBA_NAEBVBlock@@@Z",
     IF_LISTENDED_END();
     return original(_this, a2);
 }
+
+/*
+THook(void, "?_destroyBlocks@WitherBoss@@AEAAXAEAVLevel@@AEBVAABB@@AEAVBlockSource@@H@Z",
+    void* _this, struct Level* a2, const struct AABB* a3, struct BlockSource* a4, int a5)
+{
+    IF_LISTENED(EVENT_TYPES::onWitherBossDestroy)
+    {
+        auto ac = (Actor*)_this;
+        auto dimid = dAccess<int, -96>(a4);
+        Vec3 posA = a3->p1;
+        Vec3 posB = a3->p2;
+        CallEvent(EVENT_TYPES::onWitherBossDestroy, EntityClass::newEntity(ac), IntPos::newPos(posA.x, posA.y, posA.z, dimid), IntPos::newPos(posB.x, posB.y, posB.z, dimid));
+    }
+    IF_LISTENDED_END();
+    // 不original即可拦截，等待CallEvent重写...
+    // Event -> [1]凋灵实体对象 [2]AABB(AA) [3]AABB(BB)
+
+    original(_this, a2, a3, a4, a5);
+}
+*/
 
 // ===== onPlaceBlock =====
 THook(bool, "?mayPlace@BlockSource@@QEAA_NAEBVBlock@@AEBVBlockPos@@EPEAVActor@@_N@Z",
