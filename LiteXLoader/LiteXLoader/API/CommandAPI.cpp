@@ -2,6 +2,7 @@
 #include "APIHelp.h"
 #include "PlayerAPI.h"
 #include <Engine/GlobalShareData.h>
+#include <Engine/LocalShareData.h>
 #include <Engine/EngineOwnData.h>
 #include <Engine/LoaderHelper.h>
 #include <Kernel/Base.h>
@@ -307,7 +308,7 @@ void ProcessStopServer(const string& cmd)
 
 string LxlFindCmdReg(bool isPlayerCmd, const string& cmd, vector<string> &receiveParas)
 {
-    std::map<std::string, CmdCallbackData, EngineOwnData_MapCmp>& cmdMap =
+    std::map<std::string, CmdCallbackData, CmdCallbackMapCmp>& cmdMap =
         isPlayerCmd ? localShareData->playerCmdCallbacks : localShareData->consoleCmdCallbacks;
 
     for (auto& cmdData : cmdMap)

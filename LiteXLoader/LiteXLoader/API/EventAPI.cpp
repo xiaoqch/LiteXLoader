@@ -18,6 +18,7 @@
 #include <Kernel/Global.h>
 #include <Engine/EngineOwnData.h>
 #include <Engine/GlobalShareData.h>
+#include <Engine/LocalShareData.h>
 #include "APIHelp.h"
 #include "BaseAPI.h"
 #include "BlockAPI.h"
@@ -357,6 +358,23 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ",
     }
     return original(_this);
 }
+
+// For device information
+class ConnectionRequest;
+THook(void, "?sendLoginMessageLocal@ServerNetworkHandler@@QEAAXAEBVNetworkIdentifier@@"
+    "AEBVConnectionRequest@@AEAVServerPlayer@@@Z",
+    ServerNetworkHandler* _this, NetworkIdentifier* ni, ConnectionRequest* cr, ServerPlayer* sp)
+{
+    string id = "", os = "";
+    SymCall("?getDeviceId@ConnectionRequest@@QEBA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ",
+        void, ConnectionRequest*, string*)(cr, &id);
+    int type = SymCall("?getDeviceOS@ConnectionRequest@@QEBA?AW4BuildPlatform@@XZ",
+        int, ConnectionRequest*, string*)(cr, &os);
+
+    localShareData->deviceInfoRecord[(uintptr_t)sp] = { id,type };
+    return original(_this, ni, cr, sp);
+}
+
 
 // ===== onJoin =====
 THook(bool, "?setLocalPlayerAsInitialized@ServerPlayer@@QEAAXXZ",

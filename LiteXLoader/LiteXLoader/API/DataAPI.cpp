@@ -537,7 +537,7 @@ Local<Value> OpenConfig(const Arguments& args)
             if (args.size() >= 3)
                 return ConfJsonClass::newConf(path, args[2].toStr());
             else
-                return ConfJsonClass::newConf(path);
+                return ConfJsonClass::newConf(path, "{}");
         }
     }
     CATCH("Fail in OpenConfig!");

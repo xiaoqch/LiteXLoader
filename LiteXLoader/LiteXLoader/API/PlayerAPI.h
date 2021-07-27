@@ -30,8 +30,6 @@ public:
     Local<Value> getXuid();
     Local<Value> getUuid();
     Local<Value> getIP();
-    Local<Value> getAvgPing();
-    Local<Value> getAvgPacketloss();
     Local<Value> getPermLevel();
     Local<Value> getGameMode();
     Local<Value> getMaxHealth();
@@ -54,6 +52,7 @@ public:
     Local<Value> addLevel(const Arguments& args);
     Local<Value> transServer(const Arguments& args);
     Local<Value> crash(const Arguments& args);
+    Local<Value> getDevice(const Arguments& args);
 
     Local<Value> getScore(const Arguments& args);
     Local<Value> setScore(const Arguments& args);

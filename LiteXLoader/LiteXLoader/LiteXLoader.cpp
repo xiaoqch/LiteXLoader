@@ -3,6 +3,7 @@
 #include <API/EventAPI.h>
 #include <Engine/GlobalShareData.h>
 #include <Engine/EngineOwnData.h>
+#include <Engine/LocalShareData.h>
 #include <Kernel/Data.h>
 #include <Kernel/System.h>
 #include <Kernel/i18n.h>
@@ -61,7 +62,8 @@ void entry()
     lxlLogLevel = Raw_IniGetInt(iniConf,"Main","LxlLogLevel",1);
 
     //初始化全局数据
-    InitEngineGlobalData();
+    InitLocalShareData();
+    InitGlobalShareData();
 
     //欢迎
     if(localShareData->isFirstInstance)

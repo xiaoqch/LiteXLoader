@@ -8,24 +8,16 @@
 #include <vector>
 #include <map>
 #include <Configs.h>
+#include "LocalShareData.h"
 using namespace std;
 using namespace script;
 
 //全局共享数据
 GlobalDataType* globalShareData;
 
-//DLL本地共享数据
-LocalDataType* localShareData;
 
-//命令延迟注册队列
-std::vector<RegCmdQueue> toRegCmdQueue;
-
-void InitEngineGlobalData()
+void InitGlobalShareData()
 {
-	srand(clock());
-
-	localShareData = new LocalDataType;
-
 	HANDLE hGlobalData = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(GlobalDataType), (LXL_GLOBAL_DATA_NAME + to_wstring(GetCurrentProcessId())).c_str());
 	if (hGlobalData == NULL)
 	{

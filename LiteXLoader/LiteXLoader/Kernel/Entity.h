@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 
 std::string Raw_GetEntityName(Actor* actor);

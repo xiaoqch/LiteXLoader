@@ -1,5 +1,6 @@
 #include "APIHelp.h"
 #include "BaseAPI.h"
+#include "DeviceAPI.h"
 #include "PlayerAPI.h"
 #include "ItemAPI.h"
 #include "GuiAPI.h"
@@ -25,8 +26,6 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceProperty("xuid", &PlayerClass::getXuid)
         .instanceProperty("uuid", &PlayerClass::getUuid)
         .instanceProperty("ip", &PlayerClass::getIP)
-        .instanceProperty("avgping", &PlayerClass::getAvgPing)
-        .instanceProperty("avgpacketloss", &PlayerClass::getAvgPacketloss)
         .instanceProperty("permLevel", &PlayerClass::getPermLevel)
         .instanceProperty("gameMode", &PlayerClass::getGameMode)
         .instanceProperty("maxHealth", &PlayerClass::getMaxHealth)
@@ -51,6 +50,7 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceFunction("addLevel", &PlayerClass::addLevel)
         .instanceFunction("transServer", &PlayerClass::transServer)
         .instanceFunction("crash", &PlayerClass::crash)
+        .instanceFunction("getDevice", &PlayerClass::getDevice)
 
         .instanceFunction("getScore", &PlayerClass::getScore)
         .instanceFunction("setScore", &PlayerClass::setScore)
@@ -235,29 +235,6 @@ Local<Value> PlayerClass::getIP()
     CATCH("Fail in GetIP!")
 }
 
-Local<Value> PlayerClass::getAvgPing()
-{
-    try {
-        Player* player = get();
-        if (!player)
-            return Local<Value>();
-
-        return  Number::newNumber(Raw_GetAvgPing(player));
-    }
-    CATCH("Fail in GetAvgPing!")
-}
-
-Local<Value> PlayerClass::getAvgPacketloss()
-{
-    try {
-        Player* player = get();
-        if (!player)
-            return Local<Value>();
-
-        return  Number::newNumber(Raw_GetAvgPacketloss(player));
-    }
-    CATCH("Fail in GetAvgPacketloss!")
-}
 Local<Value> PlayerClass::getPermLevel()
 {
     try {
@@ -615,6 +592,18 @@ Local<Value> PlayerClass::crash(const Arguments& args)
         return Boolean::newBoolean(Raw_CrashPlayer(player));
     }
     CATCH("Fail in crashPlayer!")
+}
+
+Local<Value> PlayerClass::getDevice(const Arguments& args)
+{
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        return DeviceClass::newDevice(player);
+    }
+    CATCH("Fail in getDevice!")
 }
 
 Local<Value> PlayerClass::getScore(const Arguments& args)
