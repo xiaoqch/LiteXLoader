@@ -233,6 +233,10 @@ Local<Value> ConfJsonClass::get(const Arguments& args)
     {
         return JsonToValue(jsonConf.at(args[0].toStr()));
     }
+    catch (const std::out_of_range& e)
+    {
+        return Local<Value>();
+    }
     catch (exception& e)
     {
         return args.size() >= 2 ? args[1] : Local<Value>();

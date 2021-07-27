@@ -895,6 +895,10 @@ Local<Value> PlayerClass::getExtraData(const Arguments& args)
 
         return ENGINE_OWN_DATA()->playerDataDB.at(Raw_GetPlayerName(player) + "-" + key).get();
     }
+    catch (const std::out_of_range& e)
+    {
+        return Local<Value>();
+    }
     CATCH("Fail in getExtraData!")
 }
 
