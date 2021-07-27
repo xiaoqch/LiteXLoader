@@ -34,11 +34,10 @@ ClassDefine<NBTClass> NBTClassBuilder =
         .instanceFunction("setItem",&NBTClass::setItem)
         .instanceFunction("setBlock", &NBTClass::setBlock)
         .function("fromItem",&fromItem)
-        .function("fromPtr", &fromPtr)
         .function("fromBlock", &fromBlock)
         .build();
 
-
+//helper
 constexpr unsigned int H(const char* str)
 {
     unsigned int hash = 5381;
@@ -48,6 +47,7 @@ constexpr unsigned int H(const char* str)
     hash &= ~(1 << 31); /* strip the highest bit */
     return hash;
 }
+//helper
 
 NBTClass::NBTClass(Tag* p) :ScriptClass(ScriptClass::ConstructFromCpp<NBTClass>{})
 {
@@ -426,11 +426,14 @@ Local<Value> NBTClass::createTag(const Arguments& args)
 Local<Value> NBTClass::setItem(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1)
-    CHECK_ARG_TYPE(args[0], ValueKind::kObject)
 
     try {
-        auto item = ItemClass::extractItem(args[0].asObject());
+        auto item = ItemClass::extractItem(args[0]);
+        if (!item)
+            return Local<Value>();    //Null
+
         nbt->setItem(item);
+        return Boolean::newBoolean(true);
     }
     CATCH("Fail in NBT.setItem")
 }
@@ -442,6 +445,9 @@ Local<Value> fromItem(const Arguments& args)
 
     try {
         auto item = ItemClass::extractItem(args[0].asObject());
+        if (!item)
+            return Local<Value>();    //Null
+
         auto nbt = Tag::fromItem(item);
         return NBTClass::newNBT(nbt);
     }
@@ -451,11 +457,14 @@ Local<Value> fromItem(const Arguments& args)
 Local<Value> NBTClass::setBlock(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1)
-    CHECK_ARG_TYPE(args[0], ValueKind::kObject)
 
     try {
-        auto item = BlockClass::extractBlock(args[0].asObject());
-        nbt->setBlock(item);
+        auto block = BlockClass::extractBlock(args[0]);
+        if (!block)
+            return Local<Value>();    //Null
+
+        nbt->setBlock(block);
+        return Boolean::newBoolean(true);
     }
     CATCH("Fail in NBT.setItem")
 }
@@ -466,20 +475,24 @@ Local<Value> fromBlock(const Arguments& args)
     CHECK_ARG_TYPE(args[0], ValueKind::kObject)
 
     try {
-        auto ptr = BlockClass::extractBlock(args[0]);
-        return NBTClass::newNBT(Tag::fromBlock(ptr));
+        auto block = BlockClass::extractBlock(args[0]);
+        if (!block)
+            return Local<Value>();    //Null
+
+        return NBTClass::newNBT(Tag::fromBlock(block));
     }
     CATCH("Fail in NBT.fromBlock")
 }
 
+/*
 Local<Value> fromPtr(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 1)
-        CHECK_ARG_TYPE(args[0], ValueKind::kNumber)
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
 
-        try {
+    try {
         auto ptr = (Tag*)(args[0].asNumber().toInt64());
         return NBTClass::newNBT(ptr);
     }
     CATCH("Fail in NBT.fromPtt")
-}
+}*/

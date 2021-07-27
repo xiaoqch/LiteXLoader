@@ -159,7 +159,15 @@ vector<string> SplitCmdParas(const string& paras)
         else
         {
             if (now.front() == '\"')
-                strInQuote = now;
+            {
+                if (now.back() == '\"')
+                {
+                    now = now.substr(1, now.size() - 2);
+                    res.push_back(now);
+                }
+                else
+                    strInQuote = now;
+            }
             else
                 res.push_back(now);
         }
