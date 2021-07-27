@@ -30,6 +30,8 @@ public:
     Local<Value> getXuid();
     Local<Value> getUuid();
     Local<Value> getIP();
+    Local<Value> getAvgPing();
+    Local<Value> getAvgPacketloss();
     Local<Value> getPermLevel();
     Local<Value> getGameMode();
     Local<Value> getMaxHealth();

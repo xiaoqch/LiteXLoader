@@ -25,6 +25,8 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceProperty("xuid", &PlayerClass::getXuid)
         .instanceProperty("uuid", &PlayerClass::getUuid)
         .instanceProperty("ip", &PlayerClass::getIP)
+        .instanceProperty("avgping", &PlayerClass::getAvgPing)
+        .instanceProperty("avgpacketloss", &PlayerClass::getAvgPacketloss)
         .instanceProperty("permLevel", &PlayerClass::getPermLevel)
         .instanceProperty("gameMode", &PlayerClass::getGameMode)
         .instanceProperty("maxHealth", &PlayerClass::getMaxHealth)
@@ -233,6 +235,29 @@ Local<Value> PlayerClass::getIP()
     CATCH("Fail in GetIP!")
 }
 
+Local<Value> PlayerClass::getAvgPing()
+{
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        return  Number::newNumber(Raw_GetAvgPing(player));
+    }
+    CATCH("Fail in GetAvgPing!")
+}
+
+Local<Value> PlayerClass::getAvgPacketloss()
+{
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        return  Number::newNumber(Raw_GetAvgPacketloss(player));
+    }
+    CATCH("Fail in GetAvgPacketloss!")
+}
 Local<Value> PlayerClass::getPermLevel()
 {
     try {
