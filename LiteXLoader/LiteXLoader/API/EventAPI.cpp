@@ -37,7 +37,7 @@ enum class EVENT_TYPES : int
     onPreJoin=0, onJoin, onLeft, onPlayerCmd, onChat, onPlayerDie, 
     onRespawn, onChangeDim, onJump, onSneak, onAttack, onEat, onMove, onSetArmor,
     onUseItem, onTakeItem, onDropItem, onUseItemOn,
-    onDestroyingBlock, onDestroyBlock, onPlaceBlock,
+    onDestroyingBlock, onDestroyBlock, onWitherBossDestroy, onPlaceBlock,
     onOpenContainer, onCloseContainer, onContainerChangeSlot,
     onMobDie, onMobHurt, onExplode, onBlockExploded, onCmdBlockExecute,
     onProjectileHit, onBlockInteracted, onUseRespawnAnchor, onFarmLandDecay,
@@ -68,6 +68,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onUseItemOn",EVENT_TYPES::onUseItemOn},
     {"onDestroyingBlock",EVENT_TYPES::onDestroyingBlock},
     {"onDestroyBlock",EVENT_TYPES::onDestroyBlock},
+    {"onWitherBossDestroy",EVENT_TYPES::onWitherBossDestroy},
     {"onPlaceBlock",EVENT_TYPES::onPlaceBlock},
     {"onExplode",EVENT_TYPES::onExplode},
     {"onBlockExploded",EVENT_TYPES::onBlockExploded},
@@ -86,7 +87,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onServerStarted",EVENT_TYPES::onServerStarted},
     {"onConsoleCmd",EVENT_TYPES::onConsoleCmd},
     {"onConsoleOutput",EVENT_TYPES::onConsoleOutput},
-    {"onFormSelected",EVENT_TYPES::onFormSelected},
+    {"onFormSelected",EVENT_TYPES::onFormSelected}
 };
 struct ListenerListType
 {
@@ -533,6 +534,29 @@ THook(bool, "?checkBlockDestroyPermissions@BlockSource@@QEAA_NAEAVActor@@AEBVBlo
     return original(_this, pl, pos,a3, a4);
 }
 
+// ===== onWitherBossDestroy =====
+THook(bool, "?canDestroy@WitherBoss@@SA_NAEBVBlock@@@Z",
+    Block* a1)
+{
+    IF_LISTENED(EVENT_TYPES::onWitherBossDestroy)
+    {
+        CallEventEx(EVENT_TYPES::onWitherBossDestroy, BlockClass::newBlock(a1));
+    }
+    IF_LISTENDED_END();
+    return original(a1);
+}
+
+THook(bool, "?canDestroyBlock@WitherSkull@@UEBA_NAEBVBlock@@@Z",
+    void* _this, Block* a2)
+{
+    IF_LISTENED(EVENT_TYPES::onWitherBossDestroy)
+    {
+        CallEventEx(EVENT_TYPES::onWitherBossDestroy, BlockClass::newBlock(a2));
+    }
+    IF_LISTENDED_END();
+    return original(_this, a2);
+}
+
 // ===== onPlaceBlock =====
 THook(bool, "?mayPlace@BlockSource@@QEAA_NAEBVBlock@@AEBVBlockPos@@EPEAVActor@@_N@Z",
     BlockSource* bs, Block* bl, BlockPos* bp, unsigned __int8 a4, Actor* pl, bool a6)
@@ -658,13 +682,13 @@ THook(bool, "?_hurt@Mob@@MEAA_NAEBVActorDamageSource@@H_N1@Z",
 
 // ===== onExplode =====
 THook(bool, "?explode@Level@@UEAAXAEAVBlockSource@@PEAVActor@@AEBVVec3@@M_N3M3@Z",
-    Level* _this, BlockSource* bs, Actor* actor, Vec3 pos, float a5, bool a6, bool a7, float a8, bool a9)
+    Level* _this, BlockSource* bs, Actor* actor, Vec3* pos, float a5, bool a6, bool a7, float a8, bool a9)
 {
     IF_LISTENED(EVENT_TYPES::onExplode)
     {
         if (actor)
         {
-            CallEventEx(EVENT_TYPES::onExplode, EntityClass::newEntity(actor), FloatPos::newPos(pos.x, pos.y, pos.z, Raw_GetEntityDimId(actor)));
+            CallEventEx(EVENT_TYPES::onExplode, EntityClass::newEntity(actor), FloatPos::newPos(pos->x, pos->y, pos->z, Raw_GetEntityDimId(actor)));
         }
     }
     IF_LISTENDED_END();
