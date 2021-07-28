@@ -22,6 +22,9 @@ ClassDefine<EntityClass> EntityClassBuilder =
         .instanceFunction("kill", &EntityClass::kill)
         .instanceFunction("setOnFire", &EntityClass::setOnFire)
         .instanceFunction("toPlayer", &EntityClass::toPlayer)
+        .instanceFunction("setOnFire",&EntityClass::setOnFire)
+        .instanceFunction("setInLove", &EntityClass::setInLove)
+        .instanceFunction("setOutLove", &EntityClass::setOutLove)
         .build();
 
 
@@ -234,4 +237,36 @@ Local<Value> EntityClass::toPlayer(const Arguments& args)
             return PlayerClass::newPlayer(pl);
     }
     CATCH("Fail in toPlayer!")
+}
+
+Local<Value> EntityClass::setOnFire(const Arguments& args)
+{
+    try {
+        Actor* entity = get();
+        int time = args[0].toInt();
+        bool result = Raw_SetOnFire(entity, time);
+        return Boolean::newBoolean(result);
+    }
+    CATCH("Fail in setOnFire!")
+}
+
+Local<Value> EntityClass::setInLove(const Arguments& args)
+{
+    try {
+        Actor* entity = get();
+        Actor* loved = EntityClass::extractEntity(args[0]);
+        bool result = Raw_SetInLove(entity, loved);
+        return Boolean::newBoolean(result);
+    }
+    CATCH("Fail in setInLove!")
+}
+
+Local<Value> EntityClass::setOutLove()
+{
+    try {
+        Actor* entity = get();
+        bool result = Raw_SetInLove(entity, 0i64);
+        return Boolean::newBoolean(result);
+    }
+    CATCH("Fail in setOutLove!")
 }

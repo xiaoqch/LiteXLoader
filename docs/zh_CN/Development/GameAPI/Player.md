@@ -549,3 +549,13 @@ pl.removeBossBar();
 [Lua]
 
 ```
+
+#### 使指定玩家着火
+
+`pl.setOnFire(time)`
+
+- 参数：
+  - time : `Number`  
+    着火时长，单位秒
+- 返回值：是否成功着火
+- 返回值类型：`Boolean`

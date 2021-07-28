@@ -36,4 +36,7 @@ public:
     Local<Value> kill(const Arguments& args);
     Local<Value> setOnFire(const Arguments& args);
     Local<Value> toPlayer(const Arguments& args);
+    Local<Value> setOnFire(const Arguments& args);
+    Local<Value> setInLove(const Arguments& args);
+    Local<Value> setOutLove();
 };
