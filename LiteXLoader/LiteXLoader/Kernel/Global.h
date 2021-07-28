@@ -39,6 +39,8 @@ public:
     int dim;
 };
 
+class FishingHook;
+
 inline std::string DimId2Name(int dimid)
 {
     std::string name;

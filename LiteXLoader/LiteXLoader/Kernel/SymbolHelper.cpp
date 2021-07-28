@@ -39,3 +39,9 @@ Block* Raw_GetBlockByPos(IntVec4* pos)
 	auto bs = Raw_GetBlockSourceByDim(pos->dim);
 	return Raw_GetBlockByPos(pos->x, pos->y, pos->z, bs);
 }
+
+Actor* Raw_GetFishingHookOwner(FishingHook* fh)
+{
+	return SymCall("?getOwner@FishingHook@@QEAAPEAVActor@@XZ",
+		Actor*, FishingHook*)(fh);
+}

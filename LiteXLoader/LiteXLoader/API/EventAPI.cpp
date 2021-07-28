@@ -41,8 +41,8 @@ enum class EVENT_TYPES : int
     onDestroyingBlock, onDestroyBlock, onWitherBossDestroy, onPlaceBlock,
     onOpenContainer, onCloseContainer, onContainerChangeSlot,
     onMobDie, onMobHurt, onExplode, onBlockExploded, onCmdBlockExecute,
-    onProjectileHit, onBlockInteracted, onUseRespawnAnchor, onFarmLandDecay,
-    onPistonPush, onHopperSearchItem, onHopperPushOut, onFireSpread, 
+    onProjectileHit, onBlockInteracted, onUseRespawnAnchor, onFarmLandDecay, onUseFrameBlock,
+    onPistonPush, onHopperSearchItem, onHopperPushOut, onFireSpread, onFishingHookRetrieve,
     onServerStarted, onConsoleCmd, onFormSelected, onConsoleOutput,
     EVENT_COUNT
 };
@@ -81,10 +81,12 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onBlockInteracted",EVENT_TYPES::onBlockInteracted},
     {"onUseRespawnAnchor",EVENT_TYPES::onUseRespawnAnchor},
     {"onFarmLandDecay",EVENT_TYPES::onFarmLandDecay},
+    {"onUseFrameBlock",EVENT_TYPES::onUseFrameBlock},
     {"onPistonPush",EVENT_TYPES::onPistonPush},
     {"onHopperSearchItem",EVENT_TYPES::onHopperSearchItem},
     {"onHopperPushOut",EVENT_TYPES::onHopperPushOut},
     {"onFireSpread",EVENT_TYPES::onFireSpread},
+    {"onFishingHookRetrieve",EVENT_TYPES::onFishingHookRetrieve},
     {"onServerStarted",EVENT_TYPES::onServerStarted},
     {"onConsoleCmd",EVENT_TYPES::onConsoleCmd},
     {"onConsoleOutput",EVENT_TYPES::onConsoleOutput},
@@ -800,6 +802,33 @@ THook(void, "?transformOnFall@FarmBlock@@UEBAXAEAVBlockSource@@AEBVBlockPos@@PEA
     return original(_this,bs,bp,ac,a5);
 }
 
+// ===== onUseFrameBlock =====
+THook(bool, "?use@ItemFrameBlock@@UEBA_NAEAVPlayer@@AEBVBlockPos@@E@Z",
+    void* _this, Player* a2, BlockPos* a3)
+{
+    IF_LISTENED(EVENT_TYPES::onUseFrameBlock)
+    {
+        BlockSource * bs = Raw_GetBlockSourceByActor((Actor*)a2);
+        Block* bl = Raw_GetBlockByPos(a3->x, a3->y, a3->z, bs);
+        CallEventEx(EVENT_TYPES::onUseFrameBlock, PlayerClass::newPlayer(a2), BlockClass::newBlock(bl, a3, bs));
+    }
+    IF_LISTENDED_END();
+    return original(_this, a2, a3);
+}
+
+THook(bool, "?attack@ItemFrameBlock@@UEBA_NPEAVPlayer@@AEBVBlockPos@@@Z",
+    void* _this, Player* a2, BlockPos* a3)
+{
+    IF_LISTENED(EVENT_TYPES::onUseFrameBlock)
+    {
+        BlockSource* bs = Raw_GetBlockSourceByActor((Actor*)a2);
+        Block* bl = Raw_GetBlockByPos(a3->x, a3->y, a3->z, bs);
+        CallEventEx(EVENT_TYPES::onUseFrameBlock, PlayerClass::newPlayer(a2), BlockClass::newBlock(bl, a3, bs));
+    }
+    IF_LISTENDED_END();
+    return original(_this, a2, a3);
+}
+
 // ===== onPistonPush =====
 THook(bool, "?_attachedBlockWalker@PistonBlockActor@@AEAA_NAEAVBlockSource@@AEBVBlockPos@@EE@Z",
     BlockActor* _this, BlockSource* bs, BlockPos* bp, unsigned a3, unsigned a4)
@@ -850,6 +879,21 @@ THook(bool, "?_trySpawnBlueFire@FireBlock@@AEBA_NAEAVBlockSource@@AEBVBlockPos@@
     }
     IF_LISTENDED_END();
     return original(_this, bs, bp);
+}
+
+// ===== onFishingHookRetrieve =====
+
+THook(__int64, "?retrieve@FishingHook@@QEAAHXZ",
+    FishingHook* _this)
+{
+    IF_LISTENED(EVENT_TYPES::onFishingHookRetrieve)
+    {
+        auto pl = (Player*)Raw_GetFishingHookOwner(_this);
+        auto fh = (Actor*)_this;
+        CallEventRtn(EVENT_TYPES::onFishingHookRetrieve, 0i64, PlayerClass::newPlayer(pl), EntityClass::newEntity(fh));
+    }
+    IF_LISTENDED_END();
+    return original(_this);
 }
 
 // ===== onPlayerCmd & onConsoleCmd =====
