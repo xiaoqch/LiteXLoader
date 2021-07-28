@@ -32,14 +32,10 @@ public:
     Local<Value> writeByte(const Arguments& args);
     Local<Value> writeList(const Arguments& args);
     Local<Value> writeCompound(const Arguments& args);
-    Local<Value> addValueToList(const Arguments& args);
+    Local<Value> addToList(const Arguments& args);
 
     Local<Value> createTag(const Arguments& args);
     Local<Value> getType(const Arguments& args);
 
-    Local<Value> setItem(const Arguments& args);
-    Local<Value> setBlock(const Arguments& args);
+    static Local<Value> GetTag(const Arguments& args);
 };
-
-Local<Value> fromItem(const Arguments& args);
-Local<Value> fromBlock(const Arguments& args);

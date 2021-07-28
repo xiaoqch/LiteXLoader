@@ -46,6 +46,29 @@
 
 <br>
 
+#### 获取物品对应的NBT Tag
+
+`it.getTag()`
+
+- 返回值：物品的NBT Tag对象
+- 返回值类型：`NBT`
+
+<br>
+
+#### 写入物品对应的NBT Tag
+
+`it.setTag(nbt)`
+
+- 参数：
+  - nbt : `NBT`  
+    NBT Tag对象
+- 返回值：是否成功写入
+- 返回值类型：`Boolean`
+
+关于NBT对象的更多使用，请参考 [NBT接口文档](zh_CN/Development/NbtAPI/NBT.md)
+
+<br>
+
 #### 设置自定义Lore
 
 `it.setLore(names)`

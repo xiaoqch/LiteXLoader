@@ -58,6 +58,29 @@
 
 <br>
 
+#### 获取实体对应的NBT Tag
+
+`en.getTag()`
+
+- 返回值：实体的NBT Tag对象
+- 返回值类型：`NBT`
+
+<br>
+
+#### 写入实体对应的NBT Tag
+
+`en.setTag(nbt)`
+
+- 参数：
+  - nbt : `NBT`  
+    NBT Tag对象
+- 返回值：是否成功写入
+- 返回值类型：`Boolean`
+
+关于NBT对象的更多使用，请参考 [NBT接口文档](zh_CN/Development/NbtAPI/NBT.md)
+
+<br>
+
 #### 将实体对象转换玩家对象
 
 `en.toPlayer()`

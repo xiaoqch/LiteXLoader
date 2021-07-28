@@ -2,6 +2,7 @@
 #include "NbtAPI.h"
 #include <Kernel/NBT.h>
 #include <vector>
+#include <string>
 #include <LiteXLoader/API/ItemAPI.h>
 #include <LiteXLoader/API/BlockAPI.h>
 using namespace script;
@@ -31,10 +32,7 @@ ClassDefine<NBTClass> NBTClassBuilder =
         .instanceFunction("writeCompound", &NBTClass::writeCompound)
         .instanceFunction("getType", &NBTClass::getType)
         .instanceFunction("createNBT", &NBTClass::createTag)
-        .instanceFunction("setItem",&NBTClass::setItem)
-        .instanceFunction("setBlock", &NBTClass::setBlock)
-        .function("fromItem",&fromItem)
-        .function("fromBlock", &fromBlock)
+        .function("getTag",&NBTClass::GetTag)
         .build();
 
 //helper
@@ -215,7 +213,7 @@ Local<Value> NBTClass::writeFloat(const Arguments& args)
 
         return Boolean::newBoolean(true);
     }
-    CATCH("Fail in NBTwriteInt!")
+    CATCH("Fail in NBTwriteFloat!")
 }
 
 Local<Value> NBTClass::writeBoolean(const Arguments& args)
@@ -231,7 +229,7 @@ Local<Value> NBTClass::writeBoolean(const Arguments& args)
 
         return Boolean::newBoolean(true);
     }
-    CATCH("Fail in NBTwriteInt!")
+    CATCH("Fail in NBTwriteBoolean!")
 }
 
 Local<Value> NBTClass::writeByte(const Arguments& args)
@@ -247,7 +245,7 @@ Local<Value> NBTClass::writeByte(const Arguments& args)
 
         return Boolean::newBoolean(true);
     }
-    CATCH("Fail in NBTwriteInt!")
+    CATCH("Fail in NBTwriteByte!")
 }
 
 Local<Value> NBTClass::writeString(const Arguments& args)
@@ -263,7 +261,7 @@ Local<Value> NBTClass::writeString(const Arguments& args)
 
         return Boolean::newBoolean(true);
     }
-    CATCH("Fail in NBTwriteInt!")
+    CATCH("Fail in NBTwriteString!")
 }
 
 Local<Value> NBTClass::writeList(const Arguments& args)
@@ -285,7 +283,7 @@ Local<Value> NBTClass::writeList(const Arguments& args)
 
         return Boolean::newBoolean(true);
     }
-    CATCH("Fail in NBTwriteInt!")
+    CATCH("Fail in NBTwriteList!")
 }
 
 Local<Value> NBTClass::writeCompound(const Arguments& args)
@@ -307,10 +305,10 @@ Local<Value> NBTClass::writeCompound(const Arguments& args)
 
         return Boolean::newBoolean(true);
     }
-    CATCH("Fail in NBTwriteInt!")
+    CATCH("Fail in NBTwriteCompound!")
 }
 
-Local<Value> NBTClass::addValueToList(const Arguments& args)
+Local<Value> NBTClass::addToList(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1)
     CHECK_ARG_TYPE(args[0], ValueKind::kObject)
@@ -328,37 +326,51 @@ Local<Value> NBTClass::getType(const Arguments& args)
 {
     try {
         auto type = nbt->getTagType();
+
+        string res;
         switch (type)
         {
         case TagType::End:
-            return String::newString("End");
+            res = "End";
+            break;
         case TagType::Byte:
-            return String::newString("Byte/Boolean");
+            res = "Byte";
+            break;
         case TagType::Short:
-            return String::newString("Short");
+            res = "Short";
+            break;
         case TagType::Int:
-            return String::newString("Int");
+            res = "Int";
+            break;
         case TagType::Int64:
-            return String::newString("Long");
+            res = "Long";
+            break;
         case TagType::Float:
-            return String::newString("Float");
+            res = "Float";
+            break;
         case TagType::Double:
-            return String::newString("Double");
+            res = "Double";
+            break;
         case TagType::String:
-            return String::newString("String");
+            res = "String";
+            break;
         case TagType::ByteArray:
-            return String::newString("ByteArray");
+            res = "ByteArray";
+            break;
         case TagType::List:
-            return String::newString("List");
+            res = "List";
+            break;
         case TagType::Compound:
-            return String::newString("Compound");
+            res = "Compound";
+            break;
         default:
-            return String::newString("Unknown");
+            res = "Unknown";
+            break;
         }
 
-        return Boolean::newBoolean(true);
+        return String::newString(res);
     }
-    CATCH("Fail in NBTwriteInt!")
+    CATCH("Fail in NBTgetType!")
 }
 
 Local<Value> NBTClass::createTag(const Arguments& args)
@@ -423,65 +435,36 @@ Local<Value> NBTClass::createTag(const Arguments& args)
     CATCH("Fail in NBTwriteInt!")
 }
 
-Local<Value> NBTClass::setItem(const Arguments& args)
+Local<Value> NBTClass::GetTag(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1)
 
     try {
+        auto block = BlockClass::extractBlock(args[0]);
+        if (block)
+        {
+            auto nbt = Tag::fromBlock(block);
+            return NBTClass::newNBT(nbt);
+        }
+        /*
+        auto block = BlockClass::extractBlock(args[0]);
+        if (block)
+        {
+            auto nbt = Tag::fromBlock(block);
+            return NBTClass::newNBT(nbt);
+        }*/
+
         auto item = ItemClass::extractItem(args[0]);
-        if (!item)
-            return Local<Value>();    //Null
+        if (item)
+        {
+            auto nbt = Tag::fromItem(item);
+            return NBTClass::newNBT(nbt);
+        }
 
-        nbt->setItem(item);
-        return Boolean::newBoolean(true);
-    }
-    CATCH("Fail in NBT.setItem")
-}
-
-Local<Value> fromItem(const Arguments& args)
-{
-    CHECK_ARGS_COUNT(args, 1)
-    CHECK_ARG_TYPE(args[0], ValueKind::kObject)
-
-    try {
-        auto item = ItemClass::extractItem(args[0].asObject());
-        if (!item)
-            return Local<Value>();    //Null
-
-        auto nbt = Tag::fromItem(item);
-        return NBTClass::newNBT(nbt);
+        ERROR("Unknown type! Cannot get NBT from it")
+        return Local<Value>();
     }
     CATCH("Fail in NBT.fromItem")
-}
-
-Local<Value> NBTClass::setBlock(const Arguments& args)
-{
-    CHECK_ARGS_COUNT(args, 1)
-
-    try {
-        auto block = BlockClass::extractBlock(args[0]);
-        if (!block)
-            return Local<Value>();    //Null
-
-        nbt->setBlock(block);
-        return Boolean::newBoolean(true);
-    }
-    CATCH("Fail in NBT.setItem")
-}
-
-Local<Value> fromBlock(const Arguments& args)
-{
-    CHECK_ARGS_COUNT(args, 1)
-    CHECK_ARG_TYPE(args[0], ValueKind::kObject)
-
-    try {
-        auto block = BlockClass::extractBlock(args[0]);
-        if (!block)
-            return Local<Value>();    //Null
-
-        return NBTClass::newNBT(Tag::fromBlock(block));
-    }
-    CATCH("Fail in NBT.fromBlock")
 }
 
 /*
