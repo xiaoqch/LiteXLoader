@@ -54,12 +54,6 @@ bool Raw_KillEntity(Actor* actor)
     return true;
 }
 
-bool Raw_SetOnFire(Actor* actor, int time)
-{
-    SymCall("?setOnFire@Actor@@UEAAXH@Z",
-        void, Actor*, int)(actor, time);
-}
-
 bool Raw_IsPlayer(Actor* actor)
 {
     Player* pl = (Player*)actor;

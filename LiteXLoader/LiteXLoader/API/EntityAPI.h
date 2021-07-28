@@ -34,7 +34,6 @@ public:
 
     Local<Value> teleport(const Arguments& args);
     Local<Value> kill(const Arguments& args);
-    Local<Value> setOnFire(const Arguments& args);
     Local<Value> toPlayer(const Arguments& args);
     Local<Value> setOnFire(const Arguments& args);
     Local<Value> setInLove(const Arguments& args);
