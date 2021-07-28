@@ -42,7 +42,7 @@ enum class EVENT_TYPES : int
     onOpenContainer, onCloseContainer, onContainerChangeSlot,
     onMobDie, onMobHurt, onExplode, onBlockExploded, onCmdBlockExecute,
     onProjectileHit, onBlockInteracted, onUseRespawnAnchor, onFarmLandDecay, onUseFrameBlock,
-    onPistonPush, onHopperSearchItem, onHopperPushOut, onFireSpread, 
+    onPistonPush, onHopperSearchItem, onHopperPushOut, onFireSpread, onFishingHookRetrieve,
     onServerStarted, onConsoleCmd, onFormSelected, onConsoleOutput,
     EVENT_COUNT
 };
@@ -86,6 +86,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onHopperSearchItem",EVENT_TYPES::onHopperSearchItem},
     {"onHopperPushOut",EVENT_TYPES::onHopperPushOut},
     {"onFireSpread",EVENT_TYPES::onFireSpread},
+    {"onFishingHookRetrieve",EVENT_TYPES::onFishingHookRetrieve},
     {"onServerStarted",EVENT_TYPES::onServerStarted},
     {"onConsoleCmd",EVENT_TYPES::onConsoleCmd},
     {"onConsoleOutput",EVENT_TYPES::onConsoleOutput},
@@ -878,6 +879,21 @@ THook(bool, "?_trySpawnBlueFire@FireBlock@@AEBA_NAEAVBlockSource@@AEBVBlockPos@@
     }
     IF_LISTENDED_END();
     return original(_this, bs, bp);
+}
+
+// ===== onFishingHookRetrieve =====
+
+THook(__int64, "?retrieve@FishingHook@@QEAAHXZ",
+    FishingHook* _this)
+{
+    IF_LISTENED(EVENT_TYPES::onFishingHookRetrieve)
+    {
+        auto pl = (Player*)Raw_GetFishingHookOwner(_this);
+        auto fh = (Actor*)_this;
+        CallEventRtn(EVENT_TYPES::onFishingHookRetrieve, 0i64, PlayerClass::newPlayer(pl), EntityClass::newEntity(fh));
+    }
+    IF_LISTENDED_END();
+    return original(_this);
 }
 
 // ===== onPlayerCmd & onConsoleCmd =====

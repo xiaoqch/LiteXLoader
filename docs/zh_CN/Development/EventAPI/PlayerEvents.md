@@ -371,3 +371,18 @@
   - pos : `IntPos`  
     被使用的重生锚的位置
 - 拦截事件：函数返回`false`
+
+<br>
+
+#### "onFishingHookRetrieve" - 玩家收鱼钩
+
+- 监听函数原型
+  `function(player,fishingHook)`
+- 参数：
+  - player : `Player`  
+    收起该鱼钩的玩家对象
+  - fishingHook : `Entity`  
+    被收起的鱼钩的实体对象
+- 拦截事件：函数返回`false`
+
+注：拦截此事件的实际效果是鱼钩勾不起任何东西，但客户端依然有假收勾的场景。
