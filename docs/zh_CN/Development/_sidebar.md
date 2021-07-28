@@ -23,7 +23,9 @@
   - [📊 表单](zh_CN/Development/GuiAPI/Form.md)
   - [📰 表单构建器](zh_CN/Development/GuiAPI/FormBuilder.md)
 - NBT
-  - [🥽 NBT读写接口](zh_CN/Development/NbtAPI/NBT.md)
+  - [🥽 NBT通用接口](zh_CN/Development/NbtAPI/NBT.md)
+  - [📚 NBT列表类型](zh_CN/Development/NbtAPI/NBTList.md)
+  - [📒 NBT标签类型](zh_CN/Development/NbtAPI/NBTCompound.md)
 - 脚本辅助接口
 
   - [📅 日志系统](zh_CN/Development/ScriptAPI/Logger.md)

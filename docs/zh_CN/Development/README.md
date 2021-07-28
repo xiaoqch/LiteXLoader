@@ -33,6 +33,7 @@
 | `Function`      | `Function`         | `function`   | 函数（方法）           |
 | `Array`         | `Array`            | `table`      | 数组（列表）           |
 | `Object`        | `Object`           | `table`      | 对象（映射，字典，表） |
+| `ByteBuffer`    | `ArrayBuffer`      | `table`      | 字节数组               |
 
 除了上述了标准类型之外，还存在一些引擎自定义的对象类型。
 
@@ -48,6 +49,7 @@
 - `DB` - 数据库对象（详见 数据库）
 - `Device` - 玩家设备信息对象（详见 玩家）
 - `NBT` - NBT Tag对象（详见 NBT）
+- `Enum` - 枚举类型，通常储存于某些类型中，提供一些限定范围的可选项
 
 <br>
 

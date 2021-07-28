@@ -58,12 +58,24 @@
 
 <br>
 
+#### 点燃指定实体  
+
+`en.setOnFire(time)`
+
+- 参数：
+  - time: `Integer`  
+    燃烧持续时间
+- 返回值：是否成功执行
+- 返回值类型：`Boolean`
+
+<br>
+
 #### 获取实体对应的NBT Tag
 
 `en.getTag()`
 
 - 返回值：实体的NBT Tag对象
-- 返回值类型：`NBT`
+- 返回值类型：`NbtCompound`
 
 <br>
 
@@ -72,7 +84,7 @@
 `en.setTag(nbt)`
 
 - 参数：
-  - nbt : `NBT`  
+  - nbt : `NbtCompound`  
     NBT Tag对象
 - 返回值：是否成功写入
 - 返回值类型：`Boolean`

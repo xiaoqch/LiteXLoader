@@ -13,6 +13,7 @@ bool Raw_SetInLove(Actor* a1, Actor* a2);
 
 bool Raw_TeleportEntity(Actor* actor, const FloatVec4 &pos);
 bool Raw_KillEntity(Actor* actor);
+bool Raw_SetOnFire(Actor* actor,int time);
 bool Raw_IsPlayer(Actor* actor);
 Player* Raw_ToPlayer(Actor* actor);
 
