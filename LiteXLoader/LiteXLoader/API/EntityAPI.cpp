@@ -20,6 +20,7 @@ ClassDefine<EntityClass> EntityClassBuilder =
 
         .instanceFunction("teleport", &EntityClass::teleport)
         .instanceFunction("kill", &EntityClass::kill)
+        .instanceFunction("setOnFire", &EntityClass::setOnFire)
         .instanceFunction("toPlayer", &EntityClass::toPlayer)
         .build();
 
@@ -202,6 +203,21 @@ Local<Value> EntityClass::kill(const Arguments& args)
         return Boolean::newBoolean(Raw_KillEntity(entity));
     }
     CATCH("Fail in killEntity!")
+}
+
+Local<Value> EntityClass::setOnFire(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
+
+    try {
+        Actor* entity = get();
+        if (!entity)
+            return Local<Value>();
+
+        return Boolean::newBoolean(Raw_SetOnFire(entity, args[0].toInt()));
+    }
+    CATCH("Fail in setOnFire!")
 }
 
 Local<Value> EntityClass::toPlayer(const Arguments& args)
