@@ -20,7 +20,6 @@ ClassDefine<EntityClass> EntityClassBuilder =
 
         .instanceFunction("teleport", &EntityClass::teleport)
         .instanceFunction("kill", &EntityClass::kill)
-        .instanceFunction("setOnFire", &EntityClass::setOnFire)
         .instanceFunction("toPlayer", &EntityClass::toPlayer)
         .instanceFunction("setOnFire",&EntityClass::setOnFire)
         .instanceFunction("setInLove", &EntityClass::setInLove)
