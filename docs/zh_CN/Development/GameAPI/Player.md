@@ -334,18 +334,6 @@ pl.addLevel(6);
 
 ```
 
-#### 点燃指定玩家
-
-`pl.setOnFire(time)`
-
-- 参数：
-  - time: `Integer`  
-    燃烧持续时间
-- 返回值：是否成功执行
-- 返回值类型：`Boolean`
-
-<br>
-
 #### 传送玩家至指定服务器  
 
 `pl.transServer(server,port)`
