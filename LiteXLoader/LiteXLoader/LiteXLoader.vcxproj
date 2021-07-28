@@ -40,6 +40,7 @@
     <ClCompile Include="API\BlockAPI.cpp" />
     <ClCompile Include="API\CommandAPI.cpp" />
     <ClCompile Include="API\DataAPI.cpp" />
+    <ClCompile Include="API\DeviceAPI.cpp" />
     <ClCompile Include="API\EntityAPI.cpp" />
     <ClCompile Include="API\EventAPI.cpp" />
     <ClCompile Include="API\FileSystemAPI.cpp" />
@@ -54,6 +55,8 @@
     <ClCompile Include="API\ServerAPI.cpp" />
     <ClCompile Include="API\SystemAPI.cpp" />
     <ClCompile Include="BindAPIs.cpp" />
+    <ClCompile Include="Engine\LocalShareData.cpp" />
+    <ClCompile Include="Kernel\Device.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Engine\GlobalShareData.cpp" />
     <ClCompile Include="Engine\LoaderHelper.cpp" />
@@ -82,6 +85,7 @@
     <ClInclude Include="API\BlockAPI.h" />
     <ClInclude Include="API\CommandAPI.h" />
     <ClInclude Include="API\DataAPI.h" />
+    <ClInclude Include="API\DeviceAPI.h" />
     <ClInclude Include="API\EntityAPI.h" />
     <ClInclude Include="API\EventAPI.h" />
     <ClInclude Include="API\FileSystemAPI.h" />
@@ -101,10 +105,12 @@
     <ClInclude Include="Engine\GlobalShareData.h" />
     <ClInclude Include="Engine\EngineOwnData.h" />
     <ClInclude Include="Engine\LoaderHelper.h" />
+    <ClInclude Include="Engine\LocalShareData.h" />
     <ClInclude Include="Engine\RemoteCall.h" />
     <ClInclude Include="Kernel\Base.h" />
     <ClInclude Include="Kernel\Block.h" />
     <ClInclude Include="Kernel\Data.h" />
+    <ClInclude Include="Kernel\Device.h" />
     <ClInclude Include="Kernel\Entity.h" />
     <ClInclude Include="Kernel\Event.h" />
     <ClInclude Include="Kernel\Gui.h" />
@@ -375,6 +381,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <ExceptionHandling>Async</ExceptionHandling>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -398,6 +405,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <ExceptionHandling>Async</ExceptionHandling>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

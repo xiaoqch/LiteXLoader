@@ -7,7 +7,7 @@
 获取玩家对象有三种方式：
 
 1. 通过注册**事件监听**函数，获取到BDS给出的与相关事件有关的玩家对象  
-   详见[事件监听文档 - EventAPI](EventApi.md)
+   详见 [事件监听文档 - EventAPI](zh_CN/Development/EventAPI/Listen.md)
 
    
 
@@ -334,6 +334,18 @@ pl.addLevel(6);
 
 ```
 
+#### 点燃指定玩家
+
+`pl.setOnFire(time)`
+
+- 参数：
+  - time: `Integer`  
+    燃烧持续时间
+- 返回值：是否成功执行
+- 返回值类型：`Boolean`
+
+<br>
+
 #### 传送玩家至指定服务器  
 
 `pl.transServer(server,port)`
@@ -370,6 +382,16 @@ pl.crash();
 pl:crash()
 
 ```
+
+#### 获取玩家对应的设备信息对象
+
+`pl.getDevice()`
+
+- 返回值：玩家对应的设备信息对象
+- 返回值类型：`Device`
+
+设备信息对象储存了与玩家设备有关的某些信息，如设备类型、网络延迟等信息。  
+关于设备信息对象的其他信息请参考 [设备信息对象 API](zh_CN/Development/EventAPI/Device.md)
 
 #### 获取玩家计分板值  
 

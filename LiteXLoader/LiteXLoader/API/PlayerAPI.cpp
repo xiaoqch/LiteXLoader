@@ -1,5 +1,6 @@
 #include "APIHelp.h"
 #include "BaseAPI.h"
+#include "DeviceAPI.h"
 #include "PlayerAPI.h"
 #include "ItemAPI.h"
 #include "GuiAPI.h"
@@ -47,8 +48,10 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceFunction("getAllItems", &PlayerClass::getAllItems)
         .instanceFunction("rename", &PlayerClass::rename)
         .instanceFunction("addLevel", &PlayerClass::addLevel)
+        .instanceFunction("setOnFire", &PlayerClass::setOnFire)
         .instanceFunction("transServer", &PlayerClass::transServer)
         .instanceFunction("crash", &PlayerClass::crash)
+        .instanceFunction("getDevice", &PlayerClass::getDevice)
 
         .instanceFunction("getScore", &PlayerClass::getScore)
         .instanceFunction("setScore", &PlayerClass::setScore)
@@ -536,8 +539,8 @@ Local<Value> PlayerClass::getAllItems(const Arguments& args)
 
 Local<Value> PlayerClass::rename(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args,1)
-    CHECK_ARG_TYPE(args[0],ValueKind::kString)
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
     
     try{
         Player* player = get();
@@ -551,8 +554,8 @@ Local<Value> PlayerClass::rename(const Arguments& args)
 
 Local<Value> PlayerClass::addLevel(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 1)
-    CHECK_ARG_TYPE(args[0], ValueKind::kNumber)
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
 
     try {
         Player* player = get();
@@ -562,6 +565,21 @@ Local<Value> PlayerClass::addLevel(const Arguments& args)
         return Boolean::newBoolean(Raw_AddLevel(player, args[0].toInt()));
     }
     CATCH("Fail in addLevel!")
+}
+
+Local<Value> PlayerClass::setOnFire(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
+
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        return Boolean::newBoolean(Raw_SetOnFire(player, args[0].toInt()));
+    }
+    CATCH("Fail in setOnFire!")
 }
 
 Local<Value> PlayerClass::transServer(const Arguments& args)
@@ -590,6 +608,18 @@ Local<Value> PlayerClass::crash(const Arguments& args)
         return Boolean::newBoolean(Raw_CrashPlayer(player));
     }
     CATCH("Fail in crashPlayer!")
+}
+
+Local<Value> PlayerClass::getDevice(const Arguments& args)
+{
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        return DeviceClass::newDevice(player);
+    }
+    CATCH("Fail in getDevice!")
 }
 
 Local<Value> PlayerClass::getScore(const Arguments& args)
@@ -894,6 +924,10 @@ Local<Value> PlayerClass::getExtraData(const Arguments& args)
             return Boolean::newBoolean(false);
 
         return ENGINE_OWN_DATA()->playerDataDB.at(Raw_GetPlayerName(player) + "-" + key).get();
+    }
+    catch (const std::out_of_range& e)
+    {
+        return Local<Value>();
     }
     CATCH("Fail in getExtraData!")
 }

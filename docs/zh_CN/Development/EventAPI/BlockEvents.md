@@ -107,3 +107,18 @@
   - entity : `Entity`  
     造成耕地退化的实体
 - 拦截事件：函数返回`false`
+
+<br>
+
+#### "onUseFrameBlock" - 操作物品展示框
+
+- 监听函数原型
+  `function(player,block)`
+- 参数：
+  - player : `Player`  
+    操作物品展示框的玩家对象
+  - block : `Block`  
+    被操作的物品展示框方块对象
+- 拦截事件：函数返回`false`
+
+注：操作包括放置物品、取下物品、旋转物品。

@@ -40,6 +40,9 @@ public:
     Local<Value> getType();
     Local<Value> getId();
     Local<Value> getPos();
+
+    Local<Value> getTag(const Arguments& args);
+    Local<Value> setTag(const Arguments& args);
 };
 
 //////////////////// APIs ////////////////////

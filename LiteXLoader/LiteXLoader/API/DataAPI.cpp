@@ -233,6 +233,10 @@ Local<Value> ConfJsonClass::get(const Arguments& args)
     {
         return JsonToValue(jsonConf.at(args[0].toStr()));
     }
+    catch (const std::out_of_range& e)
+    {
+        return Local<Value>();
+    }
     catch (exception& e)
     {
         return args.size() >= 2 ? args[1] : Local<Value>();
@@ -533,7 +537,7 @@ Local<Value> OpenConfig(const Arguments& args)
             if (args.size() >= 3)
                 return ConfJsonClass::newConf(path, args[2].toStr());
             else
-                return ConfJsonClass::newConf(path);
+                return ConfJsonClass::newConf(path, "{}");
         }
     }
     CATCH("Fail in OpenConfig!");

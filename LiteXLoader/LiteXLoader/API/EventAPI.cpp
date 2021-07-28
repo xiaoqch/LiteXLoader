@@ -18,6 +18,7 @@
 #include <Kernel/Global.h>
 #include <Engine/EngineOwnData.h>
 #include <Engine/GlobalShareData.h>
+#include <Engine/LocalShareData.h>
 #include "APIHelp.h"
 #include "BaseAPI.h"
 #include "BlockAPI.h"
@@ -37,11 +38,11 @@ enum class EVENT_TYPES : int
     onPreJoin=0, onJoin, onLeft, onPlayerCmd, onChat, onPlayerDie, 
     onRespawn, onChangeDim, onJump, onSneak, onAttack, onEat, onMove, onSetArmor,
     onUseItem, onTakeItem, onDropItem, onUseItemOn,
-    onDestroyingBlock, onDestroyBlock, onPlaceBlock,
+    onDestroyingBlock, onDestroyBlock, onWitherBossDestroy, onPlaceBlock,
     onOpenContainer, onCloseContainer, onContainerChangeSlot,
     onMobDie, onMobHurt, onExplode, onBlockExploded, onCmdBlockExecute,
-    onProjectileHit, onBlockInteracted, onUseRespawnAnchor, onFarmLandDecay,
-    onPistonPush, onHopperSearchItem, onHopperPushOut, onFireSpread, 
+    onProjectileHit, onBlockInteracted, onUseRespawnAnchor, onFarmLandDecay, onUseFrameBlock,
+    onPistonPush, onHopperSearchItem, onHopperPushOut, onFireSpread, onFishingHookRetrieve,
     onServerStarted, onConsoleCmd, onFormSelected, onConsoleOutput,
     EVENT_COUNT
 };
@@ -68,6 +69,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onUseItemOn",EVENT_TYPES::onUseItemOn},
     {"onDestroyingBlock",EVENT_TYPES::onDestroyingBlock},
     {"onDestroyBlock",EVENT_TYPES::onDestroyBlock},
+    {"onWitherBossDestroy",EVENT_TYPES::onWitherBossDestroy},
     {"onPlaceBlock",EVENT_TYPES::onPlaceBlock},
     {"onExplode",EVENT_TYPES::onExplode},
     {"onBlockExploded",EVENT_TYPES::onBlockExploded},
@@ -79,14 +81,16 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onBlockInteracted",EVENT_TYPES::onBlockInteracted},
     {"onUseRespawnAnchor",EVENT_TYPES::onUseRespawnAnchor},
     {"onFarmLandDecay",EVENT_TYPES::onFarmLandDecay},
+    {"onUseFrameBlock",EVENT_TYPES::onUseFrameBlock},
     {"onPistonPush",EVENT_TYPES::onPistonPush},
     {"onHopperSearchItem",EVENT_TYPES::onHopperSearchItem},
     {"onHopperPushOut",EVENT_TYPES::onHopperPushOut},
     {"onFireSpread",EVENT_TYPES::onFireSpread},
+    {"onFishingHookRetrieve",EVENT_TYPES::onFishingHookRetrieve},
     {"onServerStarted",EVENT_TYPES::onServerStarted},
     {"onConsoleCmd",EVENT_TYPES::onConsoleCmd},
     {"onConsoleOutput",EVENT_TYPES::onConsoleOutput},
-    {"onFormSelected",EVENT_TYPES::onFormSelected},
+    {"onFormSelected",EVENT_TYPES::onFormSelected}
 };
 struct ListenerListType
 {
@@ -357,6 +361,23 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ",
     return original(_this);
 }
 
+// For device information
+class ConnectionRequest;
+THook(void, "?sendLoginMessageLocal@ServerNetworkHandler@@QEAAXAEBVNetworkIdentifier@@"
+    "AEBVConnectionRequest@@AEAVServerPlayer@@@Z",
+    ServerNetworkHandler* _this, NetworkIdentifier* ni, ConnectionRequest* cr, ServerPlayer* sp)
+{
+    string id = "", os = "";
+    SymCall("?getDeviceId@ConnectionRequest@@QEBA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ",
+        void, ConnectionRequest*, string*)(cr, &id);
+    int type = SymCall("?getDeviceOS@ConnectionRequest@@QEBA?AW4BuildPlatform@@XZ",
+        int, ConnectionRequest*, string*)(cr, &os);
+
+    localShareData->deviceInfoRecord[(uintptr_t)sp] = { id,type };
+    return original(_this, ni, cr, sp);
+}
+
+
 // ===== onJoin =====
 THook(bool, "?setLocalPlayerAsInitialized@ServerPlayer@@QEAAXXZ",
     ServerPlayer* _this)
@@ -533,6 +554,50 @@ THook(bool, "?checkBlockDestroyPermissions@BlockSource@@QEAA_NAEAVActor@@AEBVBlo
     return original(_this, pl, pos,a3, a4);
 }
 
+// ===== onWitherBossDestroy =====
+
+THook(bool, "?canDestroy@WitherBoss@@SA_NAEBVBlock@@@Z",
+    Block* a1)
+{
+    IF_LISTENED(EVENT_TYPES::onWitherBossDestroy)
+    {
+        CallEventEx(EVENT_TYPES::onWitherBossDestroy, BlockClass::newBlock(a1));
+    }
+    IF_LISTENDED_END();
+    return original(a1);
+}
+
+THook(bool, "?canDestroyBlock@WitherSkull@@UEBA_NAEBVBlock@@@Z",
+    void* _this, Block* a2)
+{
+    IF_LISTENED(EVENT_TYPES::onWitherBossDestroy)
+    {
+        CallEventEx(EVENT_TYPES::onWitherBossDestroy, BlockClass::newBlock(a2));
+    }
+    IF_LISTENDED_END();
+    return original(_this, a2);
+}
+
+/*
+THook(void, "?_destroyBlocks@WitherBoss@@AEAAXAEAVLevel@@AEBVAABB@@AEAVBlockSource@@H@Z",
+    void* _this, struct Level* a2, const struct AABB* a3, struct BlockSource* a4, int a5)
+{
+    IF_LISTENED(EVENT_TYPES::onWitherBossDestroy)
+    {
+        auto ac = (Actor*)_this;
+        auto dimid = dAccess<int, -96>(a4);
+        Vec3 posA = a3->p1;
+        Vec3 posB = a3->p2;
+        CallEvent(EVENT_TYPES::onWitherBossDestroy, EntityClass::newEntity(ac), IntPos::newPos(posA.x, posA.y, posA.z, dimid), IntPos::newPos(posB.x, posB.y, posB.z, dimid));
+    }
+    IF_LISTENDED_END();
+    // 不original即可拦截，等待CallEvent重写...
+    // Event -> [1]凋灵实体对象 [2]AABB(AA) [3]AABB(BB)
+
+    original(_this, a2, a3, a4, a5);
+}
+*/
+
 // ===== onPlaceBlock =====
 THook(bool, "?mayPlace@BlockSource@@QEAA_NAEBVBlock@@AEBVBlockPos@@EPEAVActor@@_N@Z",
     BlockSource* bs, Block* bl, BlockPos* bp, unsigned __int8 a4, Actor* pl, bool a6)
@@ -658,13 +723,13 @@ THook(bool, "?_hurt@Mob@@MEAA_NAEBVActorDamageSource@@H_N1@Z",
 
 // ===== onExplode =====
 THook(bool, "?explode@Level@@UEAAXAEAVBlockSource@@PEAVActor@@AEBVVec3@@M_N3M3@Z",
-    Level* _this, BlockSource* bs, Actor* actor, Vec3 pos, float a5, bool a6, bool a7, float a8, bool a9)
+    Level* _this, BlockSource* bs, Actor* actor, Vec3* pos, float a5, bool a6, bool a7, float a8, bool a9)
 {
     IF_LISTENED(EVENT_TYPES::onExplode)
     {
         if (actor)
         {
-            CallEventEx(EVENT_TYPES::onExplode, EntityClass::newEntity(actor), FloatPos::newPos(pos.x, pos.y, pos.z, Raw_GetEntityDimId(actor)));
+            CallEventEx(EVENT_TYPES::onExplode, EntityClass::newEntity(actor), FloatPos::newPos(pos->x, pos->y, pos->z, Raw_GetEntityDimId(actor)));
         }
     }
     IF_LISTENDED_END();
@@ -737,6 +802,33 @@ THook(void, "?transformOnFall@FarmBlock@@UEBAXAEAVBlockSource@@AEBVBlockPos@@PEA
     return original(_this,bs,bp,ac,a5);
 }
 
+// ===== onUseFrameBlock =====
+THook(bool, "?use@ItemFrameBlock@@UEBA_NAEAVPlayer@@AEBVBlockPos@@E@Z",
+    void* _this, Player* a2, BlockPos* a3)
+{
+    IF_LISTENED(EVENT_TYPES::onUseFrameBlock)
+    {
+        BlockSource * bs = Raw_GetBlockSourceByActor((Actor*)a2);
+        Block* bl = Raw_GetBlockByPos(a3->x, a3->y, a3->z, bs);
+        CallEventEx(EVENT_TYPES::onUseFrameBlock, PlayerClass::newPlayer(a2), BlockClass::newBlock(bl, a3, bs));
+    }
+    IF_LISTENDED_END();
+    return original(_this, a2, a3);
+}
+
+THook(bool, "?attack@ItemFrameBlock@@UEBA_NPEAVPlayer@@AEBVBlockPos@@@Z",
+    void* _this, Player* a2, BlockPos* a3)
+{
+    IF_LISTENED(EVENT_TYPES::onUseFrameBlock)
+    {
+        BlockSource* bs = Raw_GetBlockSourceByActor((Actor*)a2);
+        Block* bl = Raw_GetBlockByPos(a3->x, a3->y, a3->z, bs);
+        CallEventEx(EVENT_TYPES::onUseFrameBlock, PlayerClass::newPlayer(a2), BlockClass::newBlock(bl, a3, bs));
+    }
+    IF_LISTENDED_END();
+    return original(_this, a2, a3);
+}
+
 // ===== onPistonPush =====
 THook(bool, "?_attachedBlockWalker@PistonBlockActor@@AEAA_NAEAVBlockSource@@AEBVBlockPos@@EE@Z",
     BlockActor* _this, BlockSource* bs, BlockPos* bp, unsigned a3, unsigned a4)
@@ -787,6 +879,21 @@ THook(bool, "?_trySpawnBlueFire@FireBlock@@AEBA_NAEAVBlockSource@@AEBVBlockPos@@
     }
     IF_LISTENDED_END();
     return original(_this, bs, bp);
+}
+
+// ===== onFishingHookRetrieve =====
+
+THook(__int64, "?retrieve@FishingHook@@QEAAHXZ",
+    FishingHook* _this)
+{
+    IF_LISTENED(EVENT_TYPES::onFishingHookRetrieve)
+    {
+        auto pl = (Player*)Raw_GetFishingHookOwner(_this);
+        auto fh = (Actor*)_this;
+        CallEventRtn(EVENT_TYPES::onFishingHookRetrieve, 0i64, PlayerClass::newPlayer(pl), EntityClass::newEntity(fh));
+    }
+    IF_LISTENDED_END();
+    return original(_this);
 }
 
 // ===== onPlayerCmd & onConsoleCmd =====

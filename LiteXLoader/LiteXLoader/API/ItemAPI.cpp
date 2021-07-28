@@ -1,6 +1,8 @@
 #include "APIHelp.h"
 #include "ItemAPI.h"
 #include <Kernel/Item.h>
+#include "NbtAPI.h"
+#include <Kernel/NBT.h>
 #include <vector>
 #include <string>
 using namespace script;
@@ -18,6 +20,8 @@ ClassDefine<ItemClass> ItemClassBuilder =
 
         .instanceFunction("isNull", &ItemClass::isNull)
         .instanceFunction("setLore", &ItemClass::setLore)
+        .instanceFunction("setTag", &ItemClass::setTag)
+        .instanceFunction("getTag", &ItemClass::getTag)
         .build();
 
 
@@ -130,4 +134,27 @@ Local<Value> ItemClass::setLore(const Arguments& args)
         return Boolean::newBoolean(true);
     }
     CATCH("Fail in SetLore!")
+}
+
+Local<Value> ItemClass::getTag(const Arguments& args)
+{
+    try {
+        return NBTClass::newNBT(Tag::fromItem(item));
+    }
+    CATCH("Fail in getTag!")
+}
+
+Local<Value> ItemClass::setTag(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+
+    try {
+        auto nbt = NBTClass::extractNBT(args[0]);
+        if (!nbt)
+            return Local<Value>();    //Null
+
+        nbt->setItem(item);
+        return Boolean::newBoolean(true);
+    }
+    CATCH("Fail in setTag!")
 }

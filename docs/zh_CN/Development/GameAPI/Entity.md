@@ -5,7 +5,7 @@
 ### 获取一个实体对象
 
 1. 通过注册**事件监听**函数，或者调用某些**返回实体对象**的函数，来获取到BDS给出的实体对象    
-   详见[事件监听文档 - EventAPI](EventApi.md)      
+   详见 [事件监听文档 - EventAPI](zh_CN/Development/EventAPI/Listen.md)      
 
    
 
@@ -55,6 +55,41 @@
 
 - 返回值：是否成功执行
 - 返回值类型：`Boolean`
+
+<br>
+
+#### 点燃指定实体  
+
+`en.setOnFire(time)`
+
+- 参数：
+  - time: `Integer`  
+    燃烧持续时间
+- 返回值：是否成功执行
+- 返回值类型：`Boolean`
+
+<br>
+
+#### 获取实体对应的NBT Tag
+
+`en.getTag()`
+
+- 返回值：实体的NBT Tag对象
+- 返回值类型：`NbtCompound`
+
+<br>
+
+#### 写入实体对应的NBT Tag
+
+`en.setTag(nbt)`
+
+- 参数：
+  - nbt : `NbtCompound`  
+    NBT Tag对象
+- 返回值：是否成功写入
+- 返回值类型：`Boolean`
+
+关于NBT对象的更多使用，请参考 [NBT接口文档](zh_CN/Development/NbtAPI/NBT.md)
 
 <br>
 

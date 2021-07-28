@@ -5,7 +5,7 @@
 #include "ThirdParty.h"
 #include "Global.h"
 using namespace std;
-
+class NetworkHandler;
 string  Raw_GetPlayerName(Player* player)
 {
     return player->getNameTag();
