@@ -40,23 +40,6 @@ string  Raw_GetIP(Player* player)
     return liteloader::getIP(*offPlayer::getNetworkIdentifier(player));
 }
 
-int Raw_GetAvgPing(Player* player)
-{
-    auto netid = offPlayer::getNetworkIdentifier(player);
-    auto nwpeer = SymCall("?getPeerForUser@NetworkHandler@@QEAAPEAVNetworkPeer@@AEBVNetworkIdentifier@@@Z"
-        , NetworkPeer*, NetworkHandler*, NetworkIdentifier*)(LocateService<Minecraft>()->getNetworkHandler(), netid);
-    auto nwstatus = nwpeer->getNetworkStatus();
-    return nwstatus.avgping;
-}
-
-float Raw_GetAvgPacketloss(Player* player)
-{
-    auto netid = offPlayer::getNetworkIdentifier(player);
-    auto nwpeer = SymCall("?getPeerForUser@NetworkHandler@@QEAAPEAVNetworkPeer@@AEBVNetworkIdentifier@@@Z"
-        , NetworkPeer*, NetworkHandler*, NetworkIdentifier*)(LocateService<Minecraft>()->getNetworkHandler(), netid);
-    auto nwstatus = nwpeer->getNetworkStatus();
-    return nwstatus.avgpacketloss;
-}
 int Raw_GetPlayerPermLevel(Player* player)
 {
     return (int)WPlayer(*player).getPermLvl();

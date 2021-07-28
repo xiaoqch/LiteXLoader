@@ -1,6 +1,8 @@
 #include "APIHelp.h"
 #include "BaseAPI.h"
 #include "BlockAPI.h"
+#include "NbtAPI.h"
+#include <Kernel/NBT.h>
 #include <Kernel/Block.h>
 #include <Kernel/SymbolHelper.h>
 using namespace script;
@@ -14,6 +16,8 @@ ClassDefine<BlockClass> BlockClassBuilder =
         .instanceProperty("type", &BlockClass::getType)
         .instanceProperty("id", &BlockClass::getId)
         .instanceProperty("pos", &BlockClass::getPos)
+        .instanceFunction("setTag", &BlockClass::setTag)
+        .instanceFunction("getTag", &BlockClass::getTag)
         .build();
 
 
@@ -108,6 +112,30 @@ Local<Value> BlockClass::getPos()
     }
     CATCH("Fail in getBlockPos!")
 }
+
+Local<Value> BlockClass::getTag(const Arguments& args)
+{
+    try {
+        return NBTClass::newNBT(Tag::fromBlock(block));
+    }
+    CATCH("Fail in getTag!")
+}
+
+Local<Value> BlockClass::setTag(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+
+    try {
+        auto nbt = NBTClass::extractNBT(args[0]);
+        if (!nbt)
+            return Local<Value>();    //Null
+        
+        nbt->setBlock(block);
+        return Boolean::newBoolean(true);
+    }
+    CATCH("Fail in setTag!")
+}
+
 
 //公用API
 Local<Value> GetBlock(const Arguments& args)

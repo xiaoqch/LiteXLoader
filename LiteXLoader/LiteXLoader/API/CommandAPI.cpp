@@ -2,6 +2,7 @@
 #include "APIHelp.h"
 #include "PlayerAPI.h"
 #include <Engine/GlobalShareData.h>
+#include <Engine/LocalShareData.h>
 #include <Engine/EngineOwnData.h>
 #include <Engine/LoaderHelper.h>
 #include <Kernel/Base.h>
@@ -158,7 +159,15 @@ vector<string> SplitCmdParas(const string& paras)
         else
         {
             if (now.front() == '\"')
-                strInQuote = now;
+            {
+                if (now.back() == '\"')
+                {
+                    now = now.substr(1, now.size() - 2);
+                    res.push_back(now);
+                }
+                else
+                    strInQuote = now;
+            }
             else
                 res.push_back(now);
         }
@@ -307,7 +316,7 @@ void ProcessStopServer(const string& cmd)
 
 string LxlFindCmdReg(bool isPlayerCmd, const string& cmd, vector<string> &receiveParas)
 {
-    std::map<std::string, CmdCallbackData, EngineOwnData_MapCmp>& cmdMap =
+    std::map<std::string, CmdCallbackData, CmdCallbackMapCmp>& cmdMap =
         isPlayerCmd ? localShareData->playerCmdCallbacks : localShareData->consoleCmdCallbacks;
 
     for (auto& cmdData : cmdMap)

@@ -142,6 +142,15 @@
     <ClCompile Include="Engine\RemoteCall.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Kernel\Device.cpp">
+      <Filter>Kernel</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\LocalShareData.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="API\DeviceAPI.cpp">
+      <Filter>API</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="API\BaseAPI.h">
@@ -266,6 +275,15 @@
     </ClInclude>
     <ClInclude Include="Engine\RemoteCall.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Kernel\Device.h">
+      <Filter>Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\LocalShareData.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="API\DeviceAPI.h">
+      <Filter>API</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

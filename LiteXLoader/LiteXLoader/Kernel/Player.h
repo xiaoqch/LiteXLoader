@@ -7,8 +7,6 @@ std::string Raw_GetXuid(Player* player);
 std::string Raw_GetUuid(Player *player);
 std::string Raw_GetRealName(Player* player);
 std::string Raw_GetIP(Player* player);
-int Raw_GetAvgPing(Player* player);
-float Raw_GetAvgPacketloss(Player* player);
 int Raw_GetPlayerPermLevel(Player* player);
 int Raw_GetGameMode(Player* player);
 bool Raw_GetSneaking(Player *player);
