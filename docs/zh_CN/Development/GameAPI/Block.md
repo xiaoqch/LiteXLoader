@@ -51,7 +51,7 @@
 `bl.getTag()`
 
 - 返回值：方块的NBT Tag对象
-- 返回值类型：`NBT`
+- 返回值类型：`NbtCompound`
 
 <br>
 
@@ -60,7 +60,7 @@
 `bl.setTag(nbt)`
 
 - 参数：
-  - nbt : `NBT`  
+  - nbt : `NbtCompound`  
     NBT Tag对象
 - 返回值：是否成功写入
 - 返回值类型：`Boolean`
