@@ -69,6 +69,8 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceFunction("setExtraData", &PlayerClass::setExtraData)
         .instanceFunction("getExtraData", &PlayerClass::getExtraData)
         .instanceFunction("delExtraData", &PlayerClass::delExtraData)
+
+        .instanceFunction("setOnFire", &PlayerClass::setOnFire)
         .build();
 
 
@@ -935,4 +937,15 @@ Local<Value> PlayerClass::delExtraData(const Arguments& args)
         return Boolean::newBoolean(true);
     }
     CATCH("Fail in delExtraData!")
+}
+
+Local<Value> PlayerClass::setOnFire(const Arguments& args)
+{
+    try {
+        Player* player = get();
+        int time = args[0].toInt();
+        bool result = Raw_SetOnFire((Actor*)player, time);
+        return Boolean::newBoolean(result);
+    }
+    CATCH("Fail in setOnFire!")
 }

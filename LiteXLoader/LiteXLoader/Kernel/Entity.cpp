@@ -76,3 +76,15 @@ int Raw_GetEntityDimId(Actor* actor)
 {
     return WActor(*actor).getDimID();
 }
+
+bool Raw_SetOnFire(Actor* actor, int time) {
+    SymCall("?setOnFire@Actor@@UEAAXH@Z", void, 
+        Actor*, int)(actor, time);
+    return true;
+}
+
+bool Raw_SetInLove(Actor* a1, Actor* a2) {
+    SymCall("?setInLove@Actor@@QEAAXPEAV1@@Z", void,
+        Actor*, Actor*)(a1, a2);
+    return true;
+}

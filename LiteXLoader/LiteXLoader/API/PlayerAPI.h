@@ -71,6 +71,8 @@ public:
     Local<Value> setExtraData(const Arguments& args);
     Local<Value> getExtraData(const Arguments& args);
     Local<Value> delExtraData(const Arguments& args);
+
+    Local<Value> setOnFire(const Arguments& args);
 };
 
 //////////////////// APIs ////////////////////
