@@ -40,7 +40,7 @@ enum class EVENT_TYPES : int
     onDestroyingBlock, onDestroyBlock, onWitherBossDestroy, onPlaceBlock,
     onOpenContainer, onCloseContainer, onContainerChangeSlot,
     onMobDie, onMobHurt, onExplode, onBlockExploded, onCmdBlockExecute,
-    onProjectileHit, onBlockInteracted, onUseRespawnAnchor, onFarmLandDecay,
+    onProjectileHit, onBlockInteracted, onUseRespawnAnchor, onFarmLandDecay, onUseFrameBlock,
     onPistonPush, onHopperSearchItem, onHopperPushOut, onFireSpread, 
     onServerStarted, onConsoleCmd, onFormSelected, onConsoleOutput,
     EVENT_COUNT
@@ -80,6 +80,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onBlockInteracted",EVENT_TYPES::onBlockInteracted},
     {"onUseRespawnAnchor",EVENT_TYPES::onUseRespawnAnchor},
     {"onFarmLandDecay",EVENT_TYPES::onFarmLandDecay},
+    {"onUseFrameBlock",EVENT_TYPES::onUseFrameBlock},
     {"onPistonPush",EVENT_TYPES::onPistonPush},
     {"onHopperSearchItem",EVENT_TYPES::onHopperSearchItem},
     {"onHopperPushOut",EVENT_TYPES::onHopperPushOut},
@@ -780,6 +781,33 @@ THook(void, "?transformOnFall@FarmBlock@@UEBAXAEAVBlockSource@@AEBVBlockPos@@PEA
     }
     IF_LISTENDED_END();
     return original(_this,bs,bp,ac,a5);
+}
+
+// ===== onUseFrameBlock =====
+THook(bool, "?use@ItemFrameBlock@@UEBA_NAEAVPlayer@@AEBVBlockPos@@E@Z",
+    void* _this, Player* a2, BlockPos* a3)
+{
+    IF_LISTENED(EVENT_TYPES::onUseFrameBlock)
+    {
+        BlockSource * bs = Raw_GetBlockSourceByActor((Actor*)a2);
+        Block* bl = Raw_GetBlockByPos(a3->x, a3->y, a3->z, bs);
+        CallEventEx(EVENT_TYPES::onUseFrameBlock, PlayerClass::newPlayer(a2), BlockClass::newBlock(bl, a3, bs));
+    }
+    IF_LISTENDED_END();
+    return original(_this, a2, a3);
+}
+
+THook(bool, "?attack@ItemFrameBlock@@UEBA_NPEAVPlayer@@AEBVBlockPos@@@Z",
+    void* _this, Player* a2, BlockPos* a3)
+{
+    IF_LISTENED(EVENT_TYPES::onUseFrameBlock)
+    {
+        BlockSource* bs = Raw_GetBlockSourceByActor((Actor*)a2);
+        Block* bl = Raw_GetBlockByPos(a3->x, a3->y, a3->z, bs);
+        CallEventEx(EVENT_TYPES::onUseFrameBlock, PlayerClass::newPlayer(a2), BlockClass::newBlock(bl, a3, bs));
+    }
+    IF_LISTENDED_END();
+    return original(_this, a2, a3);
 }
 
 // ===== onPistonPush =====
