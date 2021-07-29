@@ -139,7 +139,7 @@ Local<Value> ItemClass::setLore(const Arguments& args)
 Local<Value> ItemClass::getTag(const Arguments& args)
 {
     try {
-        return NBTClass::newNBT(Tag::fromItem(item));
+        return NbtCompound::newNBT(Tag::fromItem(item));
     }
     CATCH("Fail in getTag!")
 }
@@ -149,7 +149,7 @@ Local<Value> ItemClass::setTag(const Arguments& args)
     CHECK_ARGS_COUNT(args, 1);
 
     try {
-        auto nbt = NBTClass::extractNBT(args[0]);
+        auto nbt = NbtCompound::extractNBT(args[0]);
         if (!nbt)
             return Local<Value>();    //Null
 

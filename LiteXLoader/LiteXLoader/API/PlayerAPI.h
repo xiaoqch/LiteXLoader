@@ -52,6 +52,7 @@ public:
     Local<Value> addLevel(const Arguments& args);
     Local<Value> transServer(const Arguments& args);
     Local<Value> crash(const Arguments& args);
+    Local<Value> setOnFire(const Arguments& args);
     Local<Value> getDevice(const Arguments& args);
 
     Local<Value> getScore(const Arguments& args);
@@ -72,7 +73,8 @@ public:
     Local<Value> getExtraData(const Arguments& args);
     Local<Value> delExtraData(const Arguments& args);
 
-    Local<Value> setOnFire(const Arguments& args);
+    Local<Value> getTag(const Arguments& args);
+    Local<Value> setTag(const Arguments& args);
 };
 
 //////////////////// APIs ////////////////////

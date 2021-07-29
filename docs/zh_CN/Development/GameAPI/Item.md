@@ -46,22 +46,22 @@
 
 <br>
 
-#### 获取物品对应的NBT Tag
+#### 获取物品对应的NBT对象
 
 `it.getTag()`
 
-- 返回值：物品的NBT Tag对象
+- 返回值：物品的NBT对象
 - 返回值类型：`NbtCompound`
 
 <br>
 
-#### 写入物品对应的NBT Tag
+#### 写入物品对应的NBT对象
 
 `it.setTag(nbt)`
 
 - 参数：
   - nbt : `NbtCompound`  
-    NBT Tag对象
+    NBT对象
 - 返回值：是否成功写入
 - 返回值类型：`Boolean`
 

@@ -1,5 +1,5 @@
 - [⛳ 新手入门（必读）](zh_CN/Development/)
-- [📋 API 重大更改](zh_CN/Development/Changes)
+- [📋 版本更新日志](zh_CN/Development/Changes)
 - [💼 通用脚本接口 - 常用](zh_CN/Development/ScriptAPI/ScriptHelp.md)
 - 游戏内容接口
 

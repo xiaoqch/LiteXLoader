@@ -48,6 +48,7 @@ void BindAPIs(ScriptEngine *engine)
     engine->registerNativeClass(MoneyClassBuilder);
     engine->registerNativeClass(NetworkClassBuilder);
     engine->registerNativeClass(LxlClassBuilder);
+    engine->registerNativeClass(NbtStaticBuilder);
 
 
     //////////////// 实例类 ////////////////
@@ -82,6 +83,12 @@ void BindAPIs(ScriptEngine *engine)
     extern ClassDefine<PlayerClass> PlayerClassBuilder;
     engine->registerNativeClass<PlayerClass>(PlayerClassBuilder);
 
-    extern ClassDefine<NBTClass> NBTClassBuilder;
-    engine->registerNativeClass<NBTClass>(NBTClassBuilder);
+    extern ClassDefine<NbtValue> NbtValueBuilder;
+    engine->registerNativeClass<NbtValue>(NbtValueBuilder);
+
+    extern ClassDefine<NbtList> NbtListBuilder;
+    engine->registerNativeClass<NbtList>(NbtListBuilder);
+
+    extern ClassDefine<NbtCompound> NbtCompoundBuilder;
+    engine->registerNativeClass<NbtCompound>(NbtCompoundBuilder);
 }

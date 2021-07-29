@@ -46,22 +46,22 @@
 
 每一个方块对象都包含一些可以执行的成员函数（成员方法）。对于某个特定的方块对象`bl`，可以通过以下这些函数对这个方块进行一些操作
 
-#### 获取方块对应的NBT Tag
+#### 获取方块对应的NBT对象
 
 `bl.getTag()`
 
-- 返回值：方块的NBT Tag对象
+- 返回值：方块的NBT对象
 - 返回值类型：`NbtCompound`
 
 <br>
 
-#### 写入方块对应的NBT Tag
+#### 写入方块对应的NBT对象
 
 `bl.setTag(nbt)`
 
 - 参数：
   - nbt : `NbtCompound`  
-    NBT Tag对象
+    NBT对象
 - 返回值：是否成功写入
 - 返回值类型：`Boolean`
 
