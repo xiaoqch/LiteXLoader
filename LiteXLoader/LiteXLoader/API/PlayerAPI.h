@@ -50,7 +50,6 @@ public:
     Local<Value> getAllItems(const Arguments& args);
     Local<Value> rename(const Arguments& args);
     Local<Value> addLevel(const Arguments& args);
-    Local<Value> setOnFire(const Arguments& args);
     Local<Value> transServer(const Arguments& args);
     Local<Value> crash(const Arguments& args);
     Local<Value> getDevice(const Arguments& args);
@@ -72,6 +71,8 @@ public:
     Local<Value> setExtraData(const Arguments& args);
     Local<Value> getExtraData(const Arguments& args);
     Local<Value> delExtraData(const Arguments& args);
+
+    Local<Value> setOnFire(const Arguments& args);
 };
 
 //////////////////// APIs ////////////////////

@@ -20,8 +20,10 @@ ClassDefine<EntityClass> EntityClassBuilder =
 
         .instanceFunction("teleport", &EntityClass::teleport)
         .instanceFunction("kill", &EntityClass::kill)
-        .instanceFunction("setOnFire", &EntityClass::setOnFire)
         .instanceFunction("toPlayer", &EntityClass::toPlayer)
+        .instanceFunction("setOnFire",&EntityClass::setOnFire)
+        .instanceFunction("setInLove", &EntityClass::setInLove)
+        .instanceFunction("setOutLove", &EntityClass::setOutLove)
         .build();
 
 
@@ -205,21 +207,6 @@ Local<Value> EntityClass::kill(const Arguments& args)
     CATCH("Fail in killEntity!")
 }
 
-Local<Value> EntityClass::setOnFire(const Arguments& args)
-{
-    CHECK_ARGS_COUNT(args, 1);
-    CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
-
-    try {
-        Actor* entity = get();
-        if (!entity)
-            return Local<Value>();
-
-        return Boolean::newBoolean(Raw_SetOnFire(entity, args[0].toInt()));
-    }
-    CATCH("Fail in setOnFire!")
-}
-
 Local<Value> EntityClass::toPlayer(const Arguments& args)
 {
     try {
@@ -234,4 +221,49 @@ Local<Value> EntityClass::toPlayer(const Arguments& args)
             return PlayerClass::newPlayer(pl);
     }
     CATCH("Fail in toPlayer!")
+}
+
+Local<Value> EntityClass::setOnFire(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+
+    try {
+        Actor* entity = get();
+        if (!entity)
+            return Local<Value>();
+
+        int time = args[0].toInt();
+        bool result = Raw_SetOnFire(entity, time);
+        return Boolean::newBoolean(result);
+    }
+    CATCH("Fail in setOnFire!")
+}
+
+Local<Value> EntityClass::setInLove(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+
+    try {
+        Actor* entity = get();
+        if (!entity)
+            return Local<Value>();
+
+        Actor* loved = EntityClass::extractEntity(args[0]);
+        bool result = Raw_SetInLove(entity, loved);
+        return Boolean::newBoolean(result);
+    }
+    CATCH("Fail in setInLove!")
+}
+
+Local<Value> EntityClass::setOutLove()
+{
+    try {
+        Actor* entity = get();
+        if (!entity)
+            return Local<Value>();
+
+        bool result = Raw_SetInLove(entity, 0i64);
+        return Boolean::newBoolean(result);
+    }
+    CATCH("Fail in setOutLove!")
 }

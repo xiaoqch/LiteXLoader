@@ -70,6 +70,8 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceFunction("setExtraData", &PlayerClass::setExtraData)
         .instanceFunction("getExtraData", &PlayerClass::getExtraData)
         .instanceFunction("delExtraData", &PlayerClass::delExtraData)
+
+        .instanceFunction("setOnFire", &PlayerClass::setOnFire)
         .build();
 
 
@@ -567,21 +569,6 @@ Local<Value> PlayerClass::addLevel(const Arguments& args)
     CATCH("Fail in addLevel!")
 }
 
-Local<Value> PlayerClass::setOnFire(const Arguments& args)
-{
-    CHECK_ARGS_COUNT(args, 1);
-    CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
-
-    try {
-        Player* player = get();
-        if (!player)
-            return Local<Value>();
-
-        return Boolean::newBoolean(Raw_SetOnFire(player, args[0].toInt()));
-    }
-    CATCH("Fail in setOnFire!")
-}
-
 Local<Value> PlayerClass::transServer(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 2)
@@ -951,4 +938,20 @@ Local<Value> PlayerClass::delExtraData(const Arguments& args)
         return Boolean::newBoolean(true);
     }
     CATCH("Fail in delExtraData!")
+}
+
+Local<Value> PlayerClass::setOnFire(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        int time = args[0].toInt();
+        bool result = Raw_SetOnFire((Actor*)player, time);
+        return Boolean::newBoolean(result);
+    }
+    CATCH("Fail in setOnFire!")
 }
