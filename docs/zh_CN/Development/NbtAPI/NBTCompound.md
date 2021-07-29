@@ -1,6 +1,7 @@
 ## 📒 NbtCompound - 标签类型
 
 一个`NbtCompound `代表一个完整的标签，里面储存了一系列键值对，类似于对象 / 表这样的数据结构。  
+通过`NbtCompound`对象的接口，才可以进行 NBT 标签所独有的一些操作。    
 对于某个一个`NbtCompound`类型的对象`comp`，有如下这些接口
 
 #### 获取所有的键
@@ -28,7 +29,51 @@
 
 <br>
 
-#### 获取键对应的值的具体数据（方便函数）
+#### 设置键对应的NBT对象
+
+`comp.setTag(key,tag)`
+
+- 参数：
+  - key: `String`   
+    要操作的键名
+  - tag: `NbtValue` 或 `NbtList` 或 `NbtCompound`  
+    要写入的 NBT 对象（它承载着具体的NBT数据）  
+    写入数据类型必须和键对应的值储存的数据类型一致，键名可以不存在
+- 返回值：是否成功写入
+- 返回值类型：`Boolean`
+
+<br>
+
+#### 读取键对应的NBT对象
+
+`comp.getTag(key)`
+
+- 参数：
+  - key: `String`   
+    要操作的键名
+- 返回值：键对应的NBT对象
+- 返回值类型：`NbtValue` 或 `NbtList` 或 `NbtCompound` 
+
+<br>
+
+#### 删除键对应的NBT对象
+
+`list.removeTag(index)`
+
+- 参数：
+  - key: `String`  
+    要操作的键名。键名必须已经存在
+- 返回值：处理完毕的NBT对象（便于连锁进行其他操作）
+- 返回值类型：`NbtCompound`
+
+<br>
+
+## 一些协助 NBT 对象操作的方便函数
+
+很明显，在修改NBT的某些值的时候，纯粹使用NBT对象会显得麻烦而语法复杂。  
+因此，这里还提供了一些简化对象操作的方便函数，可以一定程度上降低代码的工作量
+
+#### 获取键对应的值的具体数据
 
 `comp.setEnd(key)`  
 `comp.setByte(key,data)`  
@@ -45,27 +90,12 @@
   - data: `上述类型`  
     要写入的具体数据  
     写入数据类型必须和键对应的值储存的数据类型一致，键名可以不存在
-- 返回值：是否成功写入
-- 返回值类型：`Boolean`
+- 返回值：写入完毕的NBT对象（便于连锁进行其他操作）
+- 返回值类型：`NbtCompound`
 
 <br>
 
-#### 设置键对应的NBT对象
-
-`comp.setTag(key,tag)`
-
-- 参数：
-  - key: `String`   
-    要操作的键名
-  - tag: `NbtValue` 或 `NbtList` 或 `NbtCompound`  
-    要写入的 NBT 对象（它承载着具体的NBT数据）  
-    写入数据类型必须和键对应的值储存的数据类型一致，键名可以不存在
-- 返回值：是否成功写入
-- 返回值类型：`Boolean`
-
-<br>
-
-#### 读取键对应的值的具体数据（方便函数）
+#### 读取键对应的值的具体数据
 
 `comp.getData(key)`  
 
@@ -78,19 +108,7 @@
 
 <br>
 
-#### 读取键对应的NBT对象
-
-`comp.getTag(key)`
-
-- 参数：
-  - key: `String`   
-    要操作的键名
-- 返回值：键对应的NBT对象
-- 返回值类型：`NbtValue` 或 `NbtList` 或 `NbtCompound` 
-
-<br>
-
-#### 将Compound类型转换为Object（方便函数）
+#### 将Compound类型转换为Object
 
 `comp.toObject()`
 
@@ -102,7 +120,7 @@
 
 <br>
 
-#### 由数组读取并全部写入List类型（方便函数）
+#### 由数组读取并全部写入List类型
 
 `comp.fromObject(obj)`
 
