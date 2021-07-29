@@ -429,6 +429,23 @@ THook(void, "?sendPlayerMove@PlayerEventCoordinator@@QEAAXAEAVPlayer@@@Z",
     return original(_this, pl);
 }
 
+// ===== onShootFireworkWithCrossbow =====
+/*
+THook(void, "?_shootFirework@CrossbowItem@@AEBAXAEBVItemInstance@@AEAVPlayer@@@Z",
+    void* _this, void* a2, Player* a3)
+{
+    IF_LISTENED(EVENT_TYPES::onShootFireworkWithCrossbow)
+    {
+        CallEvent(EVENT_TYPES::onShootFireworkWithCrossbow, PlayerClass::newPlayer(a3));
+    }
+    IF_LISTENDED_END();
+    // 不original即可拦截，等待CallEvent重写...
+    // Event -> [1]用弩发射烟花的玩家对象
+
+    original(_this, a3, a3);
+}
+*/
+
 // ===== onSetArmor =====
 THook(void, "?setArmor@Player@@UEAAXW4ArmorSlot@@AEBVItemStack@@@Z",
     Player* _this, unsigned slot, ItemStack* it)
