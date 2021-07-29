@@ -17,3 +17,4 @@ bool Raw_IsPlayer(Actor* actor);
 Player* Raw_ToPlayer(Actor* actor);
 
 int Raw_GetEntityDimId(Actor* actor);
+Actor* Raw_GetEntityByUniqueId(ActorUniqueID id);

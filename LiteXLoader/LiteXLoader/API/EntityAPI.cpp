@@ -65,8 +65,7 @@ Actor* EntityClass::get()
     if (!isValid)
         return nullptr;
     else
-        return SymCall("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z"
-        , Actor*, Level*, ActorUniqueID, bool)(mc->getLevel(), id, 0);
+        return Raw_GetEntityByUniqueId(id);
 }
 
 Local<Value> EntityClass::getName()

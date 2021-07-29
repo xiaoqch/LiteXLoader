@@ -1,6 +1,7 @@
 #include "APIHelp.h"
 #include "DeviceAPI.h"
 #include <Kernel/Device.h>
+#include <Kernel/Player.h>
 #include <string>
 using namespace std;
 using namespace script;
@@ -44,8 +45,7 @@ Player* DeviceClass::getPlayer()
     if (!isValid)
         return nullptr;
     else
-        return SymCall("?getPlayer@Level@@UEBAPEAVPlayer@@UActorUniqueID@@@Z"
-            , Player*, Level*, ActorUniqueID)(mc->getLevel(), id);
+        return Raw_GetPlayerByUniqueId(id);
 }
 
 

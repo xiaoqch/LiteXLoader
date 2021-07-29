@@ -88,3 +88,8 @@ bool Raw_SetInLove(Actor* a1, Actor* a2) {
         Actor*, Actor*)(a1, a2);
     return true;
 }
+
+Actor* Raw_GetEntityByUniqueId(ActorUniqueID id) {
+    return SymCall("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z",
+        Actor*, Level*, ActorUniqueID, bool)(mc->getLevel(), id, 0);
+}

@@ -780,6 +780,25 @@ THook(void, "?onProjectileHit@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@AEBVAct
     return original(_this, bs, bp, actor);
 }
 
+// ===== onSplashPotionHitEffect =====
+/*
+THook(void, "?doOnHitEffect@SplashPotionEffectSubcomponent@@UEAAXAEAVActor@@AEAVProjectileComponent@@@Z",
+    void* _this, Actor* a2, ProjectileComponent* a3)
+{
+    IF_LISTENED(EVENT_TYPES::onSplashPotionHitEffect)
+    {
+        auto uniqueId = (ActorUniqueID*)((uintptr_t)a3 + 8);
+        auto ac = Raw_GetEntityByUniqueId(*uniqueId);
+        CallEvent(EVENT_TYPES::onSplashPotionHitEffect, EntityClass::newEntity(a2), EntityClass::newEntity(ac));
+    }
+    IF_LISTENDED_END();
+    // 不original即可拦截，等待CallEvent重写...
+    // Event -> [1]被喷溅药水效果影响的实体对象 [2]投掷喷溅药水的实体对象
+
+    original(_this, a2, a3);
+}
+*/
+
 // ===== onBlockInteracted =====
 THook(unsigned short, "?onBlockInteractedWith@VanillaServerGameplayEventListener@@UEAA?AW4EventResult@@AEAVPlayer@@AEBVBlockPos@@@Z",
     void* _this, Player* pl, BlockPos* bp)

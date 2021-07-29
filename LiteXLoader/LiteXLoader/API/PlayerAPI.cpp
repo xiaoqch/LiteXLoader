@@ -162,8 +162,7 @@ Player* PlayerClass::get()
     if (!isValid)
         return nullptr;
     else
-        return SymCall("?getPlayer@Level@@UEBAPEAVPlayer@@UActorUniqueID@@@Z"
-        , Player*, Level*, ActorUniqueID)(mc->getLevel(), id);
+        return Raw_GetPlayerByUniqueId(id);
 }
 
 Local<Value> PlayerClass::getName()

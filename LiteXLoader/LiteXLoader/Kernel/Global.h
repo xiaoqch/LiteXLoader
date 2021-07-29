@@ -40,6 +40,7 @@ public:
 };
 
 class FishingHook;
+class ProjectileComponent;
 
 inline std::string DimId2Name(int dimid)
 {

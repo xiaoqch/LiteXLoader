@@ -40,3 +40,4 @@ std::vector<Player*> Raw_GetOnlinePlayers();
 bool Raw_IsPlayerValid(Player *player);
 
 int Raw_GetPlayerDimId(Player* player);
+Player* Raw_GetPlayerByUniqueId(ActorUniqueID id);
