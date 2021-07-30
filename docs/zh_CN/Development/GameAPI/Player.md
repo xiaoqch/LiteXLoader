@@ -391,7 +391,7 @@ pl:crash()
 - 返回值类型：`Device`
 
 设备信息对象储存了与玩家设备有关的某些信息，如设备类型、网络延迟等信息。  
-关于设备信息对象的其他信息请参考 [设备信息对象 API](zh_CN/Development/EventAPI/Device.md)
+关于设备信息对象的其他信息请参考 [设备信息对象 API](zh_CN/Development/GameAPI/Device.md)
 
 <br>
 
