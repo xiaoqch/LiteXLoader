@@ -269,3 +269,8 @@ int Raw_GetPlayerDimId(Player* player)
 {
     return WPlayer(*player).getDimID();
 }
+
+Player* Raw_GetPlayerByUniqueId(ActorUniqueID id) {
+    return SymCall("?getPlayer@Level@@UEBAPEAVPlayer@@UActorUniqueID@@@Z"
+        , Player*, Level*, ActorUniqueID)(mc->getLevel(), id);
+}

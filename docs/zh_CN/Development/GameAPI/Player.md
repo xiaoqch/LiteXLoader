@@ -226,6 +226,18 @@ pl.kill();
 
 ```
 
+#### 使指定玩家着火
+
+`pl.setOnFire(time)`
+
+- 参数：
+  - time : `Number`  
+    着火时长，单位秒
+- 返回值：是否成功着火
+- 返回值类型：`Boolean`
+
+<br>
+
 #### 重命名玩家  
 
 `pl.rename(newname)`
@@ -380,6 +392,19 @@ pl:crash()
 
 设备信息对象储存了与玩家设备有关的某些信息，如设备类型、网络延迟等信息。  
 关于设备信息对象的其他信息请参考 [设备信息对象 API](zh_CN/Development/EventAPI/Device.md)
+
+<br>
+
+#### 获取玩家对应的NBT对象
+
+`pl.getTag()`
+
+- 返回值：玩家的NBT对象
+- 返回值类型：`NbtCompound`
+
+关于NBT对象的更多使用，请参考 [NBT接口文档](zh_CN/Development/NbtAPI/NBT.md)
+
+<br>
 
 #### 获取玩家计分板值  
 
@@ -537,13 +562,3 @@ pl.removeBossBar();
 [Lua]
 
 ```
-
-#### 使指定玩家着火
-
-`pl.setOnFire(time)`
-
-- 参数：
-  - time : `Number`  
-    着火时长，单位秒
-- 返回值：是否成功着火
-- 返回值类型：`Boolean`

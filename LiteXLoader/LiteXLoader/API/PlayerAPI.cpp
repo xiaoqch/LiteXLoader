@@ -4,6 +4,7 @@
 #include "PlayerAPI.h"
 #include "ItemAPI.h"
 #include "GuiAPI.h"
+#include "NbtAPI.h"
 #include <Engine/EngineOwnData.h>
 #include <Engine/GlobalShareData.h>
 #include <Kernel/Player.h>
@@ -51,6 +52,7 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceFunction("setOnFire", &PlayerClass::setOnFire)
         .instanceFunction("transServer", &PlayerClass::transServer)
         .instanceFunction("crash", &PlayerClass::crash)
+        .instanceFunction("setOnFire", &PlayerClass::setOnFire)
         .instanceFunction("getDevice", &PlayerClass::getDevice)
 
         .instanceFunction("getScore", &PlayerClass::getScore)
@@ -71,7 +73,8 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceFunction("getExtraData", &PlayerClass::getExtraData)
         .instanceFunction("delExtraData", &PlayerClass::delExtraData)
 
-        .instanceFunction("setOnFire", &PlayerClass::setOnFire)
+        .instanceFunction("setTag", &PlayerClass::setTag)
+        .instanceFunction("getTag", &PlayerClass::getTag)
         .build();
 
 
@@ -162,8 +165,7 @@ Player* PlayerClass::get()
     if (!isValid)
         return nullptr;
     else
-        return SymCall("?getPlayer@Level@@UEBAPEAVPlayer@@UActorUniqueID@@@Z"
-        , Player*, Level*, ActorUniqueID)(mc->getLevel(), id);
+        return Raw_GetPlayerByUniqueId(id);
 }
 
 Local<Value> PlayerClass::getName()
@@ -954,4 +956,35 @@ Local<Value> PlayerClass::setOnFire(const Arguments& args)
         return Boolean::newBoolean(result);
     }
     CATCH("Fail in setOnFire!")
+}
+
+Local<Value> PlayerClass::getTag(const Arguments& args)
+{
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        return NbtCompound::newNBT(Tag::fromActor((Actor*)player));
+    }
+    CATCH("Fail in getTag!")
+}
+
+Local<Value> PlayerClass::setTag(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        auto nbt = NbtCompound::extractNBT(args[0]);
+        if (!nbt)
+            return Local<Value>();    //Null
+
+        nbt->setActor((Actor*)player);
+        return Boolean::newBoolean(true);
+    }
+    CATCH("Fail in setTag!")
 }

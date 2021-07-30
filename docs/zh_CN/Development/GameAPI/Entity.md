@@ -58,24 +58,12 @@
 
 <br>
 
-#### 获取实体对应的NBT Tag
+#### 获取实体对应的NBT对象
 
 `en.getTag()`
 
-- 返回值：实体的NBT Tag对象
+- 返回值：实体的NBT对象
 - 返回值类型：`NbtCompound`
-
-<br>
-
-#### 写入实体对应的NBT Tag
-
-`en.setTag(nbt)`
-
-- 参数：
-  - nbt : `NbtCompound`  
-    NBT Tag对象
-- 返回值：是否成功写入
-- 返回值类型：`Boolean`
 
 关于NBT对象的更多使用，请参考 [NBT接口文档](zh_CN/Development/NbtAPI/NBT.md)
 
@@ -101,29 +89,6 @@
   - time : `Number`  
     着火时长，单位秒
 - 返回值：是否成功着火
-- 返回值类型：`Boolean`
-
-<br>
-
-#### 使指定实体进入兴奋状态
-
-`en.setInLove(entity)`
-
-- 参数：
-  - entity : `Entity`  
-    目标实体
-- 返回值：是否成功
-- 返回值类型：`Boolean`
-
-此API没什么用，测试发现似乎只对村民有效，而且仅仅是进入状态了而已
-
-<br>
-
-#### 使指定实体清醒
-
-`en.setOutLove()`
-
-- 返回值：是否成功
 - 返回值类型：`Boolean`
 
 <br>

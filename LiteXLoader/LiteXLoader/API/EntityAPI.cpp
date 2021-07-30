@@ -2,6 +2,7 @@
 #include "BaseAPI.h"
 #include "EntityAPI.h"
 #include "PlayerAPI.h"
+#include "NbtAPI.h"
 #include <Kernel/Entity.h>
 using namespace script;
 
@@ -22,8 +23,8 @@ ClassDefine<EntityClass> EntityClassBuilder =
         .instanceFunction("kill", &EntityClass::kill)
         .instanceFunction("toPlayer", &EntityClass::toPlayer)
         .instanceFunction("setOnFire",&EntityClass::setOnFire)
-        .instanceFunction("setInLove", &EntityClass::setInLove)
-        .instanceFunction("setOutLove", &EntityClass::setOutLove)
+        .instanceFunction("setTag", &EntityClass::setTag)
+        .instanceFunction("getTag", &EntityClass::getTag)
         .build();
 
 
@@ -65,8 +66,7 @@ Actor* EntityClass::get()
     if (!isValid)
         return nullptr;
     else
-        return SymCall("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z"
-        , Actor*, Level*, ActorUniqueID, bool)(mc->getLevel(), id, 0);
+        return Raw_GetEntityByUniqueId(id);
 }
 
 Local<Value> EntityClass::getName()
@@ -239,7 +239,19 @@ Local<Value> EntityClass::setOnFire(const Arguments& args)
     CATCH("Fail in setOnFire!")
 }
 
-Local<Value> EntityClass::setInLove(const Arguments& args)
+Local<Value> EntityClass::getTag(const Arguments& args)
+{
+    try {
+        Actor* entity = get();
+        if (!entity)
+            return Local<Value>();
+
+        return NbtCompound::newNBT(Tag::fromActor(entity));
+    }
+    CATCH("Fail in getTag!")
+}
+
+Local<Value> EntityClass::setTag(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
 
@@ -248,22 +260,12 @@ Local<Value> EntityClass::setInLove(const Arguments& args)
         if (!entity)
             return Local<Value>();
 
-        Actor* loved = EntityClass::extractEntity(args[0]);
-        bool result = Raw_SetInLove(entity, loved);
-        return Boolean::newBoolean(result);
-    }
-    CATCH("Fail in setInLove!")
-}
+        auto nbt = NbtCompound::extractNBT(args[0]);
+        if (!nbt)
+            return Local<Value>();    //Null
 
-Local<Value> EntityClass::setOutLove()
-{
-    try {
-        Actor* entity = get();
-        if (!entity)
-            return Local<Value>();
-
-        bool result = Raw_SetInLove(entity, 0i64);
-        return Boolean::newBoolean(result);
+        nbt->setActor(entity);
+        return Boolean::newBoolean(true);
     }
-    CATCH("Fail in setOutLove!")
+    CATCH("Fail in setTag!")
 }
