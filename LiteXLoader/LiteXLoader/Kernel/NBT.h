@@ -9,11 +9,16 @@ enum TagType {
 	End, Byte, Short, Int, Long, Float, Double, ByteArray, String, List, Compound,
 };
 
+class Player;
+class Actor;
+class Block;
+class ItemStack;
+
 class Tag {
 private:
 	char filler[0x28];
 public:
-
+	//value
 	char&		asByte();
 	short&		asShort();
 	int&		asInt();
@@ -22,22 +27,26 @@ public:
 	double&		asDouble();
 	std::string& asString();
 	std::vector<Tag*> &asList();
-	std::map<std::string, Tag*> &asCompound();
+	std::map<std::string, Tag> &asCompound();
 
+	//share
 	static Tag* createTag(TagType t);
 	char getTagType();
 
-	void put(string k, Tag* v);
-	void put(string k, short v);
-	void put(string k, string v);
-	void put(string k, int v);
-	void put(string k, __int64 v);
-	void put(string k, float v);
-	void put(string k, Tag** v);
-	void put(string k, char v);
+	//compound
+	void put(std::string k, Tag* v);
+	void put(std::string k, short v);
+	void put(std::string k, std::string v);
+	void put(std::string k, int v);
+	void put(std::string k, __int64 v);
+	void put(std::string k, float v);
+	void put(std::string k, Tag** v);
+	void put(std::string k, char v);
 
+	//list
 	void addValue2List(Tag* t);
 
+	//static
 	void setItem(ItemStack* item);
 	void setBlock(Block* blk);
 	void setActor(Actor* actor);

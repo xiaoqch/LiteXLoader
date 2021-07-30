@@ -28,6 +28,7 @@
 #include "PlayerAPI.h"
 #include <Loader.h>
 #include <Configs.h>
+#include <CheckUpdate.h>
 using namespace std;
 using namespace script;
 
@@ -332,6 +333,12 @@ void InitEventListeners()
 
             //注册预置命令
             RegisterBuiltinCmds();
+
+            //更新检查
+            if (localShareData->isFirstInstance)
+            {
+                CheckUpdate();
+            }
 
             IF_LISTENED(EVENT_TYPES::onServerStarted)
             {

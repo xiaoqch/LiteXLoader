@@ -75,9 +75,9 @@ LXL使用 `NbtValue`、`NbtList`、`NbtCompound`三种数据类型来共同表�
 
 <br>
 
-#### 将NBT对象转换为Json字符串格式
+#### 解析NBT对象生成Json字符串
 
-`nbt.toJson([value])`
+`nbt.toString([value])`
 
 - 参数
   - space : `Integer`  

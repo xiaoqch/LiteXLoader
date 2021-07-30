@@ -4,7 +4,7 @@
 [![Build](https://img.shields.io/badge/build-passing-brightgreen)](#)
 ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/LiteLDev/LiteXLoader?include_prereleases)
 
-简体中文 | [English](README_en.md)
+简体中文 | [English]()
 
 ## 🎨 简介
 `LiteXLoader`是一个基岩版官方服务端`Bedrock Delicated Server`（以下简称**BDS**）的脚本插件框架，提供强大的跨语言脚本插件支持能力和稳定的开发API支持。  
@@ -69,8 +69,12 @@
 3. 开服
 
 ## 🎯 加载插件
-1. 将需要加载的脚本插件直接放置到`plugins`目录中
-2. 开服
+
+LXL插件主要发布于**MineBBS**，请 [点击这里 前往MineBBS](https://www.minebbs.com/resources/?prefix_id=67) 查找并下载你喜欢的LXL插件
+
+1. 如果下载得到的是压缩包，请解压
+2. 将得到的所有内容直接放置到`plugins`目录中
+3. 开服
 
 > 没错，就这么简单 o(*￣▽￣*)ブ
 
@@ -107,7 +111,7 @@ VS项目采用多目标构建，构建的每种配置对应一种脚本语言
 
 ## 📕 开发文档
 
-请👉[移步文档站](https://lxl.litetitle.com/#/zh_CN/Development/)👈查看详细的**API文档**和**插件开发教程**  
+请👉[移步 LXL 文档站](https://lxl.litetitle.com/#/zh_CN/Development/)👈查看详细的**API文档**和**插件开发教程**  
 如果有修订需求或者有新增API的需要，欢迎联系作者或者发布Issue  
 
 ## 🎬 参与贡献
@@ -120,7 +124,7 @@ VS项目采用多目标构建，构建的每种配置对应一种脚本语言
 4. 帮助我们宣传LXL，对我们的开发给予支持
 
 ⭐⭐⭐我们欢迎你对LiteXLoader做出自己的贡献！⭐⭐⭐  
-如果你有意为LXL贡献代码，欢迎👉[移步LXL文档站](https://lxl.litetitle.com/#/zh_CN/Maintance/)👈查看 **项目维护与支持文档**  
+如果你有意为LXL贡献代码，欢迎👉[移步 LXL 文档站](https://lxl.litetitle.com/#/zh_CN/Maintance/)👈查看 **项目维护与支持文档**  
 
 有你们，LiteXLoader将变得更好~
 

@@ -277,6 +277,7 @@ bool Raw_HttpGetSync(const std::string& url, int* status, std::string* result)
     }
 }
 
+/*
 unsigned int Raw_GetSystemThreadIdFromStdThread(std::thread::id id)
 {
     _Thrd_t t = *(_Thrd_t*)&id;
@@ -291,4 +292,4 @@ bool Raw_KillThread(DWORD id)
     BOOL res = TerminateThread(hThr,-1);
     CloseHandle(hThr);
     return res;
-}
+}*/

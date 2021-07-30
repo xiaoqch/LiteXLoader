@@ -5,8 +5,8 @@
 
 // 版本记录
 #define LXL_VERSION_MAJOR 0
-#define LXL_VERSION_MINOR 2
-#define LXL_VERSION_BUILD 1
+#define LXL_VERSION_MINOR 3
+#define LXL_VERSION_BUILD 0
 #define LXL_VERSION_IS_BETA true
 
 // 后端宏
@@ -48,3 +48,6 @@
 #define LXL_GLOBAL_DATA_NAME L"LITEXLOADER_GLOBAL_DATA_SECTION"
 #define LXL_REMOTE_CALL_EVENT_NAME L"LITEXLOADER_REMOTE_CALL_EVENT"
 #define LXL_REMOTE_CALL_MAX_WAIT 120
+
+// 更新检查
+#define LXL_UPDATE_CHECK "https://update.sakuralo.top/LXL.json"
