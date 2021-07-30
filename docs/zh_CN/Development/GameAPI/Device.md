@@ -1,11 +1,11 @@
-##  💻 设备信息对象 API
+##  📱 设备信息对象 API
 
 在LXL中，使用「设备信息对象」来操作和获取某一个玩家使用的游戏设备的相关信息。
 
 ### 获取一个设备信息对象
 
 1. 通过玩家对象的`.getDevice`函数，来获取一个玩家对应的**设备信息对象**    
-   详见 [玩家对象 API](zh_CN/Development/EventAPI/Player.md)      
+   详见 [玩家对象 API](zh_CN/Development/GameAPI/Player.md)      
 
    
 
