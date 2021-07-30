@@ -40,7 +40,7 @@ enum class EVENT_TYPES : int
     onRespawn, onChangeDim, onJump, onSneak, onAttack, onEat, onMove, onSetArmor, onPlayerRide,
     onUseItem, onTakeItem, onDropItem, onUseItemOn,
     onDestroyingBlock, onDestroyBlock, onWitherBossDestroy, onPlaceBlock,
-    onOpenContainer, onCloseContainer, onContainerChangeSlot,
+    onOpenContainer, onCloseContainer, onContainerChangeSlot, onOpenContainerScreen,
     onMobDie, onMobHurt, onExplode, onBlockExploded, onCmdBlockExecute,
     onProjectileHit, onBlockInteracted, onUseRespawnAnchor, onFarmLandDecay, onUseFrameBlock,
     onPistonPush, onHopperSearchItem, onHopperPushOut, onFireSpread, onFishingHookRetrieve,
@@ -78,6 +78,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onOpenContainer",EVENT_TYPES::onOpenContainer},
     {"onCloseContainer",EVENT_TYPES::onCloseContainer},
     {"onContainerChangeSlot",EVENT_TYPES::onContainerChangeSlot},
+    {"onOpenContainerScreen",EVENT_TYPES::onOpenContainerScreen},
     {"onCmdBlockExecute",EVENT_TYPES::onCmdBlockExecute},
     {"onProjectileHit",EVENT_TYPES::onProjectileHit},
     {"onBlockInteracted",EVENT_TYPES::onBlockInteracted},
@@ -754,6 +755,18 @@ THook(void, "?_onItemChanged@LevelContainerModel@@MEAAXHAEBVItemStack@@0@Z",
     }
     IF_LISTENDED_END();
     return original(_this, slotNumber, oldItem, newItem);
+}
+
+// ===== onOpenContainerScreen =====
+THook(bool, "?canOpenContainerScreen@Player@@UEAA_NXZ",
+    Player* a1)
+{
+    IF_LISTENED(EVENT_TYPES::onOpenContainerScreen)
+    {
+        CallEventEx(EVENT_TYPES::onOpenContainerScreen, PlayerClass::newPlayer(a1));
+    }
+    IF_LISTENDED_END();
+    return original(a1);
 }
 
 // ===== onMobHurt =====
