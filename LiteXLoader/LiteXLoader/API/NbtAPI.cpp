@@ -30,6 +30,8 @@ ClassDefine<void> NbtStaticBuilder =
 ClassDefine<NbtValue> NbtValueBuilder =
     defineClass<NbtValue>("LXL_NbtValue")
         .constructor(nullptr)
+        .instanceFunction("getType", &NbtValue::getType)
+        .instanceFunction("toString", &NbtValue::toString)
         .instanceFunction("set", &NbtValue::set)
         .instanceFunction("get",&NbtValue::get)
         .build();
@@ -37,6 +39,8 @@ ClassDefine<NbtValue> NbtValueBuilder =
 ClassDefine<NbtList> NbtListBuilder =
     defineClass<NbtList>("LXL_NbtList")
         .constructor(nullptr)
+        .instanceFunction("getType", &NbtValue::getType)
+        .instanceFunction("toString", &NbtValue::toString)
         .instanceFunction("getSize", &NbtList::getSize)
         .instanceFunction("getTypeOf", &NbtList::getTypeOf)
         .instanceFunction("setEnd", &NbtList::setEnd)
@@ -58,6 +62,8 @@ ClassDefine<NbtList> NbtListBuilder =
 ClassDefine<NbtCompound> NbtCompoundBuilder =
     defineClass<NbtCompound>("LXL_NbtCompound")
         .constructor(nullptr)
+        .instanceFunction("getType", &NbtValue::getType)
+        .instanceFunction("toString", &NbtValue::toString)
         .instanceFunction("getKeys", &NbtCompound::getKeys)
         .instanceFunction("getTypeOf", &NbtCompound::getTypeOf)
         .instanceFunction("setEnd", &NbtCompound::setEnd)
@@ -87,7 +93,7 @@ Local<Value> NbtBase::getType(const Arguments& args)
 }
 
 
-Local<Value> NbtBase::toJson(const Arguments& args)
+Local<Value> NbtBase::toString(const Arguments& args)
 {
     if(args.size() >= 1)
         CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
@@ -177,7 +183,7 @@ Local<Value> NbtList::getTypeOf(const Arguments& args)
 
     try
     {
-        auto list = nbt->asList();
+        auto &list = nbt->asList();
         auto index = args[0].toInt();
 
         if (index >= list.size() || index < 0)
@@ -198,7 +204,7 @@ Local<Value> NbtList::setEnd(const Arguments& args)
 
     try
     {
-        auto list = nbt->asList();
+        auto &list = nbt->asList();
         auto index = args[0].toInt();
 
         if (index >= list.size() || index < 0)
@@ -221,7 +227,7 @@ Local<Value> NbtList::setByte(const Arguments& args)
 
     try
     {
-        auto list = nbt->asList();
+        auto &list = nbt->asList();
         auto index = args[0].toInt();
         auto data = char(args[1].toInt());
 
@@ -245,7 +251,7 @@ Local<Value> NbtList::setInt(const Arguments& args)
 
     try
     {
-        auto list = nbt->asList();
+        auto &list = nbt->asList();
         auto index = args[0].toInt();
         auto data = int(args[1].toInt());
 
@@ -269,7 +275,7 @@ Local<Value> NbtList::setShort(const Arguments& args)
 
     try
     {
-        auto list = nbt->asList();
+        auto &list = nbt->asList();
         auto index = args[0].toInt();
         auto data = short(args[1].toInt());
 
@@ -293,7 +299,7 @@ Local<Value> NbtList::setLong(const Arguments& args)
 
     try
     {
-        auto list = nbt->asList();
+        auto &list = nbt->asList();
         auto index = args[0].toInt();
         auto data = args[1].asNumber().toInt64();
 
@@ -317,7 +323,7 @@ Local<Value> NbtList::setFloat(const Arguments& args)
 
     try
     {
-        auto list = nbt->asList();
+        auto &list = nbt->asList();
         auto index = args[0].toInt();
         auto data = args[1].asNumber().toFloat();
 
@@ -341,7 +347,7 @@ Local<Value> NbtList::setDouble(const Arguments& args)
 
     try
     {
-        auto list = nbt->asList();
+        auto &list = nbt->asList();
         auto index = args[0].toInt();
         auto data = args[1].asNumber().toDouble();
 
@@ -365,7 +371,7 @@ Local<Value> NbtList::setString(const Arguments& args)
 
     try
     {
-        auto list = nbt->asList();
+        auto &list = nbt->asList();
         auto index = args[0].toInt();
         auto data = args[1].toStr();
 
@@ -388,7 +394,7 @@ Local<Value> NbtList::setTag(const Arguments& args)
 
     try
     {
-        auto list = nbt->asList();
+        auto &list = nbt->asList();
         auto index = args[0].toInt();
 
         if (index >= list.size() || index < 0)
@@ -465,7 +471,7 @@ Local<Value> NbtList::removeTag(const Arguments& args)
 
     try
     {
-        auto list = nbt->asList();
+        auto &list = nbt->asList();
         auto index = args[0].toInt();
 
         if (index >= list.size() || index < 0)
@@ -487,7 +493,7 @@ Local<Value> NbtList::getData(const Arguments& args)
 
     try
     {
-        auto list = nbt->asList();
+        auto &list = nbt->asList();
         auto index = args[0].toInt();
 
         if (index >= list.size() || index < 0)
@@ -508,7 +514,7 @@ Local<Value> NbtList::getTag(const Arguments& args)
 
     try
     {
-        auto list = nbt->asList();
+        auto &list = nbt->asList();
         auto index = args[0].toInt();
 
         if (index >= list.size() || index < 0)
@@ -551,7 +557,7 @@ Local<Value> NbtList::toArray(const Arguments& args)
 {
     try
     {
-        auto list = nbt->asList();
+        auto &list = nbt->asList();
         Local<Array> arr = Array::newArray();
 
         for (auto& tag : list)
@@ -590,7 +596,7 @@ Local<Value> NbtCompound::getKeys(const Arguments& args)
     try
     {
         Local<Array> arr = Array::newArray();
-        auto list = nbt->asCompound();
+        auto &list = nbt->asCompound();
         for (auto& [k, v] : list)
         {
             arr.add(String::newString(k));
@@ -608,10 +614,10 @@ Local<Value> NbtCompound::getTypeOf(const Arguments& args)
 
     try
     {
-        auto list = nbt->asCompound();
+        auto &list = nbt->asCompound();
         auto key = args[0].toStr();
 
-        return Number::newNumber(int(list.at(key)->getTagType()));
+        return Number::newNumber(int(list.at(key).getTagType()));
     }
     catch (const out_of_range& e)
     {
@@ -729,11 +735,11 @@ Local<Value> NbtCompound::setDouble(const Arguments& args)
 
     try
     {
-        auto list = nbt->asCompound();
+        auto &list = nbt->asCompound();
         auto key = args[0].toStr();
         auto data = args[1].asNumber().toDouble();
 
-        list[key]->asDouble() = data;
+        list[key].asDouble() = data;
         return this->getScriptObject();
     }
     CATCH("Fail in NBTsetDouble!")
@@ -799,7 +805,7 @@ Local<Value> NbtCompound::removeTag(const Arguments& args)
 
     try
     {
-        auto list = nbt->asCompound();
+        auto &list = nbt->asCompound();
         auto key = args[0].toStr();
 
         list.erase(key);
@@ -820,10 +826,10 @@ Local<Value> NbtCompound::getData(const Arguments& args)
 
     try
     {
-        auto list = nbt->asCompound();
+        auto &list = nbt->asCompound();
         auto key = args[0].toStr();
 
-        return Tag2Value(list.at(key));
+        return Tag2Value(&(list.at(key)));
     }
     catch (const out_of_range& e)
     {
@@ -835,22 +841,22 @@ Local<Value> NbtCompound::getData(const Arguments& args)
 
 Local<Value> NbtCompound::getTag(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 2);
+    CHECK_ARGS_COUNT(args, 1);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
 
     try
     {
-        auto list = nbt->asCompound();
+        auto &list = nbt->asCompound();
         auto key = args[0].toStr();
 
         Local<Value> res;
-        switch (list.at(key)->getTagType())
+        switch (list.at(key).getTagType())
         {
         case TagType::List:
-            res = NbtList::newNBT(list.at(key));
+            res = NbtList::newNBT(&(list.at(key)));
             break;
         case TagType::Compound:
-            res = NbtCompound::newNBT(list.at(key));
+            res = NbtCompound::newNBT(&(list.at(key)));
             break;
         case TagType::End:
         case TagType::Byte:
@@ -861,7 +867,7 @@ Local<Value> NbtCompound::getTag(const Arguments& args)
         case TagType::Double:
         case TagType::String:
         case TagType::ByteArray:
-            res = NbtValue::newNBT(list.at(key));
+            res = NbtValue::newNBT(&(list.at(key)));
             break;
         default:
             ERROR("Unknown type of tag!");
@@ -882,12 +888,12 @@ Local<Value> NbtCompound::toObject(const Arguments& args)
 {
     try
     {
-        auto list = nbt->asCompound();
+        auto &list = nbt->asCompound();
         Local<Object> obj = Object::newObject();
 
         for (auto& [k,v] : list)
         {
-            obj.set(k, Tag2Value(v));
+            obj.set(k, Tag2Value(&v));
         }
         return obj;
     }

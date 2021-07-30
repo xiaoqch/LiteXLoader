@@ -28,6 +28,7 @@
 #include "PlayerAPI.h"
 #include <Loader.h>
 #include <Configs.h>
+#include <CheckUpdate.h>
 using namespace std;
 using namespace script;
 
@@ -333,6 +334,12 @@ void InitEventListeners()
             //注册预置命令
             RegisterBuiltinCmds();
 
+            //更新检查
+            if (localShareData->isFirstInstance)
+            {
+                CheckUpdate();
+            }
+
             IF_LISTENED(EVENT_TYPES::onServerStarted)
             {
                 CallEvent(EVENT_TYPES::onServerStarted);
@@ -457,6 +464,24 @@ THook(void, "?setArmor@Player@@UEAAXW4ArmorSlot@@AEBVItemStack@@@Z",
     IF_LISTENDED_END();
     return original(_this, slot, it);
 }
+
+// ===== onStepOnPressurePlate =====
+/*
+THook(void, "?entityInside@BasePressurePlateBlock@@UEBAXAEAVBlockSource@@AEBVBlockPos@@AEAVActor@@@Z",
+    void* _this, BlockSource* a2, BlockPos* a3, Actor* a4)
+{
+    IF_LISTENED(EVENT_TYPES::onStepOnPressurePlate)
+    {
+        Block* bl = Raw_GetBlockByPos(a3->x, a3->y, a3->z, a2);
+        CallEvent(EVENT_TYPES::onStepOnPressurePlate, EntityClass::newEntity(a4), BlockClass::newBlock(bl, a3, a2));
+    }
+    IF_LISTENDED_END();
+    // 不original即可拦截，等待CallEvent重写...
+    // Event -> [1]踩压力板的实体对象 [2]压力板的方块对象
+
+    original(_this, a2, a3, a4);
+}
+*/
 
 // ===== onRespawn =====
 THook(bool, "?respawn@Player@@UEAAXXZ",

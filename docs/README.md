@@ -32,7 +32,7 @@
 2. **功能强大，设施完备** ⭐
 
     - 提供众多的游戏API支持  
-      玩家，实体，方块，物品，容器，服务器系统。。。。给你自由掌控世界的能力
+      玩家，实体，方块，物品，容器，NBT，服务器系统。。。。给你自由掌控世界的能力
     - 多达三十多种游戏事件监听，让你眼观六路耳听八方
     - 配备大量基础设施
       - 统一配置文件接口
@@ -42,6 +42,7 @@
       - 系统调用接口
       - 网络功能接口
       - 脚本引擎辅助接口
+      - 热加载、热卸载、热重载插件
     - 完善，严谨，成体系的面向对象api架构，符合编程逻辑的接口设计。  
       让你专注于业务代码实现，而非在各种琐碎的技术细节上磕磕绊绊
 3. **兼容性强** ⭐
@@ -59,12 +60,6 @@
    
      - 项目采用`GPL-3.0`开源许可证，保证**永远不会**收费或者推出商业版。  
        希望社区多多贡献力量，共同维护和建设这个项目💕    
-
-## 🔨 Compiling
-1. Install newest **Microsoft Visual Studio** with standard C++ building suite
-2. Install the newest version of **Windows SDK**
-3. 打开 LiteXLoader 目录下的 `LiteXLoader.sln` 项目文件，点击 **生成解决方案** 按钮
-4. 编译生成成功之后，在同目录下 `Release` 文件夹中的几个DLL文件即是生成的 LiteXLoader 加载器
 
 ## 💻 安装
 项目主要发布于**MineBBS**，请[点击这里 前往MineBBS](https://www.minebbs.com/resources/litexloader-x-bds.2670/)下载。注意，本项目需要 `LiteLoader` 作为前置加载器。
@@ -95,6 +90,20 @@
 <br>
 
 ------
+
+## 🔨 编译项目
+
+> 前往`LiteXLoader`项目的[`GitHub Actions`](https://github.com/LiteLDev/LiteXLoader/actions)页面获取最新的自动构建结果
+
+当然，如果你愿意自己编译项目，也可以按照如下说明自行编译  
+VS项目采用多目标构建，构建的每种配置对应一种脚本语言
+
+1. Install newest **Microsoft Visual Studio** with standard C++ building suite
+2. Install the newest version of **Windows SDK**
+3. 打开 LiteXLoader 目录下的 `LiteXLoader.sln` 项目文件，点击 **生成** 菜单中的 **批生成** 项
+4. 弹出批生成对话框，选中每种语言配置对应的 **x64** 平台右侧的生成复选框
+5. 选择完毕之后，点击对话框中的 **生成** 按钮，进行批生成
+6. 编译生成成功之后，返回到项目根目录，执行根目录中的 `MakeRelease.cmd`，执行完之后根目录 `RELEASE` 文件夹内的内容即为完整的`LiteXLoader`及所有的依赖库
 
 ## 📕 开发文档
 
@@ -146,9 +155,9 @@ but if you modified the framework, or write a new framework based on this framew
 
 #### 重要贡献者
 
-| ![yqs112358](https://avatars.githubusercontent.com/u/37969157?s=96&v=4) | ![wzy](https://avatars.githubusercontent.com/u/59381521?s=96&v=4) | ![twoone-3](https://avatars.githubusercontent.com/u/62778573?s=96&v=4) | ![dreamguxiang](https://avatars.githubusercontent.com/u/62042544?s=96&v=4) | ![Sysca11](https://avatars.githubusercontent.com/u/46832985?s=96&v=4) | ![RedbeanW](https://avatars.githubusercontent.com/u/29711228?s=96&v=4) |
-| :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
-|          [@yqs112358](https://github.com/yqs112358)          |             [@wzy](https://github.com/wzyyyyyyy)             |           [@twoone-3](https://github.com/twoone-3)           |       [@dreamguxiang](https://github.com/dreamguxiang)       |            [@Sysca11](https://github.com/Sysca11)            |        [@RedbeanW](https://github.com/Redbeanw44602)         |
+| ![yqs112358](https://avatars.githubusercontent.com/u/37969157?s=96&v=4) | ![wzy](https://avatars.githubusercontent.com/u/59381521?s=96&v=4) | ![twoone-3](https://avatars.githubusercontent.com/u/62778573?s=96&v=4) | ![dreamguxiang](https://avatars.githubusercontent.com/u/62042544?s=96&v=4) | ![Sysca11](https://avatars.githubusercontent.com/u/46832985?s=96&v=4) | ![RedbeanW](https://avatars.githubusercontent.com/u/29711228?s=96&v=4) | ![littlegao233](https://avatars.githubusercontent.com/u/46601807?s=96&v=4) |
+| :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+|          [@yqs112358](https://github.com/yqs112358)          |             [@wzy](https://github.com/wzyyyyyyy)             |           [@twoone-3](https://github.com/twoone-3)           |       [@dreamguxiang](https://github.com/dreamguxiang)       |            [@Sysca11](https://github.com/Sysca11)            |        [@RedbeanW](https://github.com/Redbeanw44602)         |           [@gxh](https://github.com/littlegao233)            |
 
 ## 📞 联系我们
 
