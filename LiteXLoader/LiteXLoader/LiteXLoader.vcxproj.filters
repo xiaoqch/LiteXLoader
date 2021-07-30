@@ -151,6 +151,9 @@
     <ClCompile Include="API\DeviceAPI.cpp">
       <Filter>API</Filter>
     </ClCompile>
+    <ClCompile Include="CheckUpdate.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="API\BaseAPI.h">
@@ -284,6 +287,9 @@
     </ClInclude>
     <ClInclude Include="API\DeviceAPI.h">
       <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="CheckUpdate.h">
+      <Filter>Main</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

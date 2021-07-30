@@ -1,6 +1,8 @@
+#pragma once
 #include <string>
 #include <vector>
 #include <functional>
+#include <thread>
 
 //文件系统
 bool Raw_DirCreate(const std::string &path);
@@ -21,7 +23,3 @@ bool Raw_HttpGetSync(const std::string& url, int *status, std::string *result);
 std::string Raw_GetDateTimeStr();
 std::string Raw_RandomGuid();
 std::wstring Raw_RandomGuidW();
-
-//辅助
-unsigned int Raw_GetSystemThreadIdFromStdThread(std::thread::id id);
-bool Raw_KillThread(DWORD id);

@@ -45,9 +45,9 @@ vector<Tag*> &Tag::asList()
 	return *(vector<Tag*>*)((uintptr_t)this + 8);
 }
 
-map<string, Tag*> &Tag::asCompound()
+map<string, Tag> &Tag::asCompound()
 {
-	return *(map<string,Tag*>*)((uintptr_t)this + 8);
+	return *(map<string,Tag>*)((uintptr_t)this + 8);
 }
 
 Tag* Tag::createTag(TagType t)
@@ -59,7 +59,7 @@ Tag* Tag::createTag(TagType t)
 }
 
 char Tag::getTagType() {
-	return (*(__int64(__fastcall**)(const struct Tag*))(*(uintptr_t*)this + 40i64))(this);
+	return ((*(__int64(__fastcall**)(const struct Tag*))(*(uintptr_t*)this + 40i64))(this));
 }
 
 void Tag::put(string k, Tag* v) {
@@ -128,9 +128,9 @@ void Tag::setBlock(Block* blk) {
 }
 
 Tag* Tag::fromActor(Actor* actor) {
-    Tag* tmp = 0;
+    Tag* tmp = Tag::createTag(TagType::Compound);
     SymCall("?save@Actor@@UEAA_NAEAVCompoundTag@@@Z",
-        bool, void*, Tag**)(actor, &tmp);
+        char, Actor*, Tag*)(actor, tmp);
     return tmp;
 }
 
@@ -145,7 +145,7 @@ void TagToJson_Compound_Helper(JSON_VALUE& res, Tag* nbt);
 
 void TagToJson_List_Helper(JSON_VALUE& res, Tag* nbt)
 {
-    auto list = nbt->asList();
+    auto &list = nbt->asList();
     for (auto &tag : list)
     {
         switch (tag->getTagType())
@@ -199,34 +199,34 @@ void TagToJson_List_Helper(JSON_VALUE& res, Tag* nbt)
 
 void TagToJson_Compound_Helper(JSON_VALUE& res, Tag* nbt)
 {
-    auto list = nbt->asCompound();
+    auto &list = nbt->asCompound();
     for (auto& [key,tag] : list)
     {
-        switch (tag->getTagType())
+        switch (tag.getTagType())
         {
         case TagType::End:
             res.push_back({ key,nullptr });
             break;
         case TagType::Byte:
-            res.push_back({ key,tag->asByte() });
+            res.push_back({ key,tag.asByte() });
             break;
         case TagType::Short:
-            res.push_back({ key,tag->asShort() });
+            res.push_back({ key,tag.asShort() });
             break;
         case TagType::Int:
-            res.push_back({ key,tag->asInt() });
+            res.push_back({ key,tag.asInt() });
             break;
         case TagType::Long:
-            res.push_back({ key,tag->asLong() });
+            res.push_back({ key,tag.asLong() });
             break;
         case TagType::Float:
-            res.push_back({ key,tag->asFloat() });
+            res.push_back({ key,tag.asFloat() });
             break;
         case TagType::Double:
-            res.push_back({ key,tag->asDouble() });
+            res.push_back({ key,tag.asDouble() });
             break;
         case TagType::String:
-            res.push_back({ key,tag->asString() });
+            res.push_back({ key,tag.asString() });
             break;
         case TagType::ByteArray:
             res.push_back({ key,"" });
@@ -234,13 +234,13 @@ void TagToJson_Compound_Helper(JSON_VALUE& res, Tag* nbt)
             break;
         case TagType::List: {
             JSON_VALUE arrJson = JSON_VALUE::array();
-            TagToJson_List_Helper(arrJson, tag);
+            TagToJson_List_Helper(arrJson, &tag);
             res.push_back({ key,arrJson });
             break;
         }
         case TagType::Compound: {
             JSON_VALUE arrObj = JSON_VALUE::object();
-            TagToJson_Compound_Helper(arrObj, tag);
+            TagToJson_Compound_Helper(arrObj, &tag);
             res.push_back({ key,arrObj });
             break;
         }

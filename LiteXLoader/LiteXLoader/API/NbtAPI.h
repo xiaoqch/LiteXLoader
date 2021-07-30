@@ -12,7 +12,7 @@ protected:
 
 public:
     Local<Value> getType(const Arguments& args);
-    Local<Value> toJson(const Arguments& args);
+    Local<Value> toString(const Arguments& args);
 };
 
 

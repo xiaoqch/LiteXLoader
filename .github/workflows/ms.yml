@@ -32,17 +32,15 @@ jobs:
     - name: MkDirs
       run: |
         mkdir D:/build
-        mkdir D:/dev
       shell: bash
       
     - name: Copy Files
       run: |
-        cp -a ./LiteXLoader/Release/*.lib D:/dev
-        cp -a ./LiteXLoader/Release/*.pdb D:/dev
-        cp -a ./LiteXLoader/Release/*.dll D:/build
         cp -rf ./RELEASE/. D:/build
         rm -f D:/build/.gitignore
-        # BaseLib
+        
+        cp -a ./LiteXLoader/Release/*.dll D:/build
+        cp -a ./LiteXLoader/Release/*.pdb D:/build/lib
         cp -a ./LiteXLoader/BaseLib/BaseLib.js D:/build/lib
         cp -a ./LiteXLoader/BaseLib/BaseLib.lua D:/build/lib
       shell: bash
@@ -52,9 +50,3 @@ jobs:
       with:
         name: LiteXLoader
         path: D:/build
-    
-    - name: Upload DevFiles
-      uses: actions/upload-artifact@v1.0.0
-      with:
-        name: dev
-        path: D:/dev
