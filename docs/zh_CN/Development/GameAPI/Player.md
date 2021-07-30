@@ -58,6 +58,7 @@
 | pl.health    | 玩家当前生命值              | `Integer`  |
 | pl.inAir     | 玩家当前是否悬空            | `Boolean`  |
 | pl.sneaking  | 玩家当前是否正在潜行        | `Boolean`  |
+| pl.speed     | 玩家当前速度                | `Float`    |
 
 这些对象属性都是只读的，无法被修改。其中：
 

@@ -33,6 +33,7 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceProperty("health", &PlayerClass::getHealth)
         .instanceProperty("inAir", &PlayerClass::getInAir)
         .instanceProperty("sneaking", &PlayerClass::getSneaking)
+        .instanceProperty("speed",&PlayerClass::getSpeed)
 
         .instanceFunction("isOP", &PlayerClass::isOP)
         .instanceFunction("setPermLevel", &PlayerClass::setPermLevel)
@@ -274,6 +275,18 @@ Local<Value> PlayerClass::getSneaking()
         return Boolean::newBoolean(Raw_GetSneaking(player));
     }
     CATCH("Fail in getSneaking!")
+}
+
+Local<Value> PlayerClass::getSpeed()
+{
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        return Number::newNumber(Raw_GetSpeed((Actor*)player));
+    }
+    CATCH("Fail in getSpeed!")
 }
 
 Local<Value> PlayerClass::getMaxHealth()

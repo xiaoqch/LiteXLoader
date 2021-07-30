@@ -28,6 +28,7 @@
 | en.maxHealth | 实体最大生命值   | `Integer`  |
 | en.health    | 实体当前生命值   | `Integer`  |
 | en.inAir     | 实体当前是否悬空 | `Boolean`  |
+| en.speed     | 实体当前速度     | `Float`    |
 
 这些对象属性都是只读的，无法被修改
 
