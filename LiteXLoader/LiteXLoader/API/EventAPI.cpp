@@ -458,6 +458,24 @@ THook(void, "?setArmor@Player@@UEAAXW4ArmorSlot@@AEBVItemStack@@@Z",
     return original(_this, slot, it);
 }
 
+// ===== onStepOnPressurePlate =====
+/*
+THook(void, "?entityInside@BasePressurePlateBlock@@UEBAXAEAVBlockSource@@AEBVBlockPos@@AEAVActor@@@Z",
+    void* _this, BlockSource* a2, BlockPos* a3, Actor* a4)
+{
+    IF_LISTENED(EVENT_TYPES::onStepOnPressurePlate)
+    {
+        Block* bl = Raw_GetBlockByPos(a3->x, a3->y, a3->z, a2);
+        CallEvent(EVENT_TYPES::onStepOnPressurePlate, EntityClass::newEntity(a4), BlockClass::newBlock(bl, a3, a2));
+    }
+    IF_LISTENDED_END();
+    // 不original即可拦截，等待CallEvent重写...
+    // Event -> [1]踩压力板的实体对象 [2]压力板的方块对象
+
+    original(_this, a2, a3, a4);
+}
+*/
+
 // ===== onRespawn =====
 THook(bool, "?respawn@Player@@UEAAXXZ",
     Player* pl)
