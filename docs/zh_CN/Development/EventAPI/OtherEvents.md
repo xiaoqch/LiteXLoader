@@ -3,9 +3,16 @@
 #### `"onScoreChanged"` - 玩家计分板数值改变
 
 - 监听函数原型
-  `function()`
-- 参数：（未完成）
-  - 
+  `function(player,num,name,disName)`
+- 参数：
+  - player : `Player`  
+    计分板数值改变的玩家
+  - num: `Integer`  
+    改变后的计分板数值
+  - name : `String`  
+    计分板计分项名称
+  - disName : `String`  
+    计分板计分项的显示名称
 - 拦截事件：不可以拦截
 
 <br>

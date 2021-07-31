@@ -28,10 +28,23 @@ struct ScoreboardId
 class Objective
 {
 public:
+    //ScoreInfo Objective::getPlayerScore(ScoreboardId const &)const 
     MCINLINE ScoreInfo getPlayerScore(ScoreboardId const& arg0) {
         ScoreInfo(Objective:: * fnp)(ScoreboardId const&)const;
         *((void**)&fnp) = dlsym("?getPlayerScore@Objective@@QEBA?AUScoreInfo@@AEBUScoreboardId@@@Z");
         return (this->*fnp)(arg0);
+    }
+    //std::basic_string<char,std::char_traits<char>,std::allocator<char> > const & Objective::getDisplayName()const 
+    MCINLINE std::string const& getDisplayName() {
+        std::string const& (Objective:: * fnp)()const;
+        *((void**)&fnp) = dlsym("?getDisplayName@Objective@@QEBAAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ");
+        return (this->*fnp)();
+    }
+    //std::basic_string<char,std::char_traits<char>,std::allocator<char> > const & Objective::getName()const 
+    MCINLINE std::string const& getName() {
+        std::string const& (Objective:: * fnp)()const;
+        *((void**)&fnp) = dlsym("?getName@Objective@@QEBAAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ");
+        return (this->*fnp)();
     }
 };
 
