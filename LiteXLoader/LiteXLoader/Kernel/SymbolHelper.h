@@ -154,8 +154,8 @@ struct ScorePacketInfo
     unsigned score;
     enum Type : char { Invalid = 0, Player = 1, Actor = 2, Fake = 3 };
     Type type = Fake;
-    void* pid;
-    void* aid;
+    unsigned long long pid;
+    unsigned long long aid;
     string fake_name;
 
     ScorePacketInfo(const ScoreboardId &s, unsigned num, const string& fake)

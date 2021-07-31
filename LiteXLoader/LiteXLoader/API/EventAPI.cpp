@@ -38,8 +38,6 @@ enum class EVENT_TYPES : int
 {
     onPreJoin=0, onJoin, onLeft, onPlayerCmd, onChat, onPlayerDie, 
     onRespawn, onChangeDim, onJump, onSneak, onAttack, onEat, onMove, onSetArmor, onRide,
-    onUseItem, onTakeItem, onDropItem, onUseItemOn,
-    onRespawn, onChangeDim, onJump, onSneak, onAttack, onEat, onMove, onSetArmor, onPlayerRide,
     onUseItem, onTakeItem, onDropItem, onUseItemOn, onInventoryChange,
     onDestroyingBlock, onDestroyBlock, onWitherBossDestroy, onPlaceBlock,
     onOpenContainer, onCloseContainer, onContainerChange, onOpenContainerScreen,

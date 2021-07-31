@@ -50,7 +50,6 @@
 
 - 监听函数原型
   `function(player,container,slotNum,isPutIn,item)`
-
 - 参数：
   - player : `Player`  
     操作容器的玩家对象
@@ -64,8 +63,9 @@
     - 为 `false` 表示正在取出物品
   - item : `Item`  
     被放入 / 取出的物品对象
-
 - 拦截事件：不可以拦截
+
+注意：当某个容器被打开时，物品栏的每一格都会先触发一次这个事件
 
 <br>
 
