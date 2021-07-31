@@ -39,8 +39,10 @@ enum class EVENT_TYPES : int
     onPreJoin=0, onJoin, onLeft, onPlayerCmd, onChat, onPlayerDie, 
     onRespawn, onChangeDim, onJump, onSneak, onAttack, onEat, onMove, onSetArmor, onRide,
     onUseItem, onTakeItem, onDropItem, onUseItemOn,
+    onRespawn, onChangeDim, onJump, onSneak, onAttack, onEat, onMove, onSetArmor, onPlayerRide,
+    onUseItem, onTakeItem, onDropItem, onUseItemOn, onInventoryChange,
     onDestroyingBlock, onDestroyBlock, onWitherBossDestroy, onPlaceBlock,
-    onOpenContainer, onCloseContainer, onContainerChangeSlot, onOpenContainerScreen,
+    onOpenContainer, onCloseContainer, onContainerChange, onOpenContainerScreen,
     onMobDie, onMobHurt, onExplode, onBlockExploded, onCmdBlockExecute,
     onProjectileHit, onBlockInteracted, onUseRespawnAnchor, onFarmLandDecay, onUseFrameBlock,
     onPistonPush, onHopperSearchItem, onHopperPushOut, onFireSpread, onFishingHookRetrieve,
@@ -69,6 +71,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onTakeItem",EVENT_TYPES::onTakeItem},
     {"onDropItem",EVENT_TYPES::onDropItem},
     {"onUseItemOn",EVENT_TYPES::onUseItemOn},
+    {"onInventoryChange",EVENT_TYPES::onInventoryChange},
     {"onDestroyingBlock",EVENT_TYPES::onDestroyingBlock},
     {"onDestroyBlock",EVENT_TYPES::onDestroyBlock},
     {"onWitherBossDestroy",EVENT_TYPES::onWitherBossDestroy},
@@ -77,7 +80,8 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onBlockExploded",EVENT_TYPES::onBlockExploded},
     {"onOpenContainer",EVENT_TYPES::onOpenContainer},
     {"onCloseContainer",EVENT_TYPES::onCloseContainer},
-    {"onContainerChangeSlot",EVENT_TYPES::onContainerChangeSlot},
+    {"onContainerChangeSlot",EVENT_TYPES::onContainerChange},
+    {"onContainerChange",EVENT_TYPES::onContainerChange},
     {"onOpenContainerScreen",EVENT_TYPES::onOpenContainerScreen},
     {"onCmdBlockExecute",EVENT_TYPES::onCmdBlockExecute},
     {"onProjectileHit",EVENT_TYPES::onProjectileHit},
@@ -585,6 +589,21 @@ THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@
     return original(_this, item, bp, side, a5, bl);
 }
 
+// ===== onInventoryChange =====
+THook(void, "?inventoryChanged@Player@@UEAAXAEAVContainer@@HAEBVItemStack@@1_N@Z",
+    Player* _this, void* container, int slotNumber, ItemStack* oldItem, ItemStack* newItem, bool is)
+{
+    IF_LISTENED(EVENT_TYPES::onInventoryChange)
+    {
+        bool isPutIn = Raw_IsNull(oldItem);
+        CallEvent(EVENT_TYPES::onInventoryChange, PlayerClass::newPlayer((Player*)_this), slotNumber,
+            isPutIn, ItemClass::newItem(isPutIn ? newItem : oldItem));
+    }
+    IF_LISTENDED_END();
+
+    return original(_this, container, slotNumber, oldItem, newItem, is);
+}
+
 // ===== onDestroyingBlock =====
 THook(float, "?getDestroySpeed@Player@@QEBAMAEBVBlock@@@Z",
     Player* _this, Block* bl)
@@ -734,12 +753,12 @@ THook(bool, "?stopOpen@BarrelBlockActor@@UEAAXAEAVPlayer@@@Z",
     return original(_this, pl);
 }
 
-// ===== onContainerChangeSlot =====
+// ===== onContainerChange =====
 class LevelContainerModel;
 THook(void, "?_onItemChanged@LevelContainerModel@@MEAAXHAEBVItemStack@@0@Z",
     LevelContainerModel* _this, int slotNumber, ItemStack* oldItem, ItemStack* newItem)
 {
-    IF_LISTENED(EVENT_TYPES::onContainerChangeSlot)
+    IF_LISTENED(EVENT_TYPES::onContainerChange)
     {
         Actor* pl = dAccess<Actor*>(_this, 208);
         BlockSource* bs = Raw_GetBlockSourceByActor(pl);
@@ -748,7 +767,7 @@ THook(void, "?_onItemChanged@LevelContainerModel@@MEAAXHAEBVItemStack@@0@Z",
 
         bool isPutIn = Raw_IsNull(oldItem);
 
-        CallEvent(EVENT_TYPES::onContainerChangeSlot, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(block, bpos, bs),
+        CallEvent(EVENT_TYPES::onContainerChange, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(block, bpos, bs),
             slotNumber, isPutIn, ItemClass::newItem(isPutIn ? newItem : oldItem));
     }
     IF_LISTENDED_END();
@@ -1081,7 +1100,7 @@ THook(void, "?onScoreChanged@ServerScoreboard@@UEAAXAEBUScoreboardId@@AEBVObject
         auto pls = Raw_GetOnlinePlayers();
         for (auto& pl : pls)
         {
-            if (g_scoreboard->getScoreboardId(*(Actor*)pl).id == id)
+            if (globalScoreBoard->getScoreboardId(*(Actor*)pl).id == id)
             {
                 player = pl;
                 break;
