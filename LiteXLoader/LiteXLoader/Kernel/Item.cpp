@@ -61,3 +61,12 @@ bool Raw_SetLore(ItemStack* item, vector<string> lores)
 		void, void*, vector<string>)(item, lores);
     return true;
 }
+
+bool Raw_SetNull(ItemStack* item) {
+    if (Raw_IsNull(item))
+        return false
+
+    SymCall("?setNull@ItemStack@@UEAAXXZ",
+        void, ItemStack*)(item);
+    return true;
+}
