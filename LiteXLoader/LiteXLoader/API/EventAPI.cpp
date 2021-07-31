@@ -44,7 +44,7 @@ enum class EVENT_TYPES : int
     onMobDie, onMobHurt, onExplode, onBlockExploded, onCmdBlockExecute,
     onProjectileHit, onBlockInteracted, onUseRespawnAnchor, onFarmLandDecay, onUseFrameBlock,
     onPistonPush, onHopperSearchItem, onHopperPushOut, onFireSpread, onFishingHookRetrieve,
-    onServerStarted, onConsoleCmd, onFormSelected, onConsoleOutput,
+    onScoreChanged, onServerStarted, onConsoleCmd, onFormSelected, onConsoleOutput,
     EVENT_COUNT
 };
 static const std::unordered_map<string, EVENT_TYPES> EventsMap{
@@ -90,6 +90,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onHopperPushOut",EVENT_TYPES::onHopperPushOut},
     {"onFireSpread",EVENT_TYPES::onFireSpread},
     {"onFishingHookRetrieve",EVENT_TYPES::onFishingHookRetrieve},
+    {"onScoreChanged",EVENT_TYPES::onScoreChanged},
     {"onServerStarted",EVENT_TYPES::onServerStarted},
     {"onConsoleCmd",EVENT_TYPES::onConsoleCmd},
     {"onConsoleOutput",EVENT_TYPES::onConsoleOutput},
@@ -1069,6 +1070,36 @@ THook(void, "?handle@?$PacketHandlerDispatcherInstance@VModalFormResponsePacket@
     }
 
     original(_this, id, handler, pPacket);
+}
+
+// ===== onScoreChanged =====
+THook(void, "?onScoreChanged@ServerScoreboard@@UEAAXAEBUScoreboardId@@AEBVObjective@@@Z",
+    Scoreboard* _this, ScoreboardId* a1, Objective* a2)
+{
+    IF_LISTENED(EVENT_TYPES::onScoreChanged)
+    {
+        int id = a1->id;
+
+        Player* player = nullptr;
+        auto pls = Raw_GetOnlinePlayers();
+        for (auto& pl : pls)
+        {
+            if (g_scoreboard->getScoreboardId(*(Actor*)pl).id == id)
+            {
+                player = pl;
+                break;
+            }
+        }
+
+        if (player)
+        {
+            CallEvent(EVENT_TYPES::onScoreChanged, PlayerClass::newPlayer(player), Number::newNumber(a2->getPlayerScore(*a1).getCount()),
+                String::newString(a2->getName()), String::newString(a2->getDisplayName()));
+        }
+    }
+    IF_LISTENDED_END();
+
+    return original(_this, a1, a2);
 }
 
 // ===== onConsoleOutput =====
