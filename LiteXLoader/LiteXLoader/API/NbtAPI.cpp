@@ -635,7 +635,7 @@ Local<Value> NbtCompound::setEnd(const Arguments& args)
     try
     {
         auto key = args[0].toStr();
-        nbt->put(key, (char)0);
+        nbt->putByte(key, (char)0);
 
         return this->getScriptObject();
     }
@@ -652,7 +652,7 @@ Local<Value> NbtCompound::setByte(const Arguments& args)
     {
         auto key = args[0].toStr();
         auto data = char(args[1].toInt());
-        nbt->put(key, data);
+        nbt->putByte(key, data);
 
         return this->getScriptObject();
     }
@@ -669,7 +669,7 @@ Local<Value> NbtCompound::setInt(const Arguments& args)
     {
         auto key = args[0].toStr();
         auto data = int(args[1].toInt());
-        nbt->put(key, data);
+        nbt->putInt(key, data);
 
         return this->getScriptObject();
     }
@@ -686,7 +686,7 @@ Local<Value> NbtCompound::setShort(const Arguments& args)
     {
         auto key = args[0].toStr();
         auto data = short(args[1].toInt());
-        nbt->put(key, data);
+        nbt->putShort(key, data);
 
         return this->getScriptObject();
     }
@@ -703,7 +703,7 @@ Local<Value> NbtCompound::setLong(const Arguments& args)
     {
         auto key = args[0].toStr();
         auto data = args[1].asNumber().toInt64();
-        nbt->put(key, data);
+        nbt->putLong(key, data);
 
         return this->getScriptObject();
     }
@@ -720,7 +720,7 @@ Local<Value> NbtCompound::setFloat(const Arguments& args)
     {
         auto key = args[0].toStr();
         auto data = args[1].asNumber().toFloat();
-        nbt->put(key, data);
+        nbt->putFloat(key, data);
 
         return this->getScriptObject();
     }
@@ -755,7 +755,7 @@ Local<Value> NbtCompound::setString(const Arguments& args)
     {
         auto key = args[0].toStr();
         auto data = args[1].toStr();
-        nbt->put(key, data);
+        nbt->putString(key, data);
 
         return this->getScriptObject();
     }
@@ -788,7 +788,7 @@ Local<Value> NbtCompound::setTag(const Arguments& args)
         auto compound = NbtCompound::extractNBT(args[1]);
         if (compound)
         {
-            nbt->put(key, &compound);
+            nbt->putCompound(key, compound);
             return this->getScriptObject();
         }
 

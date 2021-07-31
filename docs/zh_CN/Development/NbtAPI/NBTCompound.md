@@ -58,7 +58,7 @@
 
 #### 删除键对应的NBT对象
 
-`list.removeTag(index)`
+`list.removeTag(key)`
 
 - 参数：
   - key: `String`  

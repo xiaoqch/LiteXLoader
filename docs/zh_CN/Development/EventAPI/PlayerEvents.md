@@ -306,26 +306,24 @@
 
 <br>
 
-#### `"onContainerChangeSlot"` - 玩家向容器放入 / 取出物品
+#### `"onInventoryChange"` - 玩家物品栏变化
 
 - 监听函数原型
-  `function(player,container,slotNum,isPutIn,item)`
-
+  `function(player,slotNum,isPutIn,item)`
 - 参数：
   - player : `Player`  
-    操作容器的玩家对象
-  - container : `Block`  
-    被操作的容器的方块对象
+    操作物品栏的玩家对象
   - slotNum : `Integer`  
-    操作容器的格子位置（第slotNum个格子）
+    操作物品栏的格子位置（第slotNum个格子）
   - isPutIn : `Boolean`  
     是否为放入物品
     - 为 `true` 表示正在放入物品
     - 为 `false` 表示正在取出物品
   - item : `Item`  
     被放入 / 取出的物品对象
-
 - 拦截事件：不可以拦截
+
+注意：当某个玩家进服时，在进服前的某个时刻，物品栏的每一格都会先触发一次这个事件
 
 <br>
 
@@ -357,7 +355,7 @@
     盔甲栏中的物品对象
 - 拦截事件：不可以拦截
 
-注：当玩家刚进入服务器时，`onSetArmor`事件会被激活一次
+注意：当某个玩家进服时，在进服前的某个时刻，物品栏的每一格都会先触发一次这个事件
 
 <br>
 

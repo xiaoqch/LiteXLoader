@@ -46,6 +46,29 @@
 
 <br>
 
+#### `"onContainerChange"` - 容器被放入 / 取出物品
+
+- 监听函数原型
+  `function(player,container,slotNum,isPutIn,item)`
+
+- 参数：
+  - player : `Player`  
+    操作容器的玩家对象
+  - container : `Block`  
+    被操作的容器的方块对象
+  - slotNum : `Integer`  
+    操作容器的格子位置（第slotNum个格子）
+  - isPutIn : `Boolean`  
+    是否为放入物品
+    - 为 `true` 表示正在放入物品
+    - 为 `false` 表示正在取出物品
+  - item : `Item`  
+    被放入 / 取出的物品对象
+
+- 拦截事件：不可以拦截
+
+<br>
+
 #### `"onProjectileHit"` - 方块被弹射物击中
 
 - 监听函数原型

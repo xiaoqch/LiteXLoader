@@ -9,7 +9,7 @@ bool isServerStarted = false;
 bool isCmdRegisterEnabled = false;
 
 Minecraft* mc = nullptr;
-Scoreboard* g_scoreboard = nullptr;
+Scoreboard* globalScoreBoard = nullptr;
 CommandRegistry* CmdReg = nullptr;
 
 
@@ -17,8 +17,8 @@ CommandRegistry* CmdReg = nullptr;
 THook(Scoreboard*, "??0ServerScoreboard@@QEAA@VCommandSoftEnumRegistry@@PEAVLevelStorage@@@Z",
 	void* _this, void* a2, void* a3)
 {
-	g_scoreboard = (Scoreboard*)original(_this, a2, a3);
-	return g_scoreboard;
+	globalScoreBoard = (Scoreboard*)original(_this, a2, a3);
+	return globalScoreBoard;
 }
 
 THook(void, "?initAsDedicatedServer@Minecraft@@QEAAXXZ",

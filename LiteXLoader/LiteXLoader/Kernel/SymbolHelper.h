@@ -48,12 +48,42 @@ public:
     }
 };
 
+class ObjectiveCriteria;
+
 class Scoreboard
 {
 public:
     MCINLINE Objective* getObjective(std::string const& arg0) {
         Objective* (Scoreboard:: * fnp)(std::string const&)const;
         *((void**)&fnp) = dlsym("?getObjective@Scoreboard@@QEBAPEAVObjective@@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z");
+        return (this->*fnp)(arg0);
+    }
+
+    //std::vector<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,std::allocator<std::basic_string<char,std::char_traits<char>,std::allocator<char> > > > Scoreboard::getObjectiveNames()const 
+    MCINLINE std::vector<std::string, std::allocator<std::string > > getObjectiveNames() {
+        std::vector<std::string, std::allocator<std::string > >(Scoreboard:: * fnp)()const;
+        *((void**)&fnp) = dlsym("?getObjectiveNames@Scoreboard@@QEBA?AV?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@XZ");
+        return (this->*fnp)();
+    }
+
+    //Objective * Scoreboard::addObjective(std::basic_string<char,std::char_traits<char>,std::allocator<char> > const &,std::basic_string<char,std::char_traits<char>,std::allocator<char> > const &,ObjectiveCriteria const &)
+    MCINLINE Objective* addObjective(std::string const& arg0, std::string const& arg1, ObjectiveCriteria const* arg2) {
+        Objective* (Scoreboard:: * fnp)(std::string const&, std::string const&, ObjectiveCriteria const*)const;
+        *((void**)&fnp) = dlsym("?addObjective@Scoreboard@@QEAAPEAVObjective@@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0AEBVObjectiveCriteria@@@Z");
+        return (this->*fnp)(arg0, arg1, arg2);
+    }
+
+    //bool Scoreboard::removeObjective(Objective *)
+    MCINLINE bool removeObjective(Objective* arg0) {
+        bool (Scoreboard:: * fnp)(Objective*)const;
+        *((void**)&fnp) = dlsym("?removeObjective@Scoreboard@@QEAA_NPEAVObjective@@@Z");
+        return (this->*fnp)(arg0);
+    }
+
+    //ObjectiveCriteria * Scoreboard::getCriteria(std::basic_string<char,std::char_traits<char>,std::allocator<char> > const &)const 
+    MCINLINE ObjectiveCriteria* getCriteria(std::string const& arg0) {
+        ObjectiveCriteria* (Scoreboard:: * fnp)(std::string const&)const;
+        *((void**)&fnp) = dlsym("?getCriteria@Scoreboard@@QEBAPEAVObjectiveCriteria@@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z");
         return (this->*fnp)(arg0);
     }
 
@@ -135,7 +165,7 @@ struct ScorePacketInfo
 
 //全局变量
 extern Minecraft* mc;
-extern Scoreboard* g_scoreboard;
+extern Scoreboard* globalScoreBoard;
 
 //辅助函数
 BlockSource* Raw_GetBlockSourceByActor(Actor* actor);
