@@ -10,6 +10,7 @@ bool Raw_PathExists(const std::string &path);
 bool Raw_FileReadFrom(const std::string &path, std::string & result);
 bool Raw_FileWriteTo(const std::string &path, const std::string &data);
 std::vector<std::string> Raw_GetFilesList(const std::string& path);
+bool Raw_AutoCreateDirs(const std::string& path);
 
 //系统调用
 bool Raw_NewProcess(const std::string &cmd, std::function<void(int,std::string)> callback, int timeLimit);
