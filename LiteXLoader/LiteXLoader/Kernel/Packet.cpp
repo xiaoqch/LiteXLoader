@@ -66,7 +66,7 @@ bool Raw_SendSetScorePacket(Player* player, char type, const vector<ScorePacketI
 bool Raw_SendBossEventPacket(Player* player, string name, float percent, int type)
 {
     void* packet = Raw_CreatePacket(74);   //Boss事件数据包
-    dAccess<const ActorUniqueID*>(packet, 56) = dAccess<const ActorUniqueID*>(packet, 64) = & player->getUniqueID();
+    dAccess<ActorUniqueID>(packet, 56) = dAccess<ActorUniqueID>(packet, 64) = player->getUniqueID();
     dAccess<int>(packet, 72) = type;    //0显示, 1更新, 2隐藏
     dAccess<string>(packet, 80) = name;
     dAccess<float>(packet, 112) = percent;

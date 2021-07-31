@@ -37,14 +37,14 @@ using namespace script;
 enum class EVENT_TYPES : int
 {
     onPreJoin=0, onJoin, onLeft, onPlayerCmd, onChat, onPlayerDie, 
-    onRespawn, onChangeDim, onJump, onSneak, onAttack, onEat, onMove, onSetArmor,
-    onUseItem, onTakeItem, onDropItem, onUseItemOn,
+    onRespawn, onChangeDim, onJump, onSneak, onAttack, onEat, onMove, onSetArmor, onRide,
+    onUseItem, onTakeItem, onDropItem, onUseItemOn, onInventoryChange,
     onDestroyingBlock, onDestroyBlock, onWitherBossDestroy, onPlaceBlock,
-    onOpenContainer, onCloseContainer, onContainerChangeSlot,
+    onOpenContainer, onCloseContainer, onContainerChange, onOpenContainerScreen,
     onMobDie, onMobHurt, onExplode, onBlockExploded, onCmdBlockExecute,
     onProjectileHit, onBlockInteracted, onUseRespawnAnchor, onFarmLandDecay, onUseFrameBlock,
     onPistonPush, onHopperSearchItem, onHopperPushOut, onFireSpread, onFishingHookRetrieve,
-    onServerStarted, onConsoleCmd, onFormSelected, onConsoleOutput,
+    onScoreChanged, onServerStarted, onConsoleCmd, onFormSelected, onConsoleOutput,
     EVENT_COUNT
 };
 static const std::unordered_map<string, EVENT_TYPES> EventsMap{
@@ -62,12 +62,14 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onEat",EVENT_TYPES::onEat},
     {"onMove",EVENT_TYPES::onMove},
     {"onSetArmor",EVENT_TYPES::onSetArmor},
+    {"onRide",EVENT_TYPES::onRide},
     {"onMobDie",EVENT_TYPES::onMobDie},
     {"onMobHurt",EVENT_TYPES::onMobHurt},
     {"onUseItem",EVENT_TYPES::onUseItem},
     {"onTakeItem",EVENT_TYPES::onTakeItem},
     {"onDropItem",EVENT_TYPES::onDropItem},
     {"onUseItemOn",EVENT_TYPES::onUseItemOn},
+    {"onInventoryChange",EVENT_TYPES::onInventoryChange},
     {"onDestroyingBlock",EVENT_TYPES::onDestroyingBlock},
     {"onDestroyBlock",EVENT_TYPES::onDestroyBlock},
     {"onWitherBossDestroy",EVENT_TYPES::onWitherBossDestroy},
@@ -76,7 +78,9 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onBlockExploded",EVENT_TYPES::onBlockExploded},
     {"onOpenContainer",EVENT_TYPES::onOpenContainer},
     {"onCloseContainer",EVENT_TYPES::onCloseContainer},
-    {"onContainerChangeSlot",EVENT_TYPES::onContainerChangeSlot},
+    {"onContainerChangeSlot",EVENT_TYPES::onContainerChange},
+    {"onContainerChange",EVENT_TYPES::onContainerChange},
+    {"onOpenContainerScreen",EVENT_TYPES::onOpenContainerScreen},
     {"onCmdBlockExecute",EVENT_TYPES::onCmdBlockExecute},
     {"onProjectileHit",EVENT_TYPES::onProjectileHit},
     {"onBlockInteracted",EVENT_TYPES::onBlockInteracted},
@@ -88,6 +92,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onHopperPushOut",EVENT_TYPES::onHopperPushOut},
     {"onFireSpread",EVENT_TYPES::onFireSpread},
     {"onFishingHookRetrieve",EVENT_TYPES::onFishingHookRetrieve},
+    {"onScoreChanged",EVENT_TYPES::onScoreChanged},
     {"onServerStarted",EVENT_TYPES::onServerStarted},
     {"onConsoleCmd",EVENT_TYPES::onConsoleCmd},
     {"onConsoleOutput",EVENT_TYPES::onConsoleOutput},
@@ -465,6 +470,18 @@ THook(void, "?setArmor@Player@@UEAAXW4ArmorSlot@@AEBVItemStack@@@Z",
     return original(_this, slot, it);
 }
 
+// ===== onRide =====
+THook(bool, "?canAddRider@Actor@@UEBA_NAEAV1@@Z",
+    Actor* a1, Actor* a2)
+{
+    IF_LISTENED(EVENT_TYPES::onRide)
+    {
+        CallEventEx(EVENT_TYPES::onRide, EntityClass::newEntity(a2), EntityClass::newEntity(a1));
+    }
+        IF_LISTENDED_END();
+    return original(a1, a2);
+}
+
 // ===== onStepOnPressurePlate =====
 /*
 THook(void, "?entityInside@BasePressurePlateBlock@@UEBAXAEAVBlockSource@@AEBVBlockPos@@AEAVActor@@@Z",
@@ -568,6 +585,21 @@ THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@
     }
     IF_LISTENDED_END();
     return original(_this, item, bp, side, a5, bl);
+}
+
+// ===== onInventoryChange =====
+THook(void, "?inventoryChanged@Player@@UEAAXAEAVContainer@@HAEBVItemStack@@1_N@Z",
+    Player* _this, void* container, int slotNumber, ItemStack* oldItem, ItemStack* newItem, bool is)
+{
+    IF_LISTENED(EVENT_TYPES::onInventoryChange)
+    {
+        bool isPutIn = Raw_IsNull(oldItem);
+        CallEvent(EVENT_TYPES::onInventoryChange, PlayerClass::newPlayer((Player*)_this), slotNumber,
+            isPutIn, ItemClass::newItem(isPutIn ? newItem : oldItem));
+    }
+    IF_LISTENDED_END();
+
+    return original(_this, container, slotNumber, oldItem, newItem, is);
 }
 
 // ===== onDestroyingBlock =====
@@ -719,12 +751,12 @@ THook(bool, "?stopOpen@BarrelBlockActor@@UEAAXAEAVPlayer@@@Z",
     return original(_this, pl);
 }
 
-// ===== onContainerChangeSlot =====
+// ===== onContainerChange =====
 class LevelContainerModel;
 THook(void, "?_onItemChanged@LevelContainerModel@@MEAAXHAEBVItemStack@@0@Z",
     LevelContainerModel* _this, int slotNumber, ItemStack* oldItem, ItemStack* newItem)
 {
-    IF_LISTENED(EVENT_TYPES::onContainerChangeSlot)
+    IF_LISTENED(EVENT_TYPES::onContainerChange)
     {
         Actor* pl = dAccess<Actor*>(_this, 208);
         BlockSource* bs = Raw_GetBlockSourceByActor(pl);
@@ -733,11 +765,23 @@ THook(void, "?_onItemChanged@LevelContainerModel@@MEAAXHAEBVItemStack@@0@Z",
 
         bool isPutIn = Raw_IsNull(oldItem);
 
-        CallEvent(EVENT_TYPES::onContainerChangeSlot, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(block, bpos, bs),
+        CallEvent(EVENT_TYPES::onContainerChange, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(block, bpos, bs),
             slotNumber, isPutIn, ItemClass::newItem(isPutIn ? newItem : oldItem));
     }
     IF_LISTENDED_END();
     return original(_this, slotNumber, oldItem, newItem);
+}
+
+// ===== onOpenContainerScreen =====
+THook(bool, "?canOpenContainerScreen@Player@@UEAA_NXZ",
+    Player* a1)
+{
+    IF_LISTENED(EVENT_TYPES::onOpenContainerScreen)
+    {
+        CallEventEx(EVENT_TYPES::onOpenContainerScreen, PlayerClass::newPlayer(a1));
+    }
+    IF_LISTENDED_END();
+    return original(a1);
 }
 
 // ===== onMobHurt =====
@@ -975,7 +1019,7 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
 
             if (!prefix.empty())
             {
-                //found
+                //Lxl Registered Cmd
                 int perm = localShareData->playerCmdCallbacks[prefix].perm;
 
                 if (Raw_GetPlayerPermLevel(player) >= perm)
@@ -983,12 +1027,21 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
                     bool callbackRes = CallPlayerCmdCallback(player, prefix, paras);
                     IF_LISTENED(EVENT_TYPES::onPlayerCmd)
                     {
-                        CallEvent(EVENT_TYPES::onPlayerCmd, PlayerClass::newPlayer(player), cmd);
+                        CallEventEx(EVENT_TYPES::onPlayerCmd, PlayerClass::newPlayer(player), String::newString(cmd));
                     }
                     IF_LISTENDED_END();
                     if (!callbackRes)
                         return false;
                 }
+            }
+            else
+            {
+                //Other Cmd
+                IF_LISTENED(EVENT_TYPES::onPlayerCmd)
+                {
+                    CallEventEx(EVENT_TYPES::onPlayerCmd, PlayerClass::newPlayer(player), String::newString(cmd));
+                }
+                IF_LISTENDED_END();
             }
         }
         else
@@ -1005,14 +1058,25 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
 
             if (!prefix.empty())
             {
+                //Lxl Registered Cmd
+
                 bool callbackRes = CallServerCmdCallback(prefix,paras);
                 IF_LISTENED(EVENT_TYPES::onConsoleCmd)
                 {
-                    CallEventEx(EVENT_TYPES::onConsoleCmd, cmd);
+                    CallEventEx(EVENT_TYPES::onConsoleCmd, String::newString(cmd));
                 }
                 IF_LISTENDED_END();
                 if (!callbackRes)
                     return false;
+            }
+            else
+            {
+                //Other Cmd
+                IF_LISTENED(EVENT_TYPES::onConsoleCmd)
+                {
+                    CallEventEx(EVENT_TYPES::onConsoleCmd, String::newString(cmd));
+                }
+                IF_LISTENDED_END();
             }
         }
     }
@@ -1040,6 +1104,36 @@ THook(void, "?handle@?$PacketHandlerDispatcherInstance@VModalFormResponsePacket@
     }
 
     original(_this, id, handler, pPacket);
+}
+
+// ===== onScoreChanged =====
+THook(void, "?onScoreChanged@ServerScoreboard@@UEAAXAEBUScoreboardId@@AEBVObjective@@@Z",
+    Scoreboard* _this, ScoreboardId* a1, Objective* a2)
+{
+    IF_LISTENED(EVENT_TYPES::onScoreChanged)
+    {
+        int id = a1->id;
+
+        Player* player = nullptr;
+        auto pls = Raw_GetOnlinePlayers();
+        for (auto& pl : pls)
+        {
+            if (globalScoreBoard->getScoreboardId(*(Actor*)pl).id == id)
+            {
+                player = pl;
+                break;
+            }
+        }
+
+        if (player)
+        {
+            CallEvent(EVENT_TYPES::onScoreChanged, PlayerClass::newPlayer(player), Number::newNumber(a2->getPlayerScore(*a1).getCount()),
+                String::newString(a2->getName()), String::newString(a2->getDisplayName()));
+        }
+    }
+    IF_LISTENDED_END();
+
+    return original(_this, a1, a2);
 }
 
 // ===== onConsoleOutput =====

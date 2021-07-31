@@ -95,3 +95,8 @@ Actor* Raw_GetEntityByUniqueId(ActorUniqueID id) {
     return SymCall("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z",
         Actor*, Level*, ActorUniqueID, bool)(mc->getLevel(), id, 0);
 }
+
+float Raw_GetSpeed(Actor* ac) {
+    return SymCall("?getSpeedInMetersPerSecond@Actor@@QEBAMXZ"
+        , float, Actor*)(ac);
+}

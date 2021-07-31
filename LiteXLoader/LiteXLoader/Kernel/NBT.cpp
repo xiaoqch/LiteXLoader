@@ -59,7 +59,14 @@ Tag* Tag::createTag(TagType t)
 }
 
 char Tag::getTagType() {
-	return ((*(__int64(__fastcall**)(const struct Tag*))(*(uintptr_t*)this + 40i64))(this));
+    __try
+    {
+        return ((*(__int64(__fastcall**)(const struct Tag*))(*(uintptr_t*)this + 40i64))(this));
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    {
+        return -1;
+    }
 }
 
 void Tag::put(string k, Tag* v) {
@@ -67,37 +74,37 @@ void Tag::put(string k, Tag* v) {
 		, void, void*, string, Tag*)(this, k, v);
 }
 
-void Tag::put(string k, short v) {
+void Tag::putShort(string k, short v) {
 	return SymCall("?putShort@CompoundTag@@QEAAAEAFV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@F@Z"
 		, void, void*, string, short)(this, k, v);
 }
 
-void Tag::put(string k, string v) {
+void Tag::putString(string k, string v) {
 	return SymCall("?putString@CompoundTag@@QEAAAEAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V23@0@Z"
 		, void, void*, string, string)(this, k, v);
 }
 
-void Tag::put(string k, int v) {
+void Tag::putInt(string k, int v) {
 	return SymCall("?putInt@CompoundTag@@QEAAAEAHV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z"
 		, void, void*, string, int)(this, k, v);
 }
 
-void Tag::put(string k, __int64 v) {
+void Tag::putLong(string k, __int64 v) {
 	return SymCall("?putInt64@CompoundTag@@QEAAAEA_JV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@_J@Z",
 		void, void*, string, __int64)(this, k, v);
 }
 
-void Tag::put(string k, float v) {
+void Tag::putFloat(string k, float v) {
 	return SymCall("?putFloat@CompoundTag@@QEAAAEAMV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@M@Z"
 		, void, void*, string, float)(this, k, v);
 }
 
-void Tag::put(string k, Tag** v) {
-	return SymCall("?putCompound@CompoundTag@@QEAAPEAV1@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$unique_ptr@VCompoundTag@@U?$default_delete@VCompoundTag@@@std@@@3@@Z",
-		void, void*, string, Tag**)(this, k, v);
+void Tag::putCompound(string k, Tag* v) {
+    return SymCall("?putCompound@CompoundTag@@QEAAAEAV1@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V1@@Z",
+        void, void*, string, Tag*)(this, k, v);
 }
 
-void Tag::put(string k, char v) {
+void Tag::putByte(string k, char v) {
 	return SymCall("?putByte@CompoundTag@@QEAAAEAEV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@E@Z"
 		, void, void*, string, char)(this, k, v);
 }
@@ -116,7 +123,7 @@ Tag* Tag::fromItem(ItemStack* item) {
 
 void Tag::setItem(ItemStack* item) {
 	SymCall("?fromTag@ItemStack@@SA?AV1@AEBVCompoundTag@@@Z",
-		void, void*, void*)(item, this);
+		void*, void*, Tag*)(item, this);
 }
 
 Tag* Tag::fromBlock(Block* blk) {

@@ -154,6 +154,9 @@
     <ClCompile Include="CheckUpdate.cpp">
       <Filter>Main</Filter>
     </ClCompile>
+    <ClCompile Include="API\GameSystemAPI.cpp">
+      <Filter>API</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="API\BaseAPI.h">
@@ -290,6 +293,9 @@
     </ClInclude>
     <ClInclude Include="CheckUpdate.h">
       <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="API\GameSystemAPI.h">
+      <Filter>API</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

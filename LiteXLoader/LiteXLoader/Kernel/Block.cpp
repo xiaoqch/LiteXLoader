@@ -7,7 +7,7 @@ string Raw_GetBlockName(Block* block)
 {
     HashedString* hashedstr = SymCall("?getName@Block@@QEBAAEBVHashedString@@XZ",
         HashedString*, void*)(block);
-    
+
     return hashedstr->getString();
 }
 

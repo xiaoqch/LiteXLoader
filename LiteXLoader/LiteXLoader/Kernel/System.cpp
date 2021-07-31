@@ -97,6 +97,14 @@ vector<string> Raw_GetFilesList(const std::string& path)
     return list;
 }
 
+bool Raw_AutoCreateDirs(const std::string& path)
+{
+    if (!filesystem::exists(path))
+        return filesystem::create_directories(filesystem::path(path).remove_filename().u8string());
+    else
+        return true;
+}
+
 /////////////////// String Helper ///////////////////
 wchar_t* str2wstr(string str)
 {

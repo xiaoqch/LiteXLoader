@@ -58,6 +58,7 @@
 | pl.health    | 玩家当前生命值              | `Integer`  |
 | pl.inAir     | 玩家当前是否悬空            | `Boolean`  |
 | pl.sneaking  | 玩家当前是否正在潜行        | `Boolean`  |
+| pl.speed     | 玩家当前速度                | `Float`    |
 
 这些对象属性都是只读的，无法被修改。其中：
 
@@ -405,87 +406,6 @@ pl:crash()
 关于NBT对象的更多使用，请参考 [NBT接口文档](zh_CN/Development/NbtAPI/NBT.md)
 
 <br>
-
-#### 获取玩家计分板值  
-
-`pl.getScore(name)`
-
-- 参数：
-  - name : `String`  
-    计分板名称  
-- 返回值：计分板上的数值
-- 返回值类型：`Integer`
-
-```clike
-[Js]
-//对于一个玩家对象pl
-log("You have money:",pl.getScore("money"));
-[Lua]
-
-```
-
-#### 设置玩家计分板值  
-
-`pl.setScore(name,value)`
-
-- 参数：
-  - name : `String`  
-    计分板名称  
-
-  - value : `Integer`  
-    设置的数值  
-- 返回值：是否设置成功
-- 返回值类型：`Boolean`
-
-如果你想删除这个计分板项，请在value参数传入`Null`
-
-```clike
-[Js]
-//对于一个玩家对象pl
-pl.setScore("money",10000);
-[Lua]
-
-```
-
-#### 给玩家计分板项加分 
-
-`pl.addScore(name,value)`
-
-- 参数：
-  - name : `String`  
-    计分板名称  
-
-  - value : `Integer`  
-    要增加的数值  
-- 返回值：是否设置成功
-- 返回值类型：`Boolean`
-
-```clike
-[Js]
-//对于一个玩家对象pl
-pl.addScore(100);
-[Lua]
-
-```
-
-#### 移除玩家计分板项
-
-`pl.removeScore(name)`
-
-- 参数：
-  - name : `String`  
-    计分板名称  
-
-- 返回值：是否移除成功
-- 返回值类型：`Boolean`
-
-```clike
-[Js]
-//对于一个玩家对象pl
-pl.removeScore("what");
-[Lua]
-
-```
 
 #### 设置玩家自定义侧边栏
 

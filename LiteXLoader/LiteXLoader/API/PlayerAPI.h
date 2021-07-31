@@ -36,6 +36,7 @@ public:
     Local<Value> getHealth();
     Local<Value> getInAir();
     Local<Value> getSneaking();
+    Local<Value> getSpeed();
 
     Local<Value> isOP(const Arguments& args);
     Local<Value> setPermLevel(const Arguments& args);

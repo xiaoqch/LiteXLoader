@@ -15,6 +15,7 @@
 #include "GuiAPI.h"
 #include "LxlAPI.h"
 #include "SystemAPI.h"
+#include "GameSystemAPI.h"
 #include <Engine/RemoteCall.h>
 using namespace script;
 
@@ -46,6 +47,10 @@ public:
 
     static Local<Value> newIntPos(const Arguments& args) { return NewIntPos(args); }
     static Local<Value> newFloatPos(const Arguments& args) { return NewFloatPos(args); }
+
+    static Local<Value> newScoreObjective(const Arguments& args) { return NewScoreObjective(args); }
+    static Local<Value> removeScoreObjective(const Arguments& args) { return RemoveScoreObjective(args); }
+    static Local<Value> listAllScoreObjective(const Arguments& args) { return ListAllScoreObjective(args); }
 };
 
 static ClassDefine<void> McClassBuilder =
@@ -69,6 +74,9 @@ static ClassDefine<void> McClassBuilder =
         .function("sendCmdOutput", &McClass::sendCmdOutput)
         .function("newIntPos", &McClass::newIntPos)
         .function("newFloatPos", &McClass::newFloatPos)
+        .function("newScoreObjective", &McClass::newScoreObjective)
+        .function("removeScoreObjective", &McClass::removeScoreObjective)
+        .function("listAllScoreObjective", &McClass::listAllScoreObjective)
         .function("crash", CrashBDS)
         .build();
 

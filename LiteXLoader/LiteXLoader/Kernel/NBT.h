@@ -35,13 +35,13 @@ public:
 
 	//compound
 	void put(std::string k, Tag* v);
-	void put(std::string k, short v);
-	void put(std::string k, std::string v);
-	void put(std::string k, int v);
-	void put(std::string k, __int64 v);
-	void put(std::string k, float v);
-	void put(std::string k, Tag** v);
-	void put(std::string k, char v);
+	void putShort(std::string k, short v);
+	void putString(std::string k, std::string v);
+	void putInt(std::string k, int v);
+	void putLong(std::string k, __int64 v);
+	void putFloat(std::string k, float v);
+	void putCompound(std::string k, Tag* v);
+	void putByte(std::string k, char v);
 
 	//list
 	void addValue2List(Tag* t);

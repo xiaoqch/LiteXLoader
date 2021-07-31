@@ -166,10 +166,10 @@ bool Raw_CrashPlayer(Player* player)
 
 int Raw_GetScore(Player* player, const std::string &key)
 {
-    Objective* obj = g_scoreboard->getObjective(key);
+    Objective* obj = globalScoreBoard->getObjective(key);
     if (obj)
     {
-        auto id = g_scoreboard->getScoreboardId(*(Actor*)player);
+        auto id = globalScoreBoard->getScoreboardId(*(Actor*)player);
         auto score = obj->getPlayerScore(id);
         return score.getCount();
     }
@@ -178,12 +178,12 @@ int Raw_GetScore(Player* player, const std::string &key)
 
 bool Raw_SetScore(Player* player, const std::string &key, int value)
 {
-    Objective* obj = g_scoreboard->getObjective(key);
+    Objective* obj = globalScoreBoard->getObjective(key);
     if (obj)
     {
         bool a1 = true;
         bool &pa = a1;
-        g_scoreboard->modifyPlayerScore(pa,g_scoreboard->getScoreboardId(*(Actor*)player), *obj, value, 0);   //Set
+        globalScoreBoard->modifyPlayerScore(pa,globalScoreBoard->getScoreboardId(*(Actor*)player), *obj, value, 0);   //Set
         return true;
     }
     return false;
@@ -191,12 +191,12 @@ bool Raw_SetScore(Player* player, const std::string &key, int value)
 
 bool Raw_AddScore(Player* player, const std::string &key, int value)
 {
-    Objective* obj = g_scoreboard->getObjective(key);
+    Objective* obj = globalScoreBoard->getObjective(key);
     if (obj)
     {
         bool a1 = true;
         bool& pa = a1;
-        g_scoreboard->modifyPlayerScore(pa, g_scoreboard->getScoreboardId(*(Actor*)player), *obj, value, 1);   //Add
+        globalScoreBoard->modifyPlayerScore(pa, globalScoreBoard->getScoreboardId(*(Actor*)player), *obj, value, 1);   //Add
         return true;
     }
     return false;
@@ -204,12 +204,12 @@ bool Raw_AddScore(Player* player, const std::string &key, int value)
 
 bool Raw_RemoveScore(Player* player, const std::string &key)
 {
-    Objective* obj = g_scoreboard->getObjective(key);
+    Objective* obj = globalScoreBoard->getObjective(key);
     if (obj)
     {
         bool a1 = true;
         bool& pa = a1;
-        g_scoreboard->modifyPlayerScore(pa, g_scoreboard->getScoreboardId(*(Actor*)player), *obj, 0, 2);   //Remove
+        globalScoreBoard->modifyPlayerScore(pa, globalScoreBoard->getScoreboardId(*(Actor*)player), *obj, 0, 2);   //Remove
         return true;
     }
     return false;
@@ -222,7 +222,7 @@ bool Raw_SetSidebar(Player *player, std::string title, const std::vector<std::pa
     vector<ScorePacketInfo> info;
     for (auto& x : data)
     {
-        ScorePacketInfo i(g_scoreboard->createScoreboardId(x.first),x.second,x.first);
+        ScorePacketInfo i(globalScoreBoard->createScoreboardId(x.first),x.second,x.first);
         info.push_back(i);
     }
 

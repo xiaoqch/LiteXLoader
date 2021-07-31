@@ -63,7 +63,7 @@ JSON_ROOT Raw_JsonOpen(const std::string& path, const std::string& defContent)
     if (!Raw_PathExists(path))
     {
         //创建新的
-        filesystem::create_directories(filesystem::path(path).remove_filename().u8string());
+        Raw_AutoCreateDirs(path);
 
         if (defContent != "")
         {
