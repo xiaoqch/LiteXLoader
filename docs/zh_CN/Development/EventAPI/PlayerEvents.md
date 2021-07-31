@@ -389,21 +389,6 @@
 
 <br>
 
-#### "onPlayerRide" - 玩家骑乘
-
-- 监听函数原型
-  `function(player,entity)`
-- 参数：
-  - player : `Player`  
-    尝试骑乘的玩家对象
-  - entity : `Entity`  
-    被骑乘的实体对象
-- 拦截事件：函数返回`false`
-
-注：骑乘包括坐船、骑马、骑猪等。
-
-<br>
-
 #### "onOpenContainerScreen" - 玩家打开容器类GUI
 
 - 监听函数原型

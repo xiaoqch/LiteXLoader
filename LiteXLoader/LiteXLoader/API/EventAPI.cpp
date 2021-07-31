@@ -37,7 +37,7 @@ using namespace script;
 enum class EVENT_TYPES : int
 {
     onPreJoin=0, onJoin, onLeft, onPlayerCmd, onChat, onPlayerDie, 
-    onRespawn, onChangeDim, onJump, onSneak, onAttack, onEat, onMove, onSetArmor, onPlayerRide,
+    onRespawn, onChangeDim, onJump, onSneak, onAttack, onEat, onMove, onSetArmor, onRide,
     onUseItem, onTakeItem, onDropItem, onUseItemOn,
     onDestroyingBlock, onDestroyBlock, onWitherBossDestroy, onPlaceBlock,
     onOpenContainer, onCloseContainer, onContainerChangeSlot, onOpenContainerScreen,
@@ -62,7 +62,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onEat",EVENT_TYPES::onEat},
     {"onMove",EVENT_TYPES::onMove},
     {"onSetArmor",EVENT_TYPES::onSetArmor},
-    {"onPlayerRide",EVENT_TYPES::onPlayerRide},
+    {"onRide",EVENT_TYPES::onRide},
     {"onMobDie",EVENT_TYPES::onMobDie},
     {"onMobHurt",EVENT_TYPES::onMobHurt},
     {"onUseItem",EVENT_TYPES::onUseItem},
@@ -468,18 +468,15 @@ THook(void, "?setArmor@Player@@UEAAXW4ArmorSlot@@AEBVItemStack@@@Z",
     return original(_this, slot, it);
 }
 
-// ===== onPlayerRide =====
+// ===== onRide =====
 THook(bool, "?canAddRider@Actor@@UEBA_NAEAV1@@Z",
     Actor* a1, Actor* a2)
 {
-    if (Raw_IsPlayer(a2))
+    IF_LISTENED(EVENT_TYPES::onRide)
     {
-        IF_LISTENED(EVENT_TYPES::onPlayerRide)
-        {
-            CallEventEx(EVENT_TYPES::onPlayerRide, PlayerClass::newPlayer((Player*)a2), EntityClass::newEntity(a1));
-        }
-        IF_LISTENDED_END();
+        CallEventEx(EVENT_TYPES::onRide, EntityClass::newEntity(a2), EntityClass::newEntity(a1));
     }
+        IF_LISTENDED_END();
     return original(a1, a2);
 }
 
