@@ -1019,7 +1019,7 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
 
             if (!prefix.empty())
             {
-                //found
+                //Lxl Registered Cmd
                 int perm = localShareData->playerCmdCallbacks[prefix].perm;
 
                 if (Raw_GetPlayerPermLevel(player) >= perm)
@@ -1027,12 +1027,21 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
                     bool callbackRes = CallPlayerCmdCallback(player, prefix, paras);
                     IF_LISTENED(EVENT_TYPES::onPlayerCmd)
                     {
-                        CallEvent(EVENT_TYPES::onPlayerCmd, PlayerClass::newPlayer(player), cmd);
+                        CallEventEx(EVENT_TYPES::onPlayerCmd, PlayerClass::newPlayer(player), String::newString(cmd));
                     }
                     IF_LISTENDED_END();
                     if (!callbackRes)
                         return false;
                 }
+            }
+            else
+            {
+                //Other Cmd
+                IF_LISTENED(EVENT_TYPES::onPlayerCmd)
+                {
+                    CallEventEx(EVENT_TYPES::onPlayerCmd, PlayerClass::newPlayer(player), String::newString(cmd));
+                }
+                IF_LISTENDED_END();
             }
         }
         else
@@ -1049,14 +1058,25 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
 
             if (!prefix.empty())
             {
+                //Lxl Registered Cmd
+
                 bool callbackRes = CallServerCmdCallback(prefix,paras);
                 IF_LISTENED(EVENT_TYPES::onConsoleCmd)
                 {
-                    CallEventEx(EVENT_TYPES::onConsoleCmd, cmd);
+                    CallEventEx(EVENT_TYPES::onConsoleCmd, String::newString(cmd));
                 }
                 IF_LISTENDED_END();
                 if (!callbackRes)
                     return false;
+            }
+            else
+            {
+                //Other Cmd
+                IF_LISTENED(EVENT_TYPES::onConsoleCmd)
+                {
+                    CallEventEx(EVENT_TYPES::onConsoleCmd, String::newString(cmd));
+                }
+                IF_LISTENDED_END();
             }
         }
     }
