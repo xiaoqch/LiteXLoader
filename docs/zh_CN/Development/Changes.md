@@ -8,7 +8,8 @@
 
 #### 20210801 - v0.3.0
 
-- 将 `onContainerChangeSlot` 重命名为 `onContainerChange`，移动到方块事件中，并对回调参数做了修改。详见事件文档
+- 将事件 `onContainerChangeSlot` 重命名为 `onContainerChange`，移动到方块事件中，并对回调参数做了修改。详见事件文档
+- 事件`onProjectileHit`重命名为`onProjectileHitBlock`，修改了回调参数，新增`onProjectileHitEntity`
 
 #### 20210730 - v 0.3.0
 

@@ -41,8 +41,8 @@ enum class EVENT_TYPES : int
     onUseItem, onTakeItem, onDropItem, onUseItemOn, onInventoryChange,
     onDestroyingBlock, onDestroyBlock, onWitherBossDestroy, onPlaceBlock,
     onOpenContainer, onCloseContainer, onContainerChange, onOpenContainerScreen,
-    onMobDie, onMobHurt, onExplode, onBlockExploded, onCmdBlockExecute, onRedStoneUpdate,
-    onProjectileHit, onSplashPotionHitEffect, onBlockInteracted, onUseRespawnAnchor, onFarmLandDecay, onUseFrameBlock,
+    onMobDie, onMobHurt, onExplode, onBlockExploded, onCmdBlockExecute, onRedStoneUpdate, onProjectileHitEntity,
+    onProjectileHitBlock, onSplashPotionHitEffect, onBlockInteracted, onUseRespawnAnchor, onFarmLandDecay, onUseFrameBlock,
     onPistonPush, onHopperSearchItem, onHopperPushOut, onFireSpread, onFishingHookRetrieve,
     onScoreChanged, onServerStarted, onConsoleCmd, onFormSelected, onConsoleOutput,
     EVENT_COUNT
@@ -85,7 +85,8 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onOpenContainerScreen",EVENT_TYPES::onOpenContainerScreen},
     {"onCmdBlockExecute",EVENT_TYPES::onCmdBlockExecute},
     {"onRedStoneUpdate",EVENT_TYPES::onRedStoneUpdate},
-    {"onProjectileHit",EVENT_TYPES::onProjectileHit},
+    {"onProjectileHitBlock",EVENT_TYPES::onProjectileHitBlock},
+    {"onProjectileHitEntity",EVENT_TYPES::onProjectileHitEntity},
     {"onSplashPotionHitEffect",EVENT_TYPES::onSplashPotionHitEffect},
     {"onBlockInteracted",EVENT_TYPES::onBlockInteracted},
     {"onUseRespawnAnchor",EVENT_TYPES::onUseRespawnAnchor},
@@ -831,17 +832,36 @@ THook(void, "?onExploded@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@PEAVActor@@@
     return original(_this, bs, bp, actor);
 }
 
-// ===== onProjectileHit =====
+// ===== onProjectileHitBlock =====
 THook(void, "?onProjectileHit@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@AEBVActor@@@Z",
     Block* _this, BlockSource* bs, BlockPos* bp, Actor* actor)
 {
-    IF_LISTENED(EVENT_TYPES::onProjectileHit)
+    IF_LISTENED(EVENT_TYPES::onProjectileHitBlock)
     {
-        CallEventRtnVoid(EVENT_TYPES::onProjectileHit, BlockClass::newBlock(_this,bp,bs), IntPos::newPos(*bp,Raw_GetBlockDimension(bs)),
-            EntityClass::newEntity(actor));
+        if (Raw_GetEntityTypeName(actor) != "minecraft:air")
+        {
+            CallEventRtnVoid(EVENT_TYPES::onProjectileHitBlock, BlockClass::newBlock(_this, bp, bs), EntityClass::newEntity(actor));
+        }
     }
     IF_LISTENDED_END();
     return original(_this, bs, bp, actor);
+}
+
+// ===== onProjectileHitEntity =====
+class HitResult;
+THook(void, "?onHit@ProjectileComponent@@QEAAXAEAVActor@@AEBVHitResult@@@Z",
+    void* _this, Actor* item, HitResult* res)
+{
+    IF_LISTENED(EVENT_TYPES::onProjectileHitEntity)
+    {
+        Actor* actor = SymCall("?getEntity@HitResult@@QEBAPEAVActor@@XZ", Actor*, HitResult*)(res);
+        if (actor)
+        {
+            CallEventRtnVoid(EVENT_TYPES::onProjectileHitEntity, EntityClass::newEntity(actor),EntityClass::newEntity(item));
+        }
+    }
+    IF_LISTENDED_END();
+    return original(_this, item, res);
 }
 
 // ===== onRedStoneUpdate =====
