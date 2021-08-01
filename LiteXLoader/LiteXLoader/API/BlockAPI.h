@@ -43,6 +43,7 @@ public:
 
     Local<Value> getTag(const Arguments& args);
     Local<Value> setTag(const Arguments& args);
+    Local<Value> getBlockState(const Arguments& args);
 };
 
 //////////////////// APIs ////////////////////

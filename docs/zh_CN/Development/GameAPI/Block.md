@@ -69,6 +69,18 @@
 
 <br>
 
+#### 获取方块的BlockState
+
+`bl.getBlockState()`
+
+- 返回值：方块的BlockState
+- 返回值类型：`Object`
+
+方便函数，协助解析方块BlockState并转换为`Object`，方便读取与解析  
+等价于脚本执行`block.getTag().getTag("BlockState").toObject()`
+
+<br>
+
 ### 其他方块函数 API
 
 下面这些API提供了与游戏中指定位置方块互动的API

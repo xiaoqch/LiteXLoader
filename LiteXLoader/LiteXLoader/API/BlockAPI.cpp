@@ -5,6 +5,7 @@
 #include <Kernel/NBT.h>
 #include <Kernel/Block.h>
 #include <Kernel/SymbolHelper.h>
+#include <exception>
 using namespace script;
 
 //////////////////// Class Definition ////////////////////
@@ -18,6 +19,7 @@ ClassDefine<BlockClass> BlockClassBuilder =
         .instanceProperty("pos", &BlockClass::getPos)
         .instanceFunction("setTag", &BlockClass::setTag)
         .instanceFunction("getTag", &BlockClass::getTag)
+        .instanceFunction("getBlockState", &BlockClass::getBlockState)
         .build();
 
 
@@ -134,6 +136,19 @@ Local<Value> BlockClass::setTag(const Arguments& args)
         return Boolean::newBoolean(true);
     }
     CATCH("Fail in setTag!")
+}
+
+Local<Value> BlockClass::getBlockState(const Arguments& args)
+{
+    try {
+        auto list = Tag::fromBlock(block)->asCompound();
+        return Tag2Value(&list.at("states"),true);
+    }
+    catch (const std::out_of_range& e)
+    {
+        return Object::newObject();
+    }
+    CATCH("Fail in getBlockState!")
 }
 
 
