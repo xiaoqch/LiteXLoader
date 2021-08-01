@@ -482,3 +482,23 @@ pl.removeBossBar();
 [Lua]
 
 ```
+
+#### 删除玩家背包中的物品  
+
+`pl.removeItem(inventoryId,count)`
+
+- 参数：
+  - inventoryId : `Integer`  
+    背包格位ID  
+
+  - count : `Integer`  
+    要删除的物品数量
+- 返回值：是否成功删除
+- 返回值类型：`Boolean`
+
+#### 强制刷新玩家背包  
+
+`pl.refreshInventory()`
+
+- 返回值：是否成功刷新
+- 返回值类型：`Boolean`
