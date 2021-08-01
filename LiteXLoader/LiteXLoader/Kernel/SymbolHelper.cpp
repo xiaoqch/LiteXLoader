@@ -1,4 +1,5 @@
 #include "Global.h"
+#include "SymbolHelper.h"
 using namespace std;
 
 
@@ -30,7 +31,7 @@ BlockSource* Raw_GetBlockSourceByDim(int dimid)
 
 Block* Raw_GetBlockByPos(BlockPos* bp, BlockSource* bs)
 {
-	return Raw_GetBlockByPos(bp, bs);
+	return Raw_GetBlockByPos(bp->x, bp->y, bp->z, bs);
 }
 
 Block* Raw_GetBlockByPos(int x, int y, int z, BlockSource* bs)
