@@ -84,6 +84,25 @@
 
 <br>
 
+#### `"onRedStoneUpdate"` - 发生红石更新
+
+- 监听函数原型
+  `function(block,level,isActive)`
+- 参数：
+  - block : `Block`  
+    发生红石更新的方块对象
+  - level : `Integer`  
+    更新的红石能量等级（0-15）
+  - isActive : `Boolean`  
+    表示红石更新是激活还是熄灭  
+    - 为`true`表示红石变为激活状态
+    - 为`false`表示红石变为熄灭状态
+- 拦截事件：函数返回`false`
+
+目前可以监测红石更新的方块种类有：红石线、红石火把、红石中继器、红石比较器
+
+<br>
+
 #### `"onHopperSearchItem"` - 漏斗（漏斗矿车）检测可否吸取物品
 
 - 监听函数原型
