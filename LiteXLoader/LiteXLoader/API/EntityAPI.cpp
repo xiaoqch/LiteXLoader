@@ -11,6 +11,8 @@ using namespace script;
 ClassDefine<EntityClass> EntityClassBuilder =
     defineClass<EntityClass>("LXL_Entity")
         .constructor(nullptr)
+        .instanceFunction("getRawPtr", &EntityClass::getRawPtr)
+
         .instanceProperty("name", &EntityClass::getName)
         .instanceProperty("type", &EntityClass::getType)
         .instanceProperty("id", &EntityClass::getId)
@@ -68,6 +70,18 @@ Actor* EntityClass::get()
         return nullptr;
     else
         return Raw_GetEntityByUniqueId(id);
+}
+
+Local<Value> EntityClass::getRawPtr(const Arguments& args)
+{
+    try {
+        Actor* entity = get();
+        if (!entity)
+            return Local<Value>();
+        else
+            return Number::newNumber((intptr_t)entity);
+    }
+    CATCH("Fail in getRawPtr!")
 }
 
 Local<Value> EntityClass::getName()

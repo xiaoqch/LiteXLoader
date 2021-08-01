@@ -23,6 +23,7 @@ public:
     static Local<Object> newEntity(Actor *p);
     static Local<Object> newEntity(WActor p);
     static Actor* extractEntity(Local<Value> v);
+    Local<Value> getRawPtr(const Arguments& args);
 
     Local<Value> getName();
     Local<Value> getType();

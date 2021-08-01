@@ -13,10 +13,13 @@ using namespace script;
 ClassDefine<BlockClass> BlockClassBuilder =
     defineClass<BlockClass>("LXL_Block")
         .constructor(nullptr)
+        .instanceFunction("getRawPtr", &BlockClass::getRawPtr)
+        
         .instanceProperty("name", &BlockClass::getName)
         .instanceProperty("type", &BlockClass::getType)
         .instanceProperty("id", &BlockClass::getId)
         .instanceProperty("pos", &BlockClass::getPos)
+
         .instanceFunction("setTag", &BlockClass::setTag)
         .instanceFunction("getTag", &BlockClass::getTag)
         .instanceFunction("getBlockState", &BlockClass::getBlockState)
@@ -113,6 +116,14 @@ Local<Value> BlockClass::getPos()
         return IntPos::newPos(pos);
     }
     CATCH("Fail in getBlockPos!")
+}
+
+Local<Value> BlockClass::getRawPtr(const Arguments& args)
+{
+    try {
+        return Number::newNumber((intptr_t)block);
+    }
+    CATCH("Fail in getRawPtr!")
 }
 
 Local<Value> BlockClass::getTag(const Arguments& args)

@@ -759,10 +759,8 @@ THook(void, "?_onItemChanged@LevelContainerModel@@MEAAXHAEBVItemStack@@0@Z",
         BlockPos* bpos = (BlockPos*)((char*)_this + 216);
         Block* block = Raw_GetBlockByPos(bpos->x, bpos->y, bpos->z, bs);
 
-        bool isPutIn = Raw_IsNull(oldItem);
-
         CallEventRtnVoid(EVENT_TYPES::onContainerChange, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(block, bpos, bs),
-            slotNumber, isPutIn, ItemClass::newItem(isPutIn ? newItem : oldItem));
+            slotNumber, ItemClass::newItem(oldItem), ItemClass::newItem(newItem));
     }
     IF_LISTENDED_END();
     return original(_this, slotNumber, oldItem, newItem);
