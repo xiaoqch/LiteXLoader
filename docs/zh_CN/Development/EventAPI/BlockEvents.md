@@ -72,13 +72,34 @@
 #### `"onProjectileHit"` - 方块被弹射物击中
 
 - 监听函数原型
-  `function(block,pos,source)`
+  `function(block,pos)`
 - 参数：
   - block : `Block`  
     被击中的方块对象
-  - source : `Entity`  
-    弹射物来源的实体对象
+  - pos : `IntPos`  
+    击中的方块坐标
 - 拦截事件：不可以拦截
+
+注意，当生物被弹射物击中时，此事件也触发，但是 block 为空气方块（type为minecraft:air）
+
+<br>
+
+#### `"onRedStoneUpdate"` - 发生红石更新
+
+- 监听函数原型
+  `function(block,level,isActive)`
+- 参数：
+  - block : `Block`  
+    发生红石更新的方块对象
+  - level : `Integer`  
+    更新的红石能量等级（0-15）
+  - isActive : `Boolean`  
+    表示红石更新是激活还是熄灭  
+    - 为`true`表示红石变为激活状态
+    - 为`false`表示红石变为熄灭状态
+- 拦截事件：函数返回`false`
+
+目前可以监测红石更新的方块种类有：红石线、红石火把、红石中继器、红石比较器
 
 <br>
 

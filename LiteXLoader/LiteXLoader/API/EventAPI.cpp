@@ -84,6 +84,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onContainerChange",EVENT_TYPES::onContainerChange},
     {"onOpenContainerScreen",EVENT_TYPES::onOpenContainerScreen},
     {"onCmdBlockExecute",EVENT_TYPES::onCmdBlockExecute},
+    {"onRedStoneUpdate",EVENT_TYPES::onRedStoneUpdate},
     {"onProjectileHit",EVENT_TYPES::onProjectileHit},
     {"onSplashPotionHitEffect",EVENT_TYPES::onSplashPotionHitEffect},
     {"onBlockInteracted",EVENT_TYPES::onBlockInteracted},
@@ -627,6 +628,30 @@ THook(bool, "?checkBlockDestroyPermissions@BlockSource@@QEAA_NAEAVActor@@AEBVBlo
 }
 
 // ===== onWitherBossDestroy =====
+
+THook(bool, "?canDestroy@WitherBoss@@SA_NAEBVBlock@@@Z",
+    Block* a1)
+{
+    IF_LISTENED(EVENT_TYPES::onWitherBossDestroy)
+    {
+        CallEventRtnBool(EVENT_TYPES::onWitherBossDestroy, BlockClass::newBlock(a1));
+    }
+    IF_LISTENDED_END();
+    return original(a1);
+}
+
+THook(bool, "?canDestroyBlock@WitherSkull@@UEBA_NAEBVBlock@@@Z",
+    void* _this, Block* a2)
+{
+    IF_LISTENED(EVENT_TYPES::onWitherBossDestroy)
+    {
+        CallEventRtnBool(EVENT_TYPES::onWitherBossDestroy, BlockClass::newBlock(a2));
+    }
+    IF_LISTENDED_END();
+    return original(_this, a2);
+}
+
+/*
 THook(void, "?_destroyBlocks@WitherBoss@@AEAAXAEAVLevel@@AEBVAABB@@AEAVBlockSource@@H@Z",
     void* _this, Level* a2, AABB* a3, BlockSource* a4, int a5)
 {
@@ -813,12 +838,69 @@ THook(void, "?onExploded@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@PEAVActor@@@
 THook(void, "?onProjectileHit@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@AEBVActor@@@Z",
     Block* _this, BlockSource* bs, BlockPos* bp, Actor* actor)
 {
-    IF_LISTENED(EVENT_TYPES::onProjectileHit)       //################# 击中实体时也会触发 ################# 
+    IF_LISTENED(EVENT_TYPES::onProjectileHit)
     {
-        CallEventRtnVoid(EVENT_TYPES::onProjectileHit, BlockClass::newBlock(_this,bp,bs), EntityClass::newEntity(actor));
+        CallEventRtnVoid(EVENT_TYPES::onProjectileHit, BlockClass::newBlock(_this,bp,bs), IntPos::newPos(*bp,Raw_GetBlockDimension(bs)));
     }
     IF_LISTENDED_END();
     return original(_this, bs, bp, actor);
+}
+
+// ===== onRedStoneUpdate =====
+// 红石粉
+THook(void, "?onRedstoneUpdate@RedStoneWireBlock@@UEBAXAEAVBlockSource@@AEBVBlockPos@@H_N@Z",
+    void* _this, BlockSource* bs, BlockPos* bp, int level, bool isActive)
+{
+    IF_LISTENED(EVENT_TYPES::onRedStoneUpdate)
+    {
+        IntVec4 vec{ bp->x,bp->y,bp->z,Raw_GetBlockDimension(bs) };
+        CallEventRtnVoid(EVENT_TYPES::onRedStoneUpdate, BlockClass::newBlock(Raw_GetBlockByPos(&vec), bp, bs), 
+            Number::newNumber(level),Boolean::newBoolean(isActive));
+    }
+    IF_LISTENDED_END();
+    return original(_this, bs, bp, level, isActive);
+}
+
+// 红石火把
+THook(void, "?onRedstoneUpdate@RedstoneTorchBlock@@UEBAXAEAVBlockSource@@AEBVBlockPos@@H_N@Z",
+    void* _this, BlockSource* bs, BlockPos* bp, int level, bool isActive)
+{
+    IF_LISTENED(EVENT_TYPES::onRedStoneUpdate)
+    {
+        IntVec4 vec{ bp->x,bp->y,bp->z,Raw_GetBlockDimension(bs) };
+        CallEventRtnVoid(EVENT_TYPES::onRedStoneUpdate, BlockClass::newBlock(Raw_GetBlockByPos(&vec), bp, bs),
+            Number::newNumber(level), Boolean::newBoolean(isActive));
+    }
+    IF_LISTENDED_END();
+    return original(_this, bs, bp, level, isActive);
+}
+
+// 红石中继器
+THook(void, "?onRedstoneUpdate@DiodeBlock@@UEBAXAEAVBlockSource@@AEBVBlockPos@@H_N@Z",
+    void* _this, BlockSource* bs, BlockPos* bp, int level, bool isActive)
+{
+    IF_LISTENED(EVENT_TYPES::onRedStoneUpdate)
+    {
+        IntVec4 vec{ bp->x,bp->y,bp->z,Raw_GetBlockDimension(bs) };
+        CallEventRtnVoid(EVENT_TYPES::onRedStoneUpdate, BlockClass::newBlock(Raw_GetBlockByPos(&vec), bp, bs),
+            Number::newNumber(level), Boolean::newBoolean(isActive));
+    }
+    IF_LISTENDED_END();
+    return original(_this, bs, bp, level, isActive);
+}
+
+// 红石比较器
+THook(void, "?onRedstoneUpdate@ComparatorBlock@@UEBAXAEAVBlockSource@@AEBVBlockPos@@H_N@Z",
+    void* _this, BlockSource* bs, BlockPos* bp, int level, bool isActive)
+{
+    IF_LISTENED(EVENT_TYPES::onRedStoneUpdate)
+    {
+        IntVec4 vec{ bp->x,bp->y,bp->z,Raw_GetBlockDimension(bs) };
+        CallEventRtnVoid(EVENT_TYPES::onRedStoneUpdate, BlockClass::newBlock(Raw_GetBlockByPos(&vec), bp, bs),
+            Number::newNumber(level), Boolean::newBoolean(isActive));
+    }
+    IF_LISTENDED_END();
+    return original(_this, bs, bp, level, isActive);
 }
 
 // ===== onSplashPotionHitEffect =====
