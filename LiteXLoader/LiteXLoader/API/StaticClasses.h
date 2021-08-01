@@ -38,7 +38,6 @@ public:
 
     static Local<Value> newSimpleForm(const Arguments& args) { return NewSimpleForm(args); }
     static Local<Value> newCustomForm(const Arguments& args) { return NewCustomForm(args); }
-    static Local<Value> cancelForm(const Arguments& args) { return CancelForm(args); }
 
     static Local<Value> regConsoleCmd(const Arguments& args) { return RegisterConsoleCmd(args); }
     static Local<Value> setMotd(const Arguments& args) { return SetMotd(args); }
