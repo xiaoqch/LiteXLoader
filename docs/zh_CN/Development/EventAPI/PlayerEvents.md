@@ -309,19 +309,26 @@
 #### `"onInventoryChange"` - 玩家物品栏变化
 
 - 监听函数原型
-  `function(player,slotNum,isPutIn,item)`
+  `function(player,slotNum,oldItem,newItem)`
 - 参数：
   - player : `Player`  
     操作物品栏的玩家对象
   - slotNum : `Integer`  
     操作物品栏的格子位置（第slotNum个格子）
-  - isPutIn : `Boolean`  
-    是否为放入物品
-    - 为 `true` 表示正在放入物品
-    - 为 `false` 表示正在取出物品
-  - item : `Item`  
-    被放入 / 取出的物品对象
+  - oldItem : `Item`  
+    格子中的原来旧物品对象
+  - newItem : `Item`  
+    格子中新的物品对象
 - 拦截事件：不可以拦截
+
+对回调参数的解释：  
+旧物品对象与新物品对象有多种不同的组合情况，表示格子内不同的变化情况
+
+- 放入物品：旧物品对象为空，新物品对象不为空
+- 取出物品：旧物品对象不为空，新物品对象不为空
+- 物品增加堆叠：旧物品对象的`type` == 新物品对象的`type`，且旧物品对象的`count` < 新物品对象的`count`
+- 物品减少堆叠：旧物品对象的`type` == 新物品对象的`type`，且旧物品对象的`count` > 新物品对象的`count`
+- 替换物品：旧物品对象的`type` 不等于 新物品对象的`type`，且两物品对象均不为空
 
 注意：当某个玩家进服时，在进服前的某个时刻，物品栏的每一格都会先触发一次这个事件
 

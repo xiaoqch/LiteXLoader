@@ -594,7 +594,7 @@ THook(void, "?inventoryChanged@Player@@UEAAXAEAVContainer@@HAEBVItemStack@@1_N@Z
     {
         bool isPutIn = Raw_IsNull(oldItem);
         CallEventRtnVoid(EVENT_TYPES::onInventoryChange, PlayerClass::newPlayer((Player*)_this), slotNumber,
-            isPutIn, ItemClass::newItem(isPutIn ? newItem : oldItem));
+            ItemClass::newItem(oldItem), ItemClass::newItem(newItem));
     }
     IF_LISTENDED_END();
 
