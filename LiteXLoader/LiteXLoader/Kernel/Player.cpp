@@ -274,3 +274,9 @@ Player* Raw_GetPlayerByUniqueId(ActorUniqueID id) {
     return SymCall("?getPlayer@Level@@UEBAPEAVPlayer@@UActorUniqueID@@@Z"
         , Player*, Level*, ActorUniqueID)(mc->getLevel(), id);
 }
+
+bool Raw_RefreshInventory(Player* pl) {
+    SymCall("?sendInventory@ServerPlayer@@UEAAX_N@Z", void,
+        ServerPlayer*, bool)((ServerPlayer*)pl, true);
+    return true;
+}

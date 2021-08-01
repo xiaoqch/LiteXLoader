@@ -41,3 +41,4 @@ bool Raw_IsPlayerValid(Player *player);
 
 int Raw_GetPlayerDimId(Player* player);
 Player* Raw_GetPlayerByUniqueId(ActorUniqueID id);
+bool Raw_RefreshInventory(Player* pl);

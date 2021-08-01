@@ -55,6 +55,7 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceFunction("crash", &PlayerClass::crash)
         .instanceFunction("setOnFire", &PlayerClass::setOnFire)
         .instanceFunction("getDevice", &PlayerClass::getDevice)
+        .instanceFunction("refreshInventory", &PlayerClass::refreshInventory)
 
         .instanceFunction("getScore", &PlayerClass::getScore)
         .instanceFunction("setScore", &PlayerClass::setScore)
@@ -622,6 +623,19 @@ Local<Value> PlayerClass::getDevice(const Arguments& args)
         return DeviceClass::newDevice(player);
     }
     CATCH("Fail in getDevice!")
+}
+
+Local<Value> PlayerClass::refreshInventory()
+{
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        Raw_RefreshInventory(player);
+        return Boolean::newBoolean(true);
+    }
+    CATCH("Fail in refreshInventory!")
 }
 
 Local<Value> PlayerClass::getScore(const Arguments& args)

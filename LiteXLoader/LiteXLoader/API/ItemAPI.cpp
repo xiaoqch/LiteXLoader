@@ -159,12 +159,3 @@ Local<Value> ItemClass::setTag(const Arguments& args)
     }
     CATCH("Fail in setTag!")
 }
-
-Local<Value> ItemClass::remove(const Arguments& args)
-{
-    try {
-        bool result = Raw_SetNull(item);
-        return Boolean::newBoolean(result);
-    }
-    CATCH("Fail in removeItem!")
-}

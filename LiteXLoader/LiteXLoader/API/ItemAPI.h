@@ -36,6 +36,5 @@ public:
     Local<Value> setLore(const Arguments& args);
     Local<Value> getTag(const Arguments& args);
     Local<Value> setTag(const Arguments& args);
-    Local<Value> remove(const Arguments& args);
 
 };
