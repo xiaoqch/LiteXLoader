@@ -22,7 +22,6 @@ ClassDefine<ItemClass> ItemClassBuilder =
         .instanceFunction("setLore", &ItemClass::setLore)
         .instanceFunction("setTag", &ItemClass::setTag)
         .instanceFunction("getTag", &ItemClass::getTag)
-        .instanceFunction("remove", &ItemClass::remove)
         .build();
 
 
@@ -158,13 +157,4 @@ Local<Value> ItemClass::setTag(const Arguments& args)
         return Boolean::newBoolean(true);
     }
     CATCH("Fail in setTag!")
-}
-
-Local<Value> ItemClass::remove(const Arguments& args)
-{
-    try {
-        bool result = Raw_SetNull(item);
-        return Boolean::newBoolean(result);
-    }
-    CATCH("Fail in removeItem!")
 }
