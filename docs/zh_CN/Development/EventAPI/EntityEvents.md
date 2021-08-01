@@ -111,3 +111,18 @@
 - 拦截事件：函数返回`false`
 
 <br>
+
+#### "onProjectileShoot" - 实体发射弹射物
+
+- 监听函数原型
+  `function(shooter,projectiler)`
+- 参数：
+  - shooter : `Entity`  
+    发射弹射物的的实体对象
+  - projectiler : `Entity`  
+    被发射的实体对象
+- 拦截事件：函数返回 `false`
+
+注：丢药水也会触发此事件，但无法拦截。拦截丢药水请使用 `onSplashPotionHitEffect`
+
+<br>
