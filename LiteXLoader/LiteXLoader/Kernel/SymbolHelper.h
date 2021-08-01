@@ -150,7 +150,7 @@ public:
 struct ScorePacketInfo
 {
     ScoreboardId sid;
-    string obj_name = "name";
+    string obj_name = "__fake_score_objective__";
     unsigned score;
     enum Type : char { Invalid = 0, Player = 1, Actor = 2, Fake = 3 };
     Type type = Fake;

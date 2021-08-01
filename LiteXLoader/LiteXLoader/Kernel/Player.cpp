@@ -1,6 +1,7 @@
 #include "Global.h"
 #include "Player.h"
 #include "Packet.h"
+#include "Entity.h"
 #include "SymbolHelper.h"
 #include "ThirdParty.h"
 #include "Global.h"
@@ -13,8 +14,7 @@ string  Raw_GetPlayerName(Player* player)
 
 FloatVec4 Raw_GetPlayerPos(Player* player)
 {
-    auto pos = player->getPos();
-    return {pos.x,pos.y,pos.z,WPlayer(*player).getDimID()};
+    return Raw_GetEntityPos((Actor*)player);
 }
 
 string Raw_GetXuid(Player* player)
@@ -223,7 +223,7 @@ bool Raw_RemoveScore(Player* player, const std::string &key)
 
 bool Raw_SetSidebar(Player *player, std::string title, const std::vector<std::pair<std::string,int>> &data)
 {
-    Raw_SendSetDisplayObjectivePacket(player, title, "name");
+    Raw_SendSetDisplayObjectivePacket(player, title, "__fake_score_objective__");
 
     vector<ScorePacketInfo> info;
     for (auto& x : data)

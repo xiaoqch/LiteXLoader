@@ -12,7 +12,6 @@ Minecraft* mc = nullptr;
 Scoreboard* globalScoreBoard = nullptr;
 CommandRegistry* CmdReg = nullptr;
 
-
 //初始化
 THook(Scoreboard*, "??0ServerScoreboard@@QEAA@VCommandSoftEnumRegistry@@PEAVLevelStorage@@@Z",
 	void* _this, void* a2, void* a3)
