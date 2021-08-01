@@ -11,6 +11,8 @@ using namespace script;
 ClassDefine<EntityClass> EntityClassBuilder =
     defineClass<EntityClass>("LXL_Entity")
         .constructor(nullptr)
+        .instanceFunction("getRawPtr", &EntityClass::getRawPtr)
+
         .instanceProperty("name", &EntityClass::getName)
         .instanceProperty("type", &EntityClass::getType)
         .instanceProperty("id", &EntityClass::getId)
@@ -22,6 +24,7 @@ ClassDefine<EntityClass> EntityClassBuilder =
 
         .instanceFunction("teleport", &EntityClass::teleport)
         .instanceFunction("kill", &EntityClass::kill)
+        .instanceFunction("isPlayer", &EntityClass::isPlayer)
         .instanceFunction("toPlayer", &EntityClass::toPlayer)
         .instanceFunction("setOnFire",&EntityClass::setOnFire)
         .instanceFunction("setTag", &EntityClass::setTag)
@@ -68,6 +71,18 @@ Actor* EntityClass::get()
         return nullptr;
     else
         return Raw_GetEntityByUniqueId(id);
+}
+
+Local<Value> EntityClass::getRawPtr(const Arguments& args)
+{
+    try {
+        Actor* entity = get();
+        if (!entity)
+            return Local<Value>();
+        else
+            return Number::newNumber((intptr_t)entity);
+    }
+    CATCH("Fail in getRawPtr!")
 }
 
 Local<Value> EntityClass::getName()
@@ -168,7 +183,14 @@ Local<Value> EntityClass::getSpeed()
 
 Local<Value> EntityClass::teleport(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args,1)
+    CHECK_ARGS_COUNT(args, 1);
+    if (args.size() == 4)
+    {
+        CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
+        CHECK_ARG_TYPE(args[1], ValueKind::kNumber);
+        CHECK_ARG_TYPE(args[2], ValueKind::kNumber);
+        CHECK_ARG_TYPE(args[3], ValueKind::kNumber);
+    }
     
     try{
         FloatVec4 pos;
@@ -177,9 +199,15 @@ Local<Value> EntityClass::teleport(const Arguments& args)
         {
             // FloatPos
             FloatPos* posObj = FloatPos::extractPos(args[0]);
-            if (!posObj)
+            if (posObj)
+            {
+                pos = *posObj;
+            }
+            else
+            {
+                ERROR("Wrong type of argument in teleport!");
                 return Local<Value>();
-            pos = *posObj;
+            }
         }
         else if (args.size() == 4)
         {
@@ -196,7 +224,7 @@ Local<Value> EntityClass::teleport(const Arguments& args)
         }
         else
         {
-            ERROR("Wrong type of argument in teleport!");
+            ERROR("Wrong number of arguments in teleport!");
             return Local<Value>();
         }
         
@@ -218,6 +246,18 @@ Local<Value> EntityClass::kill(const Arguments& args)
         return Boolean::newBoolean(Raw_KillEntity(entity));
     }
     CATCH("Fail in killEntity!")
+}
+
+Local<Value> EntityClass::isPlayer(const Arguments& args)
+{
+    try {
+        Actor* entity = get();
+        if (!entity)
+            return Local<Value>();
+
+        return Boolean::newBoolean(Raw_IsPlayer(entity));
+    }
+    CATCH("Fail in isPlayer!")
 }
 
 Local<Value> EntityClass::toPlayer(const Arguments& args)

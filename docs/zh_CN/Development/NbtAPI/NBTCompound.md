@@ -115,7 +115,8 @@
 - 返回值：对应的对象 / 表
 - 返回值类型：`Object`
 
-将Compound转换为LXL对象 / 表，把所有能转换为LXL数据类型的数据项都转换为LXL数据类型储存于对象 / 表的对应key中，方便读取和处理  
-如果Compound某一项储存的是`List`类型 NBT，将在对应位置放置一个`NbtList`对象；如果List某一项储存的是`Compound`类型 NBT，将在对应位置放置一个`NbtCompound`对象
+将Compound的内容转换为LXL对象 / 表，把数据项都转换为LXL数据类型储存于对象 / 表的对应key中，方便读取和处理  
+如果Compound某一项储存的是`List`或者`Compound`类型的 NBT，将在对应位置递归展开为`Array`或`Object`
 
 <br>
+

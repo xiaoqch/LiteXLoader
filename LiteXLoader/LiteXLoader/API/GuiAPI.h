@@ -56,6 +56,5 @@ public:
 
 //////////////////// APIs ////////////////////
 
-Local<Value> CancelForm(const Arguments& args);
 Local<Value> NewSimpleForm(const Arguments& args);
 Local<Value> NewCustomForm(const Arguments& args);

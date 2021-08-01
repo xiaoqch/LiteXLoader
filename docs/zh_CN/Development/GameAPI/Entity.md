@@ -40,11 +40,12 @@
 
 #### 传送实体至指定位置
 
-`en.teleport(pos)`
+`en.teleport(pos)`  
+`en.teleport(x,y,z,dimid)`
 
 - 参数：
   - pos : `FloatPos`  
-    目标位置坐标
+    目标位置坐标（或者使用x, y, z, dimid来确定实体位置）
 - 返回值：是否成功传送
 - 返回值类型：`Boolean`
 
@@ -67,6 +68,15 @@
 - 返回值类型：`NbtCompound`
 
 关于NBT对象的更多使用，请参考 [NBT接口文档](zh_CN/Development/NbtAPI/NBT.md)
+
+<br>
+
+#### 判断一个实体对象是不是玩家
+
+`en.isPlayer()`
+
+- 返回值：当前实体对象是不是玩家
+- 返回值类型：`Boolean`
 
 <br>
 

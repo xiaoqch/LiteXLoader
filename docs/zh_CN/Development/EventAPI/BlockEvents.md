@@ -46,10 +46,10 @@
 
 <br>
 
-#### `"onContainerChange"` - 容器被放入 / 取出物品
+#### `"onContainerChange"` - 容器内容改变
 
 - 监听函数原型
-  `function(player,container,slotNum,isPutIn,item)`
+  `function(player,container,slotNum,oldItem,newItem)`
 - 参数：
   - player : `Player`  
     操作容器的玩家对象
@@ -57,19 +57,28 @@
     被操作的容器的方块对象
   - slotNum : `Integer`  
     操作容器的格子位置（第slotNum个格子）
-  - isPutIn : `Boolean`  
-    是否为放入物品
-    - 为 `true` 表示正在放入物品
-    - 为 `false` 表示正在取出物品
-  - item : `Item`  
-    被放入 / 取出的物品对象
+  - oldItem : `Item`  
+    格子中的原来旧物品对象
+  - newItem : `Item`  
+    格子中新的物品对象
 - 拦截事件：不可以拦截
+
+此处的 **容器** 为宽泛容器的概念，包括箱子、桶等多种可以储存物品的容器都可以触发此事件
+
+对回调参数的解释：  
+旧物品对象与新物品对象有多种不同的组合情况，表示格子内不同的变化情况
+
+- 放入物品：旧物品对象为空，新物品对象不为空
+- 取出物品：旧物品对象不为空，新物品对象不为空
+- 物品增加堆叠：旧物品对象的`type` == 新物品对象的`type`，且旧物品对象的`count` < 新物品对象的`count`
+- 物品减少堆叠：旧物品对象的`type` == 新物品对象的`type`，且旧物品对象的`count` > 新物品对象的`count`
+- 替换物品：旧物品对象的`type` 不等于 新物品对象的`type`，且两物品对象均不为空
 
 注意：当某个容器被打开时，物品栏的每一格都会先触发一次这个事件
 
 <br>
 
-#### `"onProjectileHit"` - 方块被弹射物击中
+#### `"onProjectileHitBlock"` - 方块被弹射物击中
 
 - 监听函数原型
   `function(block,pos,source)`
@@ -77,8 +86,27 @@
   - block : `Block`  
     被击中的方块对象
   - source : `Entity`  
-    弹射物来源的实体对象
+    发射的弹射物实体（如箭）
 - 拦截事件：不可以拦截
+
+<br>
+
+#### `"onRedStoneUpdate"` - 发生红石更新
+
+- 监听函数原型
+  `function(block,level,isActive)`
+- 参数：
+  - block : `Block`  
+    发生红石更新的方块对象
+  - level : `Integer`  
+    更新的红石能量等级（0-15）
+  - isActive : `Boolean`  
+    表示红石更新是激活还是熄灭  
+    - 为`true`表示红石变为激活状态
+    - 为`false`表示红石变为熄灭状态
+- 拦截事件：函数返回`false`
+
+目前可以监测红石更新的方块种类有：红石线、红石火把、红石中继器、红石比较器
 
 <br>
 

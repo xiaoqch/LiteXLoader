@@ -56,7 +56,7 @@ bool Raw_SendSetDisplayObjectivePacket(Player* player, const string& title, cons
 
 bool Raw_SendSetScorePacket(Player* player, char type, const vector<ScorePacketInfo>& data)
 {
-    void* packet = Raw_CreatePacket(108);   //修改侧边栏数据包
+    void* packet = Raw_CreatePacket(108);   //修改分数数据包
     dAccess<char>(packet, 48) = type;   //set
     dAccess<vector<ScorePacketInfo>>(packet, 56) = data;
 

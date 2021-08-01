@@ -23,6 +23,7 @@ public:
     static Local<Object> newPlayer(Player *p);
     static Local<Object> newPlayer(WPlayer p);
     static Player* extractPlayer(Local<Value> v);
+    Local<Value> getRawPtr(const Arguments& args);
 
     Local<Value> getName();
     Local<Value> getPos();
@@ -55,6 +56,7 @@ public:
     Local<Value> crash(const Arguments& args);
     Local<Value> setOnFire(const Arguments& args);
     Local<Value> getDevice(const Arguments& args);
+    Local<Value> removeItem(const Arguments& args);
 
     Local<Value> getScore(const Arguments& args);
     Local<Value> setScore(const Arguments& args);

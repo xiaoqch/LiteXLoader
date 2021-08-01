@@ -38,7 +38,6 @@ public:
 
     static Local<Value> newSimpleForm(const Arguments& args) { return NewSimpleForm(args); }
     static Local<Value> newCustomForm(const Arguments& args) { return NewCustomForm(args); }
-    static Local<Value> cancelForm(const Arguments& args) { return CancelForm(args); }
 
     static Local<Value> regConsoleCmd(const Arguments& args) { return RegisterConsoleCmd(args); }
     static Local<Value> setMotd(const Arguments& args) { return SetMotd(args); }
@@ -67,7 +66,6 @@ static ClassDefine<void> McClassBuilder =
         .function("spawnParticle", &McClass::spawnParticle)
         .function("newSimpleForm", &McClass::newSimpleForm)
         .function("newCustomForm", &McClass::newCustomForm)
-        .function("cancelForm", &McClass::cancelForm)
         .function("regConsoleCmd", &McClass::regConsoleCmd)
         .function("setMotd", &McClass::setMotd)
         .function("setOnlinePlayer", &McClass::setOnlinePlayer)

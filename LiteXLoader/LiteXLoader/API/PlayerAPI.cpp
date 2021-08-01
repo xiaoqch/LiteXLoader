@@ -21,6 +21,8 @@ using namespace script;
 ClassDefine<PlayerClass> PlayerClassBuilder =
     defineClass<PlayerClass>("LXL_Player")
         .constructor(nullptr)
+        .instanceFunction("getRawPtr", &PlayerClass::getRawPtr)
+
         .instanceProperty("name", &PlayerClass::getName)
         .instanceProperty("pos", &PlayerClass::getPos)
         .instanceProperty("realName", &PlayerClass::getRealName)
@@ -55,6 +57,7 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceFunction("crash", &PlayerClass::crash)
         .instanceFunction("setOnFire", &PlayerClass::setOnFire)
         .instanceFunction("getDevice", &PlayerClass::getDevice)
+        .instanceFunction("removeItem", &PlayerClass::removeItem)
 
         .instanceFunction("getScore", &PlayerClass::getScore)
         .instanceFunction("setScore", &PlayerClass::setScore)
@@ -325,6 +328,18 @@ Local<Value> PlayerClass::getInAir()
     CATCH("Fail in GetInAir!")
 }
 
+Local<Value> PlayerClass::getRawPtr(const Arguments& args)
+{
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+        else
+            return Number::newNumber((intptr_t)player);
+    }
+    CATCH("Fail in getRawPtr!")
+}
+
 Local<Value> PlayerClass::teleport(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
@@ -336,9 +351,15 @@ Local<Value> PlayerClass::teleport(const Arguments& args)
         {
             // FloatPos
             FloatPos* posObj = FloatPos::extractPos(args[0]);
-            if (!posObj)
+            if (posObj)
+            {
+                pos = *posObj;
+            }
+            else
+            {
+                ERROR("Wrong type of argument in teleport!");
                 return Local<Value>();
-            pos = *posObj;
+            }
         }
         else if (args.size() == 4)
         {
@@ -622,6 +643,23 @@ Local<Value> PlayerClass::getDevice(const Arguments& args)
         return DeviceClass::newDevice(player);
     }
     CATCH("Fail in getDevice!")
+}
+
+Local<Value> PlayerClass::removeItem(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 2);
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        int inventoryId = args[0].toInt();
+        int count = args[1].toInt();
+
+        bool result = Raw_RemoveItem(player, inventoryId, count);
+        return Boolean::newBoolean(result);
+    }
+    CATCH("Fail in removeItem!")
 }
 
 Local<Value> PlayerClass::getScore(const Arguments& args)

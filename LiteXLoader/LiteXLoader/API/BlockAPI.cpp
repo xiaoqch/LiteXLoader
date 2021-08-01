@@ -5,6 +5,7 @@
 #include <Kernel/NBT.h>
 #include <Kernel/Block.h>
 #include <Kernel/SymbolHelper.h>
+#include <exception>
 using namespace script;
 
 //////////////////// Class Definition ////////////////////
@@ -12,12 +13,16 @@ using namespace script;
 ClassDefine<BlockClass> BlockClassBuilder =
     defineClass<BlockClass>("LXL_Block")
         .constructor(nullptr)
+        .instanceFunction("getRawPtr", &BlockClass::getRawPtr)
+        
         .instanceProperty("name", &BlockClass::getName)
         .instanceProperty("type", &BlockClass::getType)
         .instanceProperty("id", &BlockClass::getId)
         .instanceProperty("pos", &BlockClass::getPos)
+
         .instanceFunction("setTag", &BlockClass::setTag)
         .instanceFunction("getTag", &BlockClass::getTag)
+        .instanceFunction("getBlockState", &BlockClass::getBlockState)
         .build();
 
 
@@ -113,6 +118,14 @@ Local<Value> BlockClass::getPos()
     CATCH("Fail in getBlockPos!")
 }
 
+Local<Value> BlockClass::getRawPtr(const Arguments& args)
+{
+    try {
+        return Number::newNumber((intptr_t)block);
+    }
+    CATCH("Fail in getRawPtr!")
+}
+
 Local<Value> BlockClass::getTag(const Arguments& args)
 {
     try {
@@ -136,26 +149,66 @@ Local<Value> BlockClass::setTag(const Arguments& args)
     CATCH("Fail in setTag!")
 }
 
+Local<Value> BlockClass::getBlockState(const Arguments& args)
+{
+    try {
+        auto list = Tag::fromBlock(block)->asCompound();
+        return Tag2Value(&list.at("states"),true);
+    }
+    catch (const std::out_of_range& e)
+    {
+        return Object::newObject();
+    }
+    CATCH("Fail in getBlockState!")
+}
+
 
 //公用API
 Local<Value> GetBlock(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args,1)
+    CHECK_ARGS_COUNT(args, 1);
 
     try{
-        auto pos = IntPos::extractPos(args[0]);
-        if(!pos)
+        IntVec4 pos;
+        if (args.size() == 1)
+        {
+            // IntPos
+            auto posObj = IntPos::extractPos(args[0]);
+            if (posObj)
+            {
+                if (posObj->dim < 0)
+                    return Local<Value>();
+                else
+                    pos = *posObj;
+            }
+            else
+            {
+                ERROR("Wrong type of argument in GetBlock!");
+                return Local<Value>();
+            }
+        }
+        else if(args.size() == 4)
+        {
+            // Number Pos
+            CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
+            CHECK_ARG_TYPE(args[1], ValueKind::kNumber);
+            CHECK_ARG_TYPE(args[2], ValueKind::kNumber);
+            CHECK_ARG_TYPE(args[3], ValueKind::kNumber);
+            pos = { args[0].toInt(), args[1].toInt(), args[2].toInt(), args[3].toInt() };
+        }
+        else
+        {
+            ERROR("Wrong number of arguments in GetBlock!");
+            return Local<Value>();
+        }
+
+        auto block = Raw_GetBlockByPos(&pos);
+        if (!block)
             return Local<Value>();    //Null
         else
         {
-            auto block = Raw_GetBlockByPos(pos);
-            if(!block)
-                return Local<Value>();    //Null
-            else
-            {
-                BlockPos bp{ pos->x,pos->y,pos->z };
-                return BlockClass::newBlock(block, &bp, pos->dim);
-            }
+            BlockPos bp{ pos.x,pos.y,pos.z };
+            return BlockClass::newBlock(block, &bp, pos.dim);
         }
     }
     CATCH("Fail in GetBlock!")
@@ -163,28 +216,62 @@ Local<Value> GetBlock(const Arguments& args)
 
 Local<Value> SetBlock(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 2)
+    CHECK_ARGS_COUNT(args, 2);
 
     try
     {
-        IntPos* pos = IntPos::extractPos(args[0]);
-        if (!pos)
-            return Local<Value>();
-        if (pos->dim < 0)
-            return Boolean::newBoolean(false);
+        IntVec4 pos;
+        Local<Value> block;
 
-        if (args[1].isString())
+        if (args.size() == 1)
+        {
+            // IntPos
+            IntPos* posObj = IntPos::extractPos(args[0]);
+            if (posObj)
+            {
+                if (posObj->dim < 0)
+                    return Boolean::newBoolean(false);
+                else
+                {
+                    pos = *posObj;
+                    block = args[1];
+                }
+            }
+            else
+            {
+                ERROR("Wrong type of argument in SetBlock!");
+                return Local<Value>();
+            }
+        }
+        else if (args.size() == 4)
+        {
+            // Number Pos
+            CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
+            CHECK_ARG_TYPE(args[1], ValueKind::kNumber);
+            CHECK_ARG_TYPE(args[2], ValueKind::kNumber);
+            CHECK_ARG_TYPE(args[3], ValueKind::kNumber);
+            pos = { args[0].toInt(), args[1].toInt(), args[2].toInt(), args[3].toInt() };
+            block = args[4];
+        }
+        else
+        {
+            ERROR("Wrong number of arguments in SetBlock!");
+            return Local<Value>();
+        }
+
+
+        if (block.isString())
         {
             //方块名
-            return Boolean::newBoolean(Raw_SetBlockByName(*pos, args[1].toStr()));
+            return Boolean::newBoolean(Raw_SetBlockByName(pos, block.toStr()));
         }
         else
         {
             //其他方块对象
-            Block* bl = BlockClass::extractBlock(args[1]);
+            Block* bl = BlockClass::extractBlock(block);
             if (!bl)
                 return Local<Value>();
-            return Boolean::newBoolean(Raw_SetBlockByBlock(*pos, bl));
+            return Boolean::newBoolean(Raw_SetBlockByBlock(pos, bl));
         }
     }
     CATCH("Fail in SetBlock!")
@@ -192,18 +279,55 @@ Local<Value> SetBlock(const Arguments& args)
 
 Local<Value> SpawnParticle(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 2)
-    CHECK_ARG_TYPE(args[1], ValueKind::kString)
+    CHECK_ARGS_COUNT(args, 2)      
 
     try
     {
-        IntPos* pos = IntPos::extractPos(args[0]);
-        if (!pos)
-            return Local<Value>();
-        if (pos->dim < 0)
-            return Boolean::newBoolean(false);
+        IntPos* posObj = IntPos::extractPos(args[0]);
+        IntVec4 pos;
+        Local<Value> type;
 
-        return Boolean::newBoolean(Raw_SpawnParticle(*pos, args[1].toStr()));
+        if (args.size() == 1)
+        {
+            // IntPos
+            CHECK_ARG_TYPE(args[1], ValueKind::kString);
+
+            IntPos* posObj = IntPos::extractPos(args[0]);
+            if (posObj)
+            {
+                if (posObj->dim < 0)
+                    return Boolean::newBoolean(false);
+                else
+                {
+                    pos = *posObj;
+                    type = args[1];
+                }
+            }
+            else
+            {
+                ERROR("Wrong type of argument in SpawnParticle!");
+                return Local<Value>();
+            }
+        }
+        else if (args.size() == 4)
+        {
+            // Number Pos
+            CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
+            CHECK_ARG_TYPE(args[1], ValueKind::kNumber);
+            CHECK_ARG_TYPE(args[2], ValueKind::kNumber);
+            CHECK_ARG_TYPE(args[3], ValueKind::kNumber);
+            CHECK_ARG_TYPE(args[4], ValueKind::kString);
+
+            pos = { args[0].toInt(), args[1].toInt(), args[2].toInt(), args[3].toInt() };
+            type = args[4];
+        }
+        else
+        {
+            ERROR("Wrong number of arguments in SpawnParticle!");
+            return Local<Value>();
+        }
+
+        return Boolean::newBoolean(Raw_SpawnParticle(pos, type.toStr()));
     }
     CATCH("Fail in SpawnParticle!")
 }

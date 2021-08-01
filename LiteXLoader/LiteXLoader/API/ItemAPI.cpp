@@ -12,6 +12,8 @@ using namespace script;
 ClassDefine<ItemClass> ItemClassBuilder =
     defineClass<ItemClass>("LXL_Item")
         .constructor(nullptr)
+        .instanceFunction("getRawPtr", &ItemClass::getRawPtr)
+
         .instanceProperty("name", &ItemClass::getName)
         .instanceProperty("type", &ItemClass::getType)
         .instanceProperty("id", &ItemClass::getId)
@@ -22,7 +24,6 @@ ClassDefine<ItemClass> ItemClassBuilder =
         .instanceFunction("setLore", &ItemClass::setLore)
         .instanceFunction("setTag", &ItemClass::setTag)
         .instanceFunction("getTag", &ItemClass::getTag)
-        .instanceFunction("remove", &ItemClass::remove)
         .build();
 
 
@@ -106,6 +107,14 @@ Local<Value> ItemClass::getAux()
     CATCH("Fail in GetAux!")
 }
 
+Local<Value> ItemClass::getRawPtr(const Arguments& args)
+{
+    try {
+        return Number::newNumber((intptr_t)item);
+    }
+    CATCH("Fail in getRawPtr!")
+}
+
 Local<Value> ItemClass::isNull(const Arguments& args)
 {
     try{
@@ -158,13 +167,4 @@ Local<Value> ItemClass::setTag(const Arguments& args)
         return Boolean::newBoolean(true);
     }
     CATCH("Fail in setTag!")
-}
-
-Local<Value> ItemClass::remove(const Arguments& args)
-{
-    try {
-        bool result = Raw_SetNull(item);
-        return Boolean::newBoolean(result);
-    }
-    CATCH("Fail in removeItem!")
 }

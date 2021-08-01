@@ -23,8 +23,11 @@ int Raw_GetEntityTypeId(Actor* actor)
 
 FloatVec4 Raw_GetEntityPos(Actor* actor)
 {
-    auto pos = actor->getPos();
-    return {pos.x,pos.y - 0.5f,pos.z,WActor(*actor).getDimID()};
+    Vec3 pos;
+    SymCall("?getFeetPos@CommandUtils@@YA?AVVec3@@PEBVActor@@@Z",
+        Vec3*, Vec3*, Actor*)(&pos, actor);
+
+    return {pos.x,pos.y,pos.z,WActor(*actor).getDimID()};
 }
 
 int Raw_GetHealth(Actor *actor)

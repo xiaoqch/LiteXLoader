@@ -6,9 +6,11 @@
 
 注意：此处只会列出造成不兼容变化的API更改。如果要查看所有更新日志，请前往GitHub提交页面查看相关提交记录
 
-#### 20210721 - v0.3.0
+#### 20210801 - v0.3.0
 
-- 将 `onContainerChangeSlot` 重命名为 `onContainerChange`，移动到方块事件中
+- 将事件 `onContainerChangeSlot` 重命名为 `onContainerChange`，移动到方块事件中，并对回调参数做了修改。详见事件文档
+- 事件`onProjectileHit`重命名为`onProjectileHitBlock`，修改了回调参数，新增`onProjectileHitEntity`
+- 事件`onDestroyingBlock`修改为`onStartDestroyBlock`
 
 #### 20210730 - v 0.3.0
 

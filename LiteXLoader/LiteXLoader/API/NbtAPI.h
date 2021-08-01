@@ -111,5 +111,5 @@ public:
 
 
 //Helper
-Local<Value> Tag2Value(Tag* nbt);
+Local<Value> Tag2Value(Tag* nbt, bool autoExpansion = false);
 bool TagSetValue(Tag* nbt, Local<Value> value);
