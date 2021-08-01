@@ -5,6 +5,7 @@
 #include <Kernel/NBT.h>
 #include <Kernel/Block.h>
 #include <Kernel/SymbolHelper.h>
+#include <exception>
 using namespace script;
 
 //////////////////// Class Definition ////////////////////
@@ -12,12 +13,16 @@ using namespace script;
 ClassDefine<BlockClass> BlockClassBuilder =
     defineClass<BlockClass>("LXL_Block")
         .constructor(nullptr)
+        .instanceFunction("getRawPtr", &BlockClass::getRawPtr)
+        
         .instanceProperty("name", &BlockClass::getName)
         .instanceProperty("type", &BlockClass::getType)
         .instanceProperty("id", &BlockClass::getId)
         .instanceProperty("pos", &BlockClass::getPos)
+
         .instanceFunction("setTag", &BlockClass::setTag)
         .instanceFunction("getTag", &BlockClass::getTag)
+        .instanceFunction("getBlockState", &BlockClass::getBlockState)
         .build();
 
 
@@ -113,6 +118,14 @@ Local<Value> BlockClass::getPos()
     CATCH("Fail in getBlockPos!")
 }
 
+Local<Value> BlockClass::getRawPtr(const Arguments& args)
+{
+    try {
+        return Number::newNumber((intptr_t)block);
+    }
+    CATCH("Fail in getRawPtr!")
+}
+
 Local<Value> BlockClass::getTag(const Arguments& args)
 {
     try {
@@ -134,6 +147,19 @@ Local<Value> BlockClass::setTag(const Arguments& args)
         return Boolean::newBoolean(true);
     }
     CATCH("Fail in setTag!")
+}
+
+Local<Value> BlockClass::getBlockState(const Arguments& args)
+{
+    try {
+        auto list = Tag::fromBlock(block)->asCompound();
+        return Tag2Value(&list.at("states"),true);
+    }
+    catch (const std::out_of_range& e)
+    {
+        return Object::newObject();
+    }
+    CATCH("Fail in getBlockState!")
 }
 
 

@@ -1,6 +1,8 @@
 #include "APIHelp.h"
 #include "GuiAPI.h"
 #include <Kernel/Gui.h>
+#include <Kernel/Packet.h>
+#include <Kernel/Player.h>
 #include <iostream>
 using namespace script;
 using namespace std;
@@ -337,12 +339,6 @@ Local<Value> CustomFormClass::addStepSlider(const Arguments& args)
 
 
 //////////////////// APIs ////////////////////
-
-Local<Value> CancelForm(const Arguments& args)
-{
-    //############### FIX HERE ###############
-    return Boolean::newBoolean(true);
-}
 
 Local<Value> NewSimpleForm(const Arguments& args)
 {

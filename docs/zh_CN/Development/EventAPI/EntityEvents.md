@@ -47,6 +47,19 @@
 
 <br>
 
+#### `"onProjectileHitEntity"` - 实体被弹射物击中
+
+- 监听函数原型
+  `function(entity,pos,source)`
+- 参数：
+  - entity: `Entity`  
+    被击中的实体对象
+  - source : `Entity`  
+    发射的弹射物实体（如箭）
+- 拦截事件：不可以拦截
+
+<br>
+
 #### "onWitherBossDestroy" - 凋零破坏方块
 
 - 监听函数原型

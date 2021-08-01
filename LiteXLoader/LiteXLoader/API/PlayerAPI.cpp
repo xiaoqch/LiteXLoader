@@ -21,6 +21,8 @@ using namespace script;
 ClassDefine<PlayerClass> PlayerClassBuilder =
     defineClass<PlayerClass>("LXL_Player")
         .constructor(nullptr)
+        .instanceFunction("getRawPtr", &PlayerClass::getRawPtr)
+
         .instanceProperty("name", &PlayerClass::getName)
         .instanceProperty("pos", &PlayerClass::getPos)
         .instanceProperty("realName", &PlayerClass::getRealName)
@@ -324,6 +326,18 @@ Local<Value> PlayerClass::getInAir()
         return Boolean::newBoolean(Raw_GetIsInAir((Actor*)player));
     }
     CATCH("Fail in GetInAir!")
+}
+
+Local<Value> PlayerClass::getRawPtr(const Arguments& args)
+{
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+        else
+            return Number::newNumber((intptr_t)player);
+    }
+    CATCH("Fail in getRawPtr!")
 }
 
 Local<Value> PlayerClass::teleport(const Arguments& args)

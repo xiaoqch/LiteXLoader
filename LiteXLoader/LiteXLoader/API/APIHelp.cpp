@@ -6,11 +6,18 @@
 #include <cmath>
 #include <sstream>
 
-#include "BaseAPI.h"
-#include "BlockAPI.h"
-#include "EntityAPI.h"
-#include "ItemAPI.h"
-#include "PlayerAPI.h"
+#include <API/BaseAPI.h>
+#include <API/BlockAPI.h>
+#include <API/EntityAPI.h>
+#include <API/ItemAPI.h>
+#include <API/PlayerAPI.h>
+#include <API/DeviceAPI.h>
+#include <API/ItemAPI.h>
+#include <API/EntityAPI.h>
+#include <API/NbtAPI.h>
+#include <API/GuiAPI.h>
+#include <API/DataAPI.h>
+#include <API/PlayerAPI.h>
 #include <Kernel/Global.h>
 #include <Engine/EngineOwnData.h>
 using namespace script;
@@ -57,6 +64,90 @@ void PrintValue(std::ostream &out, Local<Value> v)
         }
         case ValueKind::kObject:
         {
+            //自定义类型也会被识别为Object，优先处理
+            //IntPos
+            IntPos* intpos = IntPos::extractPos(v);
+            if (intpos != nullptr)
+            {
+                out << DimId2Name(intpos->dim) << "(" << intpos->x << "," << intpos->y << "," << intpos->z << ")";
+                break;
+            }
+
+            //FloatPos
+            FloatPos* floatpos = FloatPos::extractPos(v);
+            if (floatpos != nullptr)
+            {
+                out << DimId2Name(floatpos->dim) << "(" << floatpos->x << "," << floatpos->y << "," << floatpos->z << ")";
+                break;
+            }
+
+            //其他自定义类型
+            if (EngineScope::currentEngine()->isInstanceOf<BlockClass>(v))
+            {
+                out << "<Block>";
+                break;
+            }
+            if (EngineScope::currentEngine()->isInstanceOf<DbClass>(v))
+            {
+                out << "<Database>";
+                break;
+            }
+            if (EngineScope::currentEngine()->isInstanceOf<ConfJsonClass>(v))
+            {
+                out << "<ConfJson>";
+                break;
+            }
+            if (EngineScope::currentEngine()->isInstanceOf<ConfIniClass>(v))
+            {
+                out << "<ConfIni>";
+                break;
+            }
+            if (EngineScope::currentEngine()->isInstanceOf<DeviceClass>(v))
+            {
+                out << "<DeviceInfo>";
+                break;
+            }
+            if (EngineScope::currentEngine()->isInstanceOf<EntityClass>(v))
+            {
+                out << "<Entity>";
+                break;
+            }
+            if (EngineScope::currentEngine()->isInstanceOf<SimpleFormClass>(v))
+            {
+                out << "<SimpleForm>";
+                break;
+            }
+            if (EngineScope::currentEngine()->isInstanceOf<CustomFormClass>(v))
+            {
+                out << "<CustomForm>";
+                break;
+            }
+            if (EngineScope::currentEngine()->isInstanceOf<ItemClass>(v))
+            {
+                out << "<Item>";
+                break;
+            }
+            if (EngineScope::currentEngine()->isInstanceOf<PlayerClass>(v))
+            {
+                out << "<Player>";
+                break;
+            }
+            if (EngineScope::currentEngine()->isInstanceOf<NbtValue>(v))
+            {
+                out << "<NbtValue>";
+                break;
+            }
+            if (EngineScope::currentEngine()->isInstanceOf<NbtList>(v))
+            {
+                out << "<NbtList>";
+                break;
+            }
+            if (EngineScope::currentEngine()->isInstanceOf<NbtCompound>(v))
+            {
+                out << "<NbtCompound>";
+                break;
+            }
+
             Local<Object> obj = v.asObject();
             std::vector<std::string> keys = obj.getKeyNames();
             if(keys.empty())
@@ -88,22 +179,6 @@ void PrintValue(std::ostream &out, Local<Value> v)
         }
         default:
         {
-            //IntPos
-            IntPos* intpos = IntPos::extractPos(v);
-            if (intpos != nullptr)
-            {
-                out << DimId2Name(intpos->dim) << " (" << intpos->x << "," << intpos->y << "," << intpos->z << ")";
-                break;
-            }
-
-            //FloatPos
-            FloatPos* floatpos = FloatPos::extractPos(v);
-            if (floatpos != nullptr)
-            {
-                out << DimId2Name(floatpos->dim) << " (" << floatpos->x << "," << floatpos->y << "," << floatpos->z << ")";
-                break;
-            }
-
             out << "<Unknown>";
             break;
         }

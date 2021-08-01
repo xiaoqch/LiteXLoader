@@ -12,6 +12,8 @@ using namespace script;
 ClassDefine<ItemClass> ItemClassBuilder =
     defineClass<ItemClass>("LXL_Item")
         .constructor(nullptr)
+        .instanceFunction("getRawPtr", &ItemClass::getRawPtr)
+
         .instanceProperty("name", &ItemClass::getName)
         .instanceProperty("type", &ItemClass::getType)
         .instanceProperty("id", &ItemClass::getId)
@@ -103,6 +105,14 @@ Local<Value> ItemClass::getAux()
         return Number::newNumber(aux);
     }
     CATCH("Fail in GetAux!")
+}
+
+Local<Value> ItemClass::getRawPtr(const Arguments& args)
+{
+    try {
+        return Number::newNumber((intptr_t)item);
+    }
+    CATCH("Fail in getRawPtr!")
 }
 
 Local<Value> ItemClass::isNull(const Arguments& args)
