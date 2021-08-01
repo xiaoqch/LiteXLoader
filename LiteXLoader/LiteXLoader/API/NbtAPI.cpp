@@ -562,7 +562,7 @@ Local<Value> NbtList::toArray(const Arguments& args)
 
         for (auto& tag : list)
         {
-            arr.add(Tag2Value(tag));
+            arr.add(Tag2Value(tag,true));
         }
         return arr;
     }
@@ -893,7 +893,7 @@ Local<Value> NbtCompound::toObject(const Arguments& args)
 
         for (auto& [k,v] : list)
         {
-            obj.set(k, Tag2Value(&v));
+            obj.set(k, Tag2Value(&v,true));
         }
         return obj;
     }
@@ -964,7 +964,123 @@ Local<Value> NbtStatic::createTag(const Arguments& args)
 
 //////////////////// Helper ////////////////////
 
-Local<Value> Tag2Value(Tag* nbt)
+Local<Value> Tag2Value_CompoundHelper(Tag* nbt, bool autoExpansion = false);
+
+Local<Value> Tag2Value_ListHelper(Tag* nbt, bool autoExpansion = false)
+{
+    Local<Array> res = Array::newArray();
+
+    auto& list = nbt->asList();
+    for (auto& tag: list)
+    {
+        switch (tag->getTagType())
+        {
+        case TagType::End:
+            res.add(Local<Value>());
+            break;
+        case TagType::Byte:
+            res.add(Number::newNumber(tag->asByte()));
+            break;
+        case TagType::Short:
+            res.add(Number::newNumber(tag->asShort()));
+            break;
+        case TagType::Int:
+            res.add(Number::newNumber(tag->asInt()));
+            break;
+        case TagType::Long:
+            res.add(Number::newNumber(tag->asLong()));
+            break;
+        case TagType::Float:
+            res.add(Number::newNumber(tag->asFloat()));
+            break;
+        case TagType::Double:
+            res.add(Number::newNumber(tag->asDouble()));
+            break;
+        case TagType::String:
+            res.add(String::newString(tag->asString()));
+            break;
+        case TagType::ByteArray:
+            res.add(String::newString(""));
+            WARN("There are no symbol to read a ByteArray in BDS");
+            break;
+        case TagType::List:
+            if (!autoExpansion)
+                res.add(NbtList::newNBT(tag));
+            else
+                res.add(Tag2Value_ListHelper(tag, autoExpansion));
+            break;
+        case TagType::Compound:
+            if (!autoExpansion)
+                res.add(NbtCompound::newNBT(tag));
+            else
+                res.add(Tag2Value_CompoundHelper(tag, autoExpansion));
+        default:
+            ERROR("Unknown type of tag!");
+            res.add(Local<Value>());
+            break;
+        }
+    }
+    return res;
+}
+
+Local<Value> Tag2Value_CompoundHelper(Tag* nbt, bool autoExpansion)
+{
+    Local<Object> res = Object::newObject();
+
+    auto& list = nbt->asCompound();
+    for (auto& [key, tag] : list)
+    {
+        switch (tag.getTagType())
+        {
+        case TagType::End:
+            res.set(key, Local<Value>());
+            break;
+        case TagType::Byte:
+            res.set(key, Number::newNumber(tag.asByte()));
+            break;
+        case TagType::Short:
+            res.set(key, Number::newNumber(tag.asShort()));
+            break;
+        case TagType::Int:
+            res.set(key, Number::newNumber(tag.asInt()));
+            break;
+        case TagType::Long:
+            res.set(key, Number::newNumber(tag.asLong()));
+            break;
+        case TagType::Float:
+            res.set(key, Number::newNumber(tag.asFloat()));
+            break;
+        case TagType::Double:
+            res.set(key, Number::newNumber(tag.asDouble()));
+            break;
+        case TagType::String:
+            res.set(key, String::newString(tag.asString()));
+            break;
+        case TagType::ByteArray:
+            res.set(key, String::newString(""));
+            WARN("There are no symbol to read a ByteArray in BDS");
+            break;
+        case TagType::List:
+            if(!autoExpansion)
+                res.set(key, NbtList::newNBT(&tag));
+            else
+                res.set(key, Tag2Value_ListHelper(&tag,autoExpansion));
+            break;
+        case TagType::Compound:
+            if (!autoExpansion)
+                res.set(key, NbtCompound::newNBT(&tag));
+            else
+                res.set(key, Tag2Value_CompoundHelper(&tag, autoExpansion));
+        default:
+            ERROR("Unknown type of tag!");
+            res.set(key, Local<Value>());
+            break;
+        }
+    }
+    return res;
+}
+
+Local<Value> Tag2Value(Tag* nbt, bool autoExpansion)
 {
     Local<Value> value;
 
@@ -999,10 +1115,16 @@ Local<Value> Tag2Value(Tag* nbt)
         WARN("There are no symbol to read a ByteArray in BDS");
         break;
     case TagType::List:
-        value = NbtList::newNBT(nbt);
+        if(!autoExpansion)
+            value = NbtList::newNBT(nbt);
+        else
+            value = Tag2Value_ListHelper(nbt, autoExpansion);
         break;
     case TagType::Compound:
-        value = NbtCompound::newNBT(nbt);
+        if (!autoExpansion)
+            value = NbtCompound::newNBT(nbt);
+        else
+            value = Tag2Value_CompoundHelper(nbt, autoExpansion);
         break;
     default:
         ERROR("Unknown type of tag!");
