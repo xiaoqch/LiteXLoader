@@ -172,5 +172,7 @@ BlockSource* Raw_GetBlockSourceByActor(Actor* actor);
 BlockSource* Raw_GetBlockSourceByDim(int dimid);
 int Raw_GetBlockDimension(BlockSource* bs);
 Block* Raw_GetBlockByPos(IntVec4* pos);
+Block* Raw_GetBlockByPos(BlockPos* bp, BlockSource* bs);
+Block* Raw_GetBlockByPos(BlockPos* bp, int dimid);
 Block* Raw_GetBlockByPos(int x, int y, int z, BlockSource* bs);
 Actor* Raw_GetFishingHookOwner(FishingHook* fh);

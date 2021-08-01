@@ -40,7 +40,7 @@ enum class EVENT_TYPES : int
     onRespawn, onChangeDim, onJump, onSneak, onAttack, onEat, onMove, onProjectileShoot, 
     onFireworkShootWithCrossbow, onSetArmor, onRide, onStepOnPressurePlate,
     onUseItem, onTakeItem, onDropItem, onUseItemOn, onInventoryChange,
-    onDestroyingBlock, onDestroyBlock, onWitherBossDestroy, onPlaceBlock,
+    onStartDestroyBlock, onDestroyBlock, onWitherBossDestroy, onPlaceBlock,
     onOpenContainer, onCloseContainer, onContainerChange, onOpenContainerScreen,
     onMobDie, onMobHurt, onExplode, onBlockExploded, onCmdBlockExecute, onRedStoneUpdate, onProjectileHitEntity,
     onProjectileHitBlock, onSplashPotionHitEffect, onBlockInteracted, onUseRespawnAnchor, onFarmLandDecay, onUseFrameBlock,
@@ -74,7 +74,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onDropItem",EVENT_TYPES::onDropItem},
     {"onUseItemOn",EVENT_TYPES::onUseItemOn},
     {"onInventoryChange",EVENT_TYPES::onInventoryChange},
-    {"onDestroyingBlock",EVENT_TYPES::onDestroyingBlock},
+    {"onStartDestroyBlock",EVENT_TYPES::onStartDestroyBlock},
     {"onDestroyBlock",EVENT_TYPES::onDestroyBlock},
     {"onWitherBossDestroy",EVENT_TYPES::onWitherBossDestroy},
     {"onPlaceBlock",EVENT_TYPES::onPlaceBlock},
@@ -509,7 +509,7 @@ THook(void, "?entityInside@BasePressurePlateBlock@@UEBAXAEAVBlockSource@@AEBVBlo
 {
     IF_LISTENED(EVENT_TYPES::onStepOnPressurePlate)
     {
-        Block* bl = Raw_GetBlockByPos(a3->x, a3->y, a3->z, a2);
+        Block* bl = Raw_GetBlockByPos(a3, a2);
         CallEventRtnVoid(EVENT_TYPES::onStepOnPressurePlate, EntityClass::newEntity(a4), BlockClass::newBlock(bl, a3, a2));
     }
     IF_LISTENDED_END();
@@ -619,16 +619,19 @@ THook(void, "?inventoryChanged@Player@@UEAAXAEAVContainer@@HAEBVItemStack@@1_N@Z
     return original(_this, container, slotNumber, oldItem, newItem, is);
 }
 
-// ===== onDestroyingBlock =====
-THook(float, "?getDestroySpeed@Player@@QEBAMAEBVBlock@@@Z",
-    Player* _this, Block* bl)
+// ===== onStartDestroyBlock =====
+THook(void, "?sendBlockDestructionStarted@BlockEventCoordinator@@QEAAXAEAVPlayer@@AEBVBlockPos@@@Z",
+    void* _this, Player* pl, BlockPos* bp)
 {
-    IF_LISTENED(EVENT_TYPES::onDestroyingBlock)     //############## 找个可以获取坐标的？ ################
+    IF_LISTENED(EVENT_TYPES::onStartDestroyBlock)
     {
-        CallEventRtnValue(EVENT_TYPES::onDestroyingBlock, 0.01, PlayerClass::newPlayer(_this), BlockClass::newBlock(bl));
+        int dimid = Raw_GetPlayerDimId(pl);
+        Block* bl = Raw_GetBlockByPos(bp, dimid);
+        CallEventRtnVoid(EVENT_TYPES::onStartDestroyBlock, PlayerClass::newPlayer(pl), 
+            BlockClass::newBlock(bl, bp, dimid));
     }
     IF_LISTENDED_END();
-    return original(_this, bl);
+    return original(_this, pl, bp);
 }
 
 // ===== onDestroyBlock =====
@@ -637,7 +640,7 @@ THook(bool, "?checkBlockDestroyPermissions@BlockSource@@QEAA_NAEAVActor@@AEBVBlo
 {
     IF_LISTENED(EVENT_TYPES::onDestroyBlock)
     {
-        auto block = Raw_GetBlockByPos(pos->x, pos->y, pos->z, _this);
+        auto block = Raw_GetBlockByPos(pos, _this);
 
         CallEventRtnBool(EVENT_TYPES::onDestroyBlock, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(block,pos,_this));
     }
@@ -705,8 +708,7 @@ THook(bool, "?use@ChestBlock@@UEBA_NAEAVPlayer@@AEBVBlockPos@@E@Z",
     IF_LISTENED(EVENT_TYPES::onOpenContainer)
     {
         int dim = Raw_GetPlayerDimId(pl);
-        BlockSource* bs = Raw_GetBlockSourceByDim(dim);
-        Block* bl = Raw_GetBlockByPos(bp->x, bp->y, bp->z, bs);
+        Block* bl = Raw_GetBlockByPos(bp,dim);
 
         CallEventRtnBool(EVENT_TYPES::onOpenContainer, PlayerClass::newPlayer(pl), BlockClass::newBlock(bl, bp, dim));
     }
@@ -724,7 +726,7 @@ THook(bool, "?stopOpen@ChestBlockActor@@UEAAXAEAVPlayer@@@Z",
         auto bp = (BlockPos*)((char*)_this - 204);
         int dim = Raw_GetPlayerDimId(pl);
         BlockSource* bs = Raw_GetBlockSourceByDim(dim);
-        Block* bl = Raw_GetBlockByPos(bp->x, bp->y, bp->z, bs);
+        Block* bl = Raw_GetBlockByPos(bp,bs);
 
         CallEventRtnBool(EVENT_TYPES::onCloseContainer, PlayerClass::newPlayer(pl), BlockClass::newBlock(bl, bp, dim));
     }
@@ -740,7 +742,7 @@ THook(bool, "?use@BarrelBlock@@UEBA_NAEAVPlayer@@AEBVBlockPos@@E@Z",
     {
         int dim = Raw_GetPlayerDimId(pl);
         BlockSource* bs = Raw_GetBlockSourceByDim(dim);
-        Block* bl = Raw_GetBlockByPos(bp->x, bp->y, bp->z, bs);
+        Block* bl = Raw_GetBlockByPos(bp, bs);
 
         CallEventRtnBool(EVENT_TYPES::onOpenContainer, PlayerClass::newPlayer(pl), BlockClass::newBlock(bl, bp, dim));
     }
@@ -757,7 +759,7 @@ THook(bool, "?stopOpen@BarrelBlockActor@@UEAAXAEAVPlayer@@@Z",
         auto bp = (BlockPos*)((char*)_this - 204);
         int dim = Raw_GetPlayerDimId(pl);
         BlockSource* bs = Raw_GetBlockSourceByDim(dim);
-        Block* bl = Raw_GetBlockByPos(bp->x, bp->y, bp->z, bs);
+        Block* bl = Raw_GetBlockByPos(bp, bs);
 
         CallEventRtnBool(EVENT_TYPES::onCloseContainer, PlayerClass::newPlayer(pl), BlockClass::newBlock(bl, bp, dim));
     }
@@ -775,7 +777,7 @@ THook(void, "?_onItemChanged@LevelContainerModel@@MEAAXHAEBVItemStack@@0@Z",
         Actor* pl = dAccess<Actor*>(_this, 208);
         BlockSource* bs = Raw_GetBlockSourceByActor(pl);
         BlockPos* bpos = (BlockPos*)((char*)_this + 216);
-        Block* block = Raw_GetBlockByPos(bpos->x, bpos->y, bpos->z, bs);
+        Block* block = Raw_GetBlockByPos(bpos, bs);
 
         CallEventRtnVoid(EVENT_TYPES::onContainerChange, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(block, bpos, bs),
             slotNumber, ItemClass::newItem(oldItem), ItemClass::newItem(newItem));
@@ -888,8 +890,7 @@ THook(void, "?onRedstoneUpdate@RedStoneWireBlock@@UEBAXAEAVBlockSource@@AEBVBloc
 {
     IF_LISTENED(EVENT_TYPES::onRedStoneUpdate)
     {
-        IntVec4 vec{ bp->x,bp->y,bp->z,Raw_GetBlockDimension(bs) };
-        CallEventRtnVoid(EVENT_TYPES::onRedStoneUpdate, BlockClass::newBlock(Raw_GetBlockByPos(&vec), bp, bs), 
+        CallEventRtnVoid(EVENT_TYPES::onRedStoneUpdate, BlockClass::newBlock(Raw_GetBlockByPos(bp,bs), bp, bs), 
             Number::newNumber(level),Boolean::newBoolean(isActive));
     }
     IF_LISTENDED_END();
@@ -902,8 +903,7 @@ THook(void, "?onRedstoneUpdate@RedstoneTorchBlock@@UEBAXAEAVBlockSource@@AEBVBlo
 {
     IF_LISTENED(EVENT_TYPES::onRedStoneUpdate)
     {
-        IntVec4 vec{ bp->x,bp->y,bp->z,Raw_GetBlockDimension(bs) };
-        CallEventRtnVoid(EVENT_TYPES::onRedStoneUpdate, BlockClass::newBlock(Raw_GetBlockByPos(&vec), bp, bs),
+        CallEventRtnVoid(EVENT_TYPES::onRedStoneUpdate, BlockClass::newBlock(Raw_GetBlockByPos(bp, bs), bp, bs),
             Number::newNumber(level), Boolean::newBoolean(isActive));
     }
     IF_LISTENDED_END();
@@ -916,8 +916,7 @@ THook(void, "?onRedstoneUpdate@DiodeBlock@@UEBAXAEAVBlockSource@@AEBVBlockPos@@H
 {
     IF_LISTENED(EVENT_TYPES::onRedStoneUpdate)
     {
-        IntVec4 vec{ bp->x,bp->y,bp->z,Raw_GetBlockDimension(bs) };
-        CallEventRtnVoid(EVENT_TYPES::onRedStoneUpdate, BlockClass::newBlock(Raw_GetBlockByPos(&vec), bp, bs),
+        CallEventRtnVoid(EVENT_TYPES::onRedStoneUpdate, BlockClass::newBlock(Raw_GetBlockByPos(bp, bs), bp, bs),
             Number::newNumber(level), Boolean::newBoolean(isActive));
     }
     IF_LISTENDED_END();
@@ -930,8 +929,7 @@ THook(void, "?onRedstoneUpdate@ComparatorBlock@@UEBAXAEAVBlockSource@@AEBVBlockP
 {
     IF_LISTENED(EVENT_TYPES::onRedStoneUpdate)
     {
-        IntVec4 vec{ bp->x,bp->y,bp->z,Raw_GetBlockDimension(bs) };
-        CallEventRtnVoid(EVENT_TYPES::onRedStoneUpdate, BlockClass::newBlock(Raw_GetBlockByPos(&vec), bp, bs),
+        CallEventRtnVoid(EVENT_TYPES::onRedStoneUpdate, BlockClass::newBlock(Raw_GetBlockByPos(bp, bs), bp, bs),
             Number::newNumber(level), Boolean::newBoolean(isActive));
     }
     IF_LISTENDED_END();
@@ -959,9 +957,10 @@ THook(unsigned short, "?onBlockInteractedWith@VanillaServerGameplayEventListener
     IF_LISTENED(EVENT_TYPES::onBlockInteracted)
     {
         BlockSource* bs = Raw_GetBlockSourceByActor((Actor*)pl);
+        Block* bl = Raw_GetBlockByPos(bp, bs);
 
         CallEventRtnValue(EVENT_TYPES::onBlockInteracted, 0, PlayerClass::newPlayer(pl),
-            BlockClass::newBlock(Raw_GetBlockByPos(bp->x, bp->y, bp->z, bs), bp, bs));
+            BlockClass::newBlock(bl, bp, bs));
     }
     IF_LISTENDED_END();
     return original(_this, pl, bp);
@@ -998,7 +997,7 @@ THook(bool, "?use@ItemFrameBlock@@UEBA_NAEAVPlayer@@AEBVBlockPos@@E@Z",
     IF_LISTENED(EVENT_TYPES::onUseFrameBlock)
     {
         BlockSource * bs = Raw_GetBlockSourceByActor((Actor*)a2);
-        Block* bl = Raw_GetBlockByPos(a3->x, a3->y, a3->z, bs);
+        Block* bl = Raw_GetBlockByPos(a3, bs);
         CallEventRtnBool(EVENT_TYPES::onUseFrameBlock, PlayerClass::newPlayer(a2), BlockClass::newBlock(bl, a3, bs));
     }
     IF_LISTENDED_END();
@@ -1011,7 +1010,7 @@ THook(bool, "?attack@ItemFrameBlock@@UEBA_NPEAVPlayer@@AEBVBlockPos@@@Z",
     IF_LISTENED(EVENT_TYPES::onUseFrameBlock)
     {
         BlockSource* bs = Raw_GetBlockSourceByActor((Actor*)a2);
-        Block* bl = Raw_GetBlockByPos(a3->x, a3->y, a3->z, bs);
+        Block* bl = Raw_GetBlockByPos(a3, bs);
         CallEventRtnBool(EVENT_TYPES::onUseFrameBlock, PlayerClass::newPlayer(a2), BlockClass::newBlock(bl, a3, bs));
     }
     IF_LISTENDED_END();
@@ -1026,7 +1025,7 @@ THook(bool, "?_attachedBlockWalker@PistonBlockActor@@AEAA_NAEAVBlockSource@@AEBV
     {
         int dim = Raw_GetBlockDimension(bs);
         BlockPos pistonPos = _this->getPosition();
-        Block* pushedBlock = Raw_GetBlockByPos(bp->x, bp->y, bp->z, bs);
+        Block* pushedBlock = Raw_GetBlockByPos(bp, bs);
 
         CallEventRtnBool(EVENT_TYPES::onPistonPush, IntPos::newPos(pistonPos, dim), BlockClass::newBlock(pushedBlock, bp, dim));
     }
