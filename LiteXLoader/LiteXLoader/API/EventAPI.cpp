@@ -634,7 +634,6 @@ THook(bool, "?checkBlockDestroyPermissions@BlockSource@@QEAA_NAEAVActor@@AEBVBlo
 }
 
 // ===== onWitherBossDestroy =====
-
 THook(bool, "?canDestroy@WitherBoss@@SA_NAEBVBlock@@@Z",
     Block* a1)
 {

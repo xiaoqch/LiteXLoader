@@ -56,7 +56,6 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceFunction("setOnFire", &PlayerClass::setOnFire)
         .instanceFunction("getDevice", &PlayerClass::getDevice)
         .instanceFunction("removeItem", &PlayerClass::removeItem)
-        .instanceFunction("refreshInventory", &PlayerClass::refreshInventory)
 
         .instanceFunction("getScore", &PlayerClass::getScore)
         .instanceFunction("setScore", &PlayerClass::setScore)
@@ -641,19 +640,6 @@ Local<Value> PlayerClass::removeItem(const Arguments& args)
         return Boolean::newBoolean(result);
     }
     CATCH("Fail in removeItem!")
-}
-
-Local<Value> PlayerClass::refreshInventory()
-{
-    try {
-        Player* player = get();
-        if (!player)
-            return Local<Value>();
-
-        Raw_RefreshInventory(player);
-        return Boolean::newBoolean(true);
-    }
-    CATCH("Fail in refreshInventory!")
 }
 
 Local<Value> PlayerClass::getScore(const Arguments& args)

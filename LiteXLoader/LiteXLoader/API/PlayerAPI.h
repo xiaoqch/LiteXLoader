@@ -56,7 +56,6 @@ public:
     Local<Value> setOnFire(const Arguments& args);
     Local<Value> getDevice(const Arguments& args);
     Local<Value> removeItem(const Arguments& args);
-    Local<Value> refreshInventory();
 
     Local<Value> getScore(const Arguments& args);
     Local<Value> setScore(const Arguments& args);
