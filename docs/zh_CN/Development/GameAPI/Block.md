@@ -77,7 +77,7 @@
 - 返回值类型：`Object`
 
 方便函数，协助解析方块BlockState并转换为`Object`，方便读取与解析  
-等价于脚本执行`block.getTag().getTag("BlockState").toObject()`
+等价于脚本执行`block.getTag().getTag("states").toObject()`
 
 <br>
 

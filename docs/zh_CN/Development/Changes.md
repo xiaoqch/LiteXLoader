@@ -9,7 +9,6 @@
 #### 20210801 - v0.3.0
 
 - 将 `onContainerChangeSlot` 重命名为 `onContainerChange`，移动到方块事件中
-- `onProjectileHit`事件删去最后一个回调参数
 
 #### 20210730 - v 0.3.0
 

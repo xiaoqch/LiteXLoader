@@ -839,7 +839,8 @@ THook(void, "?onProjectileHit@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@AEBVAct
 {
     IF_LISTENED(EVENT_TYPES::onProjectileHit)
     {
-        CallEventRtnVoid(EVENT_TYPES::onProjectileHit, BlockClass::newBlock(_this,bp,bs), IntPos::newPos(*bp,Raw_GetBlockDimension(bs)));
+        CallEventRtnVoid(EVENT_TYPES::onProjectileHit, BlockClass::newBlock(_this,bp,bs), IntPos::newPos(*bp,Raw_GetBlockDimension(bs)),
+            EntityClass::newEntity(actor));
     }
     IF_LISTENDED_END();
     return original(_this, bs, bp, actor);
