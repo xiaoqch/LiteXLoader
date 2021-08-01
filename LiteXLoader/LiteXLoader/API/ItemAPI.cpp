@@ -22,7 +22,6 @@ ClassDefine<ItemClass> ItemClassBuilder =
         .instanceFunction("setLore", &ItemClass::setLore)
         .instanceFunction("setTag", &ItemClass::setTag)
         .instanceFunction("getTag", &ItemClass::getTag)
-        .instanceFunction("remove", &ItemClass::remove)
         .build();
 
 

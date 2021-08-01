@@ -112,6 +112,12 @@ ItemStack* Raw_GetHand(Player* player)
     return (ItemStack*)&(player->getSelectedItem());
 }
 
+Container* Raw_GetContainer(Player* pl)
+{
+    return SymCall("?getInventory@Player@@QEAAAEAVContainer@@XZ", Container*, 
+        Player*)(pl);
+}
+
 bool Raw_GetAllItems(Player* player, ItemStack** hand, ItemStack** offHand, vector<ItemStack*>* inventory,
     vector<ItemStack*>* armor, vector<ItemStack*>* endChest)
 {
@@ -122,7 +128,7 @@ bool Raw_GetAllItems(Player* player, ItemStack** hand, ItemStack** offHand, vect
     *offHand = SymCall("?getOffhandSlot@Actor@@QEBAAEBVItemStack@@XZ", ItemStack*, Player*)(player);
 
     //Inventory
-    Container* container = SymCall("?getInventory@Player@@QEAAAEAVContainer@@XZ", Container*, Player*)(player);
+    auto container = Raw_GetContainer(player);
     auto slot = container->getSlots();
     for (auto& item : slot)
         inventory->push_back((ItemStack*)item);
@@ -278,5 +284,13 @@ Player* Raw_GetPlayerByUniqueId(ActorUniqueID id) {
 bool Raw_RefreshInventory(Player* pl) {
     SymCall("?sendInventory@ServerPlayer@@UEAAX_N@Z", void,
         ServerPlayer*, bool)((ServerPlayer*)pl, true);
+    return true;
+}
+
+bool Raw_RemoveItem(Player* pl, int inventoryId, int count) {
+    
+    auto container = Raw_GetContainer(pl);
+    SymCall("?removeItem@Container@@UEAAXHH@Z", void,
+        Container*, int, int)(container, inventoryId, count);
     return true;
 }
