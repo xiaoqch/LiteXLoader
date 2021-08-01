@@ -37,7 +37,8 @@ using namespace script;
 enum class EVENT_TYPES : int
 {
     onPreJoin=0, onJoin, onLeft, onPlayerCmd, onChat, onPlayerDie, 
-    onRespawn, onChangeDim, onJump, onSneak, onAttack, onEat, onMove, onShootFireworkWithCrossbow, onSetArmor, onRide, onStepOnPressurePlate,
+    onRespawn, onChangeDim, onJump, onSneak, onAttack, onEat, onMove, onProjectileShoot, 
+    onFireworkShootWithCrossbow, onSetArmor, onRide, onStepOnPressurePlate,
     onUseItem, onTakeItem, onDropItem, onUseItemOn, onInventoryChange,
     onDestroyingBlock, onDestroyBlock, onWitherBossDestroy, onPlaceBlock,
     onOpenContainer, onCloseContainer, onContainerChange, onOpenContainerScreen,
@@ -61,7 +62,8 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onAttack",EVENT_TYPES::onAttack},
     {"onEat",EVENT_TYPES::onEat},
     {"onMove",EVENT_TYPES::onMove},
-    {"onShootFireworkWithCrossbow",EVENT_TYPES::onShootFireworkWithCrossbow},
+    {"onProjectileShoot",EVENT_TYPES::onProjectileShoot},
+    {"onFireworkShootWithCrossbow",EVENT_TYPES::onFireworkShootWithCrossbow},
     {"onSetArmor",EVENT_TYPES::onSetArmor},
     {"onRide",EVENT_TYPES::onRide},
     {"onStepOnPressurePlate",EVENT_TYPES::onStepOnPressurePlate},
@@ -450,16 +452,31 @@ THook(void, "?sendPlayerMove@PlayerEventCoordinator@@QEAAXAEAVPlayer@@@Z",
     return original(_this, pl);
 }
 
-// ===== onShootFireworkWithCrossbow =====
-THook(void, "?_shootFirework@CrossbowItem@@AEBAXAEBVItemInstance@@AEAVPlayer@@@Z",
-    void* _this, void* a2, Player* a3)
+// ===== onProjectileShoot =====
+THook(void, "?shoot@ProjectileComponent@@QEAAXAEAVActor@@AEBVVec3@@MM1PEAV2@@Z",
+    ProjectileComponent* _this, void* a2, Vec3* a3, float a4, float a5, Vec3* a6, Actor* a7)
 {
-    IF_LISTENED(EVENT_TYPES::onShootFireworkWithCrossbow)
+    IF_LISTENED(EVENT_TYPES::onProjectileShoot)
     {
-        CallEventRtnVoid(EVENT_TYPES::onShootFireworkWithCrossbow, PlayerClass::newPlayer(a3),FloatPos::newPos(Raw_GetPlayerPos(a3)));
+        auto uniqueId = (ActorUniqueID*)((uintptr_t)_this + 8);
+        auto shooter = Raw_GetEntityByUniqueId(*uniqueId);
+        auto projectiler = (Actor*)a2;
+        CallEventRtnVoid(EVENT_TYPES::onProjectileShoot, EntityClass::newEntity(shooter), EntityClass::newEntity(projectiler));
     }
     IF_LISTENDED_END();
-    original(_this, a3, a3);
+    original(_this, a2, a3, a4, a5, a6, a7);
+}
+
+// ===== onFireworkShootWithCrossbow =====
+THook(void, "?_shootFirework@CrossbowItem@@AEBAXAEBVItemInstance@@AEAVPlayer@@@Z",
+    void* a1, void* a2, Player* a3)
+{
+    IF_LISTENED(EVENT_TYPES::onFireworkShootWithCrossbow)
+    {
+        CallEventRtnVoid(EVENT_TYPES::onFireworkShootWithCrossbow, PlayerClass::newPlayer(a3));
+    }
+    IF_LISTENDED_END();
+    original(a1, a2, a3);
 }
 
 // ===== onSetArmor =====
