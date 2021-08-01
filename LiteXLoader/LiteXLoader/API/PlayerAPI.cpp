@@ -634,7 +634,7 @@ Local<Value> PlayerClass::removeItem(const Arguments& args)
             return Local<Value>();
 
         int inventoryId = args[0].toInt();
-        int count = args[0].toInt();
+        int count = args[1].toInt();
 
         bool result = Raw_RemoveItem(player, inventoryId, count);
         return Boolean::newBoolean(result);

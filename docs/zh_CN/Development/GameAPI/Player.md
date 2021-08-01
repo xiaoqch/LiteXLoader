@@ -495,10 +495,3 @@ pl.removeBossBar();
     要删除的物品数量
 - 返回值：是否成功删除
 - 返回值类型：`Boolean`
-
-#### 强制刷新玩家背包  
-
-`pl.refreshInventory()`
-
-- 返回值：是否成功刷新
-- 返回值类型：`Boolean`

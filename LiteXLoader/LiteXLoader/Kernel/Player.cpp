@@ -291,6 +291,7 @@ bool Raw_RemoveItem(Player* pl, int inventoryId, int count) {
     
     auto container = Raw_GetContainer(pl);
     SymCall("?removeItem@Container@@UEAAXHH@Z", void,
-        Container*, int, int)(container, inventoryId, count);
+        Container*, unsigned int, int)(container, inventoryId, count);
+    Raw_RefreshInventory(pl);
     return true;
 }
