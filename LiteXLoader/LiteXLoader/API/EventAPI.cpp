@@ -845,9 +845,9 @@ THook(void, "?onExploded@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@PEAVActor@@@
 THook(void, "?onProjectileHit@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@AEBVActor@@@Z",
     Block* _this, BlockSource* bs, BlockPos* bp, Actor* actor)
 {
-    IF_LISTENED(EVENT_TYPES::onProjectileHit)       //################# 击中实体时也会触发 ################# 
+    IF_LISTENED(EVENT_TYPES::onProjectileHit)
     {
-        CallEventRtnVoid(EVENT_TYPES::onProjectileHit, BlockClass::newBlock(_this,bp,bs), EntityClass::newEntity(actor));
+        CallEventRtnVoid(EVENT_TYPES::onProjectileHit, BlockClass::newBlock(_this,bp,bs), IntPos::newPos(*bp,Raw_GetBlockDimension(bs)));
     }
     IF_LISTENDED_END();
     return original(_this, bs, bp, actor);

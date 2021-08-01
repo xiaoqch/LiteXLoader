@@ -72,13 +72,15 @@
 #### `"onProjectileHit"` - 方块被弹射物击中
 
 - 监听函数原型
-  `function(block,pos,source)`
+  `function(block,pos)`
 - 参数：
   - block : `Block`  
     被击中的方块对象
-  - source : `Entity`  
-    弹射物来源的实体对象
+  - pos : `IntPos`  
+    击中的方块坐标
 - 拦截事件：不可以拦截
+
+注意，当生物被弹射物击中时，此事件也触发，但是 block 为空气方块（type为minecraft:air）
 
 <br>
 
