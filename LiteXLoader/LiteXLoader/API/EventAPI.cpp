@@ -41,7 +41,7 @@ enum class EVENT_TYPES : int
     onUseItem, onTakeItem, onDropItem, onUseItemOn, onInventoryChange,
     onDestroyingBlock, onDestroyBlock, onWitherBossDestroy, onPlaceBlock,
     onOpenContainer, onCloseContainer, onContainerChange, onOpenContainerScreen,
-    onMobDie, onMobHurt, onExplode, onBlockExploded, onCmdBlockExecute,
+    onMobDie, onMobHurt, onExplode, onBlockExploded, onCmdBlockExecute, onRedStoneUpdate,
     onProjectileHit, onSplashPotionHitEffect, onBlockInteracted, onUseRespawnAnchor, onFarmLandDecay, onUseFrameBlock,
     onPistonPush, onHopperSearchItem, onHopperPushOut, onFireSpread, onFishingHookRetrieve,
     onScoreChanged, onServerStarted, onConsoleCmd, onFormSelected, onConsoleOutput,
@@ -651,7 +651,6 @@ THook(bool, "?canDestroyBlock@WitherSkull@@UEBA_NAEBVBlock@@@Z",
     return original(_this, a2);
 }
 
-/*
 THook(void, "?_destroyBlocks@WitherBoss@@AEAAXAEAVLevel@@AEBVAABB@@AEAVBlockSource@@H@Z",
     void* _this, Level* a2, AABB* a3, BlockSource* a4, int a5)
 {
