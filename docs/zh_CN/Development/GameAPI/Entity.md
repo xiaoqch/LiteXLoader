@@ -40,11 +40,12 @@
 
 #### 传送实体至指定位置
 
-`en.teleport(pos)`
+`en.teleport(pos)`  
+`en.teleport(x,y,z,dimid)`
 
 - 参数：
   - pos : `FloatPos`  
-    目标位置坐标
+    目标位置坐标（或者使用x, y, z, dimid来确定实体位置）
 - 返回值：是否成功传送
 - 返回值类型：`Boolean`
 

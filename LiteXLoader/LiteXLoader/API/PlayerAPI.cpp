@@ -351,9 +351,15 @@ Local<Value> PlayerClass::teleport(const Arguments& args)
         {
             // FloatPos
             FloatPos* posObj = FloatPos::extractPos(args[0]);
-            if (!posObj)
+            if (posObj)
+            {
+                pos = *posObj;
+            }
+            else
+            {
+                ERROR("Wrong type of argument in teleport!");
                 return Local<Value>();
-            pos = *posObj;
+            }
         }
         else if (args.size() == 4)
         {

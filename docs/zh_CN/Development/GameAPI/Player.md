@@ -196,11 +196,12 @@ var open = pl.runcmd("tp ~ ~+50 ~");
 
 #### 传送玩家至指定位置  
 
-`pl.teleport(pos)`
+`pl.teleport(pos)`  
+`pl.teleport(x,y,z,dimid)`
 
 - 参数：
   - pos : `FloatPos`  
-    目标位置坐标 
+    目标位置坐标 （或者使用x, y, z, dimid来确定玩家位置）
 - 返回值：是否成功传送
 - 返回值类型：`Boolean`
 

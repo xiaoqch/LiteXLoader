@@ -183,7 +183,14 @@ Local<Value> EntityClass::getSpeed()
 
 Local<Value> EntityClass::teleport(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args,1)
+    CHECK_ARGS_COUNT(args, 1);
+    if (args.size() == 4)
+    {
+        CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
+        CHECK_ARG_TYPE(args[1], ValueKind::kNumber);
+        CHECK_ARG_TYPE(args[2], ValueKind::kNumber);
+        CHECK_ARG_TYPE(args[3], ValueKind::kNumber);
+    }
     
     try{
         FloatVec4 pos;
@@ -192,9 +199,15 @@ Local<Value> EntityClass::teleport(const Arguments& args)
         {
             // FloatPos
             FloatPos* posObj = FloatPos::extractPos(args[0]);
-            if (!posObj)
+            if (posObj)
+            {
+                pos = *posObj;
+            }
+            else
+            {
+                ERROR("Wrong type of argument in teleport!");
                 return Local<Value>();
-            pos = *posObj;
+            }
         }
         else if (args.size() == 4)
         {
@@ -211,7 +224,7 @@ Local<Value> EntityClass::teleport(const Arguments& args)
         }
         else
         {
-            ERROR("Wrong type of argument in teleport!");
+            ERROR("Wrong number of arguments in teleport!");
             return Local<Value>();
         }
         
