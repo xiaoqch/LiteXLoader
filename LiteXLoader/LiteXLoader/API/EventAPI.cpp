@@ -106,13 +106,16 @@ struct ListenerListType
 //监听器表
 static std::vector<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)];
 
-//调用事件监听函数
-#define CallEvent(TYPE,...) \
+//调用事件监听函数，拦截不执行original
+#define CallEventRtnVoid(TYPE,...) \
     std::vector<ListenerListType> &nowList = listenerList[int(TYPE)]; \
+    bool passToBDS = true; \
     for(int i = 0; i < nowList.size(); ++i) { \
         EngineScope enter(nowList[i].engine); \
         try{ \
-            nowList[i].func.get().call({},__VA_ARGS__); \
+            auto result = nowList[i].func.get().call({},__VA_ARGS__); \
+            if(result.isBoolean() && result.asBoolean().value() == false) \
+                passToBDS = false; \
         } \
         catch(const Exception& e) \
         { \
@@ -120,10 +123,11 @@ static std::vector<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)]
             ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName); \
             ERRPRINT(e); \
         } \
-    }
+    }\
+    if(!passToBDS) { return; }
 
 //调用事件监听函数，拦截返回false
-#define CallEventEx(TYPE,...) \
+#define CallEventRtnBool(TYPE,...) \
     std::vector<ListenerListType> &nowList = listenerList[int(TYPE)]; \
     bool passToBDS = true; \
     for(int i = 0; i < nowList.size(); ++i) { \
@@ -143,7 +147,7 @@ static std::vector<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)]
     if(!passToBDS) { return false; }
 
 //调用事件监听函数，拦截返回RETURN_VALUE
-#define CallEventRtn(TYPE,RETURN_VALUE,...) \
+#define CallEventRtnValue(TYPE,RETURN_VALUE,...) \
     std::vector<ListenerListType> &nowList = listenerList[int(TYPE)]; \
     bool passToBDS = true; \
     for(int i = 0; i < nowList.size(); ++i) { \
@@ -247,7 +251,7 @@ void InitEventListeners()
     {
         IF_LISTENED(EVENT_TYPES::onPreJoin)
         {
-            CallEvent(EVENT_TYPES::onPreJoin, PlayerClass::newPlayer(ev.Player));
+            CallEventRtnVoid(EVENT_TYPES::onPreJoin, PlayerClass::newPlayer(ev.Player));
         }
         IF_LISTENDED_END();
     });
@@ -257,7 +261,7 @@ void InitEventListeners()
     {
         IF_LISTENED(EVENT_TYPES::onLeft)
         {
-            CallEvent(EVENT_TYPES::onLeft, PlayerClass::newPlayer(ev.Player));
+            CallEventRtnVoid(EVENT_TYPES::onLeft, PlayerClass::newPlayer(ev.Player));
         }
         IF_LISTENDED_END();
     });
@@ -267,7 +271,7 @@ void InitEventListeners()
     {
         IF_LISTENED(EVENT_TYPES::onChat)
         {
-            CallEventEx(EVENT_TYPES::onChat, PlayerClass::newPlayer(ev.pl), ev.msg);
+            CallEventRtnBool(EVENT_TYPES::onChat, PlayerClass::newPlayer(ev.pl), ev.msg);
         }
         IF_LISTENDED_END();
         return true;
@@ -278,7 +282,7 @@ void InitEventListeners()
     {
         IF_LISTENED(EVENT_TYPES::onPlayerDie)
         {
-            CallEvent(EVENT_TYPES::onPlayerDie, PlayerClass::newPlayer(ev.Player));
+            CallEventRtnVoid(EVENT_TYPES::onPlayerDie, PlayerClass::newPlayer(ev.Player));
         }
         IF_LISTENDED_END();
     });
@@ -288,7 +292,7 @@ void InitEventListeners()
     {
         IF_LISTENED(EVENT_TYPES::onChangeDim)
         {
-            CallEvent(EVENT_TYPES::onChangeDim, PlayerClass::newPlayer(ev.Player));
+            CallEventRtnVoid(EVENT_TYPES::onChangeDim, PlayerClass::newPlayer(ev.Player));
         }
         IF_LISTENDED_END();
     });
@@ -298,7 +302,7 @@ void InitEventListeners()
     {
         IF_LISTENED(EVENT_TYPES::onCmdBlockExecute)
         {
-            CallEventEx(EVENT_TYPES::onCmdBlockExecute, ev.cmd, IntPos::newPos(ev.bpos.x, ev.bpos.y, ev.bpos.z));
+            CallEventRtnBool(EVENT_TYPES::onCmdBlockExecute, ev.cmd, IntPos::newPos(ev.bpos.x, ev.bpos.y, ev.bpos.z));
         }
         IF_LISTENDED_END();
         return true;
@@ -311,7 +315,7 @@ void InitEventListeners()
         {
             if (ev.mob && ev.DamageSource)
             {
-                CallEvent(EVENT_TYPES::onMobDie, EntityClass::newEntity(ev.mob), EntityClass::newEntity(ev.DamageSource));
+                CallEventRtnVoid(EVENT_TYPES::onMobDie, EntityClass::newEntity(ev.mob), EntityClass::newEntity(ev.DamageSource));
             }
         }
         IF_LISTENDED_END();
@@ -347,7 +351,7 @@ void InitEventListeners()
 
             IF_LISTENED(EVENT_TYPES::onServerStarted)
             {
-                CallEvent(EVENT_TYPES::onServerStarted);
+                CallEventRtnVoid(EVENT_TYPES::onServerStarted);
             }
             IF_LISTENDED_END();
         }
@@ -396,7 +400,7 @@ THook(bool, "?setLocalPlayerAsInitialized@ServerPlayer@@QEAAXXZ",
 {
     IF_LISTENED(EVENT_TYPES::onJoin)
     {
-        CallEvent(EVENT_TYPES::onJoin, PlayerClass::newPlayer(_this));
+        CallEventRtnBool(EVENT_TYPES::onJoin, PlayerClass::newPlayer(_this));
     }
     IF_LISTENDED_END();
     return original(_this);
@@ -410,7 +414,7 @@ THook(bool, "?attack@Player@@UEAA_NAEAVActor@@AEBW4ActorDamageCause@@@Z",
     {
         if (ac)
         {
-            CallEventEx(EVENT_TYPES::onAttack, PlayerClass::newPlayer(_this), EntityClass::newEntity(ac));
+            CallEventRtnBool(EVENT_TYPES::onAttack, PlayerClass::newPlayer(_this), EntityClass::newEntity(ac));
         }
     }
     IF_LISTENDED_END();
@@ -423,7 +427,7 @@ THook(void, "?eat@Player@@QEAAXAEBVItemStack@@@Z",
 {
     IF_LISTENED(EVENT_TYPES::onEat)
     {
-        CallEvent(EVENT_TYPES::onEat, PlayerClass::newPlayer(_this), ItemClass::newItem(eaten));
+        CallEventRtnVoid(EVENT_TYPES::onEat, PlayerClass::newPlayer(_this), ItemClass::newItem(eaten));
     }
     IF_LISTENDED_END();
     return original(_this, eaten);
@@ -435,7 +439,7 @@ THook(void, "?sendPlayerMove@PlayerEventCoordinator@@QEAAXAEAVPlayer@@@Z",
 {
     IF_LISTENED(EVENT_TYPES::onMove)
     {
-        CallEvent(EVENT_TYPES::onMove, PlayerClass::newPlayer(pl), FloatPos::newPos(Raw_GetPlayerPos(pl)));
+        CallEventRtnVoid(EVENT_TYPES::onMove, PlayerClass::newPlayer(pl), FloatPos::newPos(Raw_GetPlayerPos(pl)));
     }
     IF_LISTENDED_END();
     return original(_this, pl);
@@ -448,7 +452,7 @@ THook(void, "?_shootFirework@CrossbowItem@@AEBAXAEBVItemInstance@@AEAVPlayer@@@Z
 {
     IF_LISTENED(EVENT_TYPES::onShootFireworkWithCrossbow)
     {
-        CallEvent(EVENT_TYPES::onShootFireworkWithCrossbow, PlayerClass::newPlayer(a3));
+        CallEventRtnVoid(EVENT_TYPES::onShootFireworkWithCrossbow, PlayerClass::newPlayer(a3));
     }
     IF_LISTENDED_END();
     // 不original即可拦截，等待CallEvent重写...
@@ -464,7 +468,7 @@ THook(void, "?setArmor@Player@@UEAAXW4ArmorSlot@@AEBVItemStack@@@Z",
 {
     IF_LISTENED(EVENT_TYPES::onSetArmor)
     {
-        CallEvent(EVENT_TYPES::onSetArmor, PlayerClass::newPlayer(_this), Number::newNumber((int)slot), ItemClass::newItem(it));
+        CallEventRtnVoid(EVENT_TYPES::onSetArmor, PlayerClass::newPlayer(_this), Number::newNumber((int)slot), ItemClass::newItem(it));
     }
     IF_LISTENDED_END();
     return original(_this, slot, it);
@@ -476,7 +480,7 @@ THook(bool, "?canAddRider@Actor@@UEBA_NAEAV1@@Z",
 {
     IF_LISTENED(EVENT_TYPES::onRide)
     {
-        CallEventEx(EVENT_TYPES::onRide, EntityClass::newEntity(a2), EntityClass::newEntity(a1));
+        CallEventRtnBool(EVENT_TYPES::onRide, EntityClass::newEntity(a2), EntityClass::newEntity(a1));
     }
         IF_LISTENDED_END();
     return original(a1, a2);
@@ -490,7 +494,7 @@ THook(void, "?entityInside@BasePressurePlateBlock@@UEBAXAEAVBlockSource@@AEBVBlo
     IF_LISTENED(EVENT_TYPES::onStepOnPressurePlate)
     {
         Block* bl = Raw_GetBlockByPos(a3->x, a3->y, a3->z, a2);
-        CallEvent(EVENT_TYPES::onStepOnPressurePlate, EntityClass::newEntity(a4), BlockClass::newBlock(bl, a3, a2));
+        CallEventRtnVoid(EVENT_TYPES::onStepOnPressurePlate, EntityClass::newEntity(a4), BlockClass::newBlock(bl, a3, a2));
     }
     IF_LISTENDED_END();
     // 不original即可拦截，等待CallEvent重写...
@@ -506,7 +510,7 @@ THook(bool, "?respawn@Player@@UEAAXXZ",
 {
     IF_LISTENED(EVENT_TYPES::onRespawn)
     {
-        CallEventEx(EVENT_TYPES::onRespawn, PlayerClass::newPlayer(pl));
+        CallEventRtnBool(EVENT_TYPES::onRespawn, PlayerClass::newPlayer(pl));
     }
     IF_LISTENDED_END();
     return original(pl);
@@ -518,7 +522,7 @@ THook(void, "?jumpFromGround@Player@@UEAAXXZ",
 {
     IF_LISTENED(EVENT_TYPES::onJump)
     {
-        CallEvent(EVENT_TYPES::onJump, PlayerClass::newPlayer(pl));
+        CallEventRtnVoid(EVENT_TYPES::onJump, PlayerClass::newPlayer(pl));
     }
     IF_LISTENDED_END();
     return original(pl);
@@ -530,7 +534,7 @@ THook(void, "?sendActorSneakChanged@ActorEventCoordinator@@QEAAXAEAVActor@@_N@Z"
 {
     IF_LISTENED(EVENT_TYPES::onSneak)
     {
-        CallEvent(EVENT_TYPES::onSneak, PlayerClass::newPlayer((Player*)ac), Boolean::newBoolean(isSneaking));
+        CallEventRtnVoid(EVENT_TYPES::onSneak, PlayerClass::newPlayer((Player*)ac), Boolean::newBoolean(isSneaking));
     }
     IF_LISTENDED_END();
     return original(_this, ac, isSneaking);
@@ -542,7 +546,7 @@ THook(bool, "?drop@Player@@UEAA_NAEBVItemStack@@_N@Z",
 {
     IF_LISTENED(EVENT_TYPES::onDropItem)
     {
-        CallEventEx(EVENT_TYPES::onDropItem, PlayerClass::newPlayer(_this), ItemClass::newItem(a2));
+        CallEventRtnBool(EVENT_TYPES::onDropItem, PlayerClass::newPlayer(_this), ItemClass::newItem(a2));
     }
     IF_LISTENDED_END();
     return original(_this, a2, a3);
@@ -554,7 +558,7 @@ THook(bool, "?take@Player@@QEAA_NAEAVActor@@HH@Z",
 {
     IF_LISTENED(EVENT_TYPES::onTakeItem)       //################### 有无办法改成获取item ###################
     {
-        CallEventEx(EVENT_TYPES::onTakeItem, PlayerClass::newPlayer(_this), EntityClass::newEntity(actor));
+        CallEventRtnBool(EVENT_TYPES::onTakeItem, PlayerClass::newPlayer(_this), EntityClass::newEntity(actor));
     }
     IF_LISTENDED_END();
     return original(_this, actor, a2, a3);
@@ -567,7 +571,7 @@ THook(bool, "?baseUseItem@GameMode@@QEAA_NAEAVItemStack@@@Z", void* _this, ItemS
     {
         auto sp = dAccess<ServerPlayer*, 8>(_this);
 
-        CallEventEx(EVENT_TYPES::onUseItem, PlayerClass::newPlayer(sp), ItemClass::newItem(&item));
+        CallEventRtnBool(EVENT_TYPES::onUseItem, PlayerClass::newPlayer(sp), ItemClass::newItem(&item));
     }
     IF_LISTENDED_END();
     return original(_this, item);
@@ -581,7 +585,7 @@ THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@
     {
         auto sp = dAccess<ServerPlayer*, 8>(_this);
 
-        CallEventEx(EVENT_TYPES::onUseItemOn, PlayerClass::newPlayer(sp), ItemClass::newItem(item), BlockClass::newBlock(bl, bp, WPlayer(*sp).getDimID()));
+        CallEventRtnBool(EVENT_TYPES::onUseItemOn, PlayerClass::newPlayer(sp), ItemClass::newItem(item), BlockClass::newBlock(bl, bp, WPlayer(*sp).getDimID()));
     }
     IF_LISTENDED_END();
     return original(_this, item, bp, side, a5, bl);
@@ -594,7 +598,7 @@ THook(void, "?inventoryChanged@Player@@UEAAXAEAVContainer@@HAEBVItemStack@@1_N@Z
     IF_LISTENED(EVENT_TYPES::onInventoryChange)
     {
         bool isPutIn = Raw_IsNull(oldItem);
-        CallEvent(EVENT_TYPES::onInventoryChange, PlayerClass::newPlayer((Player*)_this), slotNumber,
+        CallEventRtnVoid(EVENT_TYPES::onInventoryChange, PlayerClass::newPlayer((Player*)_this), slotNumber,
             isPutIn, ItemClass::newItem(isPutIn ? newItem : oldItem));
     }
     IF_LISTENDED_END();
@@ -608,7 +612,7 @@ THook(float, "?getDestroySpeed@Player@@QEBAMAEBVBlock@@@Z",
 {
     IF_LISTENED(EVENT_TYPES::onDestroyingBlock)     //############## 找个可以获取坐标的？ ################
     {
-        CallEvent(EVENT_TYPES::onDestroyingBlock, PlayerClass::newPlayer(_this), BlockClass::newBlock(bl));
+        CallEventRtnValue(EVENT_TYPES::onDestroyingBlock, 0.01, PlayerClass::newPlayer(_this), BlockClass::newBlock(bl));
     }
     IF_LISTENDED_END();
     return original(_this, bl);
@@ -622,7 +626,7 @@ THook(bool, "?checkBlockDestroyPermissions@BlockSource@@QEAA_NAEAVActor@@AEBVBlo
     {
         auto block = Raw_GetBlockByPos(pos->x, pos->y, pos->z, _this);
 
-        CallEventEx(EVENT_TYPES::onDestroyBlock, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(block,pos,_this));
+        CallEventRtnBool(EVENT_TYPES::onDestroyBlock, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(block,pos,_this));
     }
     IF_LISTENDED_END();
     return original(_this, pl, pos,a3, a4);
@@ -635,7 +639,7 @@ THook(bool, "?canDestroy@WitherBoss@@SA_NAEBVBlock@@@Z",
 {
     IF_LISTENED(EVENT_TYPES::onWitherBossDestroy)
     {
-        CallEventEx(EVENT_TYPES::onWitherBossDestroy, BlockClass::newBlock(a1));
+        CallEventRtnBool(EVENT_TYPES::onWitherBossDestroy, BlockClass::newBlock(a1));
     }
     IF_LISTENDED_END();
     return original(a1);
@@ -646,7 +650,7 @@ THook(bool, "?canDestroyBlock@WitherSkull@@UEBA_NAEBVBlock@@@Z",
 {
     IF_LISTENED(EVENT_TYPES::onWitherBossDestroy)
     {
-        CallEventEx(EVENT_TYPES::onWitherBossDestroy, BlockClass::newBlock(a2));
+        CallEventRtnBool(EVENT_TYPES::onWitherBossDestroy, BlockClass::newBlock(a2));
     }
     IF_LISTENDED_END();
     return original(_this, a2);
@@ -662,7 +666,7 @@ THook(void, "?_destroyBlocks@WitherBoss@@AEAAXAEAVLevel@@AEBVAABB@@AEAVBlockSour
         auto dimid = dAccess<int, -96>(a4);
         Vec3 posA = a3->p1;
         Vec3 posB = a3->p2;
-        CallEvent(EVENT_TYPES::onWitherBossDestroy, EntityClass::newEntity(ac), IntPos::newPos(posA.x, posA.y, posA.z, dimid), IntPos::newPos(posB.x, posB.y, posB.z, dimid));
+        CallEventRtnVoid(EVENT_TYPES::onWitherBossDestroy, EntityClass::newEntity(ac), IntPos::newPos(posA.x, posA.y, posA.z, dimid), IntPos::newPos(posB.x, posB.y, posB.z, dimid));
     }
     IF_LISTENDED_END();
     // 不original即可拦截，等待CallEvent重写...
@@ -678,7 +682,7 @@ THook(bool, "?mayPlace@BlockSource@@QEAA_NAEBVBlock@@AEBVBlockPos@@EPEAVActor@@_
 {
     IF_LISTENED(EVENT_TYPES::onPlaceBlock)
     {
-        CallEventEx(EVENT_TYPES::onPlaceBlock, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(bl,bp,bs));
+        CallEventRtnBool(EVENT_TYPES::onPlaceBlock, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(bl,bp,bs));
     }
     IF_LISTENDED_END();
     return original(bs, bl, bp, a4, pl, a6);
@@ -694,7 +698,7 @@ THook(bool, "?use@ChestBlock@@UEBA_NAEAVPlayer@@AEBVBlockPos@@E@Z",
         BlockSource* bs = Raw_GetBlockSourceByDim(dim);
         Block* bl = Raw_GetBlockByPos(bp->x, bp->y, bp->z, bs);
 
-        CallEventEx(EVENT_TYPES::onOpenContainer, PlayerClass::newPlayer(pl), BlockClass::newBlock(bl, bp, dim));
+        CallEventRtnBool(EVENT_TYPES::onOpenContainer, PlayerClass::newPlayer(pl), BlockClass::newBlock(bl, bp, dim));
     }
     IF_LISTENDED_END();
     return original(_this, pl, bp);
@@ -712,7 +716,7 @@ THook(bool, "?stopOpen@ChestBlockActor@@UEAAXAEAVPlayer@@@Z",
         BlockSource* bs = Raw_GetBlockSourceByDim(dim);
         Block* bl = Raw_GetBlockByPos(bp->x, bp->y, bp->z, bs);
 
-        CallEventEx(EVENT_TYPES::onCloseContainer, PlayerClass::newPlayer(pl), BlockClass::newBlock(bl, bp, dim));
+        CallEventRtnBool(EVENT_TYPES::onCloseContainer, PlayerClass::newPlayer(pl), BlockClass::newBlock(bl, bp, dim));
     }
     IF_LISTENDED_END();
     return original(_this, pl);
@@ -728,7 +732,7 @@ THook(bool, "?use@BarrelBlock@@UEBA_NAEAVPlayer@@AEBVBlockPos@@E@Z",
         BlockSource* bs = Raw_GetBlockSourceByDim(dim);
         Block* bl = Raw_GetBlockByPos(bp->x, bp->y, bp->z, bs);
 
-        CallEventEx(EVENT_TYPES::onOpenContainer, PlayerClass::newPlayer(pl), BlockClass::newBlock(bl, bp, dim));
+        CallEventRtnBool(EVENT_TYPES::onOpenContainer, PlayerClass::newPlayer(pl), BlockClass::newBlock(bl, bp, dim));
     }
     IF_LISTENDED_END();
     return original(_this, pl, bp);
@@ -745,7 +749,7 @@ THook(bool, "?stopOpen@BarrelBlockActor@@UEAAXAEAVPlayer@@@Z",
         BlockSource* bs = Raw_GetBlockSourceByDim(dim);
         Block* bl = Raw_GetBlockByPos(bp->x, bp->y, bp->z, bs);
 
-        CallEventEx(EVENT_TYPES::onCloseContainer, PlayerClass::newPlayer(pl), BlockClass::newBlock(bl, bp, dim));
+        CallEventRtnBool(EVENT_TYPES::onCloseContainer, PlayerClass::newPlayer(pl), BlockClass::newBlock(bl, bp, dim));
     }
     IF_LISTENDED_END();
     return original(_this, pl);
@@ -765,7 +769,7 @@ THook(void, "?_onItemChanged@LevelContainerModel@@MEAAXHAEBVItemStack@@0@Z",
 
         bool isPutIn = Raw_IsNull(oldItem);
 
-        CallEvent(EVENT_TYPES::onContainerChange, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(block, bpos, bs),
+        CallEventRtnVoid(EVENT_TYPES::onContainerChange, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(block, bpos, bs),
             slotNumber, isPutIn, ItemClass::newItem(isPutIn ? newItem : oldItem));
     }
     IF_LISTENDED_END();
@@ -778,7 +782,7 @@ THook(bool, "?canOpenContainerScreen@Player@@UEAA_NXZ",
 {
     IF_LISTENED(EVENT_TYPES::onOpenContainerScreen)
     {
-        CallEventEx(EVENT_TYPES::onOpenContainerScreen, PlayerClass::newPlayer(a1));
+        CallEventRtnBool(EVENT_TYPES::onOpenContainerScreen, PlayerClass::newPlayer(a1));
     }
     IF_LISTENDED_END();
     return original(a1);
@@ -799,7 +803,7 @@ THook(bool, "?_hurt@Mob@@MEAA_NAEBVActorDamageSource@@H_N1@Z",
                 void*, bool)(level, v6, 0);
             
 
-            CallEventEx(EVENT_TYPES::onMobHurt, EntityClass::newEntity(ac), EntityClass::newEntity(src),
+            CallEventRtnBool(EVENT_TYPES::onMobHurt, EntityClass::newEntity(ac), EntityClass::newEntity(src),
                 Number::newNumber(damage));
         }
     }
@@ -815,7 +819,7 @@ THook(bool, "?explode@Level@@UEAAXAEAVBlockSource@@PEAVActor@@AEBVVec3@@M_N3M3@Z
     {
         if (actor)
         {
-            CallEventEx(EVENT_TYPES::onExplode, EntityClass::newEntity(actor), FloatPos::newPos(pos->x, pos->y, pos->z, Raw_GetEntityDimId(actor)));
+            CallEventRtnBool(EVENT_TYPES::onExplode, EntityClass::newEntity(actor), FloatPos::newPos(pos->x, pos->y, pos->z, Raw_GetEntityDimId(actor)));
         }
     }
     IF_LISTENDED_END();
@@ -830,7 +834,7 @@ THook(void, "?onExploded@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@PEAVActor@@@
     {
         if (actor)
         {
-            CallEvent(EVENT_TYPES::onBlockExploded, BlockClass::newBlock(_this, bp, bs), EntityClass::newEntity(actor));
+            CallEventRtnVoid(EVENT_TYPES::onBlockExploded, BlockClass::newBlock(_this, bp, bs), EntityClass::newEntity(actor));
         }
     }
     IF_LISTENDED_END();
@@ -843,7 +847,7 @@ THook(void, "?onProjectileHit@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@AEBVAct
 {
     IF_LISTENED(EVENT_TYPES::onProjectileHit)       //################# 击中实体时也会触发 ################# 
     {
-        CallEvent(EVENT_TYPES::onProjectileHit, BlockClass::newBlock(_this,bp,bs), EntityClass::newEntity(actor));
+        CallEventRtnVoid(EVENT_TYPES::onProjectileHit, BlockClass::newBlock(_this,bp,bs), EntityClass::newEntity(actor));
     }
     IF_LISTENDED_END();
     return original(_this, bs, bp, actor);
@@ -858,7 +862,7 @@ THook(void, "?doOnHitEffect@SplashPotionEffectSubcomponent@@UEAAXAEAVActor@@AEAV
     {
         auto uniqueId = (ActorUniqueID*)((uintptr_t)a3 + 8);
         auto ac = Raw_GetEntityByUniqueId(*uniqueId);
-        CallEvent(EVENT_TYPES::onSplashPotionHitEffect, EntityClass::newEntity(a2), EntityClass::newEntity(ac));
+        CallEventRtnVoid(EVENT_TYPES::onSplashPotionHitEffect, EntityClass::newEntity(a2), EntityClass::newEntity(ac));
     }
     IF_LISTENDED_END();
     // 不original即可拦截，等待CallEvent重写...
@@ -876,7 +880,7 @@ THook(unsigned short, "?onBlockInteractedWith@VanillaServerGameplayEventListener
     {
         BlockSource* bs = Raw_GetBlockSourceByActor((Actor*)pl);
 
-        CallEventRtn(EVENT_TYPES::onBlockInteracted, 0, PlayerClass::newPlayer(pl),
+        CallEventRtnValue(EVENT_TYPES::onBlockInteracted, 0, PlayerClass::newPlayer(pl),
             BlockClass::newBlock(Raw_GetBlockByPos(bp->x, bp->y, bp->z, bs), bp, bs));
     }
     IF_LISTENDED_END();
@@ -889,7 +893,7 @@ THook(bool, "?trySetSpawn@RespawnAnchorBlock@@CA_NAEAVPlayer@@AEBVBlockPos@@AEAV
 {
     IF_LISTENED(EVENT_TYPES::onUseRespawnAnchor)
     {
-        CallEventEx(EVENT_TYPES::onUseRespawnAnchor,PlayerClass::newPlayer(pl),IntPos::newPos(*a2, Raw_GetBlockDimension(a3)));
+        CallEventRtnBool(EVENT_TYPES::onUseRespawnAnchor,PlayerClass::newPlayer(pl),IntPos::newPos(*a2, Raw_GetBlockDimension(a3)));
     }
     IF_LISTENDED_END();
     return original(pl, a2, a3, a4);
@@ -901,7 +905,7 @@ THook(void, "?transformOnFall@FarmBlock@@UEBAXAEAVBlockSource@@AEBVBlockPos@@PEA
 {
     IF_LISTENED(EVENT_TYPES::onFarmLandDecay)
     {
-        CallEvent(EVENT_TYPES::onFarmLandDecay,IntPos::newPos(*bp, Raw_GetBlockDimension(bs)),EntityClass::newEntity(ac));
+        CallEventRtnVoid(EVENT_TYPES::onFarmLandDecay,IntPos::newPos(*bp, Raw_GetBlockDimension(bs)),EntityClass::newEntity(ac));
     }
     IF_LISTENDED_END();
     return original(_this,bs,bp,ac,a5);
@@ -915,7 +919,7 @@ THook(bool, "?use@ItemFrameBlock@@UEBA_NAEAVPlayer@@AEBVBlockPos@@E@Z",
     {
         BlockSource * bs = Raw_GetBlockSourceByActor((Actor*)a2);
         Block* bl = Raw_GetBlockByPos(a3->x, a3->y, a3->z, bs);
-        CallEventEx(EVENT_TYPES::onUseFrameBlock, PlayerClass::newPlayer(a2), BlockClass::newBlock(bl, a3, bs));
+        CallEventRtnBool(EVENT_TYPES::onUseFrameBlock, PlayerClass::newPlayer(a2), BlockClass::newBlock(bl, a3, bs));
     }
     IF_LISTENDED_END();
     return original(_this, a2, a3);
@@ -928,7 +932,7 @@ THook(bool, "?attack@ItemFrameBlock@@UEBA_NPEAVPlayer@@AEBVBlockPos@@@Z",
     {
         BlockSource* bs = Raw_GetBlockSourceByActor((Actor*)a2);
         Block* bl = Raw_GetBlockByPos(a3->x, a3->y, a3->z, bs);
-        CallEventEx(EVENT_TYPES::onUseFrameBlock, PlayerClass::newPlayer(a2), BlockClass::newBlock(bl, a3, bs));
+        CallEventRtnBool(EVENT_TYPES::onUseFrameBlock, PlayerClass::newPlayer(a2), BlockClass::newBlock(bl, a3, bs));
     }
     IF_LISTENDED_END();
     return original(_this, a2, a3);
@@ -944,7 +948,7 @@ THook(bool, "?_attachedBlockWalker@PistonBlockActor@@AEAA_NAEAVBlockSource@@AEBV
         BlockPos pistonPos = _this->getPosition();
         Block* pushedBlock = Raw_GetBlockByPos(bp->x, bp->y, bp->z, bs);
 
-        CallEventEx(EVENT_TYPES::onPistonPush, IntPos::newPos(pistonPos, dim), BlockClass::newBlock(pushedBlock, bp, dim));
+        CallEventRtnBool(EVENT_TYPES::onPistonPush, IntPos::newPos(pistonPos, dim), BlockClass::newBlock(pushedBlock, bp, dim));
     }
     IF_LISTENDED_END();
     return original(_this, bs, bp, a3, a4);
@@ -956,7 +960,7 @@ THook(bool, "?_tryPullInItemsFromAboveContainer@Hopper@@IEAA_NAEAVBlockSource@@A
 {
     IF_LISTENED(EVENT_TYPES::onHopperSearchItem)
     {
-        CallEventEx(EVENT_TYPES::onHopperSearchItem, FloatPos::newPos(*pos, Raw_GetBlockDimension(bs)));
+        CallEventRtnBool(EVENT_TYPES::onHopperSearchItem, FloatPos::newPos(*pos, Raw_GetBlockDimension(bs)));
     }
     IF_LISTENDED_END();
     return original(_this, bs, container, pos);
@@ -968,7 +972,7 @@ THook(bool, "?_pushOutItems@Hopper@@IEAA_NAEAVBlockSource@@AEAVContainer@@AEBVVe
 {
     IF_LISTENED(EVENT_TYPES::onHopperPushOut)
     {
-        CallEventEx(EVENT_TYPES::onHopperPushOut, FloatPos::newPos(*pos, Raw_GetBlockDimension(bs)));
+        CallEventRtnBool(EVENT_TYPES::onHopperPushOut, FloatPos::newPos(*pos, Raw_GetBlockDimension(bs)));
     }
     IF_LISTENDED_END();
     return original(_this, bs, container, pos, a5);
@@ -980,7 +984,7 @@ THook(bool, "?_trySpawnBlueFire@FireBlock@@AEBA_NAEAVBlockSource@@AEBVBlockPos@@
 {
     IF_LISTENED(EVENT_TYPES::onFireSpread)
     {
-        CallEventEx(EVENT_TYPES::onFireSpread, IntPos::newPos(*bp, Raw_GetBlockDimension(bs)));
+        CallEventRtnBool(EVENT_TYPES::onFireSpread, IntPos::newPos(*bp, Raw_GetBlockDimension(bs)));
     }
     IF_LISTENDED_END();
     return original(_this, bs, bp);
@@ -995,7 +999,7 @@ THook(__int64, "?retrieve@FishingHook@@QEAAHXZ",
     {
         auto pl = (Player*)Raw_GetFishingHookOwner(_this);
         auto fh = (Actor*)_this;
-        CallEventRtn(EVENT_TYPES::onFishingHookRetrieve, 0i64, PlayerClass::newPlayer(pl), EntityClass::newEntity(fh));
+        CallEventRtnValue(EVENT_TYPES::onFishingHookRetrieve, 0i64, PlayerClass::newPlayer(pl), EntityClass::newEntity(fh));
     }
     IF_LISTENDED_END();
     return original(_this);
@@ -1027,7 +1031,7 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
                     bool callbackRes = CallPlayerCmdCallback(player, prefix, paras);
                     IF_LISTENED(EVENT_TYPES::onPlayerCmd)
                     {
-                        CallEventEx(EVENT_TYPES::onPlayerCmd, PlayerClass::newPlayer(player), String::newString(cmd));
+                        CallEventRtnBool(EVENT_TYPES::onPlayerCmd, PlayerClass::newPlayer(player), String::newString(cmd));
                     }
                     IF_LISTENDED_END();
                     if (!callbackRes)
@@ -1039,7 +1043,7 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
                 //Other Cmd
                 IF_LISTENED(EVENT_TYPES::onPlayerCmd)
                 {
-                    CallEventEx(EVENT_TYPES::onPlayerCmd, PlayerClass::newPlayer(player), String::newString(cmd));
+                    CallEventRtnBool(EVENT_TYPES::onPlayerCmd, PlayerClass::newPlayer(player), String::newString(cmd));
                 }
                 IF_LISTENDED_END();
             }
@@ -1063,7 +1067,7 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
                 bool callbackRes = CallServerCmdCallback(prefix,paras);
                 IF_LISTENED(EVENT_TYPES::onConsoleCmd)
                 {
-                    CallEventEx(EVENT_TYPES::onConsoleCmd, String::newString(cmd));
+                    CallEventRtnBool(EVENT_TYPES::onConsoleCmd, String::newString(cmd));
                 }
                 IF_LISTENDED_END();
                 if (!callbackRes)
@@ -1074,7 +1078,7 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
                 //Other Cmd
                 IF_LISTENED(EVENT_TYPES::onConsoleCmd)
                 {
-                    CallEventEx(EVENT_TYPES::onConsoleCmd, String::newString(cmd));
+                    CallEventRtnBool(EVENT_TYPES::onConsoleCmd, String::newString(cmd));
                 }
                 IF_LISTENDED_END();
             }
@@ -1127,7 +1131,7 @@ THook(void, "?onScoreChanged@ServerScoreboard@@UEAAXAEBUScoreboardId@@AEBVObject
 
         if (player)
         {
-            CallEvent(EVENT_TYPES::onScoreChanged, PlayerClass::newPlayer(player), Number::newNumber(a2->getPlayerScore(*a1).getCount()),
+            CallEventRtnVoid(EVENT_TYPES::onScoreChanged, PlayerClass::newPlayer(player), Number::newNumber(a2->getPlayerScore(*a1).getCount()),
                 String::newString(a2->getName()), String::newString(a2->getDisplayName()));
         }
     }
@@ -1144,7 +1148,7 @@ THook(ostream&, "??$_Insert_string@DU?$char_traits@D@std@@_K@std@@YAAEAV?$basic_
     {
         IF_LISTENED(EVENT_TYPES::onConsoleOutput)
         {
-            CallEventRtn(EVENT_TYPES::onConsoleOutput, _this, String::newString(string(str)));
+            CallEventRtnValue(EVENT_TYPES::onConsoleOutput, _this, String::newString(string(str)));
         }
         IF_LISTENDED_END();
     }
