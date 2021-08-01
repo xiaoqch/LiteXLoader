@@ -37,12 +37,12 @@ using namespace script;
 enum class EVENT_TYPES : int
 {
     onPreJoin=0, onJoin, onLeft, onPlayerCmd, onChat, onPlayerDie, 
-    onRespawn, onChangeDim, onJump, onSneak, onAttack, onEat, onMove, onSetArmor, onRide,
+    onRespawn, onChangeDim, onJump, onSneak, onAttack, onEat, onMove, onShootFireworkWithCrossbow, onSetArmor, onRide, onStepOnPressurePlate,
     onUseItem, onTakeItem, onDropItem, onUseItemOn, onInventoryChange,
     onDestroyingBlock, onDestroyBlock, onWitherBossDestroy, onPlaceBlock,
     onOpenContainer, onCloseContainer, onContainerChange, onOpenContainerScreen,
     onMobDie, onMobHurt, onExplode, onBlockExploded, onCmdBlockExecute,
-    onProjectileHit, onBlockInteracted, onUseRespawnAnchor, onFarmLandDecay, onUseFrameBlock,
+    onProjectileHit, onSplashPotionHitEffect, onBlockInteracted, onUseRespawnAnchor, onFarmLandDecay, onUseFrameBlock,
     onPistonPush, onHopperSearchItem, onHopperPushOut, onFireSpread, onFishingHookRetrieve,
     onScoreChanged, onServerStarted, onConsoleCmd, onFormSelected, onConsoleOutput,
     EVENT_COUNT
@@ -61,8 +61,10 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onAttack",EVENT_TYPES::onAttack},
     {"onEat",EVENT_TYPES::onEat},
     {"onMove",EVENT_TYPES::onMove},
+    {"onShootFireworkWithCrossbow",EVENT_TYPES::onShootFireworkWithCrossbow},
     {"onSetArmor",EVENT_TYPES::onSetArmor},
     {"onRide",EVENT_TYPES::onRide},
+    {"onStepOnPressurePlate",EVENT_TYPES::onStepOnPressurePlate},
     {"onMobDie",EVENT_TYPES::onMobDie},
     {"onMobHurt",EVENT_TYPES::onMobHurt},
     {"onUseItem",EVENT_TYPES::onUseItem},
@@ -83,6 +85,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onOpenContainerScreen",EVENT_TYPES::onOpenContainerScreen},
     {"onCmdBlockExecute",EVENT_TYPES::onCmdBlockExecute},
     {"onProjectileHit",EVENT_TYPES::onProjectileHit},
+    {"onSplashPotionHitEffect",EVENT_TYPES::onSplashPotionHitEffect},
     {"onBlockInteracted",EVENT_TYPES::onBlockInteracted},
     {"onUseRespawnAnchor",EVENT_TYPES::onUseRespawnAnchor},
     {"onFarmLandDecay",EVENT_TYPES::onFarmLandDecay},
@@ -446,21 +449,16 @@ THook(void, "?sendPlayerMove@PlayerEventCoordinator@@QEAAXAEAVPlayer@@@Z",
 }
 
 // ===== onShootFireworkWithCrossbow =====
-/*
 THook(void, "?_shootFirework@CrossbowItem@@AEBAXAEBVItemInstance@@AEAVPlayer@@@Z",
     void* _this, void* a2, Player* a3)
 {
     IF_LISTENED(EVENT_TYPES::onShootFireworkWithCrossbow)
     {
-        CallEventRtnVoid(EVENT_TYPES::onShootFireworkWithCrossbow, PlayerClass::newPlayer(a3));
+        CallEventRtnVoid(EVENT_TYPES::onShootFireworkWithCrossbow, PlayerClass::newPlayer(a3),FloatPos::newPos(Raw_GetPlayerPos(a3)));
     }
     IF_LISTENDED_END();
-    // 不original即可拦截，等待CallEvent重写...
-    // Event -> [1]用弩发射烟花的玩家对象
-
     original(_this, a3, a3);
 }
-*/
 
 // ===== onSetArmor =====
 THook(void, "?setArmor@Player@@UEAAXW4ArmorSlot@@AEBVItemStack@@@Z",
@@ -487,7 +485,6 @@ THook(bool, "?canAddRider@Actor@@UEBA_NAEAV1@@Z",
 }
 
 // ===== onStepOnPressurePlate =====
-/*
 THook(void, "?entityInside@BasePressurePlateBlock@@UEBAXAEAVBlockSource@@AEBVBlockPos@@AEAVActor@@@Z",
     void* _this, BlockSource* a2, BlockPos* a3, Actor* a4)
 {
@@ -497,12 +494,9 @@ THook(void, "?entityInside@BasePressurePlateBlock@@UEBAXAEAVBlockSource@@AEBVBlo
         CallEventRtnVoid(EVENT_TYPES::onStepOnPressurePlate, EntityClass::newEntity(a4), BlockClass::newBlock(bl, a3, a2));
     }
     IF_LISTENDED_END();
-    // 不original即可拦截，等待CallEvent重写...
-    // Event -> [1]踩压力板的实体对象 [2]压力板的方块对象
-
     original(_this, a2, a3, a4);
 }
-*/
+
 
 // ===== onRespawn =====
 THook(bool, "?respawn@Player@@UEAAXXZ",
@@ -633,48 +627,22 @@ THook(bool, "?checkBlockDestroyPermissions@BlockSource@@QEAA_NAEAVActor@@AEBVBlo
 }
 
 // ===== onWitherBossDestroy =====
-
-THook(bool, "?canDestroy@WitherBoss@@SA_NAEBVBlock@@@Z",
-    Block* a1)
-{
-    IF_LISTENED(EVENT_TYPES::onWitherBossDestroy)
-    {
-        CallEventRtnBool(EVENT_TYPES::onWitherBossDestroy, BlockClass::newBlock(a1));
-    }
-    IF_LISTENDED_END();
-    return original(a1);
-}
-
-THook(bool, "?canDestroyBlock@WitherSkull@@UEBA_NAEBVBlock@@@Z",
-    void* _this, Block* a2)
-{
-    IF_LISTENED(EVENT_TYPES::onWitherBossDestroy)
-    {
-        CallEventRtnBool(EVENT_TYPES::onWitherBossDestroy, BlockClass::newBlock(a2));
-    }
-    IF_LISTENDED_END();
-    return original(_this, a2);
-}
-
-/*
 THook(void, "?_destroyBlocks@WitherBoss@@AEAAXAEAVLevel@@AEBVAABB@@AEAVBlockSource@@H@Z",
-    void* _this, struct Level* a2, const struct AABB* a3, struct BlockSource* a4, int a5)
+    void* _this, Level* a2, AABB* a3, BlockSource* a4, int a5)
 {
     IF_LISTENED(EVENT_TYPES::onWitherBossDestroy)
     {
         auto ac = (Actor*)_this;
-        auto dimid = dAccess<int, -96>(a4);
+        auto dimid = Raw_GetEntityDimId(ac);
         Vec3 posA = a3->p1;
         Vec3 posB = a3->p2;
+
         CallEventRtnVoid(EVENT_TYPES::onWitherBossDestroy, EntityClass::newEntity(ac), IntPos::newPos(posA.x, posA.y, posA.z, dimid), IntPos::newPos(posB.x, posB.y, posB.z, dimid));
     }
     IF_LISTENDED_END();
-    // 不original即可拦截，等待CallEvent重写...
-    // Event -> [1]凋灵实体对象 [2]AABB(AA) [3]AABB(BB)
 
     original(_this, a2, a3, a4, a5);
 }
-*/
 
 // ===== onPlaceBlock =====
 THook(bool, "?mayPlace@BlockSource@@QEAA_NAEBVBlock@@AEBVBlockPos@@EPEAVActor@@_N@Z",
@@ -854,7 +822,6 @@ THook(void, "?onProjectileHit@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@AEBVAct
 }
 
 // ===== onSplashPotionHitEffect =====
-/*
 THook(void, "?doOnHitEffect@SplashPotionEffectSubcomponent@@UEAAXAEAVActor@@AEAVProjectileComponent@@@Z",
     void* _this, Actor* a2, ProjectileComponent* a3)
 {
@@ -865,12 +832,8 @@ THook(void, "?doOnHitEffect@SplashPotionEffectSubcomponent@@UEAAXAEAVActor@@AEAV
         CallEventRtnVoid(EVENT_TYPES::onSplashPotionHitEffect, EntityClass::newEntity(a2), EntityClass::newEntity(ac));
     }
     IF_LISTENDED_END();
-    // 不original即可拦截，等待CallEvent重写...
-    // Event -> [1]被喷溅药水效果影响的实体对象 [2]投掷喷溅药水的实体对象
-
     original(_this, a2, a3);
 }
-*/
 
 // ===== onBlockInteracted =====
 THook(unsigned short, "?onBlockInteractedWith@VanillaServerGameplayEventListener@@UEAA?AW4EventResult@@AEAVPlayer@@AEBVBlockPos@@@Z",

@@ -50,14 +50,22 @@
 #### "onWitherBossDestroy" - 凋零破坏方块
 
 - 监听函数原型
-  `function(block)`
+  `function(witherBoss,AAbb,aaBB)`
 - 参数：
-  - block : `Block`  
-    将要破坏的方块对象
+  - witherBoss: `Entity`  
+    凋零的实体对象
 
+  - AAbb: `IntPos`
+  
+    凋零将破坏的区域（长方体），对角点A坐标
+  
+  - aaBB: `IntPos`
+  
+    凋零将破坏的区域（长方体），对角点B坐标
+  
 - 拦截事件：函数返回`false`
 
-注意，此事件包括凋零之首的破坏。另外，此事件的方块对象无法取得坐标。
+注意，此事件不包括凋零爆炸的破坏。
 
 <br>
 
@@ -73,5 +81,33 @@
 - 拦截事件：函数返回`false`
 
 注：骑乘包括坐矿车、坐船、骑马、骑猪等。
+
+<br>
+
+#### "onStepOnPressurePlate" - 生物踩压力板
+
+- 监听函数原型
+  `function(entity,pressurePlate)`
+- 参数：
+  - entity : `Entity`  
+    踩压力板的实体对象
+  - pressurePlate : `Block`  
+    被踩的压力板方块对象
+- 拦截事件：函数返回`false`
+
+注：生物踩压力板时，将会反复多次触发此事件。
+
+<br>
+
+#### "onSplashPotionHitEffect" - 实体喷溅药水效果影响
+
+- 监听函数原型
+  `function(entity1,entity2)`
+- 参数：
+  - entity1 : `Entity`  
+    被喷溅药水效果影响的实体对象
+  - entity2: `Entity`  
+    投掷喷溅药水的实体对象
+- 拦截事件：函数返回`false`
 
 <br>

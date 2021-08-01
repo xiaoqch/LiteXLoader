@@ -342,6 +342,19 @@
 
 <br>
 
+#### "onShootFireworkWithCrossbow" - 玩家用弩发射烟花
+
+- 监听函数原型
+  `function(player,pos)`
+- 参数：
+  - player : `Player`  
+    正在发射烟花的玩家对象
+  - pos : `FloatPos`  
+    这个玩家当前的位置
+- 拦截事件：函数返回 `false`
+
+<br>
+
 #### `"onSetArmor"` - 玩家改变盔甲栏
 
 - 监听函数原型
