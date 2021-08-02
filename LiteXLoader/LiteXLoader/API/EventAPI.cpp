@@ -690,15 +690,16 @@ THook(void, "?_destroyBlocks@WitherBoss@@AEAAXAEAVLevel@@AEBVAABB@@AEAVBlockSour
 }
 
 // ===== onPlaceBlock =====
-THook(bool, "?mayPlace@BlockSource@@QEAA_NAEBVBlock@@AEBVBlockPos@@EPEAVActor@@_N@Z",
-    BlockSource* bs, Block* bl, BlockPos* bp, unsigned __int8 a4, Actor* pl, bool a6)
+THook(int, "?onBlockPlacedByPlayer@VanillaServerGameplayEventListener@@UEAA?AW4EventResult@@AEAVPlayer@@AEBVBlock@@AEBVBlockPos@@_N@Z",
+    void* _this, Player* pl, Block* bl, BlockPos* bp, bool a5)
 {
     IF_LISTENED(EVENT_TYPES::onPlaceBlock)
     {
-        CallEventRtnBool(EVENT_TYPES::onPlaceBlock, PlayerClass::newPlayer((Player*)pl), BlockClass::newBlock(bl,bp,bs));
+        BlockSource* bs = Raw_GetBlockSourceByActor((Actor*)pl);
+        CallEventRtnValue(EVENT_TYPES::onPlaceBlock, 0, PlayerClass::newPlayer(pl), BlockClass::newBlock(bl, bp, bs));
     }
     IF_LISTENDED_END();
-    return original(bs, bl, bp, a4, pl, a6);
+    return original(_this, pl, bl, bp, a5);
 }
 
 // ===== onOpenContainer_Chest =====
