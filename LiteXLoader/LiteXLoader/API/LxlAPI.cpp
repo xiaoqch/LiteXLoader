@@ -34,9 +34,9 @@ Local<Value> LxlCheckVersion(const Arguments& args)
         CHECK_ARG_TYPE(args[2], ValueKind::kNumber);
 
     try {
-        if (args[0].toInt() < LXL_VERSION_MAJOR
-            || (args.size() >= 2 && args[1].toInt() < LXL_VERSION_MINOR)
-            || (args.size() >= 3 && args[2].toInt() < LXL_VERSION_REVISION))
+        if (args[0].toInt() > LXL_VERSION_MAJOR
+            || (args.size() >= 2 && args[1].toInt() > LXL_VERSION_MINOR)
+            || (args.size() >= 3 && args[2].toInt() > LXL_VERSION_REVISION))
         {
             return Boolean::newBoolean(false);
         }
