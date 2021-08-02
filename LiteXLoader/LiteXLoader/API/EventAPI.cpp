@@ -650,28 +650,6 @@ THook(bool, "?checkBlockDestroyPermissions@BlockSource@@QEAA_NAEAVActor@@AEBVBlo
 
 // ===== onWitherBossDestroy =====
 
-THook(bool, "?canDestroy@WitherBoss@@SA_NAEBVBlock@@@Z",
-    Block* a1)
-{
-    IF_LISTENED(EVENT_TYPES::onWitherBossDestroy)
-    {
-        CallEventRtnBool(EVENT_TYPES::onWitherBossDestroy, BlockClass::newBlock(a1));
-    }
-    IF_LISTENDED_END();
-    return original(a1);
-}
-
-THook(bool, "?canDestroyBlock@WitherSkull@@UEBA_NAEBVBlock@@@Z",
-    void* _this, Block* a2)
-{
-    IF_LISTENED(EVENT_TYPES::onWitherBossDestroy)
-    {
-        CallEventRtnBool(EVENT_TYPES::onWitherBossDestroy, BlockClass::newBlock(a2));
-    }
-    IF_LISTENDED_END();
-    return original(_this, a2);
-}
-
 THook(void, "?_destroyBlocks@WitherBoss@@AEAAXAEAVLevel@@AEBVAABB@@AEAVBlockSource@@H@Z",
     void* _this, Level* a2, AABB* a3, BlockSource* a4, int a5)
 {
