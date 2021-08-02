@@ -10,6 +10,7 @@ std::string Raw_GetIP(Player* player);
 int Raw_GetPlayerPermLevel(Player* player);
 int Raw_GetGameMode(Player* player);
 bool Raw_GetSneaking(Player *player);
+int Raw_GetDirection(Player* player);
 
 bool Raw_RuncmdAs(Player *player, const std::string &cmd);
 bool Raw_TeleportPlayer(Player* player, const FloatVec4 &pos);
