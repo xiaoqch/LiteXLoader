@@ -161,7 +161,7 @@
 
 <br>
 
-#### "onUseFrameBlock" - 操作物品展示框
+#### `"onUseFrameBlock"` - 操作物品展示框
 
 - 监听函数原型
   `function(player,block)`

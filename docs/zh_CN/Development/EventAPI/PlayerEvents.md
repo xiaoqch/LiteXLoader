@@ -377,7 +377,7 @@
 
 <br>
 
-#### "onFishingHookRetrieve" - 玩家收鱼钩
+#### `"onFishingHookRetrieve"` - 玩家收鱼钩
 
 - 监听函数原型
   `function(player,fishingHook)`
@@ -392,13 +392,13 @@
 
 <br>
 
-#### "onOpenContainerScreen" - 玩家打开容器类GUI
+#### `"onOpenContainerScreen"` - 玩家打开容器类GUI
 
 - 监听函数原型
   `function(player)`
 - 参数：
   - player : `Player`  
-    尝试骑乘的玩家对象
+    尝试打开GUI的玩家对象
 - 拦截事件：函数返回`false`
 
 注：此事件非常强力，甚至可以拦截打开背包。

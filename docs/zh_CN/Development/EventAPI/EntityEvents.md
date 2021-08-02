@@ -60,7 +60,7 @@
 
 <br>
 
-#### "onWitherBossDestroy" - 凋零破坏方块
+#### `"onWitherBossDestroy"` - 凋零破坏方块
 
 - 监听函数原型
   `function(witherBoss,AAbb,aaBB)`
@@ -82,7 +82,7 @@
 
 <br>
 
-#### "onRide" - 生物骑乘
+#### `"onRide"` - 生物骑乘
 
 - 监听函数原型
   `function(entity1,entity2)`
@@ -97,7 +97,7 @@
 
 <br>
 
-#### "onStepOnPressurePlate" - 生物踩压力板
+#### `"onStepOnPressurePlate"` - 生物踩压力板
 
 - 监听函数原型
   `function(entity,pressurePlate)`
@@ -112,7 +112,7 @@
 
 <br>
 
-#### "onSplashPotionHitEffect" - 实体喷溅药水效果影响
+#### `"onSplashPotionHitEffect"` - 实体喷溅药水效果影响
 
 - 监听函数原型
   `function(entity1,entity2)`
@@ -125,7 +125,7 @@
 
 <br>
 
-#### "onProjectileShoot" - 实体发射弹射物
+#### `"onProjectileShoot"` - 实体发射弹射物
 
 - 监听函数原型
   `function(shooter,projectiler)`
