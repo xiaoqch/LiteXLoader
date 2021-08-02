@@ -9,7 +9,7 @@ using namespace std;
 
 string GetVersionString()
 {
-	return to_string(LXL_VERSION_MAJOR) + "." + to_string(LXL_VERSION_MINOR) + "." + to_string(LXL_VERSION_BUILD);
+	return to_string(LXL_VERSION_MAJOR) + "." + to_string(LXL_VERSION_MINOR) + "." + to_string(LXL_VERSION_REVISION);
 }
 
 void ProcessData(int code, string body)

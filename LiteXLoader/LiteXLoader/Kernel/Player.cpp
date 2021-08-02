@@ -62,7 +62,8 @@ int Raw_GetDirection(Player* player)
 
 bool  Raw_RuncmdAs(Player *player, const string &cmd)
 {
-    return liteloader::runcmdAs(player,cmd);
+    //return liteloader::runcmdAs(player,cmd);
+    return Raw_SendCommandRequestPacket(player, cmd);
 }
 
 bool Raw_TeleportPlayer(Player* player, const FloatVec4 &pos)

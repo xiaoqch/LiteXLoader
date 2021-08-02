@@ -6,6 +6,10 @@
 
 注意：此处只会列出造成不兼容变化的API更改。如果要查看所有更新日志，请前往GitHub提交页面查看相关提交记录
 
+#### 20210802 - v0.3.1
+
+- `lxl.version`版本对象中的`build`项更名为`revision`
+
 #### 20210801 - v0.3.0
 
 - 将事件 `onContainerChangeSlot` 重命名为 `onContainerChange`，移动到方块事件中，并对回调参数做了修改。详见事件文档

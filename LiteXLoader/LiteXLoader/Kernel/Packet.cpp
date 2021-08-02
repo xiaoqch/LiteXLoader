@@ -84,6 +84,18 @@ bool Raw_SendCrashClientPacket(Player* player)
     return Raw_SendPacket(player, pkt);
 }
 
+bool Raw_SendCommandRequestPacket(Player* player,const string &cmd)
+{
+    void* pkt = Raw_CreatePacket(77);
+    dAccess<string, 48>(pkt) = cmd;
+    
+    void* clientId = SymCall("?getClientId@Player@@QEBAAEBVNetworkIdentifier@@XZ",
+        void*, Player*)(player);
+    SymCall("?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVCommandRequestPacket@@@Z",
+        void, ServerNetworkHandler*, void*, void*)(mc->getServerNetworkHandler(), clientId, pkt);
+    return true;
+}
+
 Player* Raw_GetPlayerFromPacket(ServerNetworkHandler* handler, NetworkIdentifier* id, Packet* packet)
 {
     return SymCall("?_getServerPlayer@ServerNetworkHandler@@AEAAPEAVServerPlayer@@AEBVNetworkIdentifier@@E@Z",

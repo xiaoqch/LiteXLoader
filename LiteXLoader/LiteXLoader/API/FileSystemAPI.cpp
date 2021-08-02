@@ -111,6 +111,49 @@ Local<Value> PathMove(const Arguments& args)
     CATCH("Fail in MovePath!")
 }
 
+Local<Value> CheckIsDir(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+
+    try {
+        path p(args[0].toStr());
+        if (!exists(p))
+            return Boolean::newBoolean(false);
+
+        return Boolean::newBoolean(directory_entry(p).is_directory());
+    }
+    catch (const filesystem_error& e)
+    {
+        ERROR("Fail to Get Type of " + args[0].asString().toString() + "!\n");
+        return Local<Value>();
+    }
+    CATCH("Fail in GetFilesList!")
+}
+
+Local<Value> GetFileSize(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+
+    try {
+        path p(args[0].toStr());
+        if (!exists(p))
+            return Number::newNumber(0);
+        if(directory_entry(p).is_directory())
+            return Number::newNumber(0);
+
+        auto sz = file_size(p);
+        return Number::newNumber((int64_t)sz);
+    }
+    catch (const filesystem_error& e)
+    {
+        ERROR("Fail to Get Size of " + args[0].asString().toString() + "!\n");
+        return Local<Value>();
+    }
+    CATCH("Fail in GetFilesList!")
+}
+
 Local<Value> GetFilesList(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1)

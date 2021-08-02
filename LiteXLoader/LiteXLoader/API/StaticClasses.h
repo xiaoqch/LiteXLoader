@@ -113,6 +113,8 @@ public:
     static Local<Value> rename(const Arguments& args) { return PathRename(args); }
     static Local<Value> del(const Arguments& args) { return PathDelete(args); }
     static Local<Value> exists(const Arguments& args) { return PathExists(args); }
+    static Local<Value> checkIsDir(const Arguments& args) { return CheckIsDir(args); }
+    static Local<Value> getFileSize(const Arguments& args) { return GetFileSize(args); }
     static Local<Value> getFilesList(const Arguments& args) { return GetFilesList(args); }
 };
 
@@ -129,6 +131,8 @@ static ClassDefine<void> FileClassBuilder =
         .function("rename", &FileClass::rename)
         .function("delete", &FileClass::del)
         .function("exists", &FileClass::exists)
+        .function("checkIsDir", &FileClass::checkIsDir)
+        .function("getFileSize", &FileClass::getFileSize)
         .function("getFilesList", &FileClass::getFilesList)
         .build();
 
@@ -230,6 +234,7 @@ class LxlClass
 {
 public:
     static Local<Value> version(const Arguments& args) { return LxlGetVersion(args); }
+    static Local<Value> checkVersion(const Arguments& args) { return LxlCheckVersion(args); }
     static Local<Value> listPlugins(const Arguments& args) { return LxlListPlugins(args); }
     static Local<Value> importFunc(const Arguments& args) { return LxlImport(args); }
     static Local<Value> exportFunc(const Arguments& args) { return LxlExport(args); }
@@ -240,6 +245,7 @@ public:
 static ClassDefine<void> LxlClassBuilder =
     defineClass("lxl")
         .function("version", &LxlClass::version)
+        .function("checkVersion", &LxlClass::checkVersion)
         .function("listPlugins", &LxlClass::listPlugins)
         .function("import", &LxlClass::importFunc)
         .function("export", &LxlClass::exportFunc)
