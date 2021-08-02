@@ -113,7 +113,8 @@ public:
     static Local<Value> rename(const Arguments& args) { return PathRename(args); }
     static Local<Value> del(const Arguments& args) { return PathDelete(args); }
     static Local<Value> exists(const Arguments& args) { return PathExists(args); }
-    static Local<Value> getFilesSize(const Arguments& args) { return GetFileSize(args); }
+    static Local<Value> checkIsDir(const Arguments& args) { return CheckIsDir(args); }
+    static Local<Value> getFileSize(const Arguments& args) { return GetFileSize(args); }
     static Local<Value> getFilesList(const Arguments& args) { return GetFilesList(args); }
 };
 
@@ -130,7 +131,8 @@ static ClassDefine<void> FileClassBuilder =
         .function("rename", &FileClass::rename)
         .function("delete", &FileClass::del)
         .function("exists", &FileClass::exists)
-        .function("getFileSize", &FileClass::getFilesSize)
+        .function("checkIsDir", &FileClass::checkIsDir)
+        .function("getFileSize", &FileClass::getFileSize)
         .function("getFilesList", &FileClass::getFilesList)
         .build();
 
