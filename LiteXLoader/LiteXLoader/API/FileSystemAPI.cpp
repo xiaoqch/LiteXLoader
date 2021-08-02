@@ -111,6 +111,23 @@ Local<Value> PathMove(const Arguments& args)
     CATCH("Fail in MovePath!")
 }
 
+Local<Value> GetFileSize(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+
+    try {
+        auto sz = file_size(args[0].asString().toString());
+        return Number::newNumber((int64_t)sz);
+    }
+    catch (const filesystem_error& e)
+    {
+        ERROR("Fail to Get Size of " + args[0].asString().toString() + "!\n");
+        return Number::newNumber(-1);
+    }
+    CATCH("Fail in GetFilesList!")
+}
+
 Local<Value> GetFilesList(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1)

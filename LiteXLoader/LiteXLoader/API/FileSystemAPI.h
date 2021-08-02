@@ -12,4 +12,5 @@ Local<Value> PathMove(const Arguments& args);
 Local<Value> PathRename(const Arguments& args);
 Local<Value> PathDelete(const Arguments& args);
 Local<Value> PathExists(const Arguments& args);
+Local<Value> GetFileSize(const Arguments& args);
 Local<Value> GetFilesList(const Arguments& args);
