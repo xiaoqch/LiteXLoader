@@ -230,6 +230,7 @@ class LxlClass
 {
 public:
     static Local<Value> version(const Arguments& args) { return LxlGetVersion(args); }
+    static Local<Value> checkVersion(const Arguments& args) { return LxlCheckVersion(args); }
     static Local<Value> listPlugins(const Arguments& args) { return LxlListPlugins(args); }
     static Local<Value> importFunc(const Arguments& args) { return LxlImport(args); }
     static Local<Value> exportFunc(const Arguments& args) { return LxlExport(args); }
@@ -240,6 +241,7 @@ public:
 static ClassDefine<void> LxlClassBuilder =
     defineClass("lxl")
         .function("version", &LxlClass::version)
+        .function("checkVersion", &LxlClass::checkVersion)
         .function("listPlugins", &LxlClass::listPlugins)
         .function("import", &LxlClass::importFunc)
         .function("export", &LxlClass::exportFunc)
