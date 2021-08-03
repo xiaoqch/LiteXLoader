@@ -266,7 +266,7 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Release\</OutDir>
     <TargetName>$(ProjectName).Lua</TargetName>
-    <IncludePath>$(SolutionDir)third-party\ScriptX\src\include\ScriptX;$(SolutionDir)third-party\ScriptX\src\include;$(SolutionDir)third-party\LiteLoader;$(SolutionDir)third-party;$(SolutionDir);$(SolutionDir)LiteXLoader;$(SolutionDir)third-party\Lua\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)third-party\ScriptX\src\include\ScriptX;$(SolutionDir)third-party\ScriptX\src\include;$(SolutionDir)third-party\gsl;$(SolutionDir)third-party\LiteLoader;$(SolutionDir)third-party;$(SolutionDir);$(SolutionDir)LiteXLoader;$(SolutionDir)third-party\Lua\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Js|x64'">
     <LinkIncremental>false</LinkIncremental>
