@@ -9,6 +9,7 @@
 #### 20210803 - v0.3.2
 
 - 将实体、方块、玩家、物品对象的`getTag`和`setTag`统一重命名为`getNbt`和`setNbt`，避免理解偏差
+- `mc.listAllScoreObjective`更名为`mc.getAllScoreObjective`，接口进行了修复
 
 #### 20210802 - v0.3.1
 

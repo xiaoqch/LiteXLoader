@@ -48,7 +48,7 @@ Local<Value> RemoveScoreObjective(const Arguments& args)
     CATCH("Fail in RemoveScoreObjective!")
 }
 
-Local<Value> ListAllScoreObjective(const Arguments& args)
+Local<Value> GetAllScoreObjective(const Arguments& args)
 {
     try {
         Local<Object> res = Object::newObject();
@@ -57,11 +57,9 @@ Local<Value> ListAllScoreObjective(const Arguments& args)
         for (auto& obj : objs)
         {
             Objective * item = globalScoreBoard->getObjective(obj);
-            res.set("name", String::newString(item->getName()));
-            res.set("displayName", String::newString(item->getDisplayName()));
+            res.set(String::newString(item->getName()), String::newString(item->getDisplayName()));
         }
-
         return res;
     }
-    CATCH("Fail in ListAllScoreObjective!")
+    CATCH("Fail in GetAllScoreObjective!")
 }

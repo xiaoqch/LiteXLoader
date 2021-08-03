@@ -49,7 +49,7 @@ public:
 
     static Local<Value> newScoreObjective(const Arguments& args) { return NewScoreObjective(args); }
     static Local<Value> removeScoreObjective(const Arguments& args) { return RemoveScoreObjective(args); }
-    static Local<Value> listAllScoreObjective(const Arguments& args) { return ListAllScoreObjective(args); }
+    static Local<Value> getAllScoreObjective(const Arguments& args) { return GetAllScoreObjective(args); }
 };
 
 static ClassDefine<void> McClassBuilder =
@@ -74,7 +74,7 @@ static ClassDefine<void> McClassBuilder =
         .function("newFloatPos", &McClass::newFloatPos)
         .function("newScoreObjective", &McClass::newScoreObjective)
         .function("removeScoreObjective", &McClass::removeScoreObjective)
-        .function("listAllScoreObjective", &McClass::listAllScoreObjective)
+        .function("getAllScoreObjective", &McClass::getAllScoreObjective)
         .function("crash", CrashBDS)
         .build();
 

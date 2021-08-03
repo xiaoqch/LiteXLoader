@@ -35,19 +35,14 @@
 
 #### 计分板系统 - 获取所有计分项
 
-`mc.listAllScoreObjective()`
+`mc.getAllScoreObjective()`
 
 - 返回值：计分板系统记录的所有计分项信息
 - 返回值类型：`Object<String-String>`
 
 此接口的作用类似命令 `/scoreboard objectives list`
 
-对于返回的所有计分项信息`obj`，对象中有以下这些内容：
-
-| 属性            | 含义             | 类型     |
-| --------------- | ---------------- | -------- |
-| obj.name        | 计分项的名称     | `String` |
-| obj.displayName | 计分项的显示名称 | `String` |
+对于返回的计分项信息对象，每对键-值对中，键名为 **计分项名称**，对象的值为 **计分项的显示名称**  
 
 <br>
 
