@@ -21,6 +21,7 @@
 #include <LiteLoader/httplib.h>
 #include <LiteLoader/api/myPacket.h>
 #include <LiteLoader/stl/varint.h>
+#include <gsl>
 #include <Configs.h>
 #include "i18n.h"
 #include <string>

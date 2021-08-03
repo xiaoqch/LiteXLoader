@@ -272,7 +272,7 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Release\</OutDir>
     <TargetName>$(ProjectName).Js</TargetName>
-    <IncludePath>$(SolutionDir)third-party\ScriptX\src\include\ScriptX;$(SolutionDir)third-party\ScriptX\src\include;$(SolutionDir)third-party\LiteLoader;$(SolutionDir)third-party;$(SolutionDir);$(SolutionDir)LiteXLoader;$(SolutionDir)third-party\V8\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)third-party\ScriptX\src\include\ScriptX;$(SolutionDir)third-party\ScriptX\src\include;$(SolutionDir)third-party\gsl;$(SolutionDir)third-party\LiteLoader;$(SolutionDir)third-party;$(SolutionDir);$(SolutionDir)LiteXLoader;$(SolutionDir)third-party\V8\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
