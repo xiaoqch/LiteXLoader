@@ -131,7 +131,7 @@ Local<Value> BlockClass::getNbt(const Arguments& args)
     try {
         return NbtCompound::newNBT(Tag::fromBlock(block));
     }
-    CATCH("Fail in getTag!")
+    CATCH("Fail in getNbt!")
 }
 
 Local<Value> BlockClass::setNbt(const Arguments& args)
@@ -146,7 +146,7 @@ Local<Value> BlockClass::setNbt(const Arguments& args)
         nbt->setBlock(block);
         return Boolean::newBoolean(true);
     }
-    CATCH("Fail in setTag!")
+    CATCH("Fail in setNbt!")
 }
 
 Local<Value> BlockClass::getBlockState(const Arguments& args)

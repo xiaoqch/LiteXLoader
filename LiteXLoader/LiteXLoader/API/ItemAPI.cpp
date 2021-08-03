@@ -151,7 +151,7 @@ Local<Value> ItemClass::getNbt(const Arguments& args)
     try {
         return NbtCompound::newNBT(Tag::fromItem(item));
     }
-    CATCH("Fail in getTag!")
+    CATCH("Fail in getNbt!")
 }
 
 Local<Value> ItemClass::setNbt(const Arguments& args)
@@ -166,5 +166,5 @@ Local<Value> ItemClass::setNbt(const Arguments& args)
         nbt->setItem(item);
         return Boolean::newBoolean(true);
     }
-    CATCH("Fail in setTag!")
+    CATCH("Fail in setNbt!")
 }

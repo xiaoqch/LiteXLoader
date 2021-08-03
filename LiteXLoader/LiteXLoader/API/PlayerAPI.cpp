@@ -80,6 +80,9 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
 
         .instanceFunction("setNbt", &PlayerClass::setNbt)
         .instanceFunction("getNbt", &PlayerClass::getNbt)
+        .instanceFunction("addTag", &PlayerClass::addTag)
+        .instanceFunction("removeTag", &PlayerClass::removeTag)
+        .instanceFunction("getAllTags", &PlayerClass::getAllTags)
         .build();
 
 
@@ -1031,7 +1034,7 @@ Local<Value> PlayerClass::getNbt(const Arguments& args)
 
         return NbtCompound::newNBT(Tag::fromActor((Actor*)player));
     }
-    CATCH("Fail in getTag!")
+    CATCH("Fail in getNbt!")
 }
 
 Local<Value> PlayerClass::setNbt(const Arguments& args)
@@ -1050,5 +1053,52 @@ Local<Value> PlayerClass::setNbt(const Arguments& args)
         nbt->setActor((Actor*)player);
         return Boolean::newBoolean(true);
     }
-    CATCH("Fail in setTag!")
+    CATCH("Fail in setNbt!")
+}
+
+Local<Value> PlayerClass::addTag(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        return Boolean::newBoolean(Raw_AddTag(player, args[0].toStr()));
+    }
+    CATCH("Fail in addTag!");
+}
+
+Local<Value> PlayerClass::removeTag(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        return Boolean::newBoolean(Raw_RemoveTag(player, args[0].toStr()));
+    }
+    CATCH("Fail in removeTag!");
+}
+
+Local<Value> PlayerClass::getAllTags(const Arguments& args)
+{
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        Local<Array> res = Array::newArray();
+
+        auto list = Raw_GetAllTags(player);
+        for (auto& tag : list)
+            res.add(String::newString(tag));
+        return res;
+    }
+    CATCH("Fail in getAllTags!");
 }

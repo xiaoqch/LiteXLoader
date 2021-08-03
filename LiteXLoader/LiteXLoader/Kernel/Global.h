@@ -5,6 +5,7 @@
 #endif
 #define CPPHTTPLIB_OPENSSL_SUPPORT
 
+#include <gsl>
 #include <windows.h>
 #include <LiteLoader/lbpch.h>
 #include <LiteLoader/api/Basic_Event.h>
@@ -21,7 +22,6 @@
 #include <LiteLoader/httplib.h>
 #include <LiteLoader/api/myPacket.h>
 #include <LiteLoader/stl/varint.h>
-#include <gsl>
 #include <Configs.h>
 #include "i18n.h"
 #include <string>

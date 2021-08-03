@@ -79,6 +79,9 @@ public:
 
     Local<Value> getNbt(const Arguments& args);
     Local<Value> setNbt(const Arguments& args);
+    Local<Value> addTag(const Arguments& args);
+    Local<Value> removeTag(const Arguments& args);
+    Local<Value> getAllTags(const Arguments& args);
 };
 
 //////////////////// APIs ////////////////////
