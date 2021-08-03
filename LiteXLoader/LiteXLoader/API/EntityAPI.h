@@ -40,6 +40,6 @@ public:
     Local<Value> toPlayer(const Arguments& args);
     Local<Value> setOnFire(const Arguments& args);
     
-    Local<Value> getTag(const Arguments& args);
-    Local<Value> setTag(const Arguments& args);
+    Local<Value> getNbt(const Arguments& args);
+    Local<Value> setNbt(const Arguments& args);
 };

@@ -22,8 +22,8 @@ ClassDefine<ItemClass> ItemClassBuilder =
 
         .instanceFunction("isNull", &ItemClass::isNull)
         .instanceFunction("setLore", &ItemClass::setLore)
-        .instanceFunction("setTag", &ItemClass::setTag)
-        .instanceFunction("getTag", &ItemClass::getTag)
+        .instanceFunction("setNbt", &ItemClass::setNbt)
+        .instanceFunction("getNbt", &ItemClass::getNbt)
         .build();
 
 
@@ -146,7 +146,7 @@ Local<Value> ItemClass::setLore(const Arguments& args)
     CATCH("Fail in SetLore!")
 }
 
-Local<Value> ItemClass::getTag(const Arguments& args)
+Local<Value> ItemClass::getNbt(const Arguments& args)
 {
     try {
         return NbtCompound::newNBT(Tag::fromItem(item));
@@ -154,7 +154,7 @@ Local<Value> ItemClass::getTag(const Arguments& args)
     CATCH("Fail in getTag!")
 }
 
-Local<Value> ItemClass::setTag(const Arguments& args)
+Local<Value> ItemClass::setNbt(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
 

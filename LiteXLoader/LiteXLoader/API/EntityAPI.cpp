@@ -27,8 +27,8 @@ ClassDefine<EntityClass> EntityClassBuilder =
         .instanceFunction("isPlayer", &EntityClass::isPlayer)
         .instanceFunction("toPlayer", &EntityClass::toPlayer)
         .instanceFunction("setOnFire",&EntityClass::setOnFire)
-        .instanceFunction("setTag", &EntityClass::setTag)
-        .instanceFunction("getTag", &EntityClass::getTag)
+        .instanceFunction("setNbt", &EntityClass::setNbt)
+        .instanceFunction("getNbt", &EntityClass::getNbt)
         .build();
 
 
@@ -292,7 +292,7 @@ Local<Value> EntityClass::setOnFire(const Arguments& args)
     CATCH("Fail in setOnFire!")
 }
 
-Local<Value> EntityClass::getTag(const Arguments& args)
+Local<Value> EntityClass::getNbt(const Arguments& args)
 {
     try {
         Actor* entity = get();
@@ -304,7 +304,7 @@ Local<Value> EntityClass::getTag(const Arguments& args)
     CATCH("Fail in getTag!")
 }
 
-Local<Value> EntityClass::setTag(const Arguments& args)
+Local<Value> EntityClass::setNbt(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
 

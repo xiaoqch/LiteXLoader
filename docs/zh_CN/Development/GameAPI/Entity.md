@@ -62,7 +62,7 @@
 
 #### 获取实体对应的NBT对象
 
-`en.getTag()`
+`en.getNbt()`
 
 - 返回值：实体的NBT对象
 - 返回值类型：`NbtCompound`
@@ -101,5 +101,38 @@
     着火时长，单位秒
 - 返回值：是否成功着火
 - 返回值类型：`Boolean`
+
+<br>
+
+#### 为实体增加一个Tag
+
+`en.addTag(tag)`
+
+- 参数：
+  - tag: `String`  
+    要增加的tag字符串
+- 返回值：是否设置成功
+- 返回值类型：`Boolean`
+
+<br>
+
+#### 为实体移除一个Tag
+
+`en.removeTag(tag)`
+
+- 参数：
+  - tag: `String`  
+    要移除的tag字符串
+- 返回值：是否移除成功
+- 返回值类型：`Boolean`
+
+<br>
+
+#### 返回实体拥有的所有Tag列表
+
+`en.getAllTags()`
+
+- 返回值：实体所有的 tag 字符串列表
+- 返回值类型：`Array<String,String,...>`
 
 <br>

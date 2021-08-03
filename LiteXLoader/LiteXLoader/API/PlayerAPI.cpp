@@ -78,8 +78,8 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceFunction("getExtraData", &PlayerClass::getExtraData)
         .instanceFunction("delExtraData", &PlayerClass::delExtraData)
 
-        .instanceFunction("setTag", &PlayerClass::setTag)
-        .instanceFunction("getTag", &PlayerClass::getTag)
+        .instanceFunction("setNbt", &PlayerClass::setNbt)
+        .instanceFunction("getNbt", &PlayerClass::getNbt)
         .build();
 
 
@@ -1022,7 +1022,7 @@ Local<Value> PlayerClass::setOnFire(const Arguments& args)
     CATCH("Fail in setOnFire!")
 }
 
-Local<Value> PlayerClass::getTag(const Arguments& args)
+Local<Value> PlayerClass::getNbt(const Arguments& args)
 {
     try {
         Player* player = get();
@@ -1034,7 +1034,7 @@ Local<Value> PlayerClass::getTag(const Arguments& args)
     CATCH("Fail in getTag!")
 }
 
-Local<Value> PlayerClass::setTag(const Arguments& args)
+Local<Value> PlayerClass::setNbt(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
 
