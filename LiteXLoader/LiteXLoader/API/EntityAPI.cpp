@@ -32,6 +32,10 @@ ClassDefine<EntityClass> EntityClassBuilder =
         .instanceFunction("addTag", &EntityClass::addTag)
         .instanceFunction("removeTag", &EntityClass::removeTag)
         .instanceFunction("getAllTags", &EntityClass::getAllTags)
+
+        //For Compatibility
+        .instanceFunction("setTag", &EntityClass::setNbt)
+        .instanceFunction("getTag", &EntityClass::getNbt)
         .build();
 
 

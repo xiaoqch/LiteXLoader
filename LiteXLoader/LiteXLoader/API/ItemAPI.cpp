@@ -24,6 +24,10 @@ ClassDefine<ItemClass> ItemClassBuilder =
         .instanceFunction("setLore", &ItemClass::setLore)
         .instanceFunction("setNbt", &ItemClass::setNbt)
         .instanceFunction("getNbt", &ItemClass::getNbt)
+
+        //For Compatibility
+        .instanceFunction("setTag", &ItemClass::setNbt)
+        .instanceFunction("getTag", &ItemClass::getNbt)
         .build();
 
 

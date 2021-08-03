@@ -23,6 +23,10 @@ ClassDefine<BlockClass> BlockClassBuilder =
         .instanceFunction("setNbt", &BlockClass::setNbt)
         .instanceFunction("getNbt", &BlockClass::getNbt)
         .instanceFunction("getBlockState", &BlockClass::getBlockState)
+
+        //For Compatibility
+        .instanceFunction("setTag", &BlockClass::setNbt)
+        .instanceFunction("getTag", &BlockClass::getNbt)
         .build();
 
 

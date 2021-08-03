@@ -83,6 +83,10 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceFunction("addTag", &PlayerClass::addTag)
         .instanceFunction("removeTag", &PlayerClass::removeTag)
         .instanceFunction("getAllTags", &PlayerClass::getAllTags)
+
+        //For Compatibility
+        .instanceFunction("setTag", &PlayerClass::setNbt)
+        .instanceFunction("getTag", &PlayerClass::getNbt)
         .build();
 
 
