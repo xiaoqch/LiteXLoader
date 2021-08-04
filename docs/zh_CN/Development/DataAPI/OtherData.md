@@ -33,3 +33,27 @@
   - 如返回值为 `Null` 则表示转换失败
 
 <br>
+
+### 字符串转MD5
+
+`data.toMD5(str)`
+
+- 参数：
+  - str : `String`  
+    要转换为MD5的字符串
+- 返回值：转换的结果
+- 返回值类型：`String`，,字符串MD5信息
+
+<br>
+
+### 字符串转SHA1
+
+`data.toSHA1(str)`
+
+- 参数：
+  - str : `String`  
+    要转换为SHA1的字符串
+- 返回值：转换的结果
+- 返回值类型：`String`，,字符串SHA1信息
+
+<br>

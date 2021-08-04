@@ -182,6 +182,9 @@ public:
 
     static Local<Value> parseJson(const Arguments& args) { return ParseJson(args); }
     static Local<Value> toJson(const Arguments& args) { return ToJson(args); }
+    static Local<Value> toMD5(const Arguments& args) { return ToMD5(args); }
+    static Local<Value> toSHA1(const Arguments& args) { return ToSHA1(args); }
+   
 };
 
 static ClassDefine<void> DataClassBuilder =
@@ -192,6 +195,8 @@ static ClassDefine<void> DataClassBuilder =
         .function("name2xuid", &DataClass::name2xuid)
         .function("parseJson", &DataClass::parseJson)
         .function("toJson", &DataClass::toJson)
+        .function("toMD5", &DataClass::toMD5)
+        .function("toSHA1", &DataClass::toSHA1)
         .build();
 
 class MoneyClass
