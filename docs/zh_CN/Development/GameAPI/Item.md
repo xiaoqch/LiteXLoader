@@ -48,7 +48,7 @@
 
 #### 获取物品对应的NBT对象
 
-`it.getTag()`
+`it.getNbt()`
 
 - 返回值：物品的NBT对象
 - 返回值类型：`NbtCompound`
@@ -57,7 +57,7 @@
 
 #### 写入物品对应的NBT对象
 
-`it.setTag(nbt)`
+`it.setNbt(nbt)`
 
 - 参数：
   - nbt : `NbtCompound`  

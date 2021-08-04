@@ -402,7 +402,7 @@ pl:crash()
 
 #### 获取玩家对应的NBT对象
 
-`pl.getTag()`
+`pl.getNbt()`
 
 - 返回值：玩家的NBT对象
 - 返回值类型：`NbtCompound`
@@ -499,3 +499,38 @@ pl.removeBossBar();
     要删除的物品数量
 - 返回值：是否成功删除
 - 返回值类型：`Boolean`
+
+<br>
+
+#### 为玩家增加一个Tag
+
+`pl.addTag(tag)`
+
+- 参数：
+  - tag: `String`  
+    要增加的tag字符串
+- 返回值：是否设置成功
+- 返回值类型：`Boolean`
+
+<br>
+
+#### 为玩家移除一个Tag
+
+`pl.removeTag(tag)`
+
+- 参数：
+  - tag: `String`  
+    要移除的tag字符串
+- 返回值：是否移除成功
+- 返回值类型：`Boolean`
+
+<br>
+
+#### 返回玩家拥有的所有Tag列表
+
+`pl.getAllTags()`
+
+- 返回值：玩家所有的 tag 字符串列表
+- 返回值类型：`Array<String,String,...>`
+
+<br>

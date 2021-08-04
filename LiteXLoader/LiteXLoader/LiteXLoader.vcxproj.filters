@@ -151,11 +151,17 @@
     <ClCompile Include="API\DeviceAPI.cpp">
       <Filter>API</Filter>
     </ClCompile>
-    <ClCompile Include="CheckUpdate.cpp">
+    <ClCompile Include="CheckNotice.cpp">
       <Filter>Main</Filter>
     </ClCompile>
     <ClCompile Include="API\GameSystemAPI.cpp">
       <Filter>API</Filter>
+    </ClCompile>
+    <ClCompile Include="AutoUpdate.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Kernel\Utils.cpp">
+      <Filter>Kernel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -291,11 +297,17 @@
     <ClInclude Include="API\DeviceAPI.h">
       <Filter>API</Filter>
     </ClInclude>
-    <ClInclude Include="CheckUpdate.h">
+    <ClInclude Include="CheckNotice.h">
       <Filter>Main</Filter>
     </ClInclude>
     <ClInclude Include="API\GameSystemAPI.h">
       <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="AutoUpdate.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Kernel\Utils.h">
+      <Filter>Kernel</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

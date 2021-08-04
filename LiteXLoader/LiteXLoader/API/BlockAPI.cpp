@@ -20,9 +20,13 @@ ClassDefine<BlockClass> BlockClassBuilder =
         .instanceProperty("id", &BlockClass::getId)
         .instanceProperty("pos", &BlockClass::getPos)
 
-        .instanceFunction("setTag", &BlockClass::setTag)
-        .instanceFunction("getTag", &BlockClass::getTag)
+        .instanceFunction("setNbt", &BlockClass::setNbt)
+        .instanceFunction("getNbt", &BlockClass::getNbt)
         .instanceFunction("getBlockState", &BlockClass::getBlockState)
+
+        //For Compatibility
+        .instanceFunction("setTag", &BlockClass::setNbt)
+        .instanceFunction("getTag", &BlockClass::getNbt)
         .build();
 
 
@@ -126,15 +130,15 @@ Local<Value> BlockClass::getRawPtr(const Arguments& args)
     CATCH("Fail in getRawPtr!")
 }
 
-Local<Value> BlockClass::getTag(const Arguments& args)
+Local<Value> BlockClass::getNbt(const Arguments& args)
 {
     try {
         return NbtCompound::newNBT(Tag::fromBlock(block));
     }
-    CATCH("Fail in getTag!")
+    CATCH("Fail in getNbt!")
 }
 
-Local<Value> BlockClass::setTag(const Arguments& args)
+Local<Value> BlockClass::setNbt(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
 
@@ -146,7 +150,7 @@ Local<Value> BlockClass::setTag(const Arguments& args)
         nbt->setBlock(block);
         return Boolean::newBoolean(true);
     }
-    CATCH("Fail in setTag!")
+    CATCH("Fail in setNbt!")
 }
 
 Local<Value> BlockClass::getBlockState(const Arguments& args)

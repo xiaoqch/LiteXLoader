@@ -5,6 +5,7 @@
 #endif
 #define CPPHTTPLIB_OPENSSL_SUPPORT
 
+#include <gsl>
 #include <windows.h>
 #include <LiteLoader/lbpch.h>
 #include <LiteLoader/api/Basic_Event.h>

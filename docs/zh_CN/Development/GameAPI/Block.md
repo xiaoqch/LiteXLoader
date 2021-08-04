@@ -49,7 +49,7 @@
 
 #### 获取方块对应的NBT对象
 
-`bl.getTag()`
+`bl.getNbt()`
 
 - 返回值：方块的NBT对象
 - 返回值类型：`NbtCompound`
@@ -58,7 +58,7 @@
 
 #### 写入方块对应的NBT对象
 
-`bl.setTag(nbt)`
+`bl.setNbt(nbt)`
 
 - 参数：
   - nbt : `NbtCompound`  
@@ -78,7 +78,7 @@
 - 返回值类型：`Object`
 
 方便函数，协助解析方块BlockState并转换为`Object`，方便读取与解析  
-等价于脚本执行`block.getTag().getTag("states").toObject()`
+等价于脚本执行`block.getNbt().getTag("states").toObject()`
 
 <br>
 

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -55,8 +55,9 @@
     <ClCompile Include="API\ScriptAPI.cpp" />
     <ClCompile Include="API\ServerAPI.cpp" />
     <ClCompile Include="API\SystemAPI.cpp" />
+    <ClCompile Include="AutoUpdate.cpp" />
     <ClCompile Include="BindAPIs.cpp" />
-    <ClCompile Include="CheckUpdate.cpp" />
+    <ClCompile Include="CheckNotice.cpp" />
     <ClCompile Include="Engine\LocalShareData.cpp" />
     <ClCompile Include="Kernel\Device.cpp" />
     <ClCompile Include="dllmain.cpp" />
@@ -79,6 +80,7 @@
     <ClCompile Include="Kernel\SymbolHelper.cpp" />
     <ClCompile Include="Kernel\System.cpp" />
     <ClCompile Include="Kernel\UnlockCmd.cpp" />
+    <ClCompile Include="Kernel\Utils.cpp" />
     <ClCompile Include="LiteXLoader.cpp" />
     <ClCompile Include="Loader.cpp" />
   </ItemGroup>
@@ -104,7 +106,8 @@
     <ClInclude Include="API\ServerAPI.h" />
     <ClInclude Include="API\StaticClasses.h" />
     <ClInclude Include="API\SystemAPI.h" />
-    <ClInclude Include="CheckUpdate.h" />
+    <ClInclude Include="AutoUpdate.h" />
+    <ClInclude Include="CheckNotice.h" />
     <ClInclude Include="Configs.h" />
     <ClInclude Include="Engine\GlobalShareData.h" />
     <ClInclude Include="Engine\EngineOwnData.h" />
@@ -128,6 +131,7 @@
     <ClInclude Include="Kernel\SymbolHelper.h" />
     <ClInclude Include="Kernel\System.h" />
     <ClInclude Include="Kernel\ThirdParty.h" />
+    <ClInclude Include="Kernel\Utils.h" />
     <ClInclude Include="Loader.h" />
   </ItemGroup>
   <ItemGroup>
@@ -266,13 +270,13 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Release\</OutDir>
     <TargetName>$(ProjectName).Lua</TargetName>
-    <IncludePath>$(SolutionDir)third-party\ScriptX\src\include\ScriptX;$(SolutionDir)third-party\ScriptX\src\include;$(SolutionDir)third-party\LiteLoader;$(SolutionDir)third-party;$(SolutionDir);$(SolutionDir)LiteXLoader;$(SolutionDir)third-party\Lua\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)third-party\ScriptX\src\include\ScriptX;$(SolutionDir)third-party\ScriptX\src\include;$(SolutionDir)third-party\gsl;$(SolutionDir)third-party\LiteLoader;$(SolutionDir)third-party;$(SolutionDir);$(SolutionDir)LiteXLoader;$(SolutionDir)third-party\Lua\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Js|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Release\</OutDir>
     <TargetName>$(ProjectName).Js</TargetName>
-    <IncludePath>$(SolutionDir)third-party\ScriptX\src\include\ScriptX;$(SolutionDir)third-party\ScriptX\src\include;$(SolutionDir)third-party\LiteLoader;$(SolutionDir)third-party;$(SolutionDir);$(SolutionDir)LiteXLoader;$(SolutionDir)third-party\V8\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)third-party\ScriptX\src\include\ScriptX;$(SolutionDir)third-party\ScriptX\src\include;$(SolutionDir)third-party\gsl;$(SolutionDir)third-party\LiteLoader;$(SolutionDir)third-party;$(SolutionDir);$(SolutionDir)LiteXLoader;$(SolutionDir)third-party\V8\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

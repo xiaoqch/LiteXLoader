@@ -121,18 +121,19 @@ bool LxlLoadPlugin(const std::string& filePath, bool isHotLoad)
     catch (const Exception& e)
     {
         ScriptEngine* deleteEngine = lxlModules.back();
-        EngineScope enter(deleteEngine);
-
-        deleteEngine->getData().reset();
-        ERROR("Fail to load " + filePath + "!\n");
-        ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName);
-        ERRPRINT(e);
-        ExitEngineScope exit;
-
         lxlModules.pop_back();
 
-        //############# Js delete v8崩溃 #############
-        //deleteEngine->destroy();
+        {
+            EngineScope enter(deleteEngine);
+
+            deleteEngine->getData().reset();
+            ERROR("Fail to load " + filePath + "!\n");
+            ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName);
+            ERRPRINT(e);
+            ExitEngineScope exit;
+        }
+
+        deleteEngine->destroy();
     }
     catch (const std::exception& e)
     {
@@ -166,8 +167,8 @@ string LxlUnloadPlugin(const std::string& name)
             LxlRemoveAllExportedFuncs(engine);
             engine->getData().reset();
             lxlModules.erase(lxlModules.begin() + i);
-            //############# Js delete v8崩溃 #############
-            //engine->destory();
+
+            engine->destroy();
 
             INFO(name + " unloaded.")
             break;

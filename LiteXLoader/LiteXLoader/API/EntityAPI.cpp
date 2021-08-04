@@ -27,8 +27,15 @@ ClassDefine<EntityClass> EntityClassBuilder =
         .instanceFunction("isPlayer", &EntityClass::isPlayer)
         .instanceFunction("toPlayer", &EntityClass::toPlayer)
         .instanceFunction("setOnFire",&EntityClass::setOnFire)
-        .instanceFunction("setTag", &EntityClass::setTag)
-        .instanceFunction("getTag", &EntityClass::getTag)
+        .instanceFunction("setNbt", &EntityClass::setNbt)
+        .instanceFunction("getNbt", &EntityClass::getNbt)
+        .instanceFunction("addTag", &EntityClass::addTag)
+        .instanceFunction("removeTag", &EntityClass::removeTag)
+        .instanceFunction("getAllTags", &EntityClass::getAllTags)
+
+        //For Compatibility
+        .instanceFunction("setTag", &EntityClass::setNbt)
+        .instanceFunction("getTag", &EntityClass::getNbt)
         .build();
 
 
@@ -292,7 +299,7 @@ Local<Value> EntityClass::setOnFire(const Arguments& args)
     CATCH("Fail in setOnFire!")
 }
 
-Local<Value> EntityClass::getTag(const Arguments& args)
+Local<Value> EntityClass::getNbt(const Arguments& args)
 {
     try {
         Actor* entity = get();
@@ -301,10 +308,10 @@ Local<Value> EntityClass::getTag(const Arguments& args)
 
         return NbtCompound::newNBT(Tag::fromActor(entity));
     }
-    CATCH("Fail in getTag!")
+    CATCH("Fail in getNbt!")
 }
 
-Local<Value> EntityClass::setTag(const Arguments& args)
+Local<Value> EntityClass::setNbt(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
 
@@ -321,4 +328,51 @@ Local<Value> EntityClass::setTag(const Arguments& args)
         return Boolean::newBoolean(true);
     }
     CATCH("Fail in setTag!")
+}
+
+Local<Value> EntityClass::addTag(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+
+    try {
+        Actor* entity = get();
+        if (!entity)
+            return Local<Value>();
+
+        return Boolean::newBoolean(Raw_AddTag(entity,args[0].toStr()));
+    }
+    CATCH("Fail in addTag!");
+}
+
+Local<Value> EntityClass::removeTag(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+
+    try {
+        Actor* entity = get();
+        if (!entity)
+            return Local<Value>();
+
+        return Boolean::newBoolean(Raw_RemoveTag(entity, args[0].toStr()));
+    }
+    CATCH("Fail in removeTag!");
+}
+
+Local<Value> EntityClass::getAllTags(const Arguments& args)
+{
+    try {
+        Actor* entity = get();
+        if (!entity)
+            return Local<Value>();
+
+        Local<Array> res = Array::newArray();
+
+        auto list = Raw_GetAllTags(entity);
+        for (auto& tag : list)
+            res.add(String::newString(tag));
+        return res;
+    }
+    CATCH("Fail in getAllTags!");
 }

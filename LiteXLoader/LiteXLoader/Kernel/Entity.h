@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <vector>
 
 std::string Raw_GetEntityName(Actor* actor);
 std::string Raw_GetEntityTypeName(Actor* actor);
@@ -18,3 +19,7 @@ Player* Raw_ToPlayer(Actor* actor);
 int Raw_GetEntityDimId(Actor* actor);
 Actor* Raw_GetEntityByUniqueId(ActorUniqueID id);
 float Raw_GetSpeed(Actor* ac);
+
+bool Raw_AddTag(Actor* ac, const std::string& str);
+bool Raw_RemoveTag(Actor* ac, const std::string& str);
+std::vector<std::string> Raw_GetAllTags(Actor* ac);
