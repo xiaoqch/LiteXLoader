@@ -22,6 +22,8 @@ using namespace script;
 class McClass
 {
 public:
+    static Local<Value> getBDSVersion(const Arguments& args) { return GetBDSVersion(args); }
+
     static Local<Value> runcmd(const Arguments& args) { return Runcmd(args); }
     static Local<Value> runcmdEx(const Arguments& args) { return RuncmdEx(args); }
     static Local<Value> regPlayerCmd(const Arguments& args) { return RegisterPlayerCmd(args); }
@@ -54,6 +56,7 @@ public:
 
 static ClassDefine<void> McClassBuilder =
     defineClass("mc")
+        .function("getBDSVersion", &McClass::getBDSVersion)
         .function("runcmd", &McClass::runcmd)
         .function("runcmdEx", &McClass::runcmdEx)
         .function("regPlayerCmd", &McClass::regPlayerCmd)

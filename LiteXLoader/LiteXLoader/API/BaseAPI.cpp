@@ -1,5 +1,6 @@
 #include "BaseAPI.h"
 #include "APIHelp.h"
+#include <Kernel/Base.h>
 using namespace script;
 
 //////////////////// Class Definition ////////////////////
@@ -169,4 +170,13 @@ Local<Value> NewFloatPos(const Arguments& args)
         return FloatPos::newPos(args[0].asNumber().toFloat(), args[1].asNumber().toFloat(), args[2].asNumber().toFloat(), args[3].toInt());
     }
     CATCH("Fail in NewFloatPos!")
+}
+
+Local<Value> GetBDSVersion(const Arguments& args)
+{
+    try
+    {
+        return String::newString(Raw_GetBDSVersion());
+    }
+    CATCH("Fail in GetBDSVersion!")
 }

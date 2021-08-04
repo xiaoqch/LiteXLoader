@@ -51,5 +51,6 @@ public:
 
 //////////////////// APIs ////////////////////
 
+Local<Value> GetBDSVersion(const Arguments& args);
 Local<Value> NewIntPos(const Arguments& args);
 Local<Value> NewFloatPos(const Arguments& args);

@@ -31,3 +31,11 @@ bool Raw_SendCmdOutput(const std::string& output)
         (cout, finalOutput.c_str(), finalOutput.size());
     return true;
 }
+
+string Raw_GetBDSVersion()
+{
+    string ver;
+    SymCall("?getGameVersionString@Common@@YA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ",
+        string&, string&)(ver);
+    return ver;
+}

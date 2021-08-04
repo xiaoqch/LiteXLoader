@@ -12,6 +12,7 @@
 #include <chrono>
 #include <filesystem>
 #include <Configs.h>
+#include <Kernel/Base.h>
 #include <Kernel/Global.h>
 #include <Kernel/ThirdParty.h>
 #include <Kernel/Utils.h>
@@ -20,7 +21,7 @@ using namespace std;
 
 bool Raw_CheckFileMD5(const string& path, const string &md5) { return true; }
 
-void ProcessUpdateInfo(const string &info)
+bool ProcessUpdateInfo(const string &info)
 {
 	try
 	{
@@ -28,17 +29,29 @@ void ProcessUpdateInfo(const string &info)
 
 		if (data["AutoUpdate"].is_object())
 		{
+			//Check BDS Version
+			string bds = Raw_GetBDSVersion();
+			if (bds.front() == 'v')
+				bds.erase(0, 1);
+			string bdsRemote = data["AutoUpdate"]["BDS"].get<string>();
+			if (bds != bdsRemote)
+			{
+				INFO("提示：您的BDS版本和当前主线维护版本不一致，自动更新将不会推送");
+				INFO("如果有需要，请前往LXL相关页面手动更新加载器")
+				return false;
+			}
+
 			//Get Version
 			string verRemote = data["AutoUpdate"]["Version"].get<string>();
 			auto versRemote = SplitStrWithPattern(verRemote, ".");
 			if (versRemote.size() < 3)
-				return;
+				return true;
 			int a = stoi(versRemote[0]);
 			int b = stoi(versRemote[1]);
 			int c = stoi(versRemote[2]);
 
 			if (a == LXL_VERSION_MAJOR && b == LXL_VERSION_MINOR && c == LXL_VERSION_REVISION)
-				return;
+				return true;
 
 			//Check existing update
 			auto ini = Raw_IniOpen(LXL_UPDATE_INFO_RECORD);
@@ -47,7 +60,7 @@ void ProcessUpdateInfo(const string &info)
 			{
 				auto versExisting = SplitStrWithPattern(existing, ".");
 				if (a == stoi(versExisting[0]) && b == stoi(versExisting[1]) && c == stoi(versExisting[2]))
-					return;
+					return true;
 			}
 			Raw_IniClose(ini);
 
@@ -64,7 +77,7 @@ void ProcessUpdateInfo(const string &info)
 			if (!cli.is_valid())
 			{
 				DEBUG("更新启动失败！");
-				return;
+				return true;
 			}
 
 			auto iniUpdate = Raw_IniOpen(LXL_UPDATE_INFO_RECORD);
@@ -84,7 +97,7 @@ void ProcessUpdateInfo(const string &info)
 				else
 				{
 					DEBUG("自动更新下载文件失败！错误码：" + to_string(response->status));
-					return;
+					return true;
 				}
 
 				string install = file["Install"].get<string>();
@@ -92,7 +105,7 @@ void ProcessUpdateInfo(const string &info)
 				if (!Raw_CheckFileMD5(localPath, md5))
 				{
 					DEBUG("文件MD5校验失败！自动更新失败！");
-					return;
+					return true;
 				}
 
 				iniUpdate->SetValue(fileName.c_str(), "Install", install.c_str());
@@ -109,6 +122,7 @@ void ProcessUpdateInfo(const string &info)
 	catch (JSON_ROOT::exception& e) {
 		DEBUG(string("LXL版本更新信息解析失败！") + e.what());
 	}
+	return true;
 }
 
 void AddPreload()
@@ -163,7 +177,8 @@ void InitAutoUpdateCheck()
 			{
 				DEBUG("LXL自动更新信息获取成功");
 
-				ProcessUpdateInfo(response->body);
+				if (!ProcessUpdateInfo(response->body))
+					break;
 			}
 		}
 	}).detach();
