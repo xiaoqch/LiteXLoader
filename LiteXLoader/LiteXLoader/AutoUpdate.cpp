@@ -101,7 +101,10 @@ void ProcessUpdateInfo(const string &info)
 			}
 
 			iniUpdate->SetValue("Info", "Version", verRemote.c_str());
-			DEBUG("自动更新文件下载完毕。");
+			iniUpdate->SaveFile(LXL_UPDATE_INFO_RECORD);
+
+			INFO("LXL自动更新文件下载完毕。新版本：v"+verRemote);
+			INFO("在你下次重启服务器的时候，LXL将自动更新为最新版本");
 		}
 	}
 	catch (JSON_ROOT::exception& e) {
@@ -126,7 +129,7 @@ void AddPreload()
 			return;
 	}
 	fPreload.clear();
-	fPreload << LXL_UPDATE_PROGRAM << endl;
+	fPreload << "\n" << LXL_UPDATE_PROGRAM << endl;
 }
 
 void InitAutoUpdateCheck()

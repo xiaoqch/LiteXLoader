@@ -57,7 +57,7 @@
     <ClCompile Include="API\SystemAPI.cpp" />
     <ClCompile Include="AutoUpdate.cpp" />
     <ClCompile Include="BindAPIs.cpp" />
-    <ClCompile Include="CheckUpdate.cpp" />
+    <ClCompile Include="CheckNotice.cpp" />
     <ClCompile Include="Engine\LocalShareData.cpp" />
     <ClCompile Include="Kernel\Device.cpp" />
     <ClCompile Include="dllmain.cpp" />
@@ -107,7 +107,7 @@
     <ClInclude Include="API\StaticClasses.h" />
     <ClInclude Include="API\SystemAPI.h" />
     <ClInclude Include="AutoUpdate.h" />
-    <ClInclude Include="CheckUpdate.h" />
+    <ClInclude Include="CheckNotice.h" />
     <ClInclude Include="Configs.h" />
     <ClInclude Include="Engine\GlobalShareData.h" />
     <ClInclude Include="Engine\EngineOwnData.h" />
