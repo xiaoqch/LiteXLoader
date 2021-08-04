@@ -111,3 +111,5 @@ Local<Value> Name2Xuid(const Arguments& args);
 
 Local<Value> ToJson(const Arguments& args);
 Local<Value> ParseJson(const Arguments& args);
+Local<Value> ToMD5(const Arguments& args);
+Local<Value> ToSHA1(const Arguments& args);
