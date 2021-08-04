@@ -29,6 +29,7 @@
 #include <Loader.h>
 #include <Configs.h>
 #include <CheckUpdate.h>
+#include <AutoUpdate.h>
 using namespace std;
 using namespace script;
 
@@ -304,17 +305,6 @@ void InitEventListeners()
         IF_LISTENDED_END();
     });
 
-// ===== onCmdBlockExecute =====
-    Event::addEventListener([](CmdBlockExeEV ev)
-    {
-        IF_LISTENED(EVENT_TYPES::onCmdBlockExecute)
-        {
-            CallEventRtnBool(EVENT_TYPES::onCmdBlockExecute, ev.cmd, IntPos::newPos(ev.bpos.x, ev.bpos.y, ev.bpos.z));
-        }
-        IF_LISTENDED_END();
-        return true;
-    });
-
 // ===== onMobDie =====
     Event::addEventListener([](MobDieEV ev)
     {
@@ -353,6 +343,7 @@ void InitEventListeners()
             //更新检查
             if (localShareData->isFirstInstance)
             {
+                InitAutoUpdateCheck();
                 CheckUpdate();
             }
 
@@ -828,6 +819,21 @@ THook(void, "?onExploded@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@PEAVActor@@@
     }
     IF_LISTENDED_END();
     return original(_this, bs, bp, actor);
+}
+
+// ===== onCmdBlockExecute =====
+THook(bool, "?_performCommand@BaseCommandBlock@@AEAA_NAEAVBlockSource@@AEBVCommandOrigin@@AEA_N@Z",
+    BaseCommandBlock* _this, BlockSource* a2, CommandOrigin* a3, bool* a4)
+{
+    IF_LISTENED(EVENT_TYPES::onCmdBlockExecute)
+    {
+        string cmd = offBaseCommandBlock::getCMD(_this);
+        BlockPos bpos = offBaseCommandBlock::getPos(_this);
+
+        CallEventRtnBool(EVENT_TYPES::onCmdBlockExecute, String::newString(cmd), IntPos::newPos(bpos,Raw_GetBlockDimension(a2)));
+    }
+    IF_LISTENDED_END();
+    return original(_this, a2, a3, a4);
 }
 
 // ===== onProjectileHitBlock =====
