@@ -261,8 +261,8 @@ bool LxlHotLoadRecallEvents(ScriptEngine* engine)
                 EngineScope enter(nowList[i].engine);
                 try {
                     auto players = Raw_GetOnlinePlayers();
-                    for (auto& pl : players)
-                        nowList[i].func.get().call(PlayerClass::newPlayer(pl));
+                    for (auto pl : players)
+                        nowList[i].func.get().call({},PlayerClass::newPlayer(pl));
                 }
                 catch (const Exception& e)
                 {
