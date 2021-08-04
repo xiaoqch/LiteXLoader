@@ -41,8 +41,8 @@ enum class EVENT_TYPES : int
     onRespawn, onChangeDim, onJump, onSneak, onAttack, onEat, onMove, onProjectileShoot, 
     onFireworkShootWithCrossbow, onSetArmor, onRide, onStepOnPressurePlate,
     onUseItem, onTakeItem, onDropItem, onUseItemOn, onInventoryChange,
-    onStartDestroyBlock, onDestroyBlock, onWitherBossDestroy, onPlaceBlock,
-    onOpenContainer, onCloseContainer, onContainerChange, onOpenContainerScreen,
+    onStartDestroyBlock, onDestroyBlock, onWitherBossDestroy, onPlaceBlock, onBedExplode, onRespawnAnchorExplode,
+    onOpenContainer, onCloseContainer, onContainerChange, onOpenContainerScreen, 
     onMobDie, onMobHurt, onExplode, onBlockExploded, onCmdBlockExecute, onRedStoneUpdate, onProjectileHitEntity,
     onProjectileHitBlock, onSplashPotionHitEffect, onBlockInteracted, onUseRespawnAnchor, onFarmLandDecay, onUseFrameBlock,
     onPistonPush, onHopperSearchItem, onHopperPushOut, onFireSpread, onFishingHookRetrieve,
@@ -80,6 +80,8 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onWitherBossDestroy",EVENT_TYPES::onWitherBossDestroy},
     {"onPlaceBlock",EVENT_TYPES::onPlaceBlock},
     {"onExplode",EVENT_TYPES::onExplode},
+    {"onBedExplode",EVENT_TYPES::onBedExplode},
+    {"onRespawnAnchorExplode",EVENT_TYPES::onRespawnAnchorExplode},
     {"onBlockExploded",EVENT_TYPES::onBlockExploded},
     {"onOpenContainer",EVENT_TYPES::onOpenContainer},
     {"onCloseContainer",EVENT_TYPES::onCloseContainer},
@@ -819,7 +821,7 @@ THook(bool, "?_hurt@Mob@@MEAA_NAEBVActorDamageSource@@H_N1@Z",
     return original(ac, ads, damage, unk1_1, unk2_0);
 }
 
-// ===== onExplode =====
+// ===== onExplode & onBedExplode =====
 THook(bool, "?explode@Level@@UEAAXAEAVBlockSource@@PEAVActor@@AEBVVec3@@M_N3M3@Z",
     Level* _this, BlockSource* bs, Actor* actor, Vec3* pos, float a5, bool a6, bool a7, float a8, bool a9)
 {
@@ -827,11 +829,33 @@ THook(bool, "?explode@Level@@UEAAXAEAVBlockSource@@PEAVActor@@AEBVVec3@@M_N3M3@Z
     {
         if (actor)
         {
-            CallEventRtnBool(EVENT_TYPES::onExplode, EntityClass::newEntity(actor), FloatPos::newPos(pos->x, pos->y, pos->z, Raw_GetEntityDimId(actor)));
+            CallEventRtnBool(EVENT_TYPES::onExplode, EntityClass::newEntity(actor), FloatPos::newPos(pos->x, pos->y, pos->z, Raw_GetBlockDimension(bs)));
+        }
+    }
+    IF_LISTENDED_END();
+
+    IF_LISTENED(EVENT_TYPES::onBedExplode)
+    {
+        if (!actor)
+        {
+            CallEventRtnBool(EVENT_TYPES::onBedExplode, IntPos::newPos(pos->x, pos->y, pos->z, Raw_GetBlockDimension(bs)))
         }
     }
     IF_LISTENDED_END();
     return original(_this, bs, actor, pos, a5, a6, a7, a8, a9);
+}
+
+// ===== onRespawnAnchorExplode =====
+THook(void, "?explode@RespawnAnchorBlock@@CAXAEAVPlayer@@AEBVBlockPos@@AEAVBlockSource@@AEAVLevel@@@Z",
+    void* _this, Player* pl, BlockPos* bp, BlockSource* bs, Level* level)
+{
+    IF_LISTENED(EVENT_TYPES::onRespawnAnchorExplode)
+    {
+        CallEventRtnVoid(EVENT_TYPES::onRespawnAnchorExplode, IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetBlockDimension(bs)),
+            PlayerClass::newPlayer(pl));
+    }
+    IF_LISTENDED_END();
+    return original(_this, pl, bp, bs, level);
 }
 
 // ===== onBlockExploded =====
@@ -1016,7 +1040,6 @@ THook(bool, "?use@ItemFrameBlock@@UEBA_NAEAVPlayer@@AEBVBlockPos@@E@Z",
     IF_LISTENDED_END();
     return original(_this, a2, a3);
 }
-
 THook(bool, "?attack@ItemFrameBlock@@UEBA_NPEAVPlayer@@AEBVBlockPos@@@Z",
     void* _this, Player* a2, BlockPos* a3)
 {

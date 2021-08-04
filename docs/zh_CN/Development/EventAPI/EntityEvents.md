@@ -32,7 +32,7 @@
 
 <br>
 
-#### `"onExplode"` - 发生爆炸
+#### `"onExplode"` - 发生由实体引起的爆炸
 
 - 监听函数原型
   `function(source,pos)`
