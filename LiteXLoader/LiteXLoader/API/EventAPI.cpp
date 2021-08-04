@@ -226,25 +226,53 @@ bool LxlRemoveAllEventListeners(ScriptEngine* engine)
     return true;
 }
 
-bool LxlRecallOnServerStarted(ScriptEngine* engine)
+bool LxlHotLoadRecallEvents(ScriptEngine* engine)
 {
-    std::vector<ListenerListType>& nowList = listenerList[int(EVENT_TYPES::onServerStarted)];
-    for (int i = 0; i < nowList.size(); ++i)
+    //onServerStarted
     {
-        if (nowList[i].engine == engine)
+        std::vector<ListenerListType>& nowList = listenerList[int(EVENT_TYPES::onServerStarted)];
+        for (int i = 0; i < nowList.size(); ++i)
         {
-            EngineScope enter(nowList[i].engine);
-            try {
-                nowList[i].func.get().call();
-            }
-            catch (const Exception& e)
+            if (nowList[i].engine == engine)
             {
-                ERROR("Event Callback Failed!");
-                ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName);
-                ERRPRINT(e);
-                return false;
+                EngineScope enter(nowList[i].engine);
+                try {
+                    nowList[i].func.get().call();
+                }
+                catch (const Exception& e)
+                {
+                    ERROR("Event Callback Failed!");
+                    ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName);
+                    ERRPRINT(e);
+                    return false;
+                }
+                break;
             }
-            break;
+        }
+    }
+
+    //onJoin
+    {
+        std::vector<ListenerListType>& nowList = listenerList[int(EVENT_TYPES::onJoin)];
+        for (int i = 0; i < nowList.size(); ++i)
+        {
+            if (nowList[i].engine == engine)
+            {
+                EngineScope enter(nowList[i].engine);
+                try {
+                    auto players = Raw_GetOnlinePlayers();
+                    for (auto& pl : players)
+                        nowList[i].func.get().call(PlayerClass::newPlayer(pl));
+                }
+                catch (const Exception& e)
+                {
+                    ERROR("Event Callback Failed!");
+                    ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName);
+                    ERRPRINT(e);
+                    return false;
+                }
+                break;
+            }
         }
     }
     return true;

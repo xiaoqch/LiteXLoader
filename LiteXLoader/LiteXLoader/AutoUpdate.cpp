@@ -5,7 +5,7 @@
 #define LXL_UPDATE_CHECK_PRELOAD "plugins/preload.conf"
 #define LXL_UPDATE_CACHE_PATH "plugins/LiteXLoader/Update/"
 #define LXL_UPDATE_INFO_RECORD "plugins/LiteXLoader/Update/Update.ini"
-#define LXL_UPDATE_CHECK_INTERVAL 5*60
+#define LXL_UPDATE_CHECK_INTERVAL 10*60
 
 #include <string>
 #include <thread>

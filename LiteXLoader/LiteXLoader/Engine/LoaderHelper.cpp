@@ -114,7 +114,7 @@ bool LxlLoadPlugin(const std::string& filePath, bool isHotLoad)
 
         AddToGlobalPluginsList(pluginName);
         if (isHotLoad)
-            LxlRecallOnServerStarted(engine);
+            LxlHotLoadRecallEvents(engine);
         INFO(pluginName + " loaded.");
         return true;
     }
