@@ -4,6 +4,9 @@
 #include "ThirdParty.h"
 #include <filesystem>
 #include "i18n.h"
+//////////////// Hash ////////////////
+#include <Hash/md5.h>
+#include <Hash/sha1.h>
 using namespace std;
 
 DB_ROOT Raw_NewDB(const string &dir)

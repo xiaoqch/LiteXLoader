@@ -38,7 +38,3 @@ public:
 
 //////////////// SEH Exception ////////////////
 #include <seh_exception/seh_exception.hpp>
-
-//////////////// Hash ////////////////
-#include <Hash/md5.h>
-#include <Hash/sha1.h>

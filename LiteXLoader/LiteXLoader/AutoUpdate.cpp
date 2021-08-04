@@ -19,8 +19,6 @@
 #include <Kernel/Data.h>
 using namespace std;
 
-bool Raw_CheckFileMD5(const string& path, const string &md5) { return true; }
-
 bool ProcessUpdateInfo(const string &info)
 {
 	try
@@ -102,11 +100,6 @@ bool ProcessUpdateInfo(const string &info)
 
 				string install = file["Install"].get<string>();
 				string md5 = file["MD5"].get<string>();
-				if (!Raw_CheckFileMD5(localPath, md5))
-				{
-					DEBUG("文件MD5校验失败！自动更新失败！");
-					return true;
-				}
 
 				iniUpdate->SetValue(fileName.c_str(), "Install", install.c_str());
 				iniUpdate->SetValue(fileName.c_str(), "MD5", md5.c_str());

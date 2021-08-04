@@ -7,10 +7,27 @@
 #include <string>
 #include <vector>
 #include <list>
+#include "Hash/md5.h"
 #include "SimpleIni.h"
 using namespace std;
 
-bool Raw_CheckFileMD5(const string& path, const string& md5) { return true; }
+#define CHECK_MD5_READ_BUF 256*1024
+bool Raw_CheckFileMD5(const string& path, const string& md5)
+{
+	auto calc = Chocobo1::MD5();
+	char buff[CHECK_MD5_READ_BUF] = { 0 };
+
+	FILE* fd;
+	fopen_s(&fd, path.c_str(), "rb");
+	while (!feof(fd))
+	{
+		int count = fread(buff, sizeof(char), CHECK_MD5_READ_BUF, fd);
+		calc.addData(buff, count);
+	}
+	fclose(fd);
+
+	return calc.finalize().toString() == md5;
+}
 
 void LXLUpdate()
 {
@@ -31,6 +48,8 @@ void LXLUpdate()
 		//Check MD5
 		for (auto& file : files)
 		{
+			if (string(file.pItem) == "Info")
+				continue;
 			string from = string(LXL_UPDATE_CACHE_PATH) + file.pItem;
 
 			if (!Raw_CheckFileMD5(from, ini.GetValue(file.pItem, "MD5","")))
