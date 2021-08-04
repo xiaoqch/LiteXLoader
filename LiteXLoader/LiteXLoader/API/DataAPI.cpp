@@ -6,8 +6,6 @@
 #include <Engine/EngineOwnData.h>
 #include <Kernel/System.h>
 #include <Kernel/Data.h>
-#include <Hash/md5.h>
-#include <Hash/sha1.h>
 
 using namespace script;
 using namespace std;
@@ -726,11 +724,7 @@ Local<Value> ToMD5(const Arguments& args)
     CHECK_ARG_TYPE(args[0], ValueKind::kString)
 
     try {
-        using Hash = Chocobo1::MD5;
-        auto result = args[0].toStr();
-        auto str = result.c_str();
-        auto md5 = Hash().addData(str, strlen(str)).finalize().toString();
-        return String::newString(md5);
+        return String::newString(Raw_toMD5(args[0].toStr()));
     }
     CATCH("Fail in ToMD5!")
 }
@@ -741,11 +735,7 @@ Local<Value> ToSHA1(const Arguments& args)
     CHECK_ARG_TYPE(args[0], ValueKind::kString)
 
     try {
-        using Hash = Chocobo1::SHA1;
-        auto result = args[0].toStr();
-        auto str = result.c_str();
-        auto sha1 = Hash().addData(str, strlen(str)).finalize().toString();
-        return String::newString(sha1);
+        return String::newString(Raw_toSHA1(args[0].toStr()));
     }
     CATCH("Fail in SHA1!")
 }

@@ -375,3 +375,13 @@ string Raw_Name2Xuid(string name)
     auto xuid = XIDREG::str2id(name);
     return xuid.set ? to_string(xuid.val()) : "";
 }
+
+string Raw_toMD5(const string& str)
+{
+    return Chocobo1::MD5().addData(str.c_str(), str.size()).finalize().toString();
+}
+
+string Raw_toSHA1(const string& str)
+{
+    return Chocobo1::SHA1().addData(str.c_str(), str.size()).finalize().toString();
+}

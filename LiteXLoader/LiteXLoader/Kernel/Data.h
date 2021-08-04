@@ -47,10 +47,14 @@ money_t Raw_GetMoney(xuid_t player);
 bool Raw_SetMoney(xuid_t player, money_t money);
 bool Raw_AddMoney(xuid_t player, money_t money);
 bool Raw_ReduceMoney(xuid_t player, money_t money);
-bool Raw_TransMoney(xuid_t player1, xuid_t player2, money_t money, string const& notes);
+bool Raw_TransMoney(xuid_t player1, xuid_t player2, money_t money, std::string const& notes);
 std::string Raw_GetMoneyHist(xuid_t player, int time);
 bool Raw_ClearMoneyHist(int time);
 
 //XuidDB
-string Raw_Xuid2Name(string xuid);
-string Raw_Name2Xuid(string name);
+std::string Raw_Xuid2Name(std::string xuid);
+std::string Raw_Name2Xuid(std::string name);
+
+//Hash
+std::string Raw_toMD5(const std::string& str);
+std::string Raw_toSHA1(const std::string& str);
