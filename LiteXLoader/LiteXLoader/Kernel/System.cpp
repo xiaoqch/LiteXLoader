@@ -9,6 +9,7 @@
 #include <functional>
 #include <objbase.h>
 #include <windows.h>
+#include "Utils.h"
 using namespace std;
 
 string Raw_GetDateTimeStr()
@@ -105,29 +106,6 @@ bool Raw_AutoCreateDirs(const std::string& path)
         return true;
 }
 
-/////////////////// String Helper ///////////////////
-wchar_t* str2wstr(string str)
-{
-    auto len = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, NULL, 0);
-    wchar_t* buffer = new wchar_t[len + 1];
-    MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, buffer, len + 1);
-    buffer[len] = L'\0';
-
-    return buffer;
-}
-string wstr2str(wstring wstr)
-{
-    auto len = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, NULL, 0, NULL, NULL);
-    char* buffer = new char[len + 1];
-    WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, buffer, len + 1, NULL, NULL);
-    buffer[len] = '\0';
-
-    string result = string(buffer);
-    delete[] buffer;
-    return result;
-}
-/////////////////// String Helper ///////////////////
-
 #define READ_BUFFER_SIZE 4096
 
 bool Raw_NewProcess(const std::string &cmd, std::function<void(int,std::string)> callback, int timeLimit)
@@ -148,7 +126,7 @@ bool Raw_NewProcess(const std::string &cmd, std::function<void(int,std::string)>
 	si.hStdOutput = si.hStdError = hWrite;
 	si.dwFlags = STARTF_USESTDHANDLES;
  
-    auto wCmd = str2wstr(cmd);
+    auto wCmd = str2cwstr(cmd);
 	if (!CreateProcessW(NULL,wCmd,NULL,NULL,TRUE,NULL,NULL,NULL,&si,&pi))
 	{
         delete [] wCmd;
@@ -188,26 +166,6 @@ bool Raw_NewProcess(const std::string &cmd, std::function<void(int,std::string)>
 
     return true;
 }
-
-//////////////////// Helper ////////////////////
-void SplitHttpUrl(const std::string& url, string& host, string& path)
-{
-    host = url;
-
-    bool foundProcotol = host.find('//') != string::npos;
-
-    auto splitPos = host.find('/', foundProcotol ? host.find('//') + 2 : 0);    //查找协议后的第一个/分割host与路径
-    if (splitPos == string::npos)
-    {
-        path = "/";
-    }
-    else
-    {
-        path = host.substr(splitPos);
-        host = host.substr(0, splitPos);
-    }
-}
-//////////////////// Helper ////////////////////
 
 bool Raw_HttpGet(const string& url, function<void(int, string)> callback)
 {

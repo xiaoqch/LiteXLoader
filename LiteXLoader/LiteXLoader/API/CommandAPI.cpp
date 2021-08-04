@@ -1,6 +1,7 @@
 #include "CommandAPI.h"
 #include "APIHelp.h"
 #include "PlayerAPI.h"
+#include <Kernel/Utils.h>
 #include <Engine/GlobalShareData.h>
 #include <Engine/LocalShareData.h>
 #include <Engine/EngineOwnData.h>
@@ -135,54 +136,6 @@ Local<Value> SendCmdOutput(const Arguments& args)
 
 //////////////////// LXL Event Callbacks ////////////////////
 
-// Helper
-vector<string> SplitCmdParas(const string& paras)
-{
-    if (paras.empty())
-        return vector<string>();
-
-    vector<string> res;
-    string now, strInQuote = "";
-    istringstream strIn(paras);
-    while (strIn >> now)
-    {
-        if (!strInQuote.empty())
-        {
-            strInQuote = strInQuote + " " + now;
-            if (now.back() == '\"')
-            {
-                strInQuote.pop_back();
-                res.push_back(strInQuote.erase(0, 1));
-                strInQuote = "";
-            }
-        }
-        else
-        {
-            if (now.front() == '\"')
-            {
-                if (now.back() == '\"')
-                {
-                    now = now.substr(1, now.size() - 2);
-                    res.push_back(now);
-                }
-                else
-                    strInQuote = now;
-            }
-            else
-                res.push_back(now);
-        }
-    }
-    if (!strInQuote.empty())
-    {
-        istringstream leftIn(strInQuote);
-        while (leftIn >> now)
-            res.push_back(now);
-    }
-    return res;
-}
-// Helper
-
-
 void RegisterBuiltinCmds()
 {
     //调试引擎
@@ -258,7 +211,7 @@ bool ProcessDebugEngine(const string& cmd)
 
 bool ProcessHotManagement(const std::string& cmd)
 {
-    auto cmdList = SplitCmdParas(cmd);
+    auto cmdList = SplitCmdLine(cmd);
     if (cmdList[0] != LXL_HOT_MANAGE_PREFIX)
         return true;
 
@@ -329,7 +282,7 @@ string LxlFindCmdReg(bool isPlayerCmd, const string& cmd, vector<string> &receiv
             if (cmd.size() > prefix.size())
             {
                 //除了注册前缀之外还有额外参数
-                receiveParas = SplitCmdParas(cmd.substr(prefix.size() + 1));
+                receiveParas = SplitCmdLine(cmd.substr(prefix.size() + 1));
             }
             else
                 receiveParas = vector<string>();

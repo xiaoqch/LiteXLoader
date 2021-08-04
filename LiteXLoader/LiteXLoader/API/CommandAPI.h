@@ -17,7 +17,7 @@ Local<Value> SendCmdOutput(const Arguments& args);
 
 class Player;
 //helper
-std::vector<std::string> SplitCmdParas(const std::string& paras);
+std::vector<std::string> SplitCmdLine(const std::string& paras);
 
 // 注册LXL内置命令
 void RegisterBuiltinCmds();

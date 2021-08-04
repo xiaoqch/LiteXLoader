@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -55,6 +55,7 @@
     <ClCompile Include="API\ScriptAPI.cpp" />
     <ClCompile Include="API\ServerAPI.cpp" />
     <ClCompile Include="API\SystemAPI.cpp" />
+    <ClCompile Include="AutoUpdate.cpp" />
     <ClCompile Include="BindAPIs.cpp" />
     <ClCompile Include="CheckUpdate.cpp" />
     <ClCompile Include="Engine\LocalShareData.cpp" />
@@ -79,6 +80,7 @@
     <ClCompile Include="Kernel\SymbolHelper.cpp" />
     <ClCompile Include="Kernel\System.cpp" />
     <ClCompile Include="Kernel\UnlockCmd.cpp" />
+    <ClCompile Include="Kernel\Utils.cpp" />
     <ClCompile Include="LiteXLoader.cpp" />
     <ClCompile Include="Loader.cpp" />
   </ItemGroup>
@@ -104,6 +106,7 @@
     <ClInclude Include="API\ServerAPI.h" />
     <ClInclude Include="API\StaticClasses.h" />
     <ClInclude Include="API\SystemAPI.h" />
+    <ClInclude Include="AutoUpdate.h" />
     <ClInclude Include="CheckUpdate.h" />
     <ClInclude Include="Configs.h" />
     <ClInclude Include="Engine\GlobalShareData.h" />
@@ -128,6 +131,7 @@
     <ClInclude Include="Kernel\SymbolHelper.h" />
     <ClInclude Include="Kernel\System.h" />
     <ClInclude Include="Kernel\ThirdParty.h" />
+    <ClInclude Include="Kernel\Utils.h" />
     <ClInclude Include="Loader.h" />
   </ItemGroup>
   <ItemGroup>
