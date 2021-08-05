@@ -230,12 +230,14 @@ class NetworkClass
 public:
     static Local<Value> httpGet(const Arguments& args) { return HttpGet(args); }
     static Local<Value> httpPost(const Arguments& args) { return HttpPost(args); }
+    static Local<Value> httpGetSync(const Arguments& args) { return HttpGetSync(args); }
 };
 
 static ClassDefine<void> NetworkClassBuilder =
     defineClass("network")
         .function("httpGet", &NetworkClass::httpGet)
         .function("httpPost", &NetworkClass::httpPost)
+        .function("httpGetSync", &NetworkClass::httpGetSync)
         .build();
 
 class LxlClass
