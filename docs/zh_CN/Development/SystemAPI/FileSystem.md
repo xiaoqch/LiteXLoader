@@ -87,6 +87,35 @@
 
 <br>
 
+### 获取指定文件大小
+
+`file.getFileSize(path)`
+
+- 参数：
+  - path : `String`  
+    所操作的文件路径
+
+- 返回值：文件的大小（字节）
+- 返回值类型：`Integer`
+
+如果传入的路径位置是一个文件夹，将返回`0`
+
+<br>
+
+### 判断指定路径是否是文件夹
+
+`file.checkIsDir(path)`
+
+- 参数：
+  - path : `String`  
+    所判断的路径
+- 返回值：目标路径是否是文件夹
+- 返回值类型：`Boolean`
+
+如果目标路径不存在，同样将返回`false`
+
+<br>
+
 ### 列出指定文件夹下的所有文件 / 文件夹
 
 `file.getFilesList(dir)`
