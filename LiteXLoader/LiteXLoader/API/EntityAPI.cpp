@@ -367,10 +367,15 @@ Local<Value> EntityClass::getAllTags(const Arguments& args)
         if (!entity)
             return Local<Value>();
 
-        Local<Array> res = Array::newArray();
-
         auto list = Tag::fromActor(entity)->asCompound();
-        return Tag2Value(&list.at("Tags"), true);
+        try
+        {
+            return Tag2Value(&list.at("Tags"), true);
+        }
+        catch (...)
+        {
+            return Array::newArray();
+        }
     }
     CATCH("Fail in getAllTags!");
 }
