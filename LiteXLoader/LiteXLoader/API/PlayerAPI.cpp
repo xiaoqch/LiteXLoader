@@ -83,6 +83,7 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceFunction("addTag", &PlayerClass::addTag)
         .instanceFunction("removeTag", &PlayerClass::removeTag)
         .instanceFunction("getAllTags", &PlayerClass::getAllTags)
+        .instanceFunction("getAbilities", &PlayerClass::getAbilities)
 
         //For Compatibility
         .instanceProperty("ip", &PlayerClass::getIP)
@@ -1104,4 +1105,19 @@ Local<Value> PlayerClass::getAllTags(const Arguments& args)
         return Tag2Value(&list.at("Tags"), true);
     }
     CATCH("Fail in getAllTags!");
+}
+
+Local<Value> PlayerClass::getAbilities(const Arguments& args)
+{
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        Local<Array> res = Array::newArray();
+
+        auto list = Tag::fromActor(player)->asCompound();
+        return Tag2Value(&list.at("abilities"), true);
+    }
+    CATCH("Fail in getAbilities!");
 }

@@ -394,7 +394,7 @@ pl:crash()
 - 返回值：玩家对应的设备信息对象
 - 返回值类型：`Device`
 
-设备信息对象储存了与玩家设备有关的某些信息，如设备类型、网络延迟等信息。  
+设备信息对象储存了与玩家设备有关的某些信息，如设备IP地址、设备类型、网络延迟等信息。  
 关于设备信息对象的其他信息请参考 [设备信息对象 API](zh_CN/Development/GameAPI/Device.md)
 
 <br>
@@ -525,11 +525,20 @@ pl.removeBossBar();
 
 <br>
 
-#### 返回玩家拥有的所有Tag列表
+#### 获取玩家拥有的所有Tag列表
 
 `pl.getAllTags()`
 
 - 返回值：玩家所有的 tag 字符串列表
 - 返回值类型：`Array<String,String,...>`
+
+<br>
+
+#### 获取玩家的Abilities能力列表
+
+`pl.getAbilities()`
+
+- 返回值：玩家所有能力信息的键 - 值对列表
+- 返回值类型：`object<String-任意类型>`
 
 <br>

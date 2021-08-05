@@ -81,6 +81,7 @@ public:
     Local<Value> addTag(const Arguments& args);
     Local<Value> removeTag(const Arguments& args);
     Local<Value> getAllTags(const Arguments& args);
+    Local<Value> getAbilities(const Arguments& args);
 
     //For Compatibility
     Local<Value> getIP();
