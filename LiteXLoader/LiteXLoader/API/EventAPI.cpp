@@ -16,6 +16,7 @@
 #include <Kernel/SymbolHelper.h>
 #include <Kernel/Packet.h>
 #include <Kernel/Global.h>
+#include <Engine/PluginHotManage.h>
 #include <Engine/EngineOwnData.h>
 #include <Engine/GlobalShareData.h>
 #include <Engine/LocalShareData.h>
@@ -1156,7 +1157,8 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
             if (!ProcessDebugEngine(cmd))
                 return false;
             ProcessStopServer(cmd);
-            ProcessHotManagement(cmd);
+            if (!ProcessHotManagement(cmd))
+                return false;
 
             //CallEvents
             vector<string> paras;

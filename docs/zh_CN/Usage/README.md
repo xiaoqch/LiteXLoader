@@ -74,6 +74,8 @@ DependsDir=./plugins/lib	# LXL依赖库目录，默认为plugins/lib
   重新加载在插件列表中名为 xxxx.js 的插件
 - `lxl reload`  
   重新加载插件列表中的所有插件
+- `lxl version`  
+  输出当前安装的LXL版本
 
 【热管理使用警示】
 
