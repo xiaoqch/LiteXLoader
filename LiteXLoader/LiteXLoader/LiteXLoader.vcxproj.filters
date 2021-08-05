@@ -163,6 +163,12 @@
     <ClCompile Include="Kernel\Utils.cpp">
       <Filter>Kernel</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\MessageSystem.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\PluginHotManage.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="API\BaseAPI.h">
@@ -308,6 +314,12 @@
     </ClInclude>
     <ClInclude Include="Kernel\Utils.h">
       <Filter>Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\MessageSystem.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\PluginHotManage.h">
+      <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

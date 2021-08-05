@@ -45,11 +45,8 @@ struct DeviceInfoType
 //DLL本地共享数据
 struct LocalDataType
 {
-	//是否是第一个LXL实例（最底层Hook）
+	//是否是第一个LXL实例
 	bool isFirstInstance = true;
-
-	//事件回调拦截情况（层次传递设计）
-	bool isPassToBDS = true;
 
 	//玩家命令回调
 	std::map<std::string, CmdCallbackData, CmdCallbackMapCmp> playerCmdCallbacks;

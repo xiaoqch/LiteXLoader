@@ -112,7 +112,7 @@ bool InitRemoteCallSystem()
         return false;
     }
 
-    (globalShareData->remoteEngineList)[LXL_SCRIPT_LANG_TYPE].threadId = threadId;
+    (globalShareData->remoteEngineList)[LXL_MODULE_TYPE].threadId = threadId;
     return true;
 }
 
@@ -121,7 +121,7 @@ Local<Value> MakeRemoteCall(ExportedFuncData* data, const string& funcName, cons
     RemoteCallData* callData = new RemoteCallData;
     callData->args = argsList;
     callData->funcName = funcName;
-    callData->threadFrom = (globalShareData->remoteEngineList)[LXL_SCRIPT_LANG_TYPE].threadId;
+    callData->threadFrom = (globalShareData->remoteEngineList)[LXL_MODULE_TYPE].threadId;
 
     if (!PostThreadMessage((globalShareData->remoteEngineList)[data->fromEngineType].threadId,
         LXL_REMOTE_CALL, (WPARAM)callData, NULL))
@@ -153,7 +153,7 @@ bool LxlExportFunc(ScriptEngine *engine, const Local<Function> &func, const stri
     ExportedFuncData* funcData = &(globalShareData->exportedFuncs)[exportName];
     funcData->engine = engine;
     funcData->func = Global<Function>(func);
-    funcData->fromEngineType = LXL_SCRIPT_LANG_TYPE;
+    funcData->fromEngineType = LXL_MODULE_TYPE;
     return true;
 }
 
@@ -194,7 +194,7 @@ Local<Value> LxlImport(const Arguments &args)
         funcName = args[0].toStr();
         ExportedFuncData* funcData = &(globalShareData->exportedFuncs).at(funcName);
 
-        if (funcData->fromEngineType == LXL_SCRIPT_LANG_TYPE)
+        if (funcData->fromEngineType == LXL_MODULE_TYPE)
         {
             //自身DLL调用
             return Function::newFunction([fromEngine{EngineScope::currentEngine()}, engine{ funcData->engine }, funcName]

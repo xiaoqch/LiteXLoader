@@ -56,6 +56,9 @@ bool LxlLoadPlugin(const std::string& filePath, bool isHotLoad)
     if (filePath == LXL_DEBUG_ENGINE_NAME)
         return true;
 
+    //多线程锁
+    lock_guard<mutex> lock(globalShareData->hotManageLock);
+
     //判重
     string pluginName = std::filesystem::path(filePath).filename().u8string();
     for (auto plugin : globalShareData->pluginsList)
@@ -114,7 +117,7 @@ bool LxlLoadPlugin(const std::string& filePath, bool isHotLoad)
 
         AddToGlobalPluginsList(pluginName);
         if (isHotLoad)
-            LxlHotLoadRecallEvents(engine);
+            LxlCallEventsOnHotLoad(engine);
         INFO(pluginName + " loaded.");
         return true;
     }
@@ -153,6 +156,9 @@ string LxlUnloadPlugin(const std::string& name)
     if (name == LXL_DEBUG_ENGINE_NAME)
         return LXL_DEBUG_ENGINE_NAME;
 
+    //多线程锁
+    lock_guard<mutex> lock(globalShareData->hotManageLock);
+
     string unloadedPath = "";
     for (int i = 0; i < lxlModules.size(); ++i)
     {
@@ -161,6 +167,7 @@ string LxlUnloadPlugin(const std::string& name)
         {
             unloadedPath = ENGINE_GET_DATA(engine)->pluginPath;
 
+            LxlCallEventsOnHotUnload(engine);
             RemoveFromGlobalPluginsList(name);
             LxlRemoveAllEventListeners(engine);
             LxlRemoveCmdRegister(engine);

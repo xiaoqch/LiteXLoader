@@ -1,6 +1,7 @@
 #include "Utils.h"
 #include <string>
 #include <vector>
+#include <ctime>
 using namespace std;
 
 vector<string> SplitCmdLine(const string& paras)
@@ -109,4 +110,22 @@ string wstr2str(wstring wstr)
     string result = string(buffer);
     delete[] buffer;
     return result;
+}
+
+unsigned long long GetCurrentTimeStampMS()
+{
+    SYSTEMTIME currentTime = { 0 };
+    GetLocalTime(&currentTime);
+
+    struct tm currTm = {
+        currentTime.wSecond,
+        currentTime.wMinute,
+        currentTime.wHour,
+        currentTime.wDay,
+        currentTime.wMonth - 1,
+        currentTime.wYear - 1900
+    };
+
+    unsigned long long nNow = mktime(&currTm) * 1000 + currentTime.wMilliseconds;
+    return nNow;
 }

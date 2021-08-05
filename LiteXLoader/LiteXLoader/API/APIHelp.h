@@ -11,7 +11,7 @@ using namespace script;
 
 // 输出
 extern int lxlLogLevel;
-#define PREFIX "[LiteXLoader." LXL_SCRIPT_LANG_TYPE "]" 
+#define PREFIX "[LiteXLoader." LXL_MODULE_TYPE "]" 
 #define DEBUG(t) { if(lxlLogLevel >= 5) std::cout << PREFIX "[Debug] " << (t) << std::endl; }
 #define INFO(t)  { if(lxlLogLevel >= 4) std::cout << PREFIX "[Info] " << (t) << std::endl; }
 #define WARN(t)  { if(lxlLogLevel >= 3) std::cout << PREFIX "[Warning] " << (t) << std::endl; }
