@@ -84,6 +84,7 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceFunction("removeTag", &PlayerClass::removeTag)
         .instanceFunction("getAllTags", &PlayerClass::getAllTags)
         .instanceFunction("getAbilities", &PlayerClass::getAbilities)
+        .instanceFunction("getAttributes", &PlayerClass::getAttributes)
 
         //For Compatibility
         .instanceProperty("ip", &PlayerClass::getIP)
@@ -1102,7 +1103,14 @@ Local<Value> PlayerClass::getAllTags(const Arguments& args)
         Local<Array> res = Array::newArray();
 
         auto list = Tag::fromActor(player)->asCompound();
-        return Tag2Value(&list.at("Tags"), true);
+        try
+        {
+            return Tag2Value(&list.at("Tags"), true);
+        }
+        catch (...)
+        {
+            return Array::newArray();
+        }
     }
     CATCH("Fail in getAllTags!");
 }
@@ -1114,10 +1122,37 @@ Local<Value> PlayerClass::getAbilities(const Arguments& args)
         if (!player)
             return Local<Value>();
 
+        auto list = Tag::fromActor(player)->asCompound();
+        try
+        {
+            return Tag2Value(&list.at("abilities"), true);
+        }
+        catch (...)
+        {
+            return Object::newObject();
+        }
+    }
+    CATCH("Fail in getAbilities!");
+}
+
+Local<Value> PlayerClass::getAttributes(const Arguments& args)
+{
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
         Local<Array> res = Array::newArray();
 
         auto list = Tag::fromActor(player)->asCompound();
-        return Tag2Value(&list.at("abilities"), true);
+        try
+        {
+            return Tag2Value(&list.at("Attributes"), true);
+        }
+        catch (...)
+        {
+            return Array::newArray();
+        }
     }
-    CATCH("Fail in getAbilities!");
+    CATCH("Fail in getAttributes!");
 }

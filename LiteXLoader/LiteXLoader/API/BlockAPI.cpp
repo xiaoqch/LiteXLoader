@@ -157,7 +157,14 @@ Local<Value> BlockClass::getBlockState(const Arguments& args)
 {
     try {
         auto list = Tag::fromBlock(block)->asCompound();
-        return Tag2Value(&list.at("states"),true);
+        try
+        {
+            return Tag2Value(&list.at("states"), true);
+        }
+        catch (...)
+        {
+            return Array::newArray();
+        }
     }
     catch (const std::out_of_range& e)
     {

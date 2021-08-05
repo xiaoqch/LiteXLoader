@@ -107,6 +107,86 @@ var open = pl.isOP();
 
 ```
 
+#### 为玩家增加一个Tag
+
+`pl.addTag(tag)`
+
+- 参数：
+  - tag: `String`  
+    要增加的tag字符串
+- 返回值：是否设置成功
+- 返回值类型：`Boolean`
+
+<br>
+
+#### 为玩家移除一个Tag
+
+`pl.removeTag(tag)`
+
+- 参数：
+  - tag: `String`  
+    要移除的tag字符串
+- 返回值：是否移除成功
+- 返回值类型：`Boolean`
+
+<br>
+
+#### 获取玩家拥有的所有Tag列表
+
+`pl.getAllTags()`
+
+- 返回值：玩家所有的 tag 字符串列表
+- 返回值类型：`Array<String,String,...>`
+
+<br>
+
+#### 获取玩家的Abilities能力列表（来自玩家NBT）
+
+`pl.getAbilities()`
+
+- 返回值：玩家所有能力信息的键 - 值对列表对象
+- 返回值类型：`object<String-任意类型>`
+
+键 - 值对列表中的每一项形如：`"mayfly": 1`  等等
+
+<br>
+
+#### 获取玩家的Attributes属性列表（来自玩家NBT）
+
+`pl.getAttributes()`
+
+- 返回值：玩家所有属性对象的数组
+- 返回值类型：`Array<Object,Object,...>`
+
+数组中的每一项为一个键 - 值对列表对象`Object`，其内容形如：
+
+```
+{
+        "Base": 0, 
+        "Current": 0, 
+        "DefaultMax": 1024, 
+        "DefaultMin": -1024, 
+        "Max": 1024, 
+        "Min": -1024, 
+        "Name": "minecraft:luck"
+}, 
+```
+
+（此处使用Json格式直观地展示，具体内容以引擎数据类型为准）
+
+<br>
+
+#### 获取玩家对应的NBT对象
+
+`pl.getNbt()`
+
+- 返回值：玩家的NBT对象
+- 返回值类型：`NbtCompound`
+
+关于NBT对象的更多使用，请参考 [NBT接口文档](zh_CN/Development/NbtAPI/NBT.md)
+
+<br>
+
 #### 断开玩家连接  
 
 `pl.kick([msg])`  
@@ -361,59 +441,6 @@ pl.addLevel(6);
 [Lua]
 
 ```
-
-#### 为玩家增加一个Tag
-
-`pl.addTag(tag)`
-
-- 参数：
-  - tag: `String`  
-    要增加的tag字符串
-- 返回值：是否设置成功
-- 返回值类型：`Boolean`
-
-<br>
-
-#### 为玩家移除一个Tag
-
-`pl.removeTag(tag)`
-
-- 参数：
-  - tag: `String`  
-    要移除的tag字符串
-- 返回值：是否移除成功
-- 返回值类型：`Boolean`
-
-<br>
-
-#### 获取玩家拥有的所有Tag列表
-
-`pl.getAllTags()`
-
-- 返回值：玩家所有的 tag 字符串列表
-- 返回值类型：`Array<String,String,...>`
-
-<br>
-
-#### 获取玩家的Abilities能力列表
-
-`pl.getAbilities()`
-
-- 返回值：玩家所有能力信息的键 - 值对列表
-- 返回值类型：`object<String-任意类型>`
-
-<br>
-
-#### 获取玩家对应的NBT对象
-
-`pl.getNbt()`
-
-- 返回值：玩家的NBT对象
-- 返回值类型：`NbtCompound`
-
-关于NBT对象的更多使用，请参考 [NBT接口文档](zh_CN/Development/NbtAPI/NBT.md)
-
-<br>
 
 #### 传送玩家至指定服务器  
 
