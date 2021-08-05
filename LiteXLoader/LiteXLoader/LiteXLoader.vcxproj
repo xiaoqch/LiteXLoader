@@ -403,8 +403,8 @@
       <AdditionalDependencies>$(SolutionDir)third-party\LiteLoader\LiteLoader.lib;$(SolutionDir)third-party\ScriptX\lib\ScriptX-Lua.lib;$(SolutionDir)third-party\Lua\lib\lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(TargetPath) C:\Users\yqs11\Desktop\Minecraft\BDS\BDS-1.17\plugins
-echo 构建完毕</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Js|x64'">
@@ -431,8 +431,8 @@ echo 构建完毕</Command>
       <AdditionalDependencies>$(SolutionDir)third-party\LiteLoader\LiteLoader.lib;$(SolutionDir)third-party\ScriptX\lib\ScriptX-Js.lib;$(SolutionDir)third-party\V8\lib\v8.lib;$(SolutionDir)third-party\V8\lib\v8_libbase.lib;$(SolutionDir)third-party\V8\lib\v8_libplatform.lib;$(SolutionDir)third-party\V8\lib\zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(TargetPath) C:\Users\yqs11\Desktop\Minecraft\BDS\BDS-1.17\plugins
-echo 构建完毕</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

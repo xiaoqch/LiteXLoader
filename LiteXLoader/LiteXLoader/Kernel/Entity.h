@@ -22,4 +22,3 @@ float Raw_GetSpeed(Actor* ac);
 
 bool Raw_AddTag(Actor* ac, const std::string& str);
 bool Raw_RemoveTag(Actor* ac, const std::string& str);
-std::vector<std::string> Raw_GetAllTags(Actor* ac);

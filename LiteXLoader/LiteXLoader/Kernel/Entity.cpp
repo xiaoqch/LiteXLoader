@@ -115,13 +115,3 @@ bool Raw_RemoveTag(Actor* ac, const string& str) {
     return SymCall("?removeTag@Actor@@QEAA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z",
         bool, Actor*, const string*)(ac, &str);
 }
-
-vector<string> Raw_GetAllTags(Actor* ac) {
-    auto tags = SymCall("?getTags@Actor@@QEBA?BV?$span@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@$0?0@gsl@@XZ",
-        gsl::span<string>, Actor*)(ac);
-    
-    vector<string> res;
-    for (auto& item : tags)
-        res.push_back(item);
-    return res;
-}
