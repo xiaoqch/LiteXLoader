@@ -25,28 +25,32 @@ public:
 	};
 
 	static int getNextMessageId();
-	static std::unordered_map<int, bool> syncWaitList;
 
 private:
 	MessageType type;
 	MessagePackData *packData;
-	void* data;
+	string data;
 
 	LPARAM getLParam();
 	WPARAM getWParam();
 
-public:
-	ModuleMessage(MessageType type, void* data);
-	ModuleMessage(int msgId, MessageType type, void* data);
+public: 
+	ModuleMessage(const ModuleMessage& b);
+	ModuleMessage(MessageType type, string data);
+	ModuleMessage(int msgId, MessageType type, string data);
 	ModuleMessage(UINT type, LPARAM lp, WPARAM wp);
 	void destroy();
 
 	unsigned getId() { return packData->id; }
 	MessageType getType() { return type; }
+	string getData() { return data; }
 
-	int broadcast();
-	int broadcastAll();
-	bool sendTo(std::string toModuleType);
 	bool sendBack(ModuleMessage& msg);
+	static int broadcast(ModuleMessage& msg);
+	static int broadcastAll(ModuleMessage& msg);
+	static bool sendTo(ModuleMessage& msg, std::string toModuleType);
 	static bool waitForMessage(int messageId, int maxWaitTime = -1);
 };
+
+//////////////////// API ////////////////////
+bool InitMessageSystem();

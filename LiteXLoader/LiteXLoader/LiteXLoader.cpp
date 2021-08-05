@@ -4,6 +4,8 @@
 #include <Engine/GlobalShareData.h>
 #include <Engine/EngineOwnData.h>
 #include <Engine/LocalShareData.h>
+#include <Engine/RemoteCall.h>
+#include <Engine/MessageSystem.h>
 #include <Kernel/Data.h>
 #include <Kernel/System.h>
 #include <Kernel/i18n.h>
@@ -64,6 +66,10 @@ void entry()
     //初始化全局数据
     InitLocalShareData();
     InitGlobalShareData();
+
+    //初始化消息系统
+    InitRemoteCallSystem();
+    InitMessageSystem();
 
     //欢迎
     if(localShareData->isFirstInstance)

@@ -2,25 +2,29 @@
 #include <API/APIHelp.h>
 #include <Kernel/Utils.h>
 #include "LoaderHelper.h"
+#include "MessageSystem.h"
+#include "GlobalShareData.h"
 #include <Configs.h>
 #include <string>
 using namespace std;
 
-bool ProcessHotManageCmd(const std::string& cmd)
+void HotManageMessageCallback(ModuleMessage& msg)
 {
+    string cmd = msg.getData();
+    
     auto cmdList = SplitCmdLine(cmd);
-
-    if (cmdList[0] != LXL_HOT_MANAGE_PREFIX)
-        return true;
-
-    if (cmd.find(LXL_HOT_LIST) == 0)
+    if (cmdList[1] == "list")
     {
         //list
         auto list = LxlListLocalAllPlugins();
+
+        //多线程锁
+        lock_guard<mutex> lock(globalShareData->hotManageLock);
+
         for (auto& name : list)
             PRINT(name);
     }
-    else if (cmd.find(LXL_HOT_LOAD) == 0 && cmdList.size() == 3)
+    else if (cmdList[1] == "load" && cmdList.size() == 3)
     {
         //load
         if (!filesystem::exists(cmdList[2]))
@@ -28,14 +32,14 @@ bool ProcessHotManageCmd(const std::string& cmd)
         if (filesystem::path(cmdList[2]).extension() == LXL_PLUGINS_SUFFIX)
             LxlLoadPlugin(cmdList[2], true);
     }
-    else if (cmd.find(LXL_HOT_UNLOAD) == 0 && cmdList.size() == 3)
+    else if (cmdList[1] == "unload" && cmdList.size() == 3)
     {
         //unload
         if (filesystem::path(cmdList[2]).extension() == LXL_PLUGINS_SUFFIX)
             if (LxlUnloadPlugin(cmdList[2]) == "")
                 ERROR("Plugin no found!");
     }
-    else if (cmd.find(LXL_HOT_RELOAD) == 0)
+    else if (cmdList[1] == "reload")
     {
         if (cmdList.size() == 2)
         {
@@ -52,12 +56,21 @@ bool ProcessHotManageCmd(const std::string& cmd)
         else
             ERROR("Bad Command!");
     }
-    else if (cmd.find(LXL_HOT_VERSION) == 0)
-    {
-        //version
-        printf("LiteXLoader v%d.%d.%d%s", LXL_VERSION_MAJOR, LXL_VERSION_MINOR, LXL_VERSION_REVISION);
-    }
     else
         ERROR("Bad Command!");
+}
+
+bool ProcessHotManageCmd(const std::string& cmd)
+{
+    if (cmd.find("lxl") != 0)
+        return true;
+    if (cmd == "lxl version")
+    {
+        printf("LiteXLoader v%d.%d.%d\n", LXL_VERSION_MAJOR, LXL_VERSION_MINOR, LXL_VERSION_REVISION);
+        return false;
+    }
+    
+    ModuleMessage msg(ModuleMessage::MessageType::LxlCommand, cmd);
+    ModuleMessage::broadcastAll(msg);
     return false;
 }

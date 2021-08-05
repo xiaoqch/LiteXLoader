@@ -1157,7 +1157,7 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
             if (!ProcessDebugEngine(cmd))
                 return false;
             ProcessStopServer(cmd);
-            if (!ProcessHotManagement(cmd))
+            if (!ProcessHotManageCmd(cmd))
                 return false;
 
             //CallEvents

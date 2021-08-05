@@ -142,10 +142,11 @@ void RegisterBuiltinCmds()
     Raw_RegisterCmd(LXL_DEBUG_CMD, "LXL " + string(LXL_MODULE_TYPE) + " Engine Real-time Debugging", 4);
     
     //热管理
-    Raw_RegisterCmd(LXL_HOT_LIST, "List current loaded LXL plugins", 4);
-    Raw_RegisterCmd(LXL_HOT_LOAD, "Load a new LXL plugin", 4);
-    Raw_RegisterCmd(LXL_HOT_UNLOAD, "Unload an existing LXL plugin", 4);
-    Raw_RegisterCmd(LXL_HOT_RELOAD, "Reload an existing LXL plugin / all LXL plugins", 4);
+    Raw_RegisterCmd("lxl list", "List current loaded LXL plugins", 4);
+    Raw_RegisterCmd("lxl load", "Load a new LXL plugin", 4);
+    Raw_RegisterCmd("lxl unload", "Unload an existing LXL plugin", 4);
+    Raw_RegisterCmd("lxl reload", "Reload an existing LXL plugin / all LXL plugins", 4);
+    Raw_RegisterCmd("lxl version", "Get the version of LiteXLoader", 4);
 
     INFO("Builtin Cmds Registered.");
 }

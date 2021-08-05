@@ -56,6 +56,9 @@ bool LxlLoadPlugin(const std::string& filePath, bool isHotLoad)
     if (filePath == LXL_DEBUG_ENGINE_NAME)
         return true;
 
+    //多线程锁
+    lock_guard<mutex> lock(globalShareData->hotManageLock);
+
     //判重
     string pluginName = std::filesystem::path(filePath).filename().u8string();
     for (auto plugin : globalShareData->pluginsList)
@@ -152,6 +155,9 @@ string LxlUnloadPlugin(const std::string& name)
 {
     if (name == LXL_DEBUG_ENGINE_NAME)
         return LXL_DEBUG_ENGINE_NAME;
+
+    //多线程锁
+    lock_guard<mutex> lock(globalShareData->hotManageLock);
 
     string unloadedPath = "";
     for (int i = 0; i < lxlModules.size(); ++i)

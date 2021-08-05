@@ -1,12 +1,15 @@
 #include "MessageSystem.h"
 #include <API/APIHelp.h>
 #include <Kernel/Utils.h>
+#include <Kernel/Global.h>
 #include "GlobalShareData.h"
 #include <process.h>
 #include <exception>
 using namespace std;
 
 //////////////////// 消息处理注册 ////////////////////
+
+#include "PluginHotManage.h"
 
 void ProcessModuleMessage(ModuleMessage &msg)
 {
@@ -17,6 +20,7 @@ void ProcessModuleMessage(ModuleMessage &msg)
     case ModuleMessage::MessageType::RemoteCallReturn:
         break;
     case ModuleMessage::MessageType::LxlCommand:
+        HotManageMessageCallback(msg);
         break;
     default:
         break;
@@ -26,7 +30,7 @@ void ProcessModuleMessage(ModuleMessage &msg)
 
 //////////////////// Class ////////////////////
 
-ModuleMessage::ModuleMessage(ModuleMessage::MessageType type, void* data)
+ModuleMessage::ModuleMessage(ModuleMessage::MessageType type, string data)
 {
     packData = new MessagePackData;
 
@@ -36,12 +40,12 @@ ModuleMessage::ModuleMessage(ModuleMessage::MessageType type, void* data)
     this->data = data;
 }
 
-ModuleMessage::ModuleMessage(int msgId, MessageType type, void* data)
+ModuleMessage::ModuleMessage(int msgId, MessageType type, string data)
 {
     packData = new MessagePackData;
 
     packData->id = msgId;
-    packData->senderThread = globalShareData->messageSystemList[LXL_MODULE_TYPE].threadId;
+    packData->senderThread = globalShareData->moduleMessageSystemsList[LXL_MODULE_TYPE].threadId;
     this->type = type;
     this->data = data;
 }
@@ -50,7 +54,15 @@ ModuleMessage::ModuleMessage(UINT type, LPARAM lp, WPARAM wp)
 {
     this->type = (ModuleMessage::MessageType)type;
     packData = (MessagePackData*)lp;
-    data = (void*)wp;
+    data = *(string*)wp;
+    delete (string*)wp;     //############ shit mountain! ############
+}
+
+ModuleMessage::ModuleMessage(const ModuleMessage& b)    //############ shit mountain! ############
+{
+    type = b.type;
+    packData = new ModuleMessage::MessagePackData{ *(b.packData) };
+    data = b.data;
 }
 
 LPARAM ModuleMessage::getLParam()
@@ -60,12 +72,12 @@ LPARAM ModuleMessage::getLParam()
 
 WPARAM ModuleMessage::getWParam()
 {
-    return (WPARAM)data;
+    return (WPARAM)new string(data);    //############ shit mountain! ############
 }
 
 int ModuleMessage::getNextMessageId()
 {
-    return ++globalShareData->messageSystemNextId;
+    return InterlockedIncrement((LONG*)&(globalShareData->messageSystemNextId));
 }
 
 void ModuleMessage::destroy()
@@ -73,37 +85,42 @@ void ModuleMessage::destroy()
     delete packData;
 }
 
-int ModuleMessage::broadcast()
+int ModuleMessage::broadcast(ModuleMessage& msg)
 {
     int sent = 0;
 
-    for (auto& mod : globalShareData->messageSystemList)
+    for (auto& mod : globalShareData->moduleMessageSystemsList)
     {
+        ModuleMessage msgSend(msg);
         if (mod.first != LXL_MODULE_TYPE)
-            if (PostThreadMessage(mod.second.threadId, (UINT)getType(), getWParam(), getLParam()))
+            if (PostThreadMessage(mod.second.threadId, (UINT)msgSend.getType(), msgSend.getWParam(), msgSend.getLParam()))
                 ++sent;
     }
+    msg.destroy();
     return sent;
 }
 
-int ModuleMessage::broadcastAll()
+int ModuleMessage::broadcastAll(ModuleMessage& msg)
 {
     int sent = 0;
 
-    for (auto& mod : globalShareData->messageSystemList)
+    for (auto& mod : globalShareData->moduleMessageSystemsList)
     {
-        if (PostThreadMessage(mod.second.threadId, (UINT)getType(), getWParam(), getLParam()))
+        ModuleMessage msgSend(msg);
+        if (PostThreadMessage(mod.second.threadId, (UINT)msgSend.getType(), msgSend.getWParam(), msgSend.getLParam()))
             ++sent;
     }
+    msg.destroy();
     return sent;
 }
 
-bool ModuleMessage::sendTo(string toModuleType)
+bool ModuleMessage::sendTo(ModuleMessage& msg, string toModuleType)
 {
     try
     {
-        unsigned int threadId = globalShareData->messageSystemList.at(toModuleType).threadId;
-        PostThreadMessage(threadId, (UINT)getType(), getWParam(), getLParam());
+        ModuleMessage msgSend(msg);
+        unsigned int threadId = globalShareData->moduleMessageSystemsList.at(toModuleType).threadId;
+        PostThreadMessage(threadId, (UINT)msgSend.getType(), msgSend.getWParam(), msgSend.getLParam());
     }
     catch (const std::out_of_range& e)
     {
@@ -118,20 +135,28 @@ bool ModuleMessage::sendBack(ModuleMessage& msg)
 
 bool ModuleMessage::waitForMessage(int messageId, int maxWaitTime)
 {
-    ModuleMessage::syncWaitList[messageId] = true;
+    //多线程锁
+    globalShareData->syncWaitListLock.lock();
+    globalShareData->syncWaitList[messageId] = true;
+    globalShareData->syncWaitListLock.unlock();
 
     auto fromTime = GetCurrentTimeStampMS();
     bool isSuccess = false;
     while (maxWaitTime < 0 ? true : GetCurrentTimeStampMS() - fromTime <= maxWaitTime)
     {
         Sleep(LXL_MESSAGE_SYSTEM_WAIT_CHECK_INTERVAL);
-        if (!ModuleMessage::syncWaitList[messageId])
+        //多线程锁
+        lock_guard<mutex> lock(globalShareData->syncWaitListLock);
+        if (!globalShareData->syncWaitList[messageId])
         {
             isSuccess = true;
             break;
         }
     }
-    ModuleMessage::syncWaitList.erase(messageId);
+
+    //多线程锁
+    lock_guard<mutex> lock(globalShareData->syncWaitListLock);
+    globalShareData->syncWaitList.erase(messageId);
     return isSuccess;
 }
 
@@ -156,7 +181,10 @@ unsigned __stdcall ModuleMessageLoop(void* pParam)
             ProcessModuleMessage(msg);
             try
             {
-                ModuleMessage::syncWaitList.at(msg.getId()) = false;
+                //多线程锁
+                lock_guard<mutex> lock(globalShareData->syncWaitListLock);
+
+                globalShareData->syncWaitList.at(msg.getId()) = false;
             }
             catch (...) { ; }
 
@@ -178,6 +206,6 @@ bool InitMessageSystem()
     }
     CloseHandle(hThread);
 
-    (globalShareData->messageSystemList)[LXL_MODULE_TYPE].threadId = threadId;
+    (globalShareData->moduleMessageSystemsList)[LXL_MODULE_TYPE].threadId = threadId;
     return true;
 }

@@ -39,14 +39,6 @@
 #endif
 #define LXL_DEBUG_ENGINE_NAME "__LXL_DEBUG_ENGINE__"
 
-// 热管理命令
-#define LXL_HOT_MANAGE_PREFIX "lxl"
-#define LXL_HOT_LIST "lxl list"
-#define LXL_HOT_LOAD "lxl load"
-#define LXL_HOT_UNLOAD "lxl unload"
-#define LXL_HOT_RELOAD "lxl reload"
-#define LXL_HOT_VERSION	"lxl version"
-
 // 全局通信
 #define LXL_GLOBAL_DATA_NAME L"LITEXLOADER_GLOBAL_DATA_SECTION"
 #define LXL_REMOTE_CALL_EVENT_NAME L"LITEXLOADER_REMOTE_CALL_EVENT"

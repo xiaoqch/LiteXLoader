@@ -1,6 +1,5 @@
 #include <API/APIHelp.h>
 #include <Engine/GlobalShareData.h>
-#include <Engine/RemoteCall.h>
 #include <ScriptX/ScriptX.h>
 #include <cstdlib>
 #include <ctime>
@@ -46,8 +45,6 @@ void InitGlobalShareData()
 		localShareData->isFirstInstance = false;
 		globalShareData = (GlobalDataType*)address;
 	}
-
-	InitRemoteCallSystem();
 }
 
 void AddToGlobalPluginsList(const std::string& name)
