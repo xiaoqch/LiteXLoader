@@ -1,9 +1,37 @@
 #include "Global.h"
 #include "Entity.h"
 #include "Player.h"
+#include "SymbolHelper.h"
 #include <string>
 #include <vector>
 using namespace std;
+
+class Spawner;
+Actor* Raw_SpawnMob(std::string name, const FloatVec4& pos)
+{
+    try
+    {
+        if (name.find("minecraft:") == 0)
+            name = name.substr(10);
+
+        char a[168];
+        ActorDefinitionIdentifier* ad = SymCall("??0ActorDefinitionIdentifier@@QEAA@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z",
+            ActorDefinitionIdentifier*, ActorDefinitionIdentifier*, string&)((ActorDefinitionIdentifier*)a, name);
+
+        Spawner* sp = SymCall("?getSpawner@Level@@UEBAAEAVSpawner@@XZ", Spawner*, Level*)(mc->getLevel());
+
+        Vec3 vec{ pos.x,pos.y,pos.z };
+        Actor* ac = SymCall("?spawnMob@Spawner@@QEAAPEAVMob@@AEAVBlockSource@@AEBUActorDefinitionIdentifier@@PEAVActor@@AEBVVec3@@_N44@Z",
+            Mob*, Spawner * _this, BlockSource*, ActorDefinitionIdentifier*, Actor*, Vec3*, bool, bool, bool)
+            (sp, Raw_GetBlockSourceByDim(pos.dim), ad, nullptr, &vec, 0, 1, 0);
+
+        return ac;
+    }
+    catch(...)
+    {
+        return nullptr;
+    }
+}
 
 string Raw_GetEntityName(Actor* actor)
 {

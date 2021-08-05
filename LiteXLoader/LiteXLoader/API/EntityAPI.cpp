@@ -374,3 +374,53 @@ Local<Value> EntityClass::getAllTags(const Arguments& args)
     }
     CATCH("Fail in getAllTags!");
 }
+
+Local<Value> SpawnMob(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 2);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+
+    try {
+        string name = args[0].toStr();
+        FloatVec4 pos;
+
+        if (args.size() == 2)
+        {
+            // FloatPos
+            auto posObj = FloatPos::extractPos(args[0]);
+            if (posObj)
+            {
+                if (posObj->dim < 0)
+                    return Local<Value>();
+                else
+                    pos = *posObj;
+            }
+            else
+            {
+                ERROR("Wrong type of argument in SpawnMob!");
+                return Local<Value>();
+            }
+        }
+        else if (args.size() == 5)
+        {
+            // Number Pos
+            CHECK_ARG_TYPE(args[1], ValueKind::kNumber);
+            CHECK_ARG_TYPE(args[2], ValueKind::kNumber);
+            CHECK_ARG_TYPE(args[3], ValueKind::kNumber);
+            CHECK_ARG_TYPE(args[4], ValueKind::kNumber);
+            pos = { args[1].asNumber().toFloat(), args[2].asNumber().toFloat(), args[3].asNumber().toFloat(), args[4].toInt() };
+        }
+        else
+        {
+            ERROR("Wrong number of arguments in SpawnMob!");
+            return Local<Value>();
+        }
+
+        auto entity = Raw_SpawnMob(name,pos);
+        if (!entity)
+            return Local<Value>();    //Null
+        else
+            return EntityClass::newEntity(entity);
+    }
+    CATCH("Fail in SpawnMob!");
+}

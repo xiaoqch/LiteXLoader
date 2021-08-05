@@ -46,3 +46,6 @@ public:
     Local<Value> removeTag(const Arguments& args);
     Local<Value> getAllTags(const Arguments& args);
 };
+
+//////////////////// APIs ////////////////////
+Local<Value> SpawnMob(const Arguments& args);

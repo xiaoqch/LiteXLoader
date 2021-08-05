@@ -80,6 +80,18 @@
 
 每一个玩家对象都包含一些可以执行的成员函数（成员方法）。对于某个特定的玩家对象`pl`，可以通过以下这些函数对这个玩家进行一些操作
 
+#### 获取玩家对应的设备信息对象
+
+`pl.getDevice()`
+
+- 返回值：玩家对应的设备信息对象
+- 返回值类型：`Device`
+
+设备信息对象储存了与玩家设备有关的某些信息，如设备IP地址、设备类型、网络延迟等信息。  
+关于设备信息对象的其他信息请参考 [设备信息对象 API](zh_CN/Development/GameAPI/Device.md)
+
+<br>
+
 #### 判断玩家是否为OP  
 
 `pl.isOP()`
@@ -350,6 +362,59 @@ pl.addLevel(6);
 
 ```
 
+#### 为玩家增加一个Tag
+
+`pl.addTag(tag)`
+
+- 参数：
+  - tag: `String`  
+    要增加的tag字符串
+- 返回值：是否设置成功
+- 返回值类型：`Boolean`
+
+<br>
+
+#### 为玩家移除一个Tag
+
+`pl.removeTag(tag)`
+
+- 参数：
+  - tag: `String`  
+    要移除的tag字符串
+- 返回值：是否移除成功
+- 返回值类型：`Boolean`
+
+<br>
+
+#### 获取玩家拥有的所有Tag列表
+
+`pl.getAllTags()`
+
+- 返回值：玩家所有的 tag 字符串列表
+- 返回值类型：`Array<String,String,...>`
+
+<br>
+
+#### 获取玩家的Abilities能力列表
+
+`pl.getAbilities()`
+
+- 返回值：玩家所有能力信息的键 - 值对列表
+- 返回值类型：`object<String-任意类型>`
+
+<br>
+
+#### 获取玩家对应的NBT对象
+
+`pl.getNbt()`
+
+- 返回值：玩家的NBT对象
+- 返回值类型：`NbtCompound`
+
+关于NBT对象的更多使用，请参考 [NBT接口文档](zh_CN/Development/NbtAPI/NBT.md)
+
+<br>
+
 #### 传送玩家至指定服务器  
 
 `pl.transServer(server,port)`
@@ -386,29 +451,6 @@ pl.crash();
 pl:crash()
 
 ```
-
-#### 获取玩家对应的设备信息对象
-
-`pl.getDevice()`
-
-- 返回值：玩家对应的设备信息对象
-- 返回值类型：`Device`
-
-设备信息对象储存了与玩家设备有关的某些信息，如设备IP地址、设备类型、网络延迟等信息。  
-关于设备信息对象的其他信息请参考 [设备信息对象 API](zh_CN/Development/GameAPI/Device.md)
-
-<br>
-
-#### 获取玩家对应的NBT对象
-
-`pl.getNbt()`
-
-- 返回值：玩家的NBT对象
-- 返回值类型：`NbtCompound`
-
-关于NBT对象的更多使用，请参考 [NBT接口文档](zh_CN/Development/NbtAPI/NBT.md)
-
-<br>
 
 #### 设置玩家自定义侧边栏
 
@@ -498,47 +540,5 @@ pl.removeBossBar();
     要删除的物品数量
 - 返回值：是否成功删除
 - 返回值类型：`Boolean`
-
-<br>
-
-#### 为玩家增加一个Tag
-
-`pl.addTag(tag)`
-
-- 参数：
-  - tag: `String`  
-    要增加的tag字符串
-- 返回值：是否设置成功
-- 返回值类型：`Boolean`
-
-<br>
-
-#### 为玩家移除一个Tag
-
-`pl.removeTag(tag)`
-
-- 参数：
-  - tag: `String`  
-    要移除的tag字符串
-- 返回值：是否移除成功
-- 返回值类型：`Boolean`
-
-<br>
-
-#### 获取玩家拥有的所有Tag列表
-
-`pl.getAllTags()`
-
-- 返回值：玩家所有的 tag 字符串列表
-- 返回值类型：`Array<String,String,...>`
-
-<br>
-
-#### 获取玩家的Abilities能力列表
-
-`pl.getAbilities()`
-
-- 返回值：玩家所有能力信息的键 - 值对列表
-- 返回值类型：`object<String-任意类型>`
 
 <br>

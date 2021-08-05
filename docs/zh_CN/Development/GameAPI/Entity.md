@@ -7,9 +7,22 @@
 1. 通过注册**事件监听**函数，或者调用某些**返回实体对象**的函数，来获取到BDS给出的实体对象    
    详见 [事件监听文档 - EventAPI](zh_CN/Development/EventAPI/Listen.md)      
 
+2. 通过 **命名空间名称** 生成生物  
+   通过此函数，在指定的位置手动生成一个生物，并获取它对应的实体对象
    
-
-2. 注意：不要**长期保存**一个实体对象  
+   `mc.spawnMob(name,pos)`  
+   `mc.spawnMob(name,x,y,z,dimid)`
+   
+   - 参数：
+     - name : `String`  
+       生物的命名空间名称，如 `creeper`
+     - pos : `FloatPos`  
+       生成生物的坐标对象（或者使用x, y, z, dimid来确定生成位置）
+   - 返回值：生成的实体对象
+   - 返回值类型：`Entity`
+     - 如返回值为 `Null` 则表示生成失败
+   
+3. 注意：不要**长期保存**一个实体对象  
    当实体对象对应的实体被销毁时，对应的实体对象将变得无效。因此，如果有长期操作某个实体的需要，请通过上述途径获取实时的实体对象
 
 <br>
@@ -60,6 +73,39 @@
 
 <br>
 
+#### 为实体增加一个Tag
+
+`en.addTag(tag)`
+
+- 参数：
+  - tag: `String`  
+    要增加的tag字符串
+- 返回值：是否设置成功
+- 返回值类型：`Boolean`
+
+<br>
+
+#### 为实体移除一个Tag
+
+`en.removeTag(tag)`
+
+- 参数：
+  - tag: `String`  
+    要移除的tag字符串
+- 返回值：是否移除成功
+- 返回值类型：`Boolean`
+
+<br>
+
+#### 返回实体拥有的所有Tag列表
+
+`en.getAllTags()`
+
+- 返回值：实体所有的 tag 字符串列表
+- 返回值类型：`Array<String,String,...>`
+
+<br>
+
 #### 获取实体对应的NBT对象
 
 `en.getNbt()`
@@ -101,38 +147,5 @@
     着火时长，单位秒
 - 返回值：是否成功着火
 - 返回值类型：`Boolean`
-
-<br>
-
-#### 为实体增加一个Tag
-
-`en.addTag(tag)`
-
-- 参数：
-  - tag: `String`  
-    要增加的tag字符串
-- 返回值：是否设置成功
-- 返回值类型：`Boolean`
-
-<br>
-
-#### 为实体移除一个Tag
-
-`en.removeTag(tag)`
-
-- 参数：
-  - tag: `String`  
-    要移除的tag字符串
-- 返回值：是否移除成功
-- 返回值类型：`Boolean`
-
-<br>
-
-#### 返回实体拥有的所有Tag列表
-
-`en.getAllTags()`
-
-- 返回值：实体所有的 tag 字符串列表
-- 返回值类型：`Array<String,String,...>`
 
 <br>

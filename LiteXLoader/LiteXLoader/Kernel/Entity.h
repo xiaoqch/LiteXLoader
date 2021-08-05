@@ -2,6 +2,9 @@
 #include <string>
 #include <vector>
 
+class FloatVec4;
+Actor* Raw_SpawnMob(std::string name, const FloatVec4& pos);
+
 std::string Raw_GetEntityName(Actor* actor);
 std::string Raw_GetEntityTypeName(Actor* actor);
 int Raw_GetEntityTypeId(Actor* actor);
