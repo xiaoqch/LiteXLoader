@@ -39,13 +39,13 @@ using namespace script;
 enum class EVENT_TYPES : int
 {
     onPreJoin=0, onJoin, onLeft, onPlayerCmd, onChat, onPlayerDie, 
-    onRespawn, onChangeDim, onJump, onSneak, onAttack, onEat, onMove, onProjectileShoot, 
+    onRespawn, onChangeDim, onJump, onSneak, onAttack, onEat, onMove, onSpawnProjectile,
     onFireworkShootWithCrossbow, onSetArmor, onRide, onStepOnPressurePlate,
     onUseItem, onTakeItem, onDropItem, onUseItemOn, onInventoryChange,
     onStartDestroyBlock, onDestroyBlock, onWitherBossDestroy, onPlaceBlock, onBedExplode, onRespawnAnchorExplode,
     onOpenContainer, onCloseContainer, onContainerChange, onOpenContainerScreen, 
     onMobDie, onMobHurt, onExplode, onBlockExploded, onCmdBlockExecute, onRedStoneUpdate, onProjectileHitEntity,
-    onProjectileHitBlock, onSplashPotionHitEffect, onBlockInteracted, onUseRespawnAnchor, onFarmLandDecay, onUseFrameBlock,
+    onProjectileHitBlock, onBlockInteracted, onUseRespawnAnchor, onFarmLandDecay, onUseFrameBlock,
     onPistonPush, onHopperSearchItem, onHopperPushOut, onFireSpread, onFishingHookRetrieve,
     onScoreChanged, onServerStarted, onConsoleCmd, onFormSelected, onConsoleOutput,
     EVENT_COUNT
@@ -64,7 +64,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onAttack",EVENT_TYPES::onAttack},
     {"onEat",EVENT_TYPES::onEat},
     {"onMove",EVENT_TYPES::onMove},
-    {"onProjectileShoot",EVENT_TYPES::onProjectileShoot},
+    {"onSpawnProjectile",EVENT_TYPES::onSpawnProjectile},
     {"onFireworkShootWithCrossbow",EVENT_TYPES::onFireworkShootWithCrossbow},
     {"onSetArmor",EVENT_TYPES::onSetArmor},
     {"onRide",EVENT_TYPES::onRide},
@@ -93,7 +93,6 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onRedStoneUpdate",EVENT_TYPES::onRedStoneUpdate},
     {"onProjectileHitBlock",EVENT_TYPES::onProjectileHitBlock},
     {"onProjectileHitEntity",EVENT_TYPES::onProjectileHitEntity},
-    {"onSplashPotionHitEffect",EVENT_TYPES::onSplashPotionHitEffect},
     {"onBlockInteracted",EVENT_TYPES::onBlockInteracted},
     {"onUseRespawnAnchor",EVENT_TYPES::onUseRespawnAnchor},
     {"onFarmLandDecay",EVENT_TYPES::onFarmLandDecay},
@@ -461,19 +460,16 @@ THook(void, "?sendPlayerMove@PlayerEventCoordinator@@QEAAXAEAVPlayer@@@Z",
     return original(_this, pl);
 }
 
-// ===== onProjectileShoot =====
-THook(void, "?shoot@ProjectileComponent@@QEAAXAEAVActor@@AEBVVec3@@MM1PEAV2@@Z",
-    ProjectileComponent* _this, void* a2, Vec3* a3, float a4, float a5, Vec3* a6, Actor* a7)
+// ===== onSpawnProjectile =====
+THook(Actor*, "?spawnProjectile@Spawner@@QEAAPEAVActor@@AEAVBlockSource@@AEBUActorDefinitionIdentifier@@PEAV2@AEBVVec3@@3@Z",
+    void* _this, BlockSource* a2, ActorDefinitionIdentifier* a3, Actor* a4, Vec3* a5, Vec3* a6)
 {
-    IF_LISTENED(EVENT_TYPES::onProjectileShoot)
+    IF_LISTENED(EVENT_TYPES::onSpawnProjectile)
     {
-        auto uniqueId = (ActorUniqueID*)((uintptr_t)_this + 8);
-        auto shooter = Raw_GetEntityByUniqueId(*uniqueId);
-        auto projectiler = (Actor*)a2;
-        CallEventRtnVoid(EVENT_TYPES::onProjectileShoot, EntityClass::newEntity(shooter), EntityClass::newEntity(projectiler));
+        CallEventRtnValue(EVENT_TYPES::onSpawnProjectile, nullptr, EntityClass::newEntity(a4), String::newString(a3->fullname));
     }
     IF_LISTENED_END();
-    original(_this, a2, a3, a4, a5, a6, a7);
+    return original(_this, a2, a3, a4, a5, a6);
 }
 
 // ===== onFireworkShootWithCrossbow =====
@@ -963,19 +959,10 @@ THook(void, "?onRedstoneUpdate@ComparatorBlock@@UEBAXAEAVBlockSource@@AEBVBlockP
     return original(_this, bs, bp, level, isActive);
 }
 
-// ===== onSplashPotionHitEffect =====
+/* ==== = onSplashPotionHitEffect ==== =
 THook(void, "?doOnHitEffect@SplashPotionEffectSubcomponent@@UEAAXAEAVActor@@AEAVProjectileComponent@@@Z",
     void* _this, Actor* a2, ProjectileComponent* a3)
-{
-    IF_LISTENED(EVENT_TYPES::onSplashPotionHitEffect)
-    {
-        auto uniqueId = (ActorUniqueID*)((uintptr_t)a3 + 8);
-        auto ac = Raw_GetEntityByUniqueId(*uniqueId);
-        CallEventRtnVoid(EVENT_TYPES::onSplashPotionHitEffect, EntityClass::newEntity(a2), EntityClass::newEntity(ac));
-    }
-    IF_LISTENED_END();
-    original(_this, a2, a3);
-}
+*/
 
 // ===== onBlockInteracted =====
 THook(unsigned short, "?onBlockInteractedWith@VanillaServerGameplayEventListener@@UEAA?AW4EventResult@@AEAVPlayer@@AEBVBlockPos@@@Z",
