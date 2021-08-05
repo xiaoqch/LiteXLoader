@@ -8,7 +8,7 @@
    详见 [事件监听文档 - EventAPI](zh_CN/Development/EventAPI/Listen.md)      
 
 2. 通过 **命名空间名称** 生成生物  
-   通过此函数，在指定的位置手动生成一个生物，并获取它对应的实体对象
+   通过此函数，在指定的位置生成一个生物，并获取它对应的实体对象
    
    `mc.spawnMob(name,pos)`  
    `mc.spawnMob(name,x,y,z,dimid)`

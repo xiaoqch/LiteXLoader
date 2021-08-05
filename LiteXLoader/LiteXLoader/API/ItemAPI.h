@@ -41,4 +41,5 @@ public:
 };
 
 //////////////////// APIs ////////////////////
+Local<Value> NewItem(const Arguments& args);
 Local<Value> SpawnItem(const Arguments& args);

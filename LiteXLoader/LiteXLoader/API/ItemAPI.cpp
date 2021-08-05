@@ -175,6 +175,28 @@ Local<Value> ItemClass::setNbt(const Arguments& args)
     CATCH("Fail in setNbt!")
 }
 
+Local<Value> NewItem(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+    try {
+        Tag* nbt = NbtCompound::extractNBT(args[0]);
+        if (nbt)
+        {
+            ItemStack* item = Raw_NewItem(nbt);
+            if (!item)
+                return Local<Value>();    //Null
+            else
+                return ItemClass::newItem(item);
+        }
+        else
+        {
+            ERROR("Wrong type of argument in NewItem!");
+            return Local<Value>();
+        }
+    }
+    CATCH("Fail in NewItem!");
+}
+
 Local<Value> SpawnItem(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 2);
@@ -213,33 +235,22 @@ Local<Value> SpawnItem(const Arguments& args)
             return Local<Value>();
         }
 
-        Actor* entity = nullptr;
 
         ItemStack* it = ItemClass::extractItem(args[0]);
         if (it)
         {
             //By Item
-            entity = Raw_SpawnItemByItemStack(it, pos);
+            Actor* entity = Raw_SpawnItemByItemStack(it, pos);
+            if (!entity)
+                return Local<Value>();    //Null
+            else
+                return EntityClass::newEntity(entity);
         }
         else
         {
-            Tag* nbt = NbtCompound::extractNBT(args[0]);
-            if (nbt)
-            {
-                //By NBT
-                entity = Raw_SpawnItemByNBT(nbt, pos);
-            }
-            else
-            {
-                ERROR("Wrong type of argument in SpawnItem!");
-                return Local<Value>();
-            }
+            ERROR("Wrong type of argument in SpawnItem!");
+            return Local<Value>();
         }
-
-        if (!entity)
-            return Local<Value>();    //Null
-        else
-            return EntityClass::newEntity(entity);
     }
     CATCH("Fail in SpawnItem!");
 }

@@ -6,27 +6,7 @@
 #include <vector>
 using namespace std;
 
-class Spawner;
-Actor* Raw_SpawnItemByItemStack(ItemStack* item, const FloatVec4& pos)
-{
-    try
-    {
-        Spawner* sp = SymCall("?getSpawner@Level@@UEBAAEAVSpawner@@XZ", Spawner*, Level*)(mc->getLevel());
-
-        Vec3 vec{ pos.x,pos.y,pos.z };
-        Actor* ac = SymCall("?spawnItem@Spawner@@QEAAPEAVItemActor@@AEAVBlockSource@@AEBVItemStack@@PEAVActor@@AEBVVec3@@H@Z",
-            Actor*, Spawner * _this, BlockSource*, ItemStack*, Actor*, Vec3*, int)
-            (sp, Raw_GetBlockSourceByDim(pos.dim), item, nullptr, &vec, 0);
-
-        return ac;
-    }
-    catch (...)
-    {
-        return nullptr;
-    }
-}
-
-Actor* Raw_SpawnItemByNBT(Tag* tag, const FloatVec4& pos)
+ItemStack* Raw_NewItem(Tag* tag)
 {
     try
     {
@@ -34,6 +14,19 @@ Actor* Raw_SpawnItemByNBT(Tag* tag, const FloatVec4& pos)
         ItemStack* item = SymCall("??0ItemStack@@QEAA@XZ", ItemStack*, ItemStack*)((ItemStack*)a);
         tag->setItem(item);
 
+        return item;
+    }
+    catch (...)
+    {
+        return nullptr;
+    }
+}
+
+class Spawner;
+Actor* Raw_SpawnItemByItemStack(ItemStack* item, const FloatVec4& pos)
+{
+    try
+    {
         Spawner* sp = SymCall("?getSpawner@Level@@UEBAAEAVSpawner@@XZ", Spawner*, Level*)(mc->getLevel());
 
         Vec3 vec{ pos.x,pos.y,pos.z };

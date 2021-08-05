@@ -35,6 +35,7 @@ public:
     static Local<Value> getOnlinePlayers(const Arguments& args) { return GetOnlinePlayers(args); }
 
     static Local<Value> spawnMob(const Arguments& args) { return SpawnMob(args); }
+    static Local<Value> newItem(const Arguments& args) { return NewItem(args); }
     static Local<Value> spawnItem(const Arguments& args) { return SpawnItem(args); }
 
     static Local<Value> getBlock(const Arguments& args) { return GetBlock(args); }
@@ -68,6 +69,7 @@ static ClassDefine<void> McClassBuilder =
         .function("getPlayer", &McClass::getPlayer)
         .function("getOnlinePlayers", &McClass::getOnlinePlayers)
         .function("spawnMob", &McClass::spawnMob)
+        .function("newItem", &McClass::newItem)
         .function("spawnItem", &McClass::spawnItem)
         .function("getBlock", &McClass::getBlock)
         .function("setBlock", &McClass::setBlock)
