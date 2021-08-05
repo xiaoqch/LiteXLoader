@@ -50,6 +50,11 @@ map<string, Tag> &Tag::asCompound()
 	return *(map<string,Tag>*)((uintptr_t)this + 8);
 }
 
+TagMemoryChunk& Tag::asByteArray()
+{
+    return *(TagMemoryChunk*)((uintptr_t)this + 8);
+}
+
 Tag* Tag::createTag(TagType t)
 {
 	Tag* tag = 0;
@@ -69,44 +74,49 @@ char Tag::getTagType() {
     }
 }
 
-void Tag::put(string k, Tag* v) {
+void Tag::put(const std::string& k, Tag* v) {
 	return SymCall("?put@CompoundTag@@QEAAAEAVTag@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@$$QEAV2@@Z"
 		, void, void*, string, Tag*)(this, k, v);
 }
 
-void Tag::putShort(string k, short v) {
+void Tag::putShort(const std::string& k, short v) {
 	return SymCall("?putShort@CompoundTag@@QEAAAEAFV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@F@Z"
 		, void, void*, string, short)(this, k, v);
 }
 
-void Tag::putString(string k, string v) {
+void Tag::putString(const std::string& k, string v) {
 	return SymCall("?putString@CompoundTag@@QEAAAEAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V23@0@Z"
 		, void, void*, string, string)(this, k, v);
 }
 
-void Tag::putInt(string k, int v) {
+void Tag::putInt(const std::string& k, int v) {
 	return SymCall("?putInt@CompoundTag@@QEAAAEAHV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z"
 		, void, void*, string, int)(this, k, v);
 }
 
-void Tag::putLong(string k, __int64 v) {
+void Tag::putLong(const std::string& k, __int64 v) {
 	return SymCall("?putInt64@CompoundTag@@QEAAAEA_JV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@_J@Z",
 		void, void*, string, __int64)(this, k, v);
 }
 
-void Tag::putFloat(string k, float v) {
+void Tag::putFloat(const std::string& k, float v) {
 	return SymCall("?putFloat@CompoundTag@@QEAAAEAMV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@M@Z"
 		, void, void*, string, float)(this, k, v);
 }
 
-void Tag::putCompound(string k, Tag* v) {
+void Tag::putCompound(const std::string& k, Tag* v) {
     return SymCall("?putCompound@CompoundTag@@QEAAAEAV1@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V1@@Z",
         void, void*, string, Tag*)(this, k, v);
 }
 
-void Tag::putByte(string k, char v) {
+void Tag::putByte(const std::string& k, char v) {
 	return SymCall("?putByte@CompoundTag@@QEAAAEAEV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@E@Z"
 		, void, void*, string, char)(this, k, v);
+}
+
+void Tag::putByteArray(const string& key, const TagMemoryChunk& value) {
+    return SymCall("?putByteArray@CompoundTag@@QEAAAEAUTagMemoryChunk@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U2@@Z",
+        void, void*, string, const TagMemoryChunk&)(this, key, value);
 }
 
 void Tag::addValue2List(Tag* t) {
