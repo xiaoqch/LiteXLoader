@@ -46,7 +46,7 @@ enum class EVENT_TYPES : int
     onOpenContainer, onCloseContainer, onContainerChange, onOpenContainerScreen, 
     onMobDie, onMobHurt, onExplode, onBlockExploded, onCmdBlockExecute, onRedStoneUpdate, onProjectileHitEntity,
     onProjectileHitBlock, onBlockInteracted, onUseRespawnAnchor, onFarmLandDecay, onUseFrameBlock,
-    onPistonPush, onHopperSearchItem, onHopperPushOut, onFireSpread, onFishingHookRetrieve,
+    onPistonPush, onHopperSearchItem, onHopperPushOut, onFireSpread,
     onScoreChanged, onServerStarted, onConsoleCmd, onFormSelected, onConsoleOutput,
     EVENT_COUNT
 };
@@ -101,7 +101,6 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onHopperSearchItem",EVENT_TYPES::onHopperSearchItem},
     {"onHopperPushOut",EVENT_TYPES::onHopperPushOut},
     {"onFireSpread",EVENT_TYPES::onFireSpread},
-    {"onFishingHookRetrieve",EVENT_TYPES::onFishingHookRetrieve},
     {"onScoreChanged",EVENT_TYPES::onScoreChanged},
     {"onServerStarted",EVENT_TYPES::onServerStarted},
     {"onConsoleCmd",EVENT_TYPES::onConsoleCmd},
@@ -466,7 +465,8 @@ THook(Actor*, "?spawnProjectile@Spawner@@QEAAPEAVActor@@AEAVBlockSource@@AEBUAct
 {
     IF_LISTENED(EVENT_TYPES::onSpawnProjectile)
     {
-        CallEventRtnValue(EVENT_TYPES::onSpawnProjectile, nullptr, EntityClass::newEntity(a4), String::newString(a3->fullname));
+        string name = a3->fullname;
+        CallEventRtnValue(EVENT_TYPES::onSpawnProjectile, nullptr, EntityClass::newEntity(a4), String::newString(name.substr(0,name.length()-2)));
     }
     IF_LISTENED_END();
     return original(_this, a2, a3, a4, a5, a6);
@@ -1082,20 +1082,10 @@ THook(bool, "?_trySpawnBlueFire@FireBlock@@AEBA_NAEAVBlockSource@@AEBVBlockPos@@
     return original(_this, bs, bp);
 }
 
-// ===== onFishingHookRetrieve =====
-
+/* ==== = onFishingHookRetrieve ==== =
 THook(__int64, "?retrieve@FishingHook@@QEAAHXZ",
     FishingHook* _this)
-{
-    IF_LISTENED(EVENT_TYPES::onFishingHookRetrieve)
-    {
-        auto pl = (Player*)Raw_GetFishingHookOwner(_this);
-        auto fh = (Actor*)_this;
-        CallEventRtnValue(EVENT_TYPES::onFishingHookRetrieve, 0i64, PlayerClass::newPlayer(pl), EntityClass::newEntity(fh));
-    }
-    IF_LISTENED_END();
-    return original(_this);
-}
+*/
 
 // ===== onPlayerCmd & onConsoleCmd =====
 THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@VCommandContext@@@std@@_N@Z",
