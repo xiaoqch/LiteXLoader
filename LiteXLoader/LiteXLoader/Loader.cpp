@@ -102,5 +102,5 @@ void LoadMain()
                 ++count;
         }
     }
-    INFO(std::to_string(count) + " " + LXL_SCRIPT_LANG_TYPE + " plugins loaded in all.");
+    INFO(std::to_string(count) + " " + LXL_MODULE_TYPE + " plugins loaded in all.");
 }

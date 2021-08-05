@@ -22,6 +22,12 @@ struct RemoteEngineData
 	unsigned threadId;
 };
 
+//远程调用信息
+struct MessageSystemData
+{
+	unsigned threadId;
+};
+
 //全局共享数据
 struct GlobalDataType
 {
@@ -33,6 +39,10 @@ struct GlobalDataType
 
 	//远程调用信息
 	std::unordered_map<std::string, RemoteEngineData> remoteEngineList;
+
+	//模块消息队列
+	std::unordered_map<std::string, MessageSystemData> messageSystemList;
+	int messageSystemNextId = 0;
 };
 
 

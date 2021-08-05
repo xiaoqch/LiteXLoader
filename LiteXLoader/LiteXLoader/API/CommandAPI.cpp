@@ -139,7 +139,7 @@ Local<Value> SendCmdOutput(const Arguments& args)
 void RegisterBuiltinCmds()
 {
     //调试引擎
-    Raw_RegisterCmd(LXL_DEBUG_CMD, "LXL " + string(LXL_SCRIPT_LANG_TYPE) + " Engine Real-time Debugging", 4);
+    Raw_RegisterCmd(LXL_DEBUG_CMD, "LXL " + string(LXL_MODULE_TYPE) + " Engine Real-time Debugging", 4);
     
     //热管理
     Raw_RegisterCmd(LXL_HOT_LIST, "List current loaded LXL plugins", 4);
@@ -161,7 +161,7 @@ void ProcessRegCmdQueue()
 
 bool ProcessDebugEngine(const string& cmd)
 {
-#define OUTPUT_DEBUG_SIGN() std::cout << "LiteXLoader-" << LXL_SCRIPT_LANG_TYPE << ">" << std::flush
+#define OUTPUT_DEBUG_SIGN() std::cout << "LiteXLoader-" << LXL_MODULE_TYPE << ">" << std::flush
     extern bool globalDebug;
     extern ScriptEngine *debugEngine;
 

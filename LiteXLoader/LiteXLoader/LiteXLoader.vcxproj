@@ -59,6 +59,7 @@
     <ClCompile Include="BindAPIs.cpp" />
     <ClCompile Include="CheckNotice.cpp" />
     <ClCompile Include="Engine\LocalShareData.cpp" />
+    <ClCompile Include="Engine\MessageSystem.cpp" />
     <ClCompile Include="Kernel\Device.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Engine\GlobalShareData.cpp" />
@@ -113,6 +114,7 @@
     <ClInclude Include="Engine\EngineOwnData.h" />
     <ClInclude Include="Engine\LoaderHelper.h" />
     <ClInclude Include="Engine\LocalShareData.h" />
+    <ClInclude Include="Engine\MessageSystem.h" />
     <ClInclude Include="Engine\RemoteCall.h" />
     <ClInclude Include="Kernel\Base.h" />
     <ClInclude Include="Kernel\Block.h" />
@@ -398,6 +400,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>$(SolutionDir)third-party\LiteLoader\LiteLoader.lib;$(SolutionDir)third-party\ScriptX\lib\ScriptX-Lua.lib;$(SolutionDir)third-party\Lua\lib\lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y $(TargetPath) C:\Users\yqs11\Desktop\Minecraft\BDS\BDS-1.17\plugins
+echo 构建完毕</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Js|x64'">
     <ClCompile>
@@ -422,6 +428,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>$(SolutionDir)third-party\LiteLoader\LiteLoader.lib;$(SolutionDir)third-party\ScriptX\lib\ScriptX-Js.lib;$(SolutionDir)third-party\V8\lib\v8.lib;$(SolutionDir)third-party\V8\lib\v8_libbase.lib;$(SolutionDir)third-party\V8\lib\v8_libplatform.lib;$(SolutionDir)third-party\V8\lib\zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y $(TargetPath) C:\Users\yqs11\Desktop\Minecraft\BDS\BDS-1.17\plugins
+echo 构建完毕</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
