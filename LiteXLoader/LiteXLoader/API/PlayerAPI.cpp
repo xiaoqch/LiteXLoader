@@ -8,6 +8,7 @@
 #include <Engine/EngineOwnData.h>
 #include <Engine/GlobalShareData.h>
 #include <Kernel/Player.h>
+#include <Kernel/Device.h>
 #include <Kernel/Entity.h>
 #include <Kernel/Gui.h>
 #include <string>
@@ -28,7 +29,6 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceProperty("realName", &PlayerClass::getRealName)
         .instanceProperty("xuid", &PlayerClass::getXuid)
         .instanceProperty("uuid", &PlayerClass::getUuid)
-        .instanceProperty("ip", &PlayerClass::getIP)
         .instanceProperty("permLevel", &PlayerClass::getPermLevel)
         .instanceProperty("gameMode", &PlayerClass::getGameMode)
         .instanceProperty("maxHealth", &PlayerClass::getMaxHealth)
@@ -85,6 +85,7 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceFunction("getAllTags", &PlayerClass::getAllTags)
 
         //For Compatibility
+        .instanceProperty("ip", &PlayerClass::getIP)
         .instanceFunction("setTag", &PlayerClass::setNbt)
         .instanceFunction("getTag", &PlayerClass::getNbt)
         .build();

@@ -11,6 +11,7 @@ using namespace script;
 ClassDefine<DeviceClass> DeviceClassBuilder =
 	defineClass<DeviceClass>("LXL_Device")
 		.constructor(nullptr)
+        .instanceProperty("ip", &DeviceClass::getIP)
 		.instanceProperty("avgPing", &DeviceClass::getAvgPing)
 		.instanceProperty("avgPacketLoss", &DeviceClass::getAvgPacketLoss)
         .instanceProperty("os", &DeviceClass::getOs)
@@ -48,6 +49,17 @@ Player* DeviceClass::getPlayer()
         return Raw_GetPlayerByUniqueId(id);
 }
 
+Local<Value> DeviceClass::getIP()
+{
+    try {
+        Player* player = getPlayer();
+        if (!player)
+            return Local<Value>();
+
+        return String::newString(Raw_GetIP(player));
+    }
+    CATCH("Fail in GetIP!")
+}
 
 Local<Value> DeviceClass::getAvgPing()
 {

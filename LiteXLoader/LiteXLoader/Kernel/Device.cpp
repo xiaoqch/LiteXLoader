@@ -6,6 +6,11 @@ using namespace std;
 
 class NetworkHandler;
 
+string Raw_GetIP(Player* player)
+{
+    return liteloader::getIP(*offPlayer::getNetworkIdentifier(player));
+}
+
 int Raw_GetAvgPing(Player* player)
 {
     //########### fix here ###########

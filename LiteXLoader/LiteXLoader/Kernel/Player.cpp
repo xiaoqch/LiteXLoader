@@ -35,11 +35,6 @@ string  Raw_GetRealName(Player* player)
     return offPlayer::getRealName(player);
 }
 
-string  Raw_GetIP(Player* player)
-{
-    return liteloader::getIP(*offPlayer::getNetworkIdentifier(player));
-}
-
 int Raw_GetPlayerPermLevel(Player* player)
 {
     return (int)WPlayer(*player).getPermLvl();

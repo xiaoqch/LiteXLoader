@@ -30,7 +30,6 @@ public:
     Local<Value> getRealName();
     Local<Value> getXuid();
     Local<Value> getUuid();
-    Local<Value> getIP();
     Local<Value> getPermLevel();
     Local<Value> getGameMode();
     Local<Value> getMaxHealth();
@@ -82,6 +81,9 @@ public:
     Local<Value> addTag(const Arguments& args);
     Local<Value> removeTag(const Arguments& args);
     Local<Value> getAllTags(const Arguments& args);
+
+    //For Compatibility
+    Local<Value> getIP();
 };
 
 //////////////////// APIs ////////////////////
