@@ -247,13 +247,22 @@ bool LxlRemoveAllEventListeners(ScriptEngine* engine)
     return true;
 }
 
-bool LxlHotLoadRecallEvents(ScriptEngine* engine)
+bool LxlCallEventsOnHotLoad(ScriptEngine* engine)
 {
     FakeCallEvent(engine, EVENT_TYPES::onServerStarted);
 
     auto players = Raw_GetOnlinePlayers();
     for(auto &pl : players)
         FakeCallEvent(engine, EVENT_TYPES::onJoin, PlayerClass::newPlayer(pl));
+
+    return true;
+}
+
+bool LxlCallEventsOnHotUnload(ScriptEngine* engine)
+{
+    auto players = Raw_GetOnlinePlayers();
+    for (auto& pl : players)
+        FakeCallEvent(engine, EVENT_TYPES::onLeft, PlayerClass::newPlayer(pl));
 
     return true;
 }

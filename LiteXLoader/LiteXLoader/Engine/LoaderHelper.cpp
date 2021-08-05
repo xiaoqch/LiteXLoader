@@ -114,7 +114,7 @@ bool LxlLoadPlugin(const std::string& filePath, bool isHotLoad)
 
         AddToGlobalPluginsList(pluginName);
         if (isHotLoad)
-            LxlHotLoadRecallEvents(engine);
+            LxlCallEventsOnHotLoad(engine);
         INFO(pluginName + " loaded.");
         return true;
     }
@@ -161,6 +161,7 @@ string LxlUnloadPlugin(const std::string& name)
         {
             unloadedPath = ENGINE_GET_DATA(engine)->pluginPath;
 
+            LxlCallEventsOnHotUnload(engine);
             RemoveFromGlobalPluginsList(name);
             LxlRemoveAllEventListeners(engine);
             LxlRemoveCmdRegister(engine);
