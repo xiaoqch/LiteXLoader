@@ -686,7 +686,7 @@ THook(bool, "?mayPlace@BlockSource@@QEAA_NAEBVBlock@@AEBVBlockPos@@EPEAVActor@@_
         {
             CallEventRtnBool(EVENT_TYPES::onPlaceBlock, PlayerClass::newPlayer((Player*)a5), BlockClass::newBlock(a2, a3, _this));
         }
-        IF_LISTENDED_END();
+        IF_LISTENED_END();
     }
     return original(_this, a2, a3, a4, a5, a6);
 }
