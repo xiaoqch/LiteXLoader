@@ -387,7 +387,7 @@ Local<Value> SpawnMob(const Arguments& args)
         if (args.size() == 2)
         {
             // FloatPos
-            auto posObj = FloatPos::extractPos(args[0]);
+            auto posObj = FloatPos::extractPos(args[1]);
             if (posObj)
             {
                 if (posObj->dim < 0)

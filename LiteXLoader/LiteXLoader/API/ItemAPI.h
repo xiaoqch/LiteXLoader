@@ -39,3 +39,6 @@ public:
     Local<Value> setNbt(const Arguments& args);
 
 };
+
+//////////////////// APIs ////////////////////
+Local<Value> SpawnItem(const Arguments& args);

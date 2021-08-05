@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include "Player.h"
 #include "SymbolHelper.h"
+#include "NBT.h"
 #include <string>
 #include <vector>
 using namespace std;

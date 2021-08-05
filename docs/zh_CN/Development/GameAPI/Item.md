@@ -69,6 +69,42 @@
 
 <br>
 
+#### 根据现有物品对象生成一个同样的掉落物实体
+
+通过此函数，根据现有的物品对象，在指定的位置生成一个同样内容的掉落物
+
+`mc.spawnItem(item,pos)`    
+`mc.spawnItem(item,x,y,z,dimid)`  
+
+- 参数：
+  - item : `Item`  
+    生成掉落物实体所使用的 现有的物品对象
+  - pos : `FloatPos`  
+    生成掉落物实体的位置的坐标对象（或者使用x, y, z, dimid来确定生成位置）
+- 返回值：生成的掉落物实体对象
+- 返回值类型：`Entity`
+  - 如返回值为 `Null` 则表示生成失败
+
+<br>
+
+#### 使用NBT生成一个掉落物实体
+
+通过此函数，根据NBT在指定的位置生成一个掉落物
+
+`mc.spawnItem(nbt,pos)`    
+`mc.spawnItem(nbt,x,y,z,dimid)`  
+
+- 参数：
+  - nbt : `NbtCompound`  
+    生成掉落物实体所使用的物品NBT
+  - pos : `FloatPos`  
+    生成掉落物实体的位置的坐标对象（或者使用x, y, z, dimid来确定生成位置）
+- 返回值：生成的掉落物实体对象
+- 返回值类型：`Entity`
+  - 如返回值为 `Null` 则表示生成失败
+
+<br>
+
 #### 设置自定义Lore
 
 `it.setLore(names)`

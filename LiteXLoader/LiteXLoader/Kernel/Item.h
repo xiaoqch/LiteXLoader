@@ -1,6 +1,13 @@
 #include <string>
 #include <vector>
 
+class Actor;
+class Tag;
+class FloatVec4;
+
+Actor* Raw_SpawnItemByItemStack(ItemStack* item, const FloatVec4& pos);
+Actor* Raw_SpawnItemByNBT(Tag* tag, const FloatVec4& pos);
+
 std::string Raw_GetItemName(ItemStack* item);
 std::string Raw_GetCustomName(ItemStack* item);
 std::string Raw_GetItemTypeName(ItemStack* item);

@@ -1,5 +1,7 @@
 #include "APIHelp.h"
+#include "BaseAPI.h"
 #include "ItemAPI.h"
+#include "EntityAPI.h"
 #include <Kernel/Item.h>
 #include "NbtAPI.h"
 #include <Kernel/NBT.h>
@@ -171,4 +173,73 @@ Local<Value> ItemClass::setNbt(const Arguments& args)
         return Boolean::newBoolean(true);
     }
     CATCH("Fail in setNbt!")
+}
+
+Local<Value> SpawnItem(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 2);
+
+    try {
+        FloatVec4 pos;
+        if (args.size() == 2)
+        {
+            // FloatPos
+            auto posObj = FloatPos::extractPos(args[1]);
+            if (posObj)
+            {
+                if (posObj->dim < 0)
+                    return Local<Value>();
+                else
+                    pos = *posObj;
+            }
+            else
+            {
+                ERROR("Wrong type of argument in SpawnItem!");
+                return Local<Value>();
+            }
+        }
+        else if (args.size() == 5)
+        {
+            // Number Pos
+            CHECK_ARG_TYPE(args[1], ValueKind::kNumber);
+            CHECK_ARG_TYPE(args[2], ValueKind::kNumber);
+            CHECK_ARG_TYPE(args[3], ValueKind::kNumber);
+            CHECK_ARG_TYPE(args[4], ValueKind::kNumber);
+            pos = { args[1].asNumber().toFloat(), args[2].asNumber().toFloat(), args[3].asNumber().toFloat(), args[4].toInt() };
+        }
+        else
+        {
+            ERROR("Wrong number of arguments in SpawnItem!");
+            return Local<Value>();
+        }
+
+        Actor* entity = nullptr;
+
+        ItemStack* it = ItemClass::extractItem(args[0]);
+        if (it)
+        {
+            //By Item
+            entity = Raw_SpawnItemByItemStack(it, pos);
+        }
+        else
+        {
+            Tag* nbt = NbtCompound::extractNBT(args[0]);
+            if (nbt)
+            {
+                //By NBT
+                entity = Raw_SpawnItemByNBT(nbt, pos);
+            }
+            else
+            {
+                ERROR("Wrong type of argument in SpawnItem!");
+                return Local<Value>();
+            }
+        }
+
+        if (!entity)
+            return Local<Value>();    //Null
+        else
+            return EntityClass::newEntity(entity);
+    }
+    CATCH("Fail in SpawnItem!");
 }
