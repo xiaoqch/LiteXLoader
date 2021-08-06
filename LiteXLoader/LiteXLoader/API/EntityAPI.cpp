@@ -2,6 +2,7 @@
 #include "BaseAPI.h"
 #include "EntityAPI.h"
 #include "PlayerAPI.h"
+#include "ContainerAPI.h"
 #include "NbtAPI.h"
 #include <Kernel/Entity.h>
 using namespace script;
@@ -24,9 +25,10 @@ ClassDefine<EntityClass> EntityClassBuilder =
 
         .instanceFunction("teleport", &EntityClass::teleport)
         .instanceFunction("kill", &EntityClass::kill)
+        .instanceFunction("setOnFire", &EntityClass::setOnFire)
         .instanceFunction("isPlayer", &EntityClass::isPlayer)
         .instanceFunction("toPlayer", &EntityClass::toPlayer)
-        .instanceFunction("setOnFire",&EntityClass::setOnFire)
+        .instanceFunction("getArmor", &EntityClass::getArmor)
         .instanceFunction("setNbt", &EntityClass::setNbt)
         .instanceFunction("getNbt", &EntityClass::getNbt)
         .instanceFunction("addTag", &EntityClass::addTag)
@@ -281,6 +283,18 @@ Local<Value> EntityClass::toPlayer(const Arguments& args)
             return PlayerClass::newPlayer(pl);
     }
     CATCH("Fail in toPlayer!")
+}
+
+Local<Value> EntityClass::getArmor(const Arguments& args)
+{
+    try {
+        Actor* entity = get();
+        if (!entity)
+            return Local<Value>();
+
+        return ContainerClass::newContainer(Raw_GetArmor(entity));
+    }
+    CATCH("Fail in getArmor!");
 }
 
 Local<Value> EntityClass::setOnFire(const Arguments& args)

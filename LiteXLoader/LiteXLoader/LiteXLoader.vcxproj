@@ -39,6 +39,7 @@
     <ClCompile Include="API\BaseAPI.cpp" />
     <ClCompile Include="API\BlockAPI.cpp" />
     <ClCompile Include="API\CommandAPI.cpp" />
+    <ClCompile Include="API\ContainerAPI.cpp" />
     <ClCompile Include="API\DataAPI.cpp" />
     <ClCompile Include="API\DeviceAPI.cpp" />
     <ClCompile Include="API\EntityAPI.cpp" />
@@ -61,6 +62,7 @@
     <ClCompile Include="Engine\LocalShareData.cpp" />
     <ClCompile Include="Engine\MessageSystem.cpp" />
     <ClCompile Include="Engine\PluginHotManage.cpp" />
+    <ClCompile Include="Kernel\Container.cpp" />
     <ClCompile Include="Kernel\Device.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Engine\GlobalShareData.cpp" />
@@ -90,6 +92,7 @@
     <ClInclude Include="API\BaseAPI.h" />
     <ClInclude Include="API\BlockAPI.h" />
     <ClInclude Include="API\CommandAPI.h" />
+    <ClInclude Include="API\ContainerAPI.h" />
     <ClInclude Include="API\DataAPI.h" />
     <ClInclude Include="API\DeviceAPI.h" />
     <ClInclude Include="API\EntityAPI.h" />
@@ -120,6 +123,7 @@
     <ClInclude Include="Engine\RemoteCall.h" />
     <ClInclude Include="Kernel\Base.h" />
     <ClInclude Include="Kernel\Block.h" />
+    <ClInclude Include="Kernel\Container.h" />
     <ClInclude Include="Kernel\Data.h" />
     <ClInclude Include="Kernel\Device.h" />
     <ClInclude Include="Kernel\Entity.h" />

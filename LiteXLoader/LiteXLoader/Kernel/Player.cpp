@@ -113,40 +113,25 @@ ItemStack* Raw_GetHand(Player* player)
     return (ItemStack*)&(player->getSelectedItem());
 }
 
-Container* Raw_GetContainer(Player* pl)
+ItemStack* Raw_GetOffHand(Player* player)
+{
+    return SymCall("?getOffhandSlot@Actor@@QEBAAEBVItemStack@@XZ", ItemStack*, Player*)(player);
+}
+
+Container* Raw_GetInventory(Player* pl)
 {
     return SymCall("?getInventory@Player@@QEAAAEAVContainer@@XZ", Container*, 
         Player*)(pl);
 }
 
-bool Raw_GetAllItems(Player* player, ItemStack** hand, ItemStack** offHand, vector<ItemStack*>* inventory,
-    vector<ItemStack*>* armor, vector<ItemStack*>* endChest)
+Container* Raw_GetArmor(Player* pl)
 {
-    //Hand
-    *hand = (ItemStack*)&(player->getSelectedItem());
+    return Raw_GetArmor((Actor*)pl);
+}
 
-    //OffHand
-    *offHand = SymCall("?getOffhandSlot@Actor@@QEBAAEBVItemStack@@XZ", ItemStack*, Player*)(player);
-
-    //Inventory
-    auto container = Raw_GetContainer(player);
-    auto slot = container->getSlots();
-    for (auto& item : slot)
-        inventory->push_back((ItemStack*)item);
-    
-    //Armor
-    container = dAccess<Container*>(player, 1648);
-    slot = container->getSlots();
-    for (auto& item : slot)
-        armor->push_back((ItemStack*)item);
-
-    //EndChest
-    container = dAccess<Container*>(player, 4360);
-    slot = container->getSlots();
-    for (auto& item : slot)
-        armor->push_back((ItemStack*)item);
-
-    return true;
+Container* Raw_GetEnderChest(Player* pl)
+{
+    return dAccess<Container*>(pl, 4360);       //IDA ReplaceItemCommand::execute 1086 
 }
 
 bool Raw_RenamePlayer(Player* player, const string &name)
@@ -285,14 +270,5 @@ Player* Raw_GetPlayerByUniqueId(ActorUniqueID id) {
 bool Raw_RefreshInventory(Player* pl) {
     SymCall("?sendInventory@ServerPlayer@@UEAAX_N@Z", void,
         ServerPlayer*, bool)((ServerPlayer*)pl, true);
-    return true;
-}
-
-bool Raw_RemoveItem(Player* pl, int inventoryId, int count) {
-    
-    auto container = Raw_GetContainer(pl);
-    SymCall("?removeItem@Container@@UEAAXHH@Z", void,
-        Container*, unsigned int, int)(container, inventoryId, count);
-    Raw_RefreshInventory(pl);
     return true;
 }

@@ -3,6 +3,8 @@
 #include <vector>
 
 class FloatVec4;
+class Actor;
+class Container;
 Actor* Raw_SpawnMob(std::string name, const FloatVec4& pos);
 
 std::string Raw_GetEntityName(Actor* actor);
@@ -16,8 +18,10 @@ bool Raw_GetIsInAir(Actor *actor);
 bool Raw_TeleportEntity(Actor* actor, const FloatVec4 &pos);
 bool Raw_KillEntity(Actor* actor);
 bool Raw_SetOnFire(Actor* actor,int time);
+
 bool Raw_IsPlayer(Actor* actor);
 Player* Raw_ToPlayer(Actor* actor);
+Container* Raw_GetArmor(Actor* ac);
 
 int Raw_GetEntityDimId(Actor* actor);
 Actor* Raw_GetEntityByUniqueId(ActorUniqueID id);

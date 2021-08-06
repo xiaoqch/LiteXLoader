@@ -215,7 +215,10 @@ Local<Value> GetBlock(const Arguments& args)
 
         auto block = Raw_GetBlockByPos(&pos);
         if (!block)
-            return Local<Value>();    //Null
+        {
+            ERROR("Wrong type of argument in SetBlock!");
+            return Local<Value>();
+        }
         else
         {
             BlockPos bp{ pos.x,pos.y,pos.z };
@@ -281,7 +284,10 @@ Local<Value> SetBlock(const Arguments& args)
             //其他方块对象
             Block* bl = BlockClass::extractBlock(block);
             if (!bl)
+            {
+                ERROR("Wrong type of argument in SetBlock!");
                 return Local<Value>();
+            }
             return Boolean::newBoolean(Raw_SetBlockByBlock(pos, bl));
         }
     }

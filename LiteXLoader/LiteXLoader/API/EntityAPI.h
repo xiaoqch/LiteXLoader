@@ -36,9 +36,12 @@ public:
 
     Local<Value> teleport(const Arguments& args);
     Local<Value> kill(const Arguments& args);
+    Local<Value> setOnFire(const Arguments& args);
+
     Local<Value> isPlayer(const Arguments& args);
     Local<Value> toPlayer(const Arguments& args);
-    Local<Value> setOnFire(const Arguments& args);
+    Local<Value> getArmor(const Arguments& args);
+    
     
     Local<Value> getNbt(const Arguments& args);
     Local<Value> setNbt(const Arguments& args);

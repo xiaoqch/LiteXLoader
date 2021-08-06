@@ -32,7 +32,7 @@ bool Raw_RemoveItem(Container* container, int slot, int number)
 ItemStack* Raw_GetSlot(Container* container, int slot)
 {
 	if (slot > Raw_GetContainerSize(container))
-		return false;
+		return nullptr;
 	auto list = Raw_GetAllSlots(container);
 	return list[slot];
 }

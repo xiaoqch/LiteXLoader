@@ -80,18 +80,6 @@
 
 每一个玩家对象都包含一些可以执行的成员函数（成员方法）。对于某个特定的玩家对象`pl`，可以通过以下这些函数对这个玩家进行一些操作
 
-#### 获取玩家对应的设备信息对象
-
-`pl.getDevice()`
-
-- 返回值：玩家对应的设备信息对象
-- 返回值类型：`Device`
-
-设备信息对象储存了与玩家设备有关的某些信息，如设备IP地址、设备类型、网络延迟等信息。  
-关于设备信息对象的其他信息请参考 [设备信息对象 API](zh_CN/Development/GameAPI/Device.md)
-
-<br>
-
 #### 判断玩家是否为OP  
 
 `pl.isOP()`
@@ -272,6 +260,18 @@ pl.rename("newname");
 
 ```
 
+#### 获取玩家对应的设备信息对象
+
+`pl.getDevice()`
+
+- 返回值：玩家对应的设备信息对象
+- 返回值类型：`Device`
+
+设备信息对象储存了与玩家设备有关的某些信息，如设备IP地址、设备类型、网络延迟等信息。  
+关于设备信息对象的其他信息请参考 [设备信息对象 API](zh_CN/Development/GameAPI/Device.md)
+
+<br>
+
 #### 获取玩家主手中的物品对象
 
 `pl.getHand()`
@@ -279,12 +279,20 @@ pl.rename("newname");
 - 返回值：玩家主手中的物品对象
 - 返回值类型：`Item`
 
+此处获取的物品对象为引用。也就是说，修改此处返回的物品对象，或使用其API，就相当于直接操作玩家主手中对应的物品
+
+<br>
+
 #### 获取玩家副手的物品对象
 
 `pl.getOffHand()`
 
 - 返回值：玩家副手中的物品对象
 - 返回值类型：`Item`
+
+此处获取的物品对象为引用。也就是说，修改此处返回的物品对象，或使用其API，就相当于直接操作玩家副手中对应的物品
+
+<br>
 
 #### 获取玩家物品栏的容器对象  
 
@@ -295,6 +303,8 @@ pl.rename("newname");
 
 关于容器对象的更多使用，请参考 [容器对象 API文档](zh_CN/Development/GameAPI/Container.md)
 
+<br>
+
 #### 获取玩家盔甲栏的容器对象  
 
 `pl.getArmor()`
@@ -304,14 +314,18 @@ pl.rename("newname");
 
 关于容器对象的更多使用，请参考 [容器对象 API文档](zh_CN/Development/GameAPI/Container.md)
 
+<br>
+
 #### 获取玩家末影箱的容器对象  
 
-`pl.getArmor()`
+`pl.getEnderChest()`
 
 - 返回值：玩家末影箱对应的容器对象
 - 返回值类型：`Container`
 
 关于容器对象的更多使用，请参考 [容器对象 API文档](zh_CN/Development/GameAPI/Container.md)
+
+<br>
 
 #### 修改玩家操作权限  
 
@@ -491,21 +505,6 @@ pl.removeBossBar();
 [Lua]
 
 ```
-
-#### 删除玩家背包中的物品  
-
-`pl.removeItem(inventoryId,count)`
-
-- 参数：
-  - inventoryId : `Integer`  
-    背包格位ID  
-
-  - count : `Integer`  
-    要删除的物品数量
-- 返回值：是否成功删除
-- 返回值类型：`Boolean`
-
-<br>
 
 #### 获取玩家对应的NBT对象
 

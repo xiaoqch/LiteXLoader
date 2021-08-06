@@ -2,6 +2,7 @@
 #include "BaseAPI.h"
 #include "DeviceAPI.h"
 #include "PlayerAPI.h"
+#include "ContainerAPI.h"
 #include "ItemAPI.h"
 #include "GuiAPI.h"
 #include "NbtAPI.h"
@@ -9,6 +10,7 @@
 #include <Engine/GlobalShareData.h>
 #include <Kernel/Player.h>
 #include <Kernel/Device.h>
+#include <Kernel/Container.h>
 #include <Kernel/Entity.h>
 #include <Kernel/Gui.h>
 #include <string>
@@ -49,16 +51,19 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceFunction("disconnect", &PlayerClass::kick)
         .instanceFunction("tell", &PlayerClass::tell)
         .instanceFunction("sendText", &PlayerClass::tell)
-        .instanceFunction("getHand", &PlayerClass::getHand)
-        .instanceFunction("getAllItems", &PlayerClass::getAllItems)
         .instanceFunction("rename", &PlayerClass::rename)
         .instanceFunction("addLevel", &PlayerClass::addLevel)
         .instanceFunction("setOnFire", &PlayerClass::setOnFire)
         .instanceFunction("transServer", &PlayerClass::transServer)
         .instanceFunction("crash", &PlayerClass::crash)
         .instanceFunction("setOnFire", &PlayerClass::setOnFire)
+
         .instanceFunction("getDevice", &PlayerClass::getDevice)
-        .instanceFunction("removeItem", &PlayerClass::removeItem)
+        .instanceFunction("getHand", &PlayerClass::getHand)
+        .instanceFunction("getOffHand", &PlayerClass::getOffHand)
+        .instanceFunction("getInventory", &PlayerClass::getInventory)
+        .instanceFunction("getArmor", &PlayerClass::getArmor)
+        .instanceFunction("getEnderChest", &PlayerClass::getEnderChest)
 
         .instanceFunction("getScore", &PlayerClass::getScore)
         .instanceFunction("setScore", &PlayerClass::setScore)
@@ -90,6 +95,8 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceProperty("ip", &PlayerClass::getIP)
         .instanceFunction("setTag", &PlayerClass::setNbt)
         .instanceFunction("getTag", &PlayerClass::getNbt)
+        .instanceFunction("removeItem", &PlayerClass::removeItem)
+        .instanceFunction("getAllItems", &PlayerClass::getAllItems)
         .build();
 
 
@@ -437,8 +444,8 @@ Local<Value> PlayerClass::isOP(const Arguments& args)
 
 Local<Value> PlayerClass::setPermLevel(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args,1)
-    CHECK_ARG_TYPE(args[0],ValueKind::kNumber)
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
     
     try{
         Player* player = get();
@@ -451,13 +458,13 @@ Local<Value> PlayerClass::setPermLevel(const Arguments& args)
             res = Raw_SetPlayerPermLevel(player,newPerm);
         return Boolean::newBoolean(res);
     }
-    CATCH("Fail in setPlayerPermLevel!")
+    CATCH("Fail in setPlayerPermLevel!");
 }
 
 Local<Value> PlayerClass::setGameMode(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 1)
-    CHECK_ARG_TYPE(args[0], ValueKind::kNumber)
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
 
     try {
         Player* player = get();
@@ -470,13 +477,13 @@ Local<Value> PlayerClass::setGameMode(const Arguments& args)
             res = Raw_SetGameMode(player, newMode);
         return Boolean::newBoolean(res);
     }
-    CATCH("Fail in setGameMode!")
+    CATCH("Fail in setGameMode!");
 }
 
 Local<Value> PlayerClass::runcmd(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args,1)
-    CHECK_ARG_TYPE(args[0],ValueKind::kString)
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
     
     try{
         Player* player = get();
@@ -488,7 +495,7 @@ Local<Value> PlayerClass::runcmd(const Arguments& args)
             cmd.erase(0, 1);
         return Boolean::newBoolean(Raw_RuncmdAs(player,cmd));
     }
-    CATCH("Fail in runcmd!")
+    CATCH("Fail in runcmd!");
 }
 
 Local<Value> PlayerClass::kick(const Arguments& args)
@@ -507,13 +514,13 @@ Local<Value> PlayerClass::kick(const Arguments& args)
         
         return Boolean::newBoolean(Raw_KickPlayer(player,msg));
     }
-    CATCH("Fail in kickPlayer!")
+    CATCH("Fail in kickPlayer!");
 }
 
 Local<Value> PlayerClass::tell(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args,1)
-    CHECK_ARG_TYPE(args[0],ValueKind::kString)
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
 
     try{
         Player* player = get();
@@ -529,7 +536,7 @@ Local<Value> PlayerClass::tell(const Arguments& args)
         }
         return Boolean::newBoolean(Raw_Tell(player,args[0].toStr(),type));
     }
-    CATCH("Fail in tell!")
+    CATCH("Fail in tell!");
 }
 
 Local<Value> PlayerClass::getHand(const Arguments& args)
@@ -541,62 +548,57 @@ Local<Value> PlayerClass::getHand(const Arguments& args)
 
         return ItemClass::newItem(Raw_GetHand(player));
     }
-    CATCH("Fail in getHand!")
+    CATCH("Fail in getHand!");
 }
 
-Local<Value> PlayerClass::getAllItems(const Arguments& args)
+Local<Value> PlayerClass::getOffHand(const Arguments& args)
 {
-    try{
+    try {
         Player* player = get();
         if (!player)
             return Local<Value>();
 
-        ItemStack* hand;
-        ItemStack* offHand;
-        vector<ItemStack*> inventory;
-        vector<ItemStack*> armor;
-        vector<ItemStack*> endChest;
-
-        if (!Raw_GetAllItems(player, &hand, &offHand, &inventory, &armor, &endChest))
-        {
-            return Local<Value>();
-        }
-        Local<Object> result = Object::newObject();
-        
-        //hand
-        result.set("hand", ItemClass::newItem(hand));
-
-        //offHand
-        result.set("offHand", ItemClass::newItem(offHand));
-
-        //inventory
-        Local<Array> inventoryArr = Array::newArray();
-        for(ItemStack* item : inventory)
-        {
-            inventoryArr.add(ItemClass::newItem(item));
-        }
-        result.set("inventory", inventoryArr);
-
-        //armor
-        Local<Array> armorArr = Array::newArray();
-        for (ItemStack* item : armor)
-        {
-            armorArr.add(ItemClass::newItem(item));
-        }
-        result.set("armor", armorArr);
-
-        //endChest
-        Local<Array> endChestArr = Array::newArray();
-        for (ItemStack* item : endChest)
-        {
-            endChestArr.add(ItemClass::newItem(item));
-        }
-        result.set("endChest", endChestArr);
-
-        return result;
+        return ItemClass::newItem(Raw_GetOffHand(player));
     }
-    CATCH("Fail in getAllItems!")
+    CATCH("Fail in getOffHand!");
 }
+
+Local<Value> PlayerClass::getInventory(const Arguments& args)
+{
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        return ContainerClass::newContainer(Raw_GetInventory(player));
+    }
+    CATCH("Fail in getInventory!");
+}
+
+Local<Value> PlayerClass::getArmor(const Arguments& args)
+{
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        return ContainerClass::newContainer(Raw_GetArmor(player));
+    }
+    CATCH("Fail in getArmor!");
+}
+
+Local<Value> PlayerClass::getEnderChest(const Arguments& args)
+{
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        return ContainerClass::newContainer(Raw_GetEnderChest(player));
+    }
+    CATCH("Fail in getEnderChest!");
+}
+
 
 Local<Value> PlayerClass::rename(const Arguments& args)
 {
@@ -666,23 +668,6 @@ Local<Value> PlayerClass::getDevice(const Arguments& args)
         return DeviceClass::newDevice(player);
     }
     CATCH("Fail in getDevice!")
-}
-
-Local<Value> PlayerClass::removeItem(const Arguments& args)
-{
-    CHECK_ARGS_COUNT(args, 2);
-    try {
-        Player* player = get();
-        if (!player)
-            return Local<Value>();
-
-        int inventoryId = args[0].toInt();
-        int count = args[1].toInt();
-
-        bool result = Raw_RemoveItem(player, inventoryId, count);
-        return Boolean::newBoolean(result);
-    }
-    CATCH("Fail in removeItem!")
 }
 
 Local<Value> PlayerClass::getScore(const Arguments& args)
@@ -1155,4 +1140,74 @@ Local<Value> PlayerClass::getAttributes(const Arguments& args)
         }
     }
     CATCH("Fail in getAttributes!");
+}
+
+
+//////////////////// For Compatibility ////////////////////
+
+Local<Value> PlayerClass::getAllItems(const Arguments& args)
+{
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        ItemStack* hand = Raw_GetHand(player);
+        ItemStack* offHand = Raw_GetOffHand(player);
+        vector<ItemStack*> inventory = Raw_GetAllSlots(Raw_GetInventory(player));
+        vector<ItemStack*> armor = Raw_GetAllSlots(Raw_GetArmor(player));
+        vector<ItemStack*> endChest = Raw_GetAllSlots(Raw_GetEnderChest(player));
+
+        Local<Object> result = Object::newObject();
+
+        //hand
+        result.set("hand", ItemClass::newItem(hand));
+
+        //offHand
+        result.set("offHand", ItemClass::newItem(offHand));
+
+        //inventory
+        Local<Array> inventoryArr = Array::newArray();
+        for (ItemStack* item : inventory)
+        {
+            inventoryArr.add(ItemClass::newItem(item));
+        }
+        result.set("inventory", inventoryArr);
+
+        //armor
+        Local<Array> armorArr = Array::newArray();
+        for (ItemStack* item : armor)
+        {
+            armorArr.add(ItemClass::newItem(item));
+        }
+        result.set("armor", armorArr);
+
+        //endChest
+        Local<Array> endChestArr = Array::newArray();
+        for (ItemStack* item : endChest)
+        {
+            endChestArr.add(ItemClass::newItem(item));
+        }
+        result.set("endChest", endChestArr);
+
+        return result;
+    }
+    CATCH("Fail in getAllItems!")
+}
+
+Local<Value> PlayerClass::removeItem(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 2);
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        int inventoryId = args[0].toInt();
+        int count = args[1].toInt();
+
+        bool result = Raw_RemoveItem(Raw_GetInventory(player), inventoryId, count);
+        return Boolean::newBoolean(result);
+    }
+    CATCH("Fail in removeItem!")
 }

@@ -5,6 +5,7 @@ using namespace script;
 #include <API/CommandAPI.h>
 #include <API/DeviceAPI.h>
 #include <API/ItemAPI.h>
+#include <API/ContainerAPI.h>
 #include <API/EntityAPI.h>
 #include <API/NbtAPI.h>
 #include <API/GuiAPI.h>
@@ -67,6 +68,9 @@ void BindAPIs(ScriptEngine *engine)
 
     extern ClassDefine<DeviceClass> DeviceClassBuilder;
     engine->registerNativeClass<DeviceClass>(DeviceClassBuilder);
+
+    extern ClassDefine<ContainerClass> ContainerClassBuilder;
+    engine->registerNativeClass<ContainerClass>(ContainerClassBuilder);
 
     extern ClassDefine<EntityClass> EntityClassBuilder;
     engine->registerNativeClass<EntityClass>(EntityClassBuilder);

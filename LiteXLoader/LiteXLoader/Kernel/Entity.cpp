@@ -106,6 +106,11 @@ Player* Raw_ToPlayer(Actor* actor)
     return Raw_IsPlayer(actor) ? (Player*)actor : nullptr;
 }
 
+Container* Raw_GetArmor(Actor* ac)
+{
+    return SymCall("?getArmorContainer@Actor@@QEBAAEBVSimpleContainer@@XZ", Container*, Actor*)(ac);
+}
+
 int Raw_GetEntityDimId(Actor* actor)
 {
     return WActor(*actor).getDimID();

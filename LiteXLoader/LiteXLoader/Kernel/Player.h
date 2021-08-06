@@ -1,6 +1,10 @@
 #include <string>
 #include <vector>
 
+class Player;
+class Container;
+class ItemStack;
+
 std::string Raw_GetPlayerName(Player* player);
 FloatVec4 Raw_GetPlayerPos(Player* player);
 std::string Raw_GetXuid(Player* player);
@@ -19,13 +23,16 @@ bool Raw_SetGameMode(Player* player, int gameMode);
 bool Raw_KickPlayer(Player* player, const std::string &msg);
 bool Raw_Tell(Player* player, const std::string &text, TextType type = TextType::RAW);
 bool Raw_Broadcast(const std::string& text, TextType type = TextType::RAW);
-ItemStack* Raw_GetHand(Player* player);
-bool Raw_GetAllItems(Player* player, ItemStack** hand, ItemStack** offHand, std::vector<ItemStack*>* inventory,
-    std::vector<ItemStack*>* armor, std::vector<ItemStack*>* endChest);
 bool Raw_RenamePlayer(Player* player, const std::string &name);
 bool Raw_AddLevel(Player* player, int level);
 bool Raw_TransServer(Player* player, const std::string& server, short port);
 bool Raw_CrashPlayer(Player* player);
+
+ItemStack* Raw_GetHand(Player* player);
+ItemStack* Raw_GetOffHand(Player* player);
+Container* Raw_GetInventory(Player* pl);
+Container* Raw_GetArmor(Player* pl);
+Container* Raw_GetEnderChest(Player* pl);
 
 int Raw_GetScore(Player* player, const std::string &key);
 bool Raw_SetScore(Player* player, const std::string &key, int value);
@@ -42,4 +49,3 @@ bool Raw_IsPlayerValid(Player *player);
 int Raw_GetPlayerDimId(Player* player);
 Player* Raw_GetPlayerByUniqueId(ActorUniqueID id);
 bool Raw_RefreshInventory(Player* pl);
-bool Raw_RemoveItem(Player* pl, int inventoryId, int count);

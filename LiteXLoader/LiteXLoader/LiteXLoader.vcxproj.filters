@@ -169,6 +169,12 @@
     <ClCompile Include="Engine\PluginHotManage.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Kernel\Container.cpp">
+      <Filter>Kernel</Filter>
+    </ClCompile>
+    <ClCompile Include="API\ContainerAPI.cpp">
+      <Filter>API</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="API\BaseAPI.h">
@@ -320,6 +326,12 @@
     </ClInclude>
     <ClInclude Include="Engine\PluginHotManage.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Kernel\Container.h">
+      <Filter>Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="API\ContainerAPI.h">
+      <Filter>API</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
