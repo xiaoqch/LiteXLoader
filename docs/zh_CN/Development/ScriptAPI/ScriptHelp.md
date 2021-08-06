@@ -25,8 +25,8 @@
   - data... : 
     待输出的变量或者数据  
     可以是任意类型，参数数量可以是任意个
-- 返回值：无
-[![ColorLogExample](https://github.com/LiteLDev/LiteXLoader/assets/colorLog.png)]
+- 返回值：无  
+[![ColorLogExample](https://github.com/LiteLDev/LiteXLoader/blob/main/assets/colorLog.png)]
 
 <br>
 
