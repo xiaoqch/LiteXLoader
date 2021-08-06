@@ -127,6 +127,18 @@ public:
         *((void**)&fnp) = dlsym("?addItemToFirstEmptySlot@Container@@UEAA_NAEAVItemStack@@@Z");
         return (this->*fnp)(arg0);
     }
+    //bool Container::hasRoomForItem(ItemStack const &)
+    MCINLINE bool hasRoomForItem(ItemStack const& arg0) {
+        bool (Container:: * fnp)(ItemStack const&)const;
+        *((void**)&fnp) = dlsym("?hasRoomForItem@Container@@UEAA_NAEBVItemStack@@@Z");
+        return (this->*fnp)(arg0);
+    }
+    //bool Container::isEmpty()const 
+    MCINLINE bool isEmpty() {
+        bool (Container:: * fnp)()const;
+        *((void**)&fnp) = dlsym("?isEmpty@Container@@UEBA_NXZ");
+        return (this->*fnp)();
+    }
     //int Container::getItemCount(ItemStack const &)const 
     MCINLINE int getItemCount(ItemStack const& arg0) {
         int (Container:: * fnp)(ItemStack const&)const;

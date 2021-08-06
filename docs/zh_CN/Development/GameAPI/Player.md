@@ -107,86 +107,6 @@ var open = pl.isOP();
 
 ```
 
-#### 为玩家增加一个Tag
-
-`pl.addTag(tag)`
-
-- 参数：
-  - tag: `String`  
-    要增加的tag字符串
-- 返回值：是否设置成功
-- 返回值类型：`Boolean`
-
-<br>
-
-#### 为玩家移除一个Tag
-
-`pl.removeTag(tag)`
-
-- 参数：
-  - tag: `String`  
-    要移除的tag字符串
-- 返回值：是否移除成功
-- 返回值类型：`Boolean`
-
-<br>
-
-#### 获取玩家拥有的所有Tag列表
-
-`pl.getAllTags()`
-
-- 返回值：玩家所有的 tag 字符串列表
-- 返回值类型：`Array<String,String,...>`
-
-<br>
-
-#### 获取玩家的Abilities能力列表（来自玩家NBT）
-
-`pl.getAbilities()`
-
-- 返回值：玩家所有能力信息的键 - 值对列表对象
-- 返回值类型：`object<String-任意类型>`
-
-键 - 值对列表中的每一项形如：`"mayfly": 1`  等等
-
-<br>
-
-#### 获取玩家的Attributes属性列表（来自玩家NBT）
-
-`pl.getAttributes()`
-
-- 返回值：玩家所有属性对象的数组
-- 返回值类型：`Array<Object,Object,...>`
-
-数组中的每一项为一个键 - 值对列表对象`Object`，其内容形如：
-
-```
-{
-        "Base": 0, 
-        "Current": 0, 
-        "DefaultMax": 1024, 
-        "DefaultMin": -1024, 
-        "Max": 1024, 
-        "Min": -1024, 
-        "Name": "minecraft:luck"
-}, 
-```
-
-（此处使用Json格式直观地展示，具体内容以引擎数据类型为准）
-
-<br>
-
-#### 获取玩家对应的NBT对象
-
-`pl.getNbt()`
-
-- 返回值：玩家的NBT对象
-- 返回值类型：`NbtCompound`
-
-关于NBT对象的更多使用，请参考 [NBT接口文档](zh_CN/Development/NbtAPI/NBT.md)
-
-<br>
-
 #### 断开玩家连接  
 
 `pl.kick([msg])`  
@@ -352,29 +272,46 @@ pl.rename("newname");
 
 ```
 
-#### 查询玩家手中的物品  
+#### 获取玩家主手中的物品对象
 
 `pl.getHand()`
 
 - 返回值：玩家主手中的物品对象
 - 返回值类型：`Item`
 
-#### 查询玩家所有物品  
+#### 获取玩家副手的物品对象
 
-`pl.getAllItems()`
+`pl.getOffHand()`
 
-- 返回值：玩家所拥有的所有物品对象的集合
-- 返回值类型：`Object<...>`
+- 返回值：玩家副手中的物品对象
+- 返回值类型：`Item`
 
-对于返回的某个物品对象集合`obj`，集合中有以下几种内容：
+#### 获取玩家物品栏的容器对象  
 
-| 属性          | 含义                                     | 类型                   |
-| ------------- | ---------------------------------------- | ---------------------- |
-| obj.hand      | 玩家的主手物品                           | `Item`                 |
-| obj.offHand   | 玩家的副手物品                           | `Item`                 |
-| obj.inventory | 玩家物品栏中所有物品的数组（共40个物品） | `Array<Item,Item,...>` |
-| obj.armor     | 玩家盔甲栏中所有物品的数组（共4个物品）  | `Array<Item,Item,...>` |
-| obj.endchest  | 玩家末影箱中所有物品的数组（共30个物品） | `Array<Item,Item,...>` |
+`pl.getInventory()`
+
+- 返回值：玩家物品栏对应的容器对象
+- 返回值类型：`Container`
+
+关于容器对象的更多使用，请参考 [容器对象 API文档](zh_CN/Development/GameAPI/Container.md)
+
+#### 获取玩家盔甲栏的容器对象  
+
+`pl.getArmor()`
+
+- 返回值：玩家盔甲栏对应的容器对象
+- 返回值类型：`Container`
+
+关于容器对象的更多使用，请参考 [容器对象 API文档](zh_CN/Development/GameAPI/Container.md)
+
+#### 获取玩家末影箱的容器对象  
+
+`pl.getArmor()`
+
+- 返回值：玩家末影箱对应的容器对象
+- 返回值类型：`Container`
+
+关于容器对象的更多使用，请参考 [容器对象 API文档](zh_CN/Development/GameAPI/Container.md)
 
 #### 修改玩家操作权限  
 
@@ -567,5 +504,85 @@ pl.removeBossBar();
     要删除的物品数量
 - 返回值：是否成功删除
 - 返回值类型：`Boolean`
+
+<br>
+
+#### 获取玩家对应的NBT对象
+
+`pl.getNbt()`
+
+- 返回值：玩家的NBT对象
+- 返回值类型：`NbtCompound`
+
+关于NBT对象的更多使用，请参考 [NBT接口文档](zh_CN/Development/NbtAPI/NBT.md)
+
+<br>
+
+#### 为玩家增加一个Tag
+
+`pl.addTag(tag)`
+
+- 参数：
+  - tag: `String`  
+    要增加的tag字符串
+- 返回值：是否设置成功
+- 返回值类型：`Boolean`
+
+<br>
+
+#### 为玩家移除一个Tag
+
+`pl.removeTag(tag)`
+
+- 参数：
+  - tag: `String`  
+    要移除的tag字符串
+- 返回值：是否移除成功
+- 返回值类型：`Boolean`
+
+<br>
+
+#### 获取玩家拥有的所有Tag列表
+
+`pl.getAllTags()`
+
+- 返回值：玩家所有的 tag 字符串列表
+- 返回值类型：`Array<String,String,...>`
+
+<br>
+
+#### 获取玩家的Abilities能力列表（来自玩家NBT）
+
+`pl.getAbilities()`
+
+- 返回值：玩家所有能力信息的键 - 值对列表对象
+- 返回值类型：`object<String-任意类型>`
+
+键 - 值对列表中的每一项形如：`"mayfly": 1`  等等
+
+<br>
+
+#### 获取玩家的Attributes属性列表（来自玩家NBT）
+
+`pl.getAttributes()`
+
+- 返回值：玩家所有属性对象的数组
+- 返回值类型：`Array<Object,Object,...>`
+
+数组中的每一项为一个键 - 值对列表对象`Object`，其内容形如：
+
+```
+{
+        "Base": 0, 
+        "Current": 0, 
+        "DefaultMax": 1024, 
+        "DefaultMin": -1024, 
+        "Max": 1024, 
+        "Min": -1024, 
+        "Name": "minecraft:luck"
+}, 
+```
+
+（此处使用Json格式直观地展示，具体内容以引擎数据类型为准）
 
 <br>
