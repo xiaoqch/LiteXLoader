@@ -23,6 +23,7 @@ ClassDefine<ItemClass> ItemClassBuilder =
         .instanceProperty("aux", &ItemClass::getAux)
 
         .instanceFunction("isNull", &ItemClass::isNull)
+        .instanceFunction("setNull", &ItemClass::setNull)
         .instanceFunction("setLore", &ItemClass::setLore)
         .instanceFunction("setNbt", &ItemClass::setNbt)
         .instanceFunction("getNbt", &ItemClass::getNbt)
@@ -126,7 +127,15 @@ Local<Value> ItemClass::isNull(const Arguments& args)
     try{
         return Boolean::newBoolean(Raw_IsNull(item));
     }
-    CATCH("Fail in IsNull!")
+    CATCH("Fail in isNull!")
+}
+
+Local<Value> ItemClass::setNull(const Arguments& args)
+{
+    try {
+        return Boolean::newBoolean(Raw_SetNull(item));
+    }
+    CATCH("Fail in setNull!")
 }
 
 Local<Value> ItemClass::setLore(const Arguments& args)

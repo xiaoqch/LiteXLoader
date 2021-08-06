@@ -1,9 +1,11 @@
 #include "APIHelp.h"
 #include "BaseAPI.h"
 #include "BlockAPI.h"
+#include "ContainerAPI.h"
 #include "NbtAPI.h"
 #include <Kernel/NBT.h>
 #include <Kernel/Block.h>
+#include <Kernel/Container.h>
 #include <Kernel/SymbolHelper.h>
 #include <exception>
 using namespace script;
@@ -23,6 +25,8 @@ ClassDefine<BlockClass> BlockClassBuilder =
         .instanceFunction("setNbt", &BlockClass::setNbt)
         .instanceFunction("getNbt", &BlockClass::getNbt)
         .instanceFunction("getBlockState", &BlockClass::getBlockState)
+        .instanceFunction("hasContainer", &BlockClass::hasContainer)
+        .instanceFunction("getContainer", &BlockClass::getContainer)
 
         //For Compatibility
         .instanceFunction("setTag", &BlockClass::setNbt)
@@ -81,7 +85,7 @@ Block* BlockClass::extractBlock(Local<Value> v)
 void BlockClass::preloadData(BlockPos bp, int dim)
 {
     name = Raw_GetBlockName(block);
-    type = Raw_GetBlockFullName(block);
+    type = Raw_GetBlockType(block);
     id = Raw_GetBlockId(block);
     pos = { bp.x,bp.y,bp.z,dim };
 }
@@ -171,6 +175,23 @@ Local<Value> BlockClass::getBlockState(const Arguments& args)
         return Object::newObject();
     }
     CATCH("Fail in getBlockState!")
+}
+
+Local<Value> BlockClass::hasContainer(const Arguments& args)
+{
+    try {
+        return Boolean::newBoolean(Raw_HasContainer({ (float)pos.x, (float)pos.y, (float)pos.z, pos.dim }));
+    }
+    CATCH("Fail in hasContainer!");
+}
+
+Local<Value> BlockClass::getContainer(const Arguments& args)
+{
+    try {
+        Container* container = Raw_GetContainer({ (float)pos.x, (float)pos.y, (float)pos.z, pos.dim });
+        return container ? ContainerClass::newContainer(container) : Local<Value>();
+    }
+    CATCH("Fail in getContainer!");
 }
 
 

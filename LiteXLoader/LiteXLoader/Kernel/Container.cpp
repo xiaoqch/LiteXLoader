@@ -59,3 +59,20 @@ int Raw_GetContainerSize(Container* container)
 	using _QWORD = int8_t;
 	return (*(__int64 (**)(void))(*(_QWORD*)container + 112i64))();		//IDA char __fastcall Container::addItemToFirstEmptySlot
 }
+
+bool Raw_HasContainer(FloatVec4 pos)
+{
+	return Raw_GetContainer(pos) != nullptr;
+}
+
+class DropperBlockActor;
+Container* Raw_GetContainer(FloatVec4 pos)
+{
+	Vec3 vec{ pos.x, pos.y, pos.z };
+
+	// This function didn't use 'this' pointer
+	Container* container = SymCall("?_getContainerAt@DropperBlockActor@@AEAAPEAVContainer@@AEAVBlockSource@@AEBVVec3@@@Z",
+		Container*, DropperBlockActor*, BlockSource*, Vec3*)(nullptr, Raw_GetBlockSourceByDim(pos.dim), &vec);
+
+	return container;
+}

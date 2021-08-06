@@ -327,6 +327,20 @@ pl.rename("newname");
 
 <br>
 
+#### 给予玩家一个物品
+
+`pl.giveItem(item)`
+
+- 参数：
+  - iten : `Item`  
+    给予的物品对象
+- 返回值：是否成功给予
+- 返回值类型：`Boolean`
+
+如果玩家物品栏已满，将返回失败
+
+<br>
+
 #### 修改玩家操作权限  
 
 `pl.setPermLevel(level)`

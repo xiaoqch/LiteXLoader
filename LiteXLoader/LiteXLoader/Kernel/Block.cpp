@@ -11,7 +11,7 @@ string Raw_GetBlockName(Block* block)
     return hashedstr->getString();
 }
 
-std::string Raw_GetBlockFullName(Block* block)
+std::string Raw_GetBlockType(Block* block)
 {
     BlockLegacy* blockLegacy = offBlock::getLegacyBlock(block);
     return offBlockLegacy::getFullName(blockLegacy);

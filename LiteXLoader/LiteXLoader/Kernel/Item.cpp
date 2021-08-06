@@ -90,6 +90,12 @@ bool Raw_IsNull(ItemStack* item)
     return item->isNull();
 }
 
+bool Raw_SetNull(ItemStack* item)
+{
+    SymCall("?setNull@ItemStack@@UEAAXXZ", void, ItemStack*)(item);
+    return true;
+}
+
 bool Raw_SetLore(ItemStack* item, vector<string> lores)
 {
     if (Raw_IsNull(item))

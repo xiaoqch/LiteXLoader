@@ -117,6 +117,28 @@
 
 <br>
 
+#### 判断生物是否拥有容器（盔甲栏除外）
+
+`en.hasContainer()`
+
+- 返回值：这个生物实体是否拥有容器
+- 返回值类型：`Boolean`
+
+如羊驼身上的箱子等，他们各自拥有一个属于自己的容器对象
+
+<br>
+
+#### 获取生物所拥有的容器对象（盔甲栏除外）
+
+`en.getContainer()`
+
+- 返回值：这个生物实体所拥有的容器对象
+- 返回值类型：`Container`
+
+关于容器对象的更多使用，请参考 [容器对象 API文档](zh_CN/Development/GameAPI/Container.md)
+
+<br>
+
 #### 为实体增加一个Tag
 
 `en.addTag(tag)`

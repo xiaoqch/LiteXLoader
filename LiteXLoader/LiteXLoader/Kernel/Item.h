@@ -17,4 +17,5 @@ int Raw_GetItemAux(ItemStack* item);
 int Raw_GetCount(ItemStack* item);
 
 bool Raw_IsNull(ItemStack* item);
+bool Raw_SetNull(ItemStack* item);
 bool Raw_SetLore(ItemStack* item, std::vector<std::string> lores);
