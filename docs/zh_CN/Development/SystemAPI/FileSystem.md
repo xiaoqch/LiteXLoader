@@ -87,6 +87,18 @@
 
 <br>
 
+### 获取指定文件的大小
+
+`file.getFileSize(path)`
+
+- 参数：
+  - path : `String`  
+    文件的路径
+- 返回值：文件的大小(若失败则返回`-1`)
+- 返回值类型：`Integer`
+
+<br>
+
 ### 列出指定文件夹下的所有文件 / 文件夹
 
 `file.getFilesList(dir)`

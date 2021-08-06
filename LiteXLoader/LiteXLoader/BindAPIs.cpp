@@ -23,6 +23,7 @@ void BindAPIs(ScriptEngine *engine)
     //////////////// 全局函数 ////////////////
 
 	engine->set("log", Function::newFunction(Log));
+	engine->set("colorLog", Function::newFunction(ColorLog));
 
     engine->set("setTimeout",Function::newFunction(SetTimeout));
     engine->set("setInterval",Function::newFunction(SetInterval));
