@@ -1034,7 +1034,7 @@ Local<Value> PlayerClass::giveItem(const Arguments& args)
 
         return Boolean::newBoolean(Raw_GiveItem(player,item));
     }
-    CATCH("Fail in setNbt!");
+    CATCH("Fail in giveItem!");
 }
 
 Local<Value> PlayerClass::clearItem(const Arguments& args)
@@ -1049,7 +1049,7 @@ Local<Value> PlayerClass::clearItem(const Arguments& args)
 
         return Number::newNumber(Raw_ClearItem(player, args[0].toStr()));
     }
-    CATCH("Fail in setNbt!");
+    CATCH("Fail in clearItem!");
 }
 
 Local<Value> PlayerClass::getNbt(const Arguments& args)

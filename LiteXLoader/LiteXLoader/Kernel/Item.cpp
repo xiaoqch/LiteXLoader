@@ -85,6 +85,13 @@ int Raw_GetCount(ItemStack* item)
     return offItemStack::getCount(item);
 }
 
+bool Raw_SetItem(ItemStack* oldItem, ItemStack* newItem)
+{
+    Tag* nbt = Tag::fromItem(newItem);
+    nbt->setItem(oldItem);
+    return true;
+}
+
 bool Raw_IsNull(ItemStack* item)
 {
     return item->isNull();

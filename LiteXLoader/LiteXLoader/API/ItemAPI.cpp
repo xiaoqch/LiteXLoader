@@ -22,6 +22,7 @@ ClassDefine<ItemClass> ItemClassBuilder =
         .instanceProperty("count", &ItemClass::getCount)
         .instanceProperty("aux", &ItemClass::getAux)
 
+        .instanceFunction("set", &ItemClass::set)
         .instanceFunction("isNull", &ItemClass::isNull)
         .instanceFunction("setNull", &ItemClass::setNull)
         .instanceFunction("setLore", &ItemClass::setLore)
@@ -120,6 +121,20 @@ Local<Value> ItemClass::getRawPtr(const Arguments& args)
         return Number::newNumber((intptr_t)item);
     }
     CATCH("Fail in getRawPtr!")
+}
+
+Local<Value> ItemClass::set(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+
+    try {
+        auto itemNew = ItemClass::extractItem(args[0]);
+        if (!itemNew)
+            return Local<Value>();    //Null
+
+        return Boolean::newBoolean(Raw_SetItem(item, itemNew));
+    }
+    CATCH("Fail in giveItem!");
 }
 
 Local<Value> ItemClass::isNull(const Arguments& args)
