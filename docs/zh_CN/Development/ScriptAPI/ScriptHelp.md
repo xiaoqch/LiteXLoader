@@ -15,6 +15,19 @@
     可以是任意类型，参数数量可以是任意个
 - 返回值：无
 
+这是楼上那位的升级版,没错,它支持彩色输出
+
+`colorLog(color,data1,data2,...)`
+
+- 参数：
+  - color : `String`  
+    此行输出的颜色(代码示例和效果如下图)
+  - data... : 
+    待输出的变量或者数据  
+    可以是任意类型，参数数量可以是任意个
+- 返回值：无  
+[![ColorLogExample](https://github.com/LiteLDev/LiteXLoader/blob/main/assets/colorLog.png)]
+
 <br>
 
 ## 💼 脚本辅助 API
