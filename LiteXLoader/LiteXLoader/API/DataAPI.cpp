@@ -2,6 +2,7 @@
 #include "DataAPI.h"
 #include <fstream>
 #include <string>
+#include <sstream>
 #include <exception>
 #include <Engine/EngineOwnData.h>
 #include <Kernel/System.h>
@@ -634,7 +635,32 @@ Local<Value> MoneyGetHintory(const Arguments& args)
 
     try
     {
-        return String::newString(Raw_GetMoneyHist(stoull(args[0].toStr()), args[1].asNumber().toInt64()));
+        string res{ Raw_GetMoneyHist(stoull(args[0].toStr()), args[1].asNumber().toInt64()) };
+        // from -> to money timestamp (note)
+
+        istringstream sin(res);
+        Local<Array> arr = Array::newArray();
+
+        string from, to, note, tmp;
+        long long money, timestamp;
+        while (sin)
+        {
+            Local<Object> obj = Object::newObject();
+
+            sin >> from >> tmp >> to >> money >> timestamp >> note;
+            if (note.front() == '(')
+                note.erase(0, 1);
+            if (note.back() == ')')
+                note.pop_back();
+
+            obj.set("from", String::newString(from));
+            obj.set("to", String::newString(to));
+            obj.set("money", Number::newNumber(money));
+            obj.set("time", Number::newNumber(timestamp));
+            obj.set("note", String::newString(note));
+            arr.add(obj);
+        }
+        return arr;
     }
     CATCH("Fail in MoneyGetHintory!")
 }
