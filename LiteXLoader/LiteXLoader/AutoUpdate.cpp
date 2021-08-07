@@ -11,7 +11,7 @@
 #include <thread>
 #include <chrono>
 #include <filesystem>
-#include <Configs.h>
+#include <Version.h>
 #include <Kernel/Base.h>
 #include <Kernel/Global.h>
 #include <Kernel/ThirdParty.h>
@@ -32,7 +32,7 @@ bool ProcessUpdateInfo(const string &info)
 			if (bds.front() == 'v')
 				bds.erase(0, 1);
 			string bdsRemote = data["AutoUpdate"]["BDS"].get<string>();
-			if (bds != bdsRemote)
+			if (bds != bdsRemote && !LXL_VERSION_IS_BETA)
 			{
 				INFO("提示：您的BDS版本和当前主线维护版本不一致，自动更新将不会推送");
 				INFO("如果有需要，请前往LXL相关页面手动更新加载器")
@@ -48,7 +48,7 @@ bool ProcessUpdateInfo(const string &info)
 			int b = stoi(versRemote[1]);
 			int c = stoi(versRemote[2]);
 
-			if (a == LXL_VERSION_MAJOR && b == LXL_VERSION_MINOR && c == LXL_VERSION_REVISION)
+			if (a <= LXL_VERSION_MAJOR && b <= LXL_VERSION_MINOR && c <= LXL_VERSION_REVISION)
 				return true;
 
 			//Check existing update

@@ -333,6 +333,9 @@
     <ClInclude Include="API\ContainerAPI.h">
       <Filter>API</Filter>
     </ClInclude>
+    <ClInclude Include="Version.h">
+      <Filter>Main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\third-party\Lua\lib\lua.lib">

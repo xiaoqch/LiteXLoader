@@ -3,12 +3,6 @@
 
 ////////////// Configs //////////////
 
-// 版本记录
-#define LXL_VERSION_MAJOR 0
-#define LXL_VERSION_MINOR 3
-#define LXL_VERSION_REVISION 2
-#define LXL_VERSION_IS_BETA true
-
 // 后端宏
 #define LXL_LANG_JS "Js"
 #define LXL_LANG_LUA "Lua"

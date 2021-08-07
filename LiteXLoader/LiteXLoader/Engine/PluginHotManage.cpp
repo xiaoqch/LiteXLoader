@@ -5,6 +5,7 @@
 #include "MessageSystem.h"
 #include "GlobalShareData.h"
 #include <Configs.h>
+#include <Version.h>
 #include <string>
 using namespace std;
 

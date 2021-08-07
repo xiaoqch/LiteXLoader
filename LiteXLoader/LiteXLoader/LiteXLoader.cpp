@@ -17,6 +17,7 @@
 #include <memory>
 #include <filesystem>
 #include <Configs.h>
+#include <Version.h>
 using namespace script;
 using namespace std;
 
