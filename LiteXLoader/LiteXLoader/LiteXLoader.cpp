@@ -4,6 +4,8 @@
 #include <Engine/GlobalShareData.h>
 #include <Engine/EngineOwnData.h>
 #include <Engine/LocalShareData.h>
+#include <Engine/RemoteCall.h>
+#include <Engine/MessageSystem.h>
 #include <Kernel/Data.h>
 #include <Kernel/System.h>
 #include <Kernel/i18n.h>
@@ -44,7 +46,7 @@ void Welcome()
 
 void LoaderInfo()
 {
-    INFO(std::string("LXL for ") + LXL_SCRIPT_LANG_TYPE + " loaded");
+    INFO(std::string("LXL for ") + LXL_MODULE_TYPE + " loaded");
     INFO(std::string("Version ") + to_string(LXL_VERSION_MAJOR) + "." + to_string(LXL_VERSION_MINOR) + "."
         + to_string(LXL_VERSION_REVISION) + (LXL_VERSION_IS_BETA ? " Beta" : ""));
 }
@@ -64,6 +66,10 @@ void entry()
     //初始化全局数据
     InitLocalShareData();
     InitGlobalShareData();
+
+    //初始化消息系统
+    InitRemoteCallSystem();
+    InitMessageSystem();
 
     //欢迎
     if(localShareData->isFirstInstance)

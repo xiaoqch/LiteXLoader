@@ -32,7 +32,7 @@
 
 <br>
 
-#### `"onExplode"` - 发生爆炸
+#### `"onExplode"` - 发生由实体引起的爆炸
 
 - 监听函数原型
   `function(source,pos)`
@@ -112,30 +112,20 @@
 
 <br>
 
-#### `"onSplashPotionHitEffect"` - 实体喷溅药水效果影响
+#### `"onSpawnProjectile"` - 弹射物创建
 
 - 监听函数原型
-  `function(entity1,entity2)`
+  `function(shooter,type)`
 - 参数：
-  - entity1 : `Entity`  
-    被喷溅药水效果影响的实体对象
-  - entity2: `Entity`  
-    投掷喷溅药水的实体对象
-- 拦截事件：函数返回`false`
 
-<br>
-
-#### `"onProjectileShoot"` - 实体发射弹射物
-
-- 监听函数原型
-  `function(shooter,projectiler)`
-- 参数：
   - shooter : `Entity`  
     发射弹射物的的实体对象
-  - projectiler : `Entity`  
-    被发射的实体对象
+
+  - type : `String`  
+    弹射物标准类型名
+
 - 拦截事件：函数返回 `false`
 
-注：丢药水也会触发此事件，但无法拦截。拦截丢药水请使用 `onSplashPotionHitEffect`
+注：已知可拦截的弹射物有鸡蛋、末影珍珠、雪球、三叉戟、箭、钓竿（鱼钩）。
 
 <br>

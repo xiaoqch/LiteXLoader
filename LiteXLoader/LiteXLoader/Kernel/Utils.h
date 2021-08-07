@@ -9,3 +9,5 @@ void SplitHttpUrl(const std::string& url, std::string& host, std::string& path);
 
 wchar_t* str2cwstr(std::string str);
 std::string wstr2str(std::wstring wstr);
+
+unsigned long long GetCurrentTimeStampMS();

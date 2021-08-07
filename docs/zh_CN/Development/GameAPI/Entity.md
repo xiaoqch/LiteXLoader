@@ -7,9 +7,22 @@
 1. 通过注册**事件监听**函数，或者调用某些**返回实体对象**的函数，来获取到BDS给出的实体对象    
    详见 [事件监听文档 - EventAPI](zh_CN/Development/EventAPI/Listen.md)      
 
+2. 通过 **命名空间名称** 生成生物  
+   通过此函数，在指定的位置生成一个生物，并获取它对应的实体对象
    
-
-2. 注意：不要**长期保存**一个实体对象  
+   `mc.spawnMob(name,pos)`  
+   `mc.spawnMob(name,x,y,z,dimid)`
+   
+   - 参数：
+     - name : `String`  
+       生物的命名空间名称，如 `creeper`
+     - pos : `FloatPos`  
+       生成生物的位置的坐标对象（或者使用x, y, z, dimid来确定生成位置）
+   - 返回值：生成的实体对象
+   - 返回值类型：`Entity`
+     - 如返回值为 `Null` 则表示生成失败
+   
+3. 注意：不要**长期保存**一个实体对象  
    当实体对象对应的实体被销毁时，对应的实体对象将变得无效。因此，如果有长期操作某个实体的需要，请通过上述途径获取实时的实体对象
 
 <br>
@@ -60,14 +73,15 @@
 
 <br>
 
-#### 获取实体对应的NBT对象
+#### 使指定实体着火
 
-`en.getNbt()`
+`en.setOnFire(time)`
 
-- 返回值：实体的NBT对象
-- 返回值类型：`NbtCompound`
-
-关于NBT对象的更多使用，请参考 [NBT接口文档](zh_CN/Development/NbtAPI/NBT.md)
+- 参数：
+  - time : `Number`  
+    着火时长，单位秒
+- 返回值：是否成功着火
+- 返回值类型：`Boolean`
 
 <br>
 
@@ -92,15 +106,36 @@
 
 <br>
 
-#### 使指定实体着火
+#### 获取生物盔甲栏的容器对象  
 
-`en.setOnFire(time)`
+`en.getArmor()`
 
-- 参数：
-  - time : `Number`  
-    着火时长，单位秒
-- 返回值：是否成功着火
+- 返回值：此实体盔甲栏对应的容器对象
+- 返回值类型：`Container`
+
+关于容器对象的更多使用，请参考 [容器对象 API文档](zh_CN/Development/GameAPI/Container.md)
+
+<br>
+
+#### 判断生物是否拥有容器（盔甲栏除外）
+
+`en.hasContainer()`
+
+- 返回值：这个生物实体是否拥有容器
 - 返回值类型：`Boolean`
+
+如羊驼身上的箱子等，他们各自拥有一个属于自己的容器对象
+
+<br>
+
+#### 获取生物所拥有的容器对象（盔甲栏除外）
+
+`en.getContainer()`
+
+- 返回值：这个生物实体所拥有的容器对象
+- 返回值类型：`Container`
+
+关于容器对象的更多使用，请参考 [容器对象 API文档](zh_CN/Development/GameAPI/Container.md)
 
 <br>
 
@@ -134,5 +169,16 @@
 
 - 返回值：实体所有的 tag 字符串列表
 - 返回值类型：`Array<String,String,...>`
+
+<br>
+
+#### 获取实体对应的NBT对象
+
+`en.getNbt()`
+
+- 返回值：实体的NBT对象
+- 返回值类型：`NbtCompound`
+
+关于NBT对象的更多使用，请参考 [NBT接口文档](zh_CN/Development/NbtAPI/NBT.md)
 
 <br>

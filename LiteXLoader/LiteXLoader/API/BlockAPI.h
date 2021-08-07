@@ -45,6 +45,8 @@ public:
     Local<Value> getNbt(const Arguments& args);
     Local<Value> setNbt(const Arguments& args);
     Local<Value> getBlockState(const Arguments& args);
+    Local<Value> hasContainer(const Arguments& args);
+    Local<Value> getContainer(const Arguments& args);
 };
 
 //////////////////// APIs ////////////////////

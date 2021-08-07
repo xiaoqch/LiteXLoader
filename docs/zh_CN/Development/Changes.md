@@ -6,9 +6,17 @@
 
 注意：此处只会列出造成不兼容变化的API更改。如果要查看所有更新日志，请前往GitHub提交页面查看相关提交记录
 
+#### 20210806 - v0.3.3
+
+- 将玩家的`getAllItems()`、`removeItem()`接口删除，修改为分别使用容器类实现（向下兼容）
+
+#### 20210805 - v0.3.3
+
+- 将`pl.ip`属性移动到了玩家设备对象`DeviceAPI`中（向下兼容）
+
 #### 20210803 - v0.3.2
 
-- 将实体、方块、玩家、物品对象的`getTag`和`setTag`统一重命名为`getNbt`和`setNbt`，避免理解偏差
+- 将实体、方块、玩家、物品对象的`getTag`和`setTag`统一重命名为`getNbt`和`setNbt`，避免理解偏差（向下兼容）
 - `mc.listAllScoreObjective`更名为`mc.getAllScoreObjective`，接口进行了修复
 
 #### 20210802 - v0.3.1

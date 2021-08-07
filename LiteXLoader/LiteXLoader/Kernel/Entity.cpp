@@ -1,9 +1,38 @@
 #include "Global.h"
 #include "Entity.h"
 #include "Player.h"
+#include "SymbolHelper.h"
+#include "NBT.h"
 #include <string>
 #include <vector>
 using namespace std;
+
+class Spawner;
+Actor* Raw_SpawnMob(std::string name, const FloatVec4& pos)
+{
+    try
+    {
+        if (name.find("minecraft:") == 0)
+            name = name.substr(10);
+
+        char a[168];
+        ActorDefinitionIdentifier* ad = SymCall("??0ActorDefinitionIdentifier@@QEAA@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z",
+            ActorDefinitionIdentifier*, ActorDefinitionIdentifier*, string&)((ActorDefinitionIdentifier*)a, name);
+
+        Spawner* sp = SymCall("?getSpawner@Level@@UEBAAEAVSpawner@@XZ", Spawner*, Level*)(mc->getLevel());
+
+        Vec3 vec{ pos.x,pos.y,pos.z };
+        Actor* ac = SymCall("?spawnMob@Spawner@@QEAAPEAVMob@@AEAVBlockSource@@AEBUActorDefinitionIdentifier@@PEAVActor@@AEBVVec3@@_N44@Z",
+            Mob*, Spawner * _this, BlockSource*, ActorDefinitionIdentifier*, Actor*, Vec3*, bool, bool, bool)
+            (sp, Raw_GetBlockSourceByDim(pos.dim), ad, nullptr, &vec, 0, 1, 0);
+
+        return ac;
+    }
+    catch(...)
+    {
+        return nullptr;
+    }
+}
 
 string Raw_GetEntityName(Actor* actor)
 {
@@ -77,6 +106,11 @@ Player* Raw_ToPlayer(Actor* actor)
     return Raw_IsPlayer(actor) ? (Player*)actor : nullptr;
 }
 
+Container* Raw_GetArmor(Actor* ac)
+{
+    return SymCall("?getArmorContainer@Actor@@QEBAAEBVSimpleContainer@@XZ", Container*, Actor*)(ac);
+}
+
 int Raw_GetEntityDimId(Actor* actor)
 {
     return WActor(*actor).getDimID();
@@ -114,14 +148,4 @@ bool Raw_AddTag(Actor* ac, const string& str) {
 bool Raw_RemoveTag(Actor* ac, const string& str) {
     return SymCall("?removeTag@Actor@@QEAA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z",
         bool, Actor*, const string*)(ac, &str);
-}
-
-vector<string> Raw_GetAllTags(Actor* ac) {
-    auto tags = SymCall("?getTags@Actor@@QEBA?BV?$span@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@$0?0@gsl@@XZ",
-        gsl::span<string>, Actor*)(ac);
-    
-    vector<string> res;
-    for (auto& item : tags)
-        res.push_back(item);
-    return res;
 }

@@ -69,6 +69,7 @@ public:
     Local<Value> setFloat(const Arguments& args);
     Local<Value> setDouble(const Arguments& args);
     Local<Value> setString(const Arguments& args);
+    Local<Value> setByteArray(const Arguments& args);
     Local<Value> setTag(const Arguments& args);
     Local<Value> addTag(const Arguments& args);
     Local<Value> removeTag(const Arguments& args);
@@ -100,6 +101,7 @@ public:
     Local<Value> setFloat(const Arguments& args);
     Local<Value> setDouble(const Arguments& args);
     Local<Value> setString(const Arguments& args);
+    Local<Value> setByteArray(const Arguments& args);
     Local<Value> setTag(const Arguments& args);
     Local<Value> removeTag(const Arguments& args);
 

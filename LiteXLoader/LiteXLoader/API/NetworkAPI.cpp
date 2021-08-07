@@ -67,3 +67,20 @@ Local<Value> HttpPost(const Arguments& args)
     }
     CATCH("Fail in HttpPost")
 }
+
+Local<Value> HttpGetSync(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+
+    try {
+        int status;
+        string result;
+        Raw_HttpGetSync(args[0].toStr(), &status, &result);
+        Local<Object> res = Object::newObject();
+        res.set("status", status);
+        res.set("data", result);
+        return res;
+    }
+    CATCH("Fail in HttpGetSync.")
+}

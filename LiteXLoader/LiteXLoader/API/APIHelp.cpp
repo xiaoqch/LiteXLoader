@@ -14,6 +14,7 @@
 #include <API/DeviceAPI.h>
 #include <API/ItemAPI.h>
 #include <API/EntityAPI.h>
+#include <API/ContainerAPI.h>
 #include <API/NbtAPI.h>
 #include <API/GuiAPI.h>
 #include <API/DataAPI.h>
@@ -105,6 +106,11 @@ void PrintValue(std::ostream &out, Local<Value> v)
             if (EngineScope::currentEngine()->isInstanceOf<DeviceClass>(v))
             {
                 out << "<DeviceInfo>";
+                break;
+            }
+            if (EngineScope::currentEngine()->isInstanceOf<ContainerClass>(v))
+            {
+                out << "<Container>";
                 break;
             }
             if (EngineScope::currentEngine()->isInstanceOf<EntityClass>(v))

@@ -2,6 +2,11 @@
 #include <string>
 #include <vector>
 
+class FloatVec4;
+class Actor;
+class Container;
+Actor* Raw_SpawnMob(std::string name, const FloatVec4& pos);
+
 std::string Raw_GetEntityName(Actor* actor);
 std::string Raw_GetEntityTypeName(Actor* actor);
 int Raw_GetEntityTypeId(Actor* actor);
@@ -13,8 +18,10 @@ bool Raw_GetIsInAir(Actor *actor);
 bool Raw_TeleportEntity(Actor* actor, const FloatVec4 &pos);
 bool Raw_KillEntity(Actor* actor);
 bool Raw_SetOnFire(Actor* actor,int time);
+
 bool Raw_IsPlayer(Actor* actor);
 Player* Raw_ToPlayer(Actor* actor);
+Container* Raw_GetArmor(Actor* ac);
 
 int Raw_GetEntityDimId(Actor* actor);
 Actor* Raw_GetEntityByUniqueId(ActorUniqueID id);
@@ -22,4 +29,3 @@ float Raw_GetSpeed(Actor* ac);
 
 bool Raw_AddTag(Actor* ac, const std::string& str);
 bool Raw_RemoveTag(Actor* ac, const std::string& str);
-std::vector<std::string> Raw_GetAllTags(Actor* ac);

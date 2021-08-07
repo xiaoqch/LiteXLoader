@@ -21,6 +21,8 @@
 	#define LXL_PLUGINS_SUFFIX ".lua"
 #endif
 
+#define LXL_MODULE_TYPE LXL_SCRIPT_LANG_TYPE
+
 // 配置文件
 #define LXL_PLUGINS_LOAD_DIR "./plugins"
 #define LXL_LANGPACK_DIR "./plugins/LiteXLoader/LangPack/"
@@ -37,14 +39,8 @@
 #endif
 #define LXL_DEBUG_ENGINE_NAME "__LXL_DEBUG_ENGINE__"
 
-// 热管理命令
-#define LXL_HOT_MANAGE_PREFIX "lxl"
-#define LXL_HOT_LIST "lxl list"
-#define LXL_HOT_LOAD "lxl load"
-#define LXL_HOT_UNLOAD "lxl unload"
-#define LXL_HOT_RELOAD "lxl reload"
-
 // 全局通信
 #define LXL_GLOBAL_DATA_NAME L"LITEXLOADER_GLOBAL_DATA_SECTION"
 #define LXL_REMOTE_CALL_EVENT_NAME L"LITEXLOADER_REMOTE_CALL_EVENT"
 #define LXL_REMOTE_CALL_MAX_WAIT 120
+#define LXL_MESSAGE_SYSTEM_WAIT_CHECK_INTERVAL 5

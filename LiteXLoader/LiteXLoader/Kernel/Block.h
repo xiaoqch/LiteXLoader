@@ -1,7 +1,13 @@
+#pragma once
 #include <string>
 
+class Block;
+class Container;
+class IntVec4;
+class FloatVec4;
+
 std::string Raw_GetBlockName(Block* block);
-std::string Raw_GetBlockFullName(Block* block);
+std::string Raw_GetBlockType(Block* block);
 int Raw_GetBlockId(Block* block);
 
 Block* Raw_NewBlockFromName(string str);

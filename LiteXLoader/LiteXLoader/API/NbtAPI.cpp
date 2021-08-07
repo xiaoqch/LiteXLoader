@@ -23,6 +23,7 @@ ClassDefine<void> NbtStaticBuilder =
         .property("Double", &NbtStatic::getType<TagType::Double>)
         .property("ByteArray", &NbtStatic::getType<TagType::ByteArray>)
         .property("String", &NbtStatic::getType<TagType::String>)
+        .property("ByteArray", &NbtStatic::getType<TagType::ByteArray>)
         .property("List", &NbtStatic::getType<TagType::List>)
         .property("Compound", &NbtStatic::getType<TagType::Compound>)
         .build();
@@ -51,6 +52,7 @@ ClassDefine<NbtList> NbtListBuilder =
         .instanceFunction("setFloat", &NbtList::setFloat)
         .instanceFunction("setDouble", &NbtList::setDouble)
         .instanceFunction("setString", &NbtList::setString)
+        .instanceFunction("setByteArray", &NbtList::setByteArray)
         .instanceFunction("setTag", &NbtList::setTag)
         .instanceFunction("addTag", &NbtList::addTag)
         .instanceFunction("removeTag", &NbtList::removeTag)
@@ -74,6 +76,7 @@ ClassDefine<NbtCompound> NbtCompoundBuilder =
         .instanceFunction("setFloat", &NbtCompound::setFloat)
         .instanceFunction("setDouble", &NbtCompound::setDouble)
         .instanceFunction("setString", &NbtCompound::setString)
+        .instanceFunction("setByteArray", &NbtCompound::setByteArray)
         .instanceFunction("setTag", &NbtCompound::setTag)
         .instanceFunction("removeTag", &NbtCompound::removeTag)
         .instanceFunction("getData", &NbtCompound::getData)
@@ -382,6 +385,38 @@ Local<Value> NbtList::setString(const Arguments& args)
         }
 
         list[index]->asString() = data;
+        return this->getScriptObject();
+    }
+    CATCH("Fail in NBTsetString!")
+}
+
+Local<Value> NbtList::setByteArray(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 2);
+    CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
+    CHECK_ARG_TYPE(args[1], ValueKind::kByteBuffer);
+
+    try
+    {
+        auto& list = nbt->asList();
+        auto index = args[0].toInt();
+        auto data = args[1].asByteBuffer();
+
+        if (index >= list.size() || index < 0)
+        {
+            ERROR("Bad Index of NBT List!");
+            return Local<Value>();
+        }
+
+        TagMemoryChunk& memory = list[index]->asByteArray();
+        
+        int size = data.byteLength();
+        uint8_t* written = new uint8_t[size];
+        memcpy(written, data.getRawBytes(), size);
+
+        memory.size = memory.capacity = size;
+        memory.data.reset(written);
+
         return this->getScriptObject();
     }
     CATCH("Fail in NBTsetString!")
@@ -762,6 +797,29 @@ Local<Value> NbtCompound::setString(const Arguments& args)
     CATCH("Fail in NBTsetString!")
 }
 
+Local<Value> NbtCompound::setByteArray(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 2);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+    CHECK_ARG_TYPE(args[1], ValueKind::kByteBuffer);
+
+    try
+    {
+        auto key = args[0].toStr();
+        auto data = args[1].asByteBuffer();
+
+        int size = data.byteLength();
+        uint8_t* written = new uint8_t[size];
+        memcpy(written, data.getRawBytes(), size);
+        TagMemoryChunk tmc(size, written);
+
+        nbt->putByteArray(key, tmc);
+
+        return this->getScriptObject();
+    }
+    CATCH("Fail in NBTsetString!")
+}
+
 Local<Value> NbtCompound::setTag(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 2);
@@ -1000,9 +1058,11 @@ Local<Value> Tag2Value_ListHelper(Tag* nbt, bool autoExpansion = false)
             res.add(String::newString(tag->asString()));
             break;
         case TagType::ByteArray:
-            res.add(String::newString(""));
-            WARN("There are no symbol to read a ByteArray in BDS");
+        {
+            auto& data = tag->asByteArray();
+            res.add(ByteBuffer::newByteBuffer(data.data.get(), data.size));
             break;
+        }
         case TagType::List:
             if (!autoExpansion)
                 res.add(NbtList::newNBT(tag));
@@ -1057,9 +1117,11 @@ Local<Value> Tag2Value_CompoundHelper(Tag* nbt, bool autoExpansion)
             res.set(key, String::newString(tag.asString()));
             break;
         case TagType::ByteArray:
-            res.set(key, String::newString(""));
-            WARN("There are no symbol to read a ByteArray in BDS");
+        {
+            auto& data = tag.asByteArray();
+            res.set(key, ByteBuffer::newByteBuffer(data.data.get(), data.size));
             break;
+        }
         case TagType::List:
             if(!autoExpansion)
                 res.set(key, NbtList::newNBT(&tag));
@@ -1111,9 +1173,11 @@ Local<Value> Tag2Value(Tag* nbt, bool autoExpansion)
         value = String::newString(nbt->asString());
         break;
     case TagType::ByteArray:
-        value = ByteBuffer::newByteBuffer(0);
-        WARN("There are no symbol to read a ByteArray in BDS");
+    {
+        auto& data = nbt->asByteArray();
+        value = ByteBuffer::newByteBuffer(data.data.get(), data.size);
         break;
+    }
     case TagType::List:
         if(!autoExpansion)
             value = NbtList::newNBT(nbt);
@@ -1136,8 +1200,6 @@ Local<Value> Tag2Value(Tag* nbt, bool autoExpansion)
 
 bool TagSetValue(Tag* nbt, Local<Value> value)
 {
-    bool res = true;
-
     switch (nbt->getTagType())
     {
     case TagType::End:
@@ -1165,9 +1227,18 @@ bool TagSetValue(Tag* nbt, Local<Value> value)
         nbt->asString() = value.toStr();
         break;
     case TagType::ByteArray:
-        WARN("There are no symbol to write a ByteArray in BDS");
-        res = false;
+    {
+        auto data = value.asByteBuffer();
+        TagMemoryChunk& memory = nbt->asByteArray();
+
+        int size = data.byteLength();
+        uint8_t* written = new uint8_t[size];
+        memcpy(written, data.getRawBytes(), size);
+
+        memory.size = memory.capacity = size;
+        memory.data.reset(written);
         break;
+    }
     case TagType::List: {
         auto tag = NbtList::extractNBT(value);
         if (tag == nullptr)
@@ -1193,5 +1264,5 @@ bool TagSetValue(Tag* nbt, Local<Value> value)
         return false;
         break;
     }
-    return res;
+    return true;
 }

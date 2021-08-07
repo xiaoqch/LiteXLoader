@@ -34,6 +34,10 @@ public:
     static Local<Value> getPlayer(const Arguments& args) { return GetPlayer(args); }
     static Local<Value> getOnlinePlayers(const Arguments& args) { return GetOnlinePlayers(args); }
 
+    static Local<Value> spawnMob(const Arguments& args) { return SpawnMob(args); }
+    static Local<Value> newItem(const Arguments& args) { return NewItem(args); }
+    static Local<Value> spawnItem(const Arguments& args) { return SpawnItem(args); }
+
     static Local<Value> getBlock(const Arguments& args) { return GetBlock(args); }
     static Local<Value> setBlock(const Arguments& args) { return SetBlock(args); }
     static Local<Value> spawnParticle(const Arguments& args) { return SpawnParticle(args); }
@@ -64,6 +68,9 @@ static ClassDefine<void> McClassBuilder =
         .function("listen", &McClass::listen)
         .function("getPlayer", &McClass::getPlayer)
         .function("getOnlinePlayers", &McClass::getOnlinePlayers)
+        .function("spawnMob", &McClass::spawnMob)
+        .function("newItem", &McClass::newItem)
+        .function("spawnItem", &McClass::spawnItem)
         .function("getBlock", &McClass::getBlock)
         .function("setBlock", &McClass::setBlock)
         .function("spawnParticle", &McClass::spawnParticle)
@@ -230,12 +237,14 @@ class NetworkClass
 public:
     static Local<Value> httpGet(const Arguments& args) { return HttpGet(args); }
     static Local<Value> httpPost(const Arguments& args) { return HttpPost(args); }
+    static Local<Value> httpGetSync(const Arguments& args) { return HttpGetSync(args); }
 };
 
 static ClassDefine<void> NetworkClassBuilder =
     defineClass("network")
         .function("httpGet", &NetworkClass::httpGet)
         .function("httpPost", &NetworkClass::httpPost)
+        .function("httpGetSync", &NetworkClass::httpGetSync)
         .build();
 
 class LxlClass

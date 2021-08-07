@@ -1,5 +1,7 @@
 #include "APIHelp.h"
+#include "BaseAPI.h"
 #include "ItemAPI.h"
+#include "EntityAPI.h"
 #include <Kernel/Item.h>
 #include "NbtAPI.h"
 #include <Kernel/NBT.h>
@@ -21,6 +23,7 @@ ClassDefine<ItemClass> ItemClassBuilder =
         .instanceProperty("aux", &ItemClass::getAux)
 
         .instanceFunction("isNull", &ItemClass::isNull)
+        .instanceFunction("setNull", &ItemClass::setNull)
         .instanceFunction("setLore", &ItemClass::setLore)
         .instanceFunction("setNbt", &ItemClass::setNbt)
         .instanceFunction("getNbt", &ItemClass::getNbt)
@@ -124,7 +127,15 @@ Local<Value> ItemClass::isNull(const Arguments& args)
     try{
         return Boolean::newBoolean(Raw_IsNull(item));
     }
-    CATCH("Fail in IsNull!")
+    CATCH("Fail in isNull!")
+}
+
+Local<Value> ItemClass::setNull(const Arguments& args)
+{
+    try {
+        return Boolean::newBoolean(Raw_SetNull(item));
+    }
+    CATCH("Fail in setNull!")
 }
 
 Local<Value> ItemClass::setLore(const Arguments& args)
@@ -171,4 +182,84 @@ Local<Value> ItemClass::setNbt(const Arguments& args)
         return Boolean::newBoolean(true);
     }
     CATCH("Fail in setNbt!")
+}
+
+Local<Value> NewItem(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+    try {
+        Tag* nbt = NbtCompound::extractNBT(args[0]);
+        if (nbt)
+        {
+            ItemStack* item = Raw_NewItem(nbt);
+            if (!item)
+                return Local<Value>();    //Null
+            else
+                return ItemClass::newItem(item);
+        }
+        else
+        {
+            ERROR("Wrong type of argument in NewItem!");
+            return Local<Value>();
+        }
+    }
+    CATCH("Fail in NewItem!");
+}
+
+Local<Value> SpawnItem(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 2);
+
+    try {
+        FloatVec4 pos;
+        if (args.size() == 2)
+        {
+            // FloatPos
+            auto posObj = FloatPos::extractPos(args[1]);
+            if (posObj)
+            {
+                if (posObj->dim < 0)
+                    return Local<Value>();
+                else
+                    pos = *posObj;
+            }
+            else
+            {
+                ERROR("Wrong type of argument in SpawnItem!");
+                return Local<Value>();
+            }
+        }
+        else if (args.size() == 5)
+        {
+            // Number Pos
+            CHECK_ARG_TYPE(args[1], ValueKind::kNumber);
+            CHECK_ARG_TYPE(args[2], ValueKind::kNumber);
+            CHECK_ARG_TYPE(args[3], ValueKind::kNumber);
+            CHECK_ARG_TYPE(args[4], ValueKind::kNumber);
+            pos = { args[1].asNumber().toFloat(), args[2].asNumber().toFloat(), args[3].asNumber().toFloat(), args[4].toInt() };
+        }
+        else
+        {
+            ERROR("Wrong number of arguments in SpawnItem!");
+            return Local<Value>();
+        }
+
+
+        ItemStack* it = ItemClass::extractItem(args[0]);
+        if (it)
+        {
+            //By Item
+            Actor* entity = Raw_SpawnItemByItemStack(it, pos);
+            if (!entity)
+                return Local<Value>();    //Null
+            else
+                return EntityClass::newEntity(entity);
+        }
+        else
+        {
+            ERROR("Wrong type of argument in SpawnItem!");
+            return Local<Value>();
+        }
+    }
+    CATCH("Fail in SpawnItem!");
 }

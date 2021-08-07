@@ -7,7 +7,8 @@ using namespace script;
 void InitEventListeners();
 bool LxlAddEventListener(ScriptEngine* engine, const std::string& eventName, const Local<Function>& func);
 bool LxlRemoveAllEventListeners(ScriptEngine* engine);
-bool LxlHotLoadRecallEvents(ScriptEngine* engine);
+bool LxlCallEventsOnHotLoad(ScriptEngine* engine);
+bool LxlCallEventsOnHotUnload(ScriptEngine* engine);
 
 
 //////////////////// APIs ////////////////////

@@ -30,7 +30,6 @@ public:
     Local<Value> getRealName();
     Local<Value> getXuid();
     Local<Value> getUuid();
-    Local<Value> getIP();
     Local<Value> getPermLevel();
     Local<Value> getGameMode();
     Local<Value> getMaxHealth();
@@ -49,15 +48,18 @@ public:
     Local<Value> kill(const Arguments& args);
     Local<Value> kick(const Arguments& args);
     Local<Value> tell(const Arguments& args);
-    Local<Value> getHand(const Arguments& args);
-    Local<Value> getAllItems(const Arguments& args);
     Local<Value> rename(const Arguments& args);
     Local<Value> addLevel(const Arguments& args);
     Local<Value> transServer(const Arguments& args);
     Local<Value> crash(const Arguments& args);
     Local<Value> setOnFire(const Arguments& args);
+
     Local<Value> getDevice(const Arguments& args);
-    Local<Value> removeItem(const Arguments& args);
+    Local<Value> getHand(const Arguments& args);
+    Local<Value> getOffHand(const Arguments& args);
+    Local<Value> getInventory(const Arguments& args);
+    Local<Value> getArmor(const Arguments& args);
+    Local<Value> getEnderChest(const Arguments& args);
 
     Local<Value> getScore(const Arguments& args);
     Local<Value> setScore(const Arguments& args);
@@ -82,6 +84,13 @@ public:
     Local<Value> addTag(const Arguments& args);
     Local<Value> removeTag(const Arguments& args);
     Local<Value> getAllTags(const Arguments& args);
+    Local<Value> getAbilities(const Arguments& args);
+    Local<Value> getAttributes(const Arguments& args);
+
+    //For Compatibility
+    Local<Value> getIP();
+    Local<Value> getAllItems(const Arguments& args);
+    Local<Value> removeItem(const Arguments& args);
 };
 
 //////////////////// APIs ////////////////////

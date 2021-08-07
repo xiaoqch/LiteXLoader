@@ -18,6 +18,30 @@
 
 <br>
 
+#### `"onBedExplode"` - 发生由床引起的爆炸
+
+- 监听函数原型
+  `function(pos)`
+- 参数：
+  - pos : `IntPos`  
+    爆炸发生的床的坐标
+- 拦截事件：函数返回`false`
+
+<br>
+
+#### `"onRespawnAnchorExplode"` - 发生由重生锚引起的爆炸
+
+- 监听函数原型
+  `function(pos)`
+- 参数：
+  - pos : `IntPos`  
+    爆炸发生的重生锚的坐标
+  - player : `Player`  
+    试图使用重生锚的玩家
+- 拦截事件：函数返回`false`
+
+<br>
+
 #### `"onBlockExploded"` - 方块被爆炸破坏
 
 - 监听函数原型

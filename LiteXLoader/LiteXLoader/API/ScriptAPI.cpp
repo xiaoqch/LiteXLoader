@@ -125,29 +125,41 @@ void HandleTimeTaskMessage(utils::Message& msg)
     bool isFunc = (bool) msg.TIMETASK_IS_FUNC;
     Global<Value>* func = (Global<Value>*)(msg.TIMETASK_FUNC);
 
-    if (timeTaskMap[id])
+    try
     {
-        try
+        timeTaskMap.at(id);
+    }
+    catch (...)
+    {
+        return;
+    }
+
+    try
+    {
+        if (func->isEmpty())
         {
-            if (isFunc)
-                func->get().asFunction().call();
-            else
-                EngineScope::currentEngine()->eval(func->get().toStr());
-        }
-        catch (const Exception& e)
-        {
-            ERROR(string("Error occurred in ") + (isInterval ? "setInterval" : "setTimeout"));
-            ERRPRINT(e);
+            timeTaskMap.erase(id);
+            return;
         }
 
-        if (isInterval)
-        {
-            NewTimeTask(id, nextInterval, true, isFunc, func->get());
-        }
+        if (isFunc)
+            func->get().asFunction().call();
         else
-        {
-            timeTaskMap[id] = false;
-        }
+            EngineScope::currentEngine()->eval(func->get().toStr());
+    }
+    catch (const Exception& e)
+    {
+        ERROR(string("Error occurred in ") + (isInterval ? "setInterval" : "setTimeout"));
+        ERRPRINT(e);
+    }
+
+    if (isInterval)
+    {
+        NewTimeTask(id, nextInterval, true, isFunc, func->get());
+    }
+    else
+    {
+        timeTaskMap.erase(id);
     }
 }
 
@@ -217,7 +229,7 @@ Local<Value> ClearInterval(const Arguments& args)
     CHECK_ARG_TYPE(args[0], ValueKind::kNumber)
 
     try {
-        timeTaskMap[args[0].toInt()] = false;
+        timeTaskMap.erase(args[0].toInt());
         return Boolean::newBoolean(true);
     }
     CATCH("Fail in ClearInterval!")

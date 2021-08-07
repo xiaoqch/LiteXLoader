@@ -359,20 +359,25 @@ Local<Value> ConfIniClass::set(const Arguments& args)
         if (!isValid())
             return Local<Value>();
 
+        string section = args[0].toStr();
+        string key = args[1].toStr();
         switch (args[2].getKind())
         {
         case ValueKind::kString:
-            Raw_IniSetString(iniConf, args[0].toStr(), args[1].toStr(), args[2].toStr());
+            Raw_IniSetString(iniConf, section, key, args[2].toStr());
             break;
         case ValueKind::kNumber:
-            Raw_IniSetFloat(iniConf, args[0].toStr(), args[1].toStr(), (float)args[2].asNumber().toDouble());
+            if (CheckIsFloat(args[2]))
+                Raw_IniSetFloat(iniConf, section, key, (float)args[2].asNumber().toDouble());
+            else
+                Raw_IniSetInt(iniConf, section, key, args[2].toInt());
             break;
         case ValueKind::kBoolean:
-            Raw_IniSetBool(iniConf, args[0].toStr(), args[1].toStr(), args[2].asBoolean().value());
+            Raw_IniSetBool(iniConf, section, key, args[2].asBoolean().value());
             break;
         default:
             ERROR("Ini file don't support this type of data!");
-            return Boolean::newBoolean(false);
+            return Local<Value>();
             break;
         }
         return Boolean::newBoolean(true);

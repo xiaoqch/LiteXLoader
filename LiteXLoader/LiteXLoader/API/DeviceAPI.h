@@ -23,6 +23,7 @@ public:
 
     static Local<Object> newDevice(Player* p);
 
+    Local<Value> getIP();
     Local<Value> getAvgPing();
     Local<Value> getAvgPacketLoss();
     Local<Value> getOs();

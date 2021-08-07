@@ -3,6 +3,7 @@
 #include <list>
 #include <string>
 #include <map>
+#include <mutex>
 using namespace script;
 
 
@@ -22,6 +23,12 @@ struct RemoteEngineData
 	unsigned threadId;
 };
 
+//远程调用信息
+struct MessageSystemData
+{
+	unsigned threadId;
+};
+
 //全局共享数据
 struct GlobalDataType
 {
@@ -33,6 +40,17 @@ struct GlobalDataType
 
 	//远程调用信息
 	std::unordered_map<std::string, RemoteEngineData> remoteEngineList;
+
+	//模块消息系统线程集合
+	std::unordered_map<std::string, MessageSystemData> moduleMessageSystemsList;
+	int messageSystemNextId = 0;
+
+	//模块消息系统等待队列
+	std::mutex syncWaitListLock;
+	std::unordered_map<int, bool> syncWaitList;
+
+	//插件热管理多线程锁
+	std::mutex hotManageLock;
 };
 
 
