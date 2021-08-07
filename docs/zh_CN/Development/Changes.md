@@ -9,6 +9,8 @@
 #### 20210806 - v0.3.3
 
 - 将玩家的`getAllItems()`、`removeItem()`接口删除，修改为分别使用容器类实现（向下兼容）
+- 增加事件：`onSpawnProjectile`, `onBedExplode`,` onRespawnAnchorExplode`
+- 删除事件：`onProjectileShoot`，`onSplashPotionHitEffect`,`onFishingHookRetrieve`
 
 #### 20210805 - v0.3.3
 
