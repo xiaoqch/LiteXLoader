@@ -27,6 +27,8 @@ bool Raw_RenamePlayer(Player* player, const std::string &name);
 bool Raw_AddLevel(Player* player, int level);
 bool Raw_TransServer(Player* player, const std::string& server, short port);
 bool Raw_CrashPlayer(Player* player);
+bool Raw_GiveItem(Player* player, ItemStack* item);
+int Raw_ClearItem(Player *player, std::string type);
 
 ItemStack* Raw_GetHand(Player* player);
 ItemStack* Raw_GetOffHand(Player* player);

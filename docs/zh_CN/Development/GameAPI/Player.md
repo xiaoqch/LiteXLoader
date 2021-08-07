@@ -341,6 +341,21 @@ pl.rename("newname");
 
 <br>
 
+#### 清除玩家背包中所有指定类型的物品
+
+`pl.clearItem(type)`
+
+- 参数：
+  - type : `String`  
+    要清除的物品对象类型名
+- 返回值：清除的物品个数
+- 返回值类型：`Integer`
+
+将玩家物品栏、主手、副手、盔甲栏中所有物品的type属性与此字符串进行比较  
+如果相等，则清除此物品
+
+<br>
+
 #### 修改玩家操作权限  
 
 `pl.setPermLevel(level)`
@@ -582,7 +597,7 @@ pl.removeBossBar();
 - 返回值：玩家所有属性对象的数组
 - 返回值类型：`Array<Object,Object,...>`
 
-数组中的每一项为一个键 - 值对列表对象`Object`，其内容形如：
+数组中的每一项为一个键 - 值对列表对象`Object`，Attributes对象默认含有`Base` `Current` `DefaultMax` `DefaultMin` `Max` `Min` `Name` 等几种内容 。其内容形如：
 
 ```
 {
@@ -596,6 +611,6 @@ pl.removeBossBar();
 }, 
 ```
 
-（此处使用Json格式直观地展示，具体内容以引擎数据类型为准）
+（此处使用Json格式直观地展示）
 
 <br>

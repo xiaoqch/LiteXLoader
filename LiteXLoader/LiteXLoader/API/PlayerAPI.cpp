@@ -57,6 +57,8 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceFunction("transServer", &PlayerClass::transServer)
         .instanceFunction("crash", &PlayerClass::crash)
         .instanceFunction("setOnFire", &PlayerClass::setOnFire)
+        .instanceFunction("giveItem", &PlayerClass::giveItem)
+        .instanceFunction("clearItem", &PlayerClass::clearItem)
 
         .instanceFunction("getDevice", &PlayerClass::getDevice)
         .instanceFunction("getHand", &PlayerClass::getHand)
@@ -1015,6 +1017,39 @@ Local<Value> PlayerClass::setOnFire(const Arguments& args)
         return Boolean::newBoolean(result);
     }
     CATCH("Fail in setOnFire!")
+}
+
+Local<Value> PlayerClass::giveItem(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        auto item = ItemClass::extractItem(args[0]);
+        if (!item)
+            return Local<Value>();    //Null
+
+        return Boolean::newBoolean(Raw_GiveItem(player,item));
+    }
+    CATCH("Fail in setNbt!");
+}
+
+Local<Value> PlayerClass::clearItem(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        return Number::newNumber(Raw_ClearItem(player, args[0].toStr()));
+    }
+    CATCH("Fail in setNbt!");
 }
 
 Local<Value> PlayerClass::getNbt(const Arguments& args)

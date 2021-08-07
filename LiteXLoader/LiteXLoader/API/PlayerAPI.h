@@ -53,6 +53,8 @@ public:
     Local<Value> transServer(const Arguments& args);
     Local<Value> crash(const Arguments& args);
     Local<Value> setOnFire(const Arguments& args);
+    Local<Value> giveItem(const Arguments& args);
+    Local<Value> clearItem(const Arguments& args);
 
     Local<Value> getDevice(const Arguments& args);
     Local<Value> getHand(const Arguments& args);

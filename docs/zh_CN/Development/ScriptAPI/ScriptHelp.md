@@ -1,6 +1,6 @@
-# LiteXLoader - 脚本辅助接口文档
+# LiteXLoader - 通用脚本接口文档
 
-> 这里提供了大量的 **辅助功能** ，包括日志功能、异步接口等等。  
+> 这里提供了一些常用的 **辅助功能** ，如输出信息和异步接口
 
 他们让你开发脚本变得更加容易而自然，避免了很多无谓的细节问题的纠缠。
 
@@ -15,6 +15,10 @@
     可以是任意类型，参数数量可以是任意个
 - 返回值：无
 
+<br>
+
+### 输出带颜色文本
+
 这是楼上那位的升级版,没错,它支持彩色输出
 
 `colorLog(color,data1,data2,...)`
@@ -26,7 +30,10 @@
     待输出的变量或者数据  
     可以是任意类型，参数数量可以是任意个
 - 返回值：无  
-[![ColorLogExample](https://github.com/LiteLDev/LiteXLoader/blob/main/assets/colorLog.png)]
+
+#### 效果展示：
+
+![ColorLogExample](ScriptHelp.assets/colorLog.png)
 
 <br>
 

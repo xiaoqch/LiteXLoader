@@ -2,6 +2,8 @@
 #include "Player.h"
 #include "Packet.h"
 #include "Entity.h"
+#include "Item.h"
+#include "Container.h"
 #include "SymbolHelper.h"
 #include "ThirdParty.h"
 #include "Global.h"
@@ -154,6 +156,58 @@ bool Raw_TransServer(Player* player, const std::string& server, short port)
 bool Raw_CrashPlayer(Player* player)
 {
     return Raw_SendCrashClientPacket(player);
+}
+
+bool Raw_GiveItem(Player* player, ItemStack* item)
+{
+    return SymCall("?add@Player@@UEAA_NAEAVItemStack@@@Z", bool, Player*, ItemStack*)(player, item);
+}
+
+int Raw_ClearItem(Player *player, std::string type)
+{
+    int cnt = 0;
+
+    //Hand
+    ItemStack* item = Raw_GetHand(player);
+    if (Raw_GetItemTypeName(item) == type)
+    {
+        Raw_SetNull(item);
+        ++cnt;
+    }
+
+    //OffHand
+    item = Raw_GetOffHand(player);
+    if (Raw_GetItemTypeName(item) == type)
+    {
+        Raw_SetNull(item);
+        ++cnt;
+    }
+
+    //Inventory
+    Container* container = Raw_GetInventory(player);
+    auto items = Raw_GetAllSlots(container);
+    for (int i = 0; i < Raw_GetContainerSize(container); ++i)
+    {
+        if (Raw_GetItemTypeName(items[i]) == type)
+        {
+            Raw_RemoveItem(container, i, Raw_GetCount(items[i]));
+            ++cnt;
+        }
+    }
+
+    //Armor
+    container = Raw_GetArmor(player);
+    items = Raw_GetAllSlots(container);
+    for (int i = 0; i < Raw_GetContainerSize(container); ++i)
+    {
+        if (Raw_GetItemTypeName(items[i]) == type)
+        {
+            Raw_RemoveItem(container, i, Raw_GetCount(items[i]));
+            ++cnt;
+        }
+    }
+
+    return cnt;
 }
 
 int Raw_GetScore(Player* player, const std::string &key)
