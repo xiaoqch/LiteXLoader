@@ -23,7 +23,7 @@
 
 ### 检查LiteXLoader加载器版本
 
-`lxl.checkVersion(major[,minor,revision])`
+`lxl.requireVersion(major[,minor,revision])`
 
 - 参数：
   - major: `Integer`  

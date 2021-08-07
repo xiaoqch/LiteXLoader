@@ -6,7 +6,11 @@
 
 注意：此处只会列出造成不兼容变化的API更改。如果要查看所有更新日志，请前往GitHub提交页面查看相关提交记录
 
-#### 20210806 - v0.3.3
+#### 20210808 - v0.4.1
+
+- 将`lxl.checkVersion`重命名为`lxl.requireVersion`（向下兼容）
+
+#### 20210807 - v0.4.0
 
 - 将玩家的`getAllItems()`、`removeItem()`接口删除，修改为分别使用容器类实现（向下兼容）
 - 增加事件：`onSpawnProjectile`, `onBedExplode`,` onRespawnAnchorExplode`
