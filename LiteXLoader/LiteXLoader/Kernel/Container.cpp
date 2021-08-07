@@ -1,5 +1,6 @@
 #include "Container.h"
 #include "Global.h"
+#include "Item.h"
 #include "SymbolHelper.h"
 using namespace std;
 
@@ -7,13 +8,14 @@ bool Raw_AddItem(Container* container, ItemStack* item)
 {
 	if (!Raw_HasRoomFor(container,item))
 		return false;
-	container->addItem(*item);
+
+	container->addItem(*Raw_CloneItem(item));
 	return true;
 }
 
 bool Raw_AddItemToFirstEmptySlot(Container* container, ItemStack* item)
 {
-	return container->addItemToFirstEmptySlot(*item);
+	return container->addItemToFirstEmptySlot(*Raw_CloneItem(item));
 }
 
 bool Raw_HasRoomFor(Container* container, ItemStack* item)

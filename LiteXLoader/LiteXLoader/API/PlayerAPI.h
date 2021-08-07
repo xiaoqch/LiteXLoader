@@ -62,6 +62,7 @@ public:
     Local<Value> getInventory(const Arguments& args);
     Local<Value> getArmor(const Arguments& args);
     Local<Value> getEnderChest(const Arguments& args);
+    Local<Value> refreshItems(const Arguments& args);
 
     Local<Value> getScore(const Arguments& args);
     Local<Value> setScore(const Arguments& args);

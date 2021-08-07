@@ -6,31 +6,47 @@
 #include <vector>
 using namespace std;
 
-ItemStack* Raw_NewItem(std::string type, int count)
-{
-    Tag* nbt = Tag::createTag(TagType::Compound);
-    nbt->putByte("WasPickedUp", 0);
-    nbt->putInt("Damage", 0);
-    nbt->putString("Name", type);
-    nbt->putInt("Count", count);
-
-    return Raw_NewItem(nbt);
-}
-
-ItemStack* Raw_NewItem(Tag* tag)
+ItemStack* Raw_NewItem()
 {
     try
     {
-        char a[272];
-        ItemStack* item = SymCall("??0ItemStack@@QEAA@XZ", ItemStack*, ItemStack*)((ItemStack*)a);
-        tag->setItem(item);
-
+        ItemStack* a = (ItemStack*) new char[272];
+        ItemStack* item = SymCall("??0ItemStack@@QEAA@XZ", ItemStack*, ItemStack*)(a);
         return item;
     }
     catch (...)
     {
         return nullptr;
     }
+}
+
+ItemStack* Raw_NewItem(std::string type, int count)
+{
+    Tag* nbt = Tag::createTag(TagType::Compound);
+    nbt->putByte("WasPickedUp", 0);
+    nbt->putShort("Damage", 0);
+    nbt->putString("Name", type);
+    nbt->putByte("Count", count);
+
+    return Raw_NewItem(nbt);
+}
+
+ItemStack* Raw_NewItem(Tag* tag)
+{
+    ItemStack* item = Raw_NewItem();
+    if (!item)
+        return nullptr;
+    tag->setItem(item);
+
+    return item;
+}
+
+ItemStack* Raw_CloneItem(ItemStack* item)
+{
+    ItemStack* it = Raw_NewItem();
+    if (!item)
+        return nullptr;
+    return SymCall("?clone@ItemStack@@QEBA?AV1@XZ", ItemStack*, ItemStack*, ItemStack*)(item,it);
 }
 
 class Spawner;

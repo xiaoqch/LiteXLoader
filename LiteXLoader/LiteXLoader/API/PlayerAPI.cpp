@@ -66,6 +66,7 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceFunction("getInventory", &PlayerClass::getInventory)
         .instanceFunction("getArmor", &PlayerClass::getArmor)
         .instanceFunction("getEnderChest", &PlayerClass::getEnderChest)
+        .instanceFunction("refreshItems", &PlayerClass::refreshItems)
 
         .instanceFunction("getScore", &PlayerClass::getScore)
         .instanceFunction("setScore", &PlayerClass::setScore)
@@ -601,6 +602,17 @@ Local<Value> PlayerClass::getEnderChest(const Arguments& args)
     CATCH("Fail in getEnderChest!");
 }
 
+Local<Value> PlayerClass::refreshItems(const Arguments& args)
+{
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        return Boolean::newBoolean(Raw_RefreshItems(player));
+    }
+    CATCH("Fail in refreshItems!");
+}
 
 Local<Value> PlayerClass::rename(const Arguments& args)
 {
@@ -1167,7 +1179,14 @@ Local<Value> PlayerClass::getAttributes(const Arguments& args)
         auto list = Tag::fromActor(player)->asCompound();
         try
         {
-            return Tag2Value(&list.at("Attributes"), true);
+            auto attr = list.at("Attributes").asList();
+
+            Local<Array> arr = Array::newArray();
+            for (auto& tag : attr)
+            {
+                arr.add(Tag2Value(tag, true));
+            }
+            return arr;
         }
         catch (...)
         {

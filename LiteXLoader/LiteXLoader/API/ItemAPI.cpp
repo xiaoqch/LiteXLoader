@@ -23,6 +23,7 @@ ClassDefine<ItemClass> ItemClassBuilder =
         .instanceProperty("aux", &ItemClass::getAux)
 
         .instanceFunction("set", &ItemClass::set)
+        .instanceFunction("clone", &ItemClass::clone)
         .instanceFunction("isNull", &ItemClass::isNull)
         .instanceFunction("setNull", &ItemClass::setNull)
         .instanceFunction("setLore", &ItemClass::setLore)
@@ -134,7 +135,19 @@ Local<Value> ItemClass::set(const Arguments& args)
 
         return Boolean::newBoolean(Raw_SetItem(item, itemNew));
     }
-    CATCH("Fail in giveItem!");
+    CATCH("Fail in set!");
+}
+
+Local<Value> ItemClass::clone(const Arguments& args)
+{
+    try {
+        auto item = ItemClass::extractItem(args[0]);
+        if (!item)
+            return Local<Value>();    //Null
+
+        return Boolean::newBoolean(Raw_CloneItem(item));
+    }
+    CATCH("Fail in cloneItem!");
 }
 
 Local<Value> ItemClass::isNull(const Arguments& args)

@@ -356,6 +356,17 @@ pl.rename("newname");
 
 <br>
 
+#### 刷新玩家所有物品
+
+`pl.refreshItems()`
+
+- 返回值：是否成功刷新
+- 返回值类型：`Boolean`
+
+在修改玩家物品之后，为了促使客户端生效，需要刷新玩家所有的物品
+
+<br>
+
 #### 修改玩家操作权限  
 
 `pl.setPermLevel(level)`
@@ -597,7 +608,7 @@ pl.removeBossBar();
 - 返回值：玩家所有属性对象的数组
 - 返回值类型：`Array<Object,Object,...>`
 
-数组中的每一项为一个键 - 值对列表对象`Object`，Attributes对象默认含有`Base` `Current` `DefaultMax` `DefaultMin` `Max` `Min` `Name` 等几种内容 。其内容形如：
+数组中的每一项为一个键 - 值对列表对象`Object`，Attributes对象默认含有`Base` `Current` `DefaultMax` `DefaultMin` `Max` `Min` `Name` 等几种内容 。其内容形如：
 
 ```
 {

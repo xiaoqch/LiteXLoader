@@ -136,6 +136,12 @@ Container* Raw_GetEnderChest(Player* pl)
     return dAccess<Container*>(pl, 4360);       //IDA ReplaceItemCommand::execute 1086 
 }
 
+bool Raw_RefreshItems(Player* pl)
+{
+    SymCall("?sendInventory@ServerPlayer@@UEAAX_N@Z",void,ServerPlayer*,bool)((ServerPlayer*)pl, true);
+    return true;
+}
+
 bool Raw_RenamePlayer(Player* player, const string &name)
 {
     player->setNameTag(name);
@@ -160,7 +166,9 @@ bool Raw_CrashPlayer(Player* player)
 
 bool Raw_GiveItem(Player* player, ItemStack* item)
 {
-    return SymCall("?add@Player@@UEAA_NAEAVItemStack@@@Z", bool, Player*, ItemStack*)(player, item);
+    bool res = SymCall("?add@Player@@UEAA_NAEAVItemStack@@@Z", bool, Player*, ItemStack*)(player, item);
+    Raw_RefreshItems(player);
+    return res;
 }
 
 int Raw_ClearItem(Player *player, std::string type)
@@ -207,6 +215,7 @@ int Raw_ClearItem(Player *player, std::string type)
         }
     }
 
+    Raw_RefreshItems(player);
     return cnt;
 }
 
@@ -319,10 +328,4 @@ int Raw_GetPlayerDimId(Player* player)
 Player* Raw_GetPlayerByUniqueId(ActorUniqueID id) {
     return SymCall("?getPlayer@Level@@UEBAPEAVPlayer@@UActorUniqueID@@@Z"
         , Player*, Level*, ActorUniqueID)(mc->getLevel(), id);
-}
-
-bool Raw_RefreshInventory(Player* pl) {
-    SymCall("?sendInventory@ServerPlayer@@UEAAX_N@Z", void,
-        ServerPlayer*, bool)((ServerPlayer*)pl, true);
-    return true;
 }

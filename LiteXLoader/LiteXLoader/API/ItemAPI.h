@@ -34,6 +34,7 @@ public:
     Local<Value> getAux();
 
     Local<Value> set(const Arguments& args);
+    Local<Value> clone(const Arguments& args);
     Local<Value> isNull(const Arguments& args);
     Local<Value> setNull(const Arguments& args);
     Local<Value> setLore(const Arguments& args);

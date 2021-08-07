@@ -4,6 +4,8 @@
 class Player;
 class Container;
 class ItemStack;
+class FloatVec4;
+class ActorUniqueID;
 
 std::string Raw_GetPlayerName(Player* player);
 FloatVec4 Raw_GetPlayerPos(Player* player);
@@ -35,6 +37,7 @@ ItemStack* Raw_GetOffHand(Player* player);
 Container* Raw_GetInventory(Player* pl);
 Container* Raw_GetArmor(Player* pl);
 Container* Raw_GetEnderChest(Player* pl);
+bool Raw_RefreshItems(Player* pl);
 
 int Raw_GetScore(Player* player, const std::string &key);
 bool Raw_SetScore(Player* player, const std::string &key, int value);
@@ -50,4 +53,3 @@ bool Raw_IsPlayerValid(Player *player);
 
 int Raw_GetPlayerDimId(Player* player);
 Player* Raw_GetPlayerByUniqueId(ActorUniqueID id);
-bool Raw_RefreshInventory(Player* pl);
