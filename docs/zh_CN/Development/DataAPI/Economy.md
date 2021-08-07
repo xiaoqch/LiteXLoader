@@ -93,13 +93,15 @@ LLMoney除了拥有传统经济系统的能力之外，还有查询金额变动�
 
 其中，结果为一系列记录对象组成的数组。对于每个记录对象`record`，有如下的键和对应的值：
 
-| 键             | 值的意义                 | 数据类型  |
-| -------------- | ------------------------ | --------- |
-| `record.from`  | 此项交易的发起者玩家Xuid | `String`  |
-| `record.to`    | 此项交易的接收者玩家Xuid | `String`  |
-| `record.money` | 此项交易的金额           | `Integer` |
-| `record.time`  | 此项交易发生时的时间戳   | `Integer` |
-| `record.note`  | 此交易的附加说明信息     | `String`  |
+| 键             | 值的意义                   | 数据类型  |
+| -------------- | -------------------------- | --------- |
+| `record.from`  | 此项交易的发起者玩家Xuid   | `String`  |
+| `record.to`    | 此项交易的接收者玩家Xuid   | `String`  |
+| `record.money` | 此项交易的金额             | `Integer` |
+| `record.time`  | 此项交易发生时的时间字符串 | `String`  |
+| `record.note`  | 此交易的附加说明信息       | `String`  |
+
+时间字符串的格式为：YYYY-mm-dd hh:mm:ss
 
 <br>
 

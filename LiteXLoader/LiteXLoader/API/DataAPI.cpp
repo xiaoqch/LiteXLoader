@@ -7,6 +7,7 @@
 #include <Engine/EngineOwnData.h>
 #include <Kernel/System.h>
 #include <Kernel/Data.h>
+#include <Kernel/Utils.h>
 
 using namespace script;
 using namespace std;
@@ -636,27 +637,39 @@ Local<Value> MoneyGetHintory(const Arguments& args)
     try
     {
         string res{ Raw_GetMoneyHist(stoull(args[0].toStr()), args[1].asNumber().toInt64()) };
-        // from -> to money timestamp (note)
+        auto list = SplitStrWithPattern(res, "\n");
+        // from -> to money time (note)
 
-        istringstream sin(res);
         Local<Array> arr = Array::newArray();
 
-        string from, to, note, tmp;
-        long long money, timestamp;
-        while (sin)
+        string from, to, time1, time2, note, tmp;
+        long long money;
+        for(auto &str : list)
         {
+            if (str.back() == '\n')
+                str.pop_back();
+
+            istringstream sin(str);
             Local<Object> obj = Object::newObject();
 
-            sin >> from >> tmp >> to >> money >> timestamp >> note;
+            note.clear();
+            sin >> from >> tmp >> to >> money >> time1 >> time2 >> note;
+            while (sin)
+            {
+                sin >> tmp;
+                note += " " + tmp;
+            }
             if (note.front() == '(')
                 note.erase(0, 1);
             if (note.back() == ')')
                 note.pop_back();
 
+            time1 += " " + time2;
+
             obj.set("from", String::newString(from));
             obj.set("to", String::newString(to));
             obj.set("money", Number::newNumber(money));
-            obj.set("time", Number::newNumber(timestamp));
+            obj.set("time", String::newString(time1));
             obj.set("note", String::newString(note));
             arr.add(obj);
         }
