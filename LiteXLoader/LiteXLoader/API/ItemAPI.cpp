@@ -202,20 +202,44 @@ Local<Value> ItemClass::setNbt(const Arguments& args)
 Local<Value> NewItem(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
+
     try {
-        Tag* nbt = NbtCompound::extractNBT(args[0]);
-        if (nbt)
+        if (args[0].isString())
         {
-            ItemStack* item = Raw_NewItem(nbt);
-            if (!item)
-                return Local<Value>();    //Null
+            //name & count
+            if (args.size() >= 2 && args[1].isNumber())
+            {
+                string type = args[0].toStr();
+                int cnt = args[1].toInt();
+
+                ItemStack* item = Raw_NewItem(type,cnt);
+                if (!item)
+                    return Local<Value>();    //Null
+                else
+                    return ItemClass::newItem(item);
+            }
             else
-                return ItemClass::newItem(item);
+            {
+                ERROR("Wrong number of arguments in NewItem!");
+                return Local<Value>();
+            }
         }
         else
         {
-            ERROR("Wrong type of argument in NewItem!");
-            return Local<Value>();
+            Tag* nbt = NbtCompound::extractNBT(args[0]);
+            if (nbt)
+            {
+                ItemStack* item = Raw_NewItem(nbt);
+                if (!item)
+                    return Local<Value>();    //Null
+                else
+                    return ItemClass::newItem(item);
+            }
+            else
+            {
+                ERROR("Wrong type of argument in NewItem!");
+                return Local<Value>();
+            }
         }
     }
     CATCH("Fail in NewItem!");

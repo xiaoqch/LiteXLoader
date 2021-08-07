@@ -6,6 +6,17 @@
 #include <vector>
 using namespace std;
 
+ItemStack* Raw_NewItem(std::string type, int count)
+{
+    Tag* nbt = Tag::createTag(TagType::Compound);
+    nbt->putByte("WasPickedUp", 0);
+    nbt->putInt("Damage", 0);
+    nbt->putString("Name", type);
+    nbt->putInt("Count", count);
+
+    return Raw_NewItem(nbt);
+}
+
 ItemStack* Raw_NewItem(Tag* tag)
 {
     try

@@ -6,6 +6,7 @@ class ItemStack;
 class Tag;
 class FloatVec4;
 
+ItemStack* Raw_NewItem(std::string type, int count);
 ItemStack* Raw_NewItem(Tag* tag);
 Actor* Raw_SpawnItemByItemStack(ItemStack* item, const FloatVec4& pos);
 
