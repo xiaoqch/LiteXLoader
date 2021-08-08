@@ -443,3 +443,61 @@ Local<Value> SpawnMob(const Arguments& args)
     }
     CATCH("Fail in SpawnMob!");
 }
+
+Local<Value> Explode(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 6);
+
+    try {
+        FloatVec4 pos;
+        int beginIndex;
+        if (args.size() == 6)
+        {
+            // FloatPos
+            beginIndex = 1;
+            auto posObj = FloatPos::extractPos(args[0]);
+            if (posObj)
+            {
+                if (posObj->dim < 0)
+                    return Local<Value>();
+                else
+                    pos = *posObj;
+            }
+            else
+            {
+                ERROR("Wrong type of argument in Explode!");
+                return Local<Value>();
+            }
+        }
+        else if (args.size() == 9)
+        {
+            // Number Pos
+            beginIndex = 4;
+            CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
+            CHECK_ARG_TYPE(args[1], ValueKind::kNumber);
+            CHECK_ARG_TYPE(args[2], ValueKind::kNumber);
+            CHECK_ARG_TYPE(args[3], ValueKind::kNumber);
+            pos = { args[0].asNumber().toFloat(), args[1].asNumber().toFloat(), args[2].asNumber().toFloat(), args[3].toInt() };
+        }
+        else
+        {
+            ERROR("Wrong number of arguments in Explode!");
+            return Local<Value>();
+        }
+
+        auto source = EntityClass::extractEntity(args[beginIndex + 0]); //Can be nullptr
+        
+        CHECK_ARG_TYPE(args[beginIndex + 1], ValueKind::kNumber);
+        CHECK_ARG_TYPE(args[beginIndex + 2], ValueKind::kNumber);
+        CHECK_ARG_TYPE(args[beginIndex + 3], ValueKind::kBoolean);
+        CHECK_ARG_TYPE(args[beginIndex + 4], ValueKind::kBoolean);
+
+        float power = args[beginIndex + 1].asNumber().toFloat();
+        float range = args[beginIndex + 2].asNumber().toFloat();
+        bool isDestroy = args[beginIndex + 3].asBoolean().value();
+        bool isFire = args[beginIndex + 4].asBoolean().value();
+
+        return Boolean::newBoolean(Raw_Explode(pos, source, power, range, isDestroy, isFire));
+    }
+    CATCH("Fail in Explode!");
+}

@@ -42,7 +42,6 @@ public:
     Local<Value> toPlayer(const Arguments& args);
     Local<Value> getArmor(const Arguments& args);
     
-    
     Local<Value> getNbt(const Arguments& args);
     Local<Value> setNbt(const Arguments& args);
     Local<Value> addTag(const Arguments& args);
@@ -52,3 +51,4 @@ public:
 
 //////////////////// APIs ////////////////////
 Local<Value> SpawnMob(const Arguments& args);
+Local<Value> Explode(const Arguments& args);

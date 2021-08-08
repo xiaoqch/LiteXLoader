@@ -149,3 +149,13 @@ bool Raw_RemoveTag(Actor* ac, const string& str) {
     return SymCall("?removeTag@Actor@@QEAA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z",
         bool, Actor*, const string*)(ac, &str);
 }
+
+bool Raw_Explode(FloatVec4 pos, Actor* source, float power, float range, float isDestroy, float isFire)
+{
+    Vec3 vec{ pos.x,pos.y,pos.z };
+
+    SymCall("?explode@Level@@UEAAXAEAVBlockSource@@PEAVActor@@AEBVVec3@@M_N3M3@Z",
+        void, Level*, BlockSource*, Actor*, Vec3*, float, bool, bool, float, bool)
+        (mc->getLevel(), Raw_GetBlockSourceByDim(pos.dim), source, &vec, power, isFire, isDestroy, range, true);
+    return true;
+}

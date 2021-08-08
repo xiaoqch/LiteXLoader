@@ -182,3 +182,30 @@
 关于NBT对象的更多使用，请参考 [NBT接口文档](zh_CN/Development/NbtAPI/NBT.md)
 
 <br>
+
+### 其他实体函数 API
+
+下面这些API提供了与游戏中指定位置实体互动的API
+
+#### 在指定位置制造一次爆炸
+
+`mc.explode(pos,source,power,range,isDestroy,isFire)`  
+`mc.explode(x,y,z,dimid,source,power,range,isDestroy,isFire)`
+
+- 参数：
+  - pos : `FloatPos`  
+    引发爆炸的位置坐标（或者使用x, y, z, dimid来确定实体位置）
+  - source : `Entity`  
+    设置爆炸来源的实体对象，可以为`Null`
+  - power : `Float`  
+    爆炸的威力值，影响爆炸的伤害大小
+  - range : `Float`  
+    爆炸的范围半径，影响爆炸的波及范围
+  - isDestroy : `Boolean`  
+    爆炸是否破坏方块
+  - isFire : `Boolean`  
+    爆炸结束后是否留下燃烧的火焰
+- 返回值：是否成功制造爆炸
+- 返回值类型：`Boolean`
+
+<br>
