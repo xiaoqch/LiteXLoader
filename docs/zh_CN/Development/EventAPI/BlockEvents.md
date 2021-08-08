@@ -104,7 +104,7 @@
 #### `"onProjectileHitBlock"` - 方块被弹射物击中
 
 - 监听函数原型
-  `function(block,pos,source)`
+  `function(block,source)`
 - 参数：
   - block : `Block`  
     被击中的方块对象

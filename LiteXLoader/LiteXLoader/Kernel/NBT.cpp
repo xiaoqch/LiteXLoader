@@ -151,9 +151,16 @@ Tag* Tag::fromActor(Actor* actor) {
     return tmp;
 }
 
-void Tag::setActor(Actor* actor)
+bool Tag::setActor(Actor* actor)
 {
-    return;
+    return SymCall("?load@Actor@@UEAA_NAEBVCompoundTag@@AEAVDataLoadHelper@@@Z",
+        bool, Actor*, Tag*, DataLoadHelper*)(actor, this, gDataHelperActor);
+}
+
+bool Tag::setPlayer(Player* player)
+{
+    return SymCall("?load@ServerPlayer@@UEAA_NAEBVCompoundTag@@AEAVDataLoadHelper@@@Z",
+        bool, ServerPlayer*, Tag*, DataLoadHelper*)((ServerPlayer*)player, this, gDataHelperActor);
 }
 
 //toJson

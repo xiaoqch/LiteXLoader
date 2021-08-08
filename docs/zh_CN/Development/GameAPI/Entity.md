@@ -15,7 +15,7 @@
    
    - 参数：
      - name : `String`  
-       生物的命名空间名称，如 `creeper`
+       生物的命名空间名称，如 `minectaft:creeper`
      - pos : `FloatPos`  
        生成生物的位置的坐标对象（或者使用x, y, z, dimid来确定生成位置）
    - 返回值：生成的实体对象
@@ -183,6 +183,22 @@
 
 <br>
 
+#### 写入实体对应的NBT对象
+
+`en.setNbt(nbt)`
+
+- 参数：
+  - nbt : `NbtCompound`  
+    NBT对象
+- 返回值：是否成功写入
+- 返回值类型：`Boolean`
+
+### 此接口正在修复中！暂时请勿使用
+
+关于NBT对象的更多使用，请参考 [NBT接口文档](zh_CN/Development/NbtAPI/NBT.md)
+
+<br>
+
 ### 其他实体函数 API
 
 下面这些API提供了与游戏中指定位置实体互动的API
@@ -198,7 +214,7 @@
   - source : `Entity`  
     设置爆炸来源的实体对象，可以为`Null`
   - power : `Float`  
-    爆炸的威力值，影响爆炸的伤害大小
+    爆炸的威力值，影响爆炸的伤害大小和破坏范围
   - range : `Float`  
     爆炸的范围半径，影响爆炸的波及范围
   - isDestroy : `Boolean`  

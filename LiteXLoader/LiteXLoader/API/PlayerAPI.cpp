@@ -1089,8 +1089,7 @@ Local<Value> PlayerClass::setNbt(const Arguments& args)
         if (!nbt)
             return Local<Value>();    //Null
 
-        nbt->setActor((Actor*)player);
-        return Boolean::newBoolean(true);
+        return Boolean::newBoolean(nbt->setPlayer(player));
     }
     CATCH("Fail in setNbt!")
 }

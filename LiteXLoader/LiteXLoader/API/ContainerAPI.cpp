@@ -11,7 +11,7 @@ ClassDefine<ContainerClass> ContainerClassBuilder =
 		.constructor(nullptr)
 		.instanceFunction("getRawPtr", &ContainerClass::getRawPtr)
 
-		.instanceProperty("getSize", &ContainerClass::getSize)
+		.instanceProperty("size", &ContainerClass::getSize)
 
 		.instanceFunction("addItem", &ContainerClass::addItem)
 		.instanceFunction("addItemToFirstEmptySlot", &ContainerClass::addItemToFirstEmptySlot)

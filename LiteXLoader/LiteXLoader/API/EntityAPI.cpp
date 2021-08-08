@@ -338,10 +338,9 @@ Local<Value> EntityClass::setNbt(const Arguments& args)
         if (!nbt)
             return Local<Value>();    //Null
 
-        nbt->setActor(entity);
-        return Boolean::newBoolean(true);
+        return Boolean::newBoolean(nbt->setActor(entity));
     }
-    CATCH("Fail in setTag!")
+    CATCH("Fail in setNbt!")
 }
 
 Local<Value> EntityClass::addTag(const Arguments& args)

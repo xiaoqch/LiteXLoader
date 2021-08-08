@@ -50,7 +50,7 @@
 #### `"onProjectileHitEntity"` - 实体被弹射物击中
 
 - 监听函数原型
-  `function(entity,pos,source)`
+  `function(entity,source)`
 - 参数：
   - entity: `Entity`  
     被击中的实体对象

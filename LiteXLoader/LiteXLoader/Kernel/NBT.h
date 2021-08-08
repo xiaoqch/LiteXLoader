@@ -59,10 +59,12 @@ public:
 	//static
 	void setItem(ItemStack* item);
 	void setBlock(Block* blk);
-	void setActor(Actor* actor);
+	bool setActor(Actor* actor);
+	bool setPlayer(Player* actor);
 	static Tag* fromItem(ItemStack* item);
 	static Tag* fromBlock(Block* blk);
 	static Tag* fromActor(Actor* actor);
+	static Tag* fromPlayer(Player* player);
 };
 
 std::string TagToJson(Tag* nbt, int formatIndent);
