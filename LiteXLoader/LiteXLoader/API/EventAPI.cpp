@@ -120,6 +120,7 @@ static std::vector<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)]
     std::vector<ListenerListType> &nowList = listenerList[int(TYPE)]; \
     bool passToBDS = true; \
     for(int i = 0; i < nowList.size(); ++i) { \
+        if(nowList[i].func.isEmpty()) continue; \
         EngineScope enter(nowList[i].engine); \
         try{ \
             auto result = nowList[i].func.get().call({},__VA_ARGS__); \
@@ -140,6 +141,7 @@ static std::vector<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)]
     std::vector<ListenerListType> &nowList = listenerList[int(TYPE)]; \
     bool passToBDS = true; \
     for(int i = 0; i < nowList.size(); ++i) { \
+        if(nowList[i].func.isEmpty()) continue; \
         EngineScope enter(nowList[i].engine); \
         try{ \
             auto result = nowList[i].func.get().call({},__VA_ARGS__); \
@@ -160,6 +162,7 @@ static std::vector<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)]
     std::vector<ListenerListType> &nowList = listenerList[int(TYPE)]; \
     bool passToBDS = true; \
     for(int i = 0; i < nowList.size(); ++i) { \
+        if(nowList[i].func.isEmpty()) continue; \
         EngineScope enter(nowList[i].engine); \
         try{ \
             auto result = nowList[i].func.get().call({},__VA_ARGS__); \
@@ -181,6 +184,7 @@ static std::vector<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)]
         std::vector<ListenerListType>& nowList = listenerList[int(TYPE)]; \
         for (int i = 0; i < nowList.size(); ++i) { \
             if (nowList[i].engine == ENGINE) { \
+                if(nowList[i].func.isEmpty()) break; \
                 EngineScope enter(nowList[i].engine); \
                 try { nowList[i].func.get().call({},__VA_ARGS__); } \
                 catch (const Exception& e) { \

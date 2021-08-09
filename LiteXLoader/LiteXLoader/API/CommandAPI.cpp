@@ -72,7 +72,7 @@ bool LxlRemoveCmdRegister(ScriptEngine* engine)
     for (auto& cmdData : localShareData->consoleCmdCallbacks)
     {
         if (cmdData.second.fromEngine == engine)
-            localShareData->playerCmdCallbacks.erase(cmdData.first);
+            localShareData->consoleCmdCallbacks.erase(cmdData.first);
     }
     return true;
 }
