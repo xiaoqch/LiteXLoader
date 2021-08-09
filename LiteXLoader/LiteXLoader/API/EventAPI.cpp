@@ -1076,7 +1076,7 @@ THook(bool, "?_trySpawnBlueFire@FireBlock@@AEBA_NAEAVBlockSource@@AEBVBlockPos@@
 {
     IF_LISTENED(EVENT_TYPES::onFireSpread)
     {
-        CallEventRtnBool(EVENT_TYPES::onFireSpread, IntPos::newPos(*bp, Raw_GetBlockDimension(bs)));
+        CallEventRtnValue(EVENT_TYPES::onFireSpread, true, IntPos::newPos(*bp, Raw_GetBlockDimension(bs)));
     }
     IF_LISTENED_END();
     return original(_this, bs, bp);
