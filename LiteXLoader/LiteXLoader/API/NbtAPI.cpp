@@ -123,9 +123,10 @@ Tag* NbtValue::extractNBT(Local<Value> v)
         return nullptr;
 }
 
-Local<Object> NbtValue::newNBT(Tag* p)
+Local<Object> NbtValue::newNBT(Tag* p, bool canDelete)
 {
     NbtValue *nbt = new NbtValue(p);
+    nbt->canDelete = canDelete;
     return nbt->getScriptObject();
 }
 
@@ -164,9 +165,10 @@ Tag* NbtList::extractNBT(Local<Value> v)
         return nullptr;
 }
 
-Local<Object> NbtList::newNBT(Tag* p)
+Local<Object> NbtList::newNBT(Tag* p, bool canDelete)
 {
     NbtList* nbt = new NbtList(p);
+    nbt->canDelete = canDelete;
     return nbt->getScriptObject();
 }
 
@@ -620,9 +622,10 @@ Tag* NbtCompound::extractNBT(Local<Value> v)
         return nullptr;
 }
 
-Local<Object> NbtCompound::newNBT(Tag* p)
+Local<Object> NbtCompound::newNBT(Tag* p, bool canDelete)
 {
     NbtCompound* nbt = new NbtCompound(p);
+    nbt->canDelete = canDelete;
     return nbt->getScriptObject();
 }
 

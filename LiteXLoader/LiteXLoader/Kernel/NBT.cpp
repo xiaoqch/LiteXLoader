@@ -119,6 +119,11 @@ void Tag::putByteArray(const string& key, const TagMemoryChunk& value) {
         void, void*, string, const TagMemoryChunk&)(this, key, value);
 }
 
+void Tag::destroy() 
+{
+    SymCall("??1CompoundTag@@UEAA@XZ", void, Tag*)(this);
+}
+
 void Tag::addValue2List(Tag* t) {
 	SymCall("?add@ListTag@@QEAAXV?$unique_ptr@VTag@@U?$default_delete@VTag@@@std@@@std@@@Z",
 		void, void*, Tag**)(this, &t);
@@ -141,7 +146,7 @@ Tag* Tag::fromBlock(Block* blk) {
 }
 
 void Tag::setBlock(Block* blk) {
-	*(Tag*)((uintptr_t)blk + 96) = *this;
+    *(Tag*)((uintptr_t)blk + 96) = *this;
 }
 
 Tag* Tag::fromActor(Actor* actor) {

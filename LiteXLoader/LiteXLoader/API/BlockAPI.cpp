@@ -140,7 +140,7 @@ Local<Value> BlockClass::getRawPtr(const Arguments& args)
 Local<Value> BlockClass::getNbt(const Arguments& args)
 {
     try {
-        return NbtCompound::newNBT(Tag::fromBlock(block));
+        return NbtCompound::newNBT(Tag::fromBlock(block),false);
     }
     CATCH("Fail in getNbt!")
 }
