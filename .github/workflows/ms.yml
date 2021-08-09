@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - beta
 
 env:
   SOLUTION_FILE_PATH: .
@@ -50,3 +51,9 @@ jobs:
       with:
         name: LiteXLoader
         path: D:/build
+    
+    - name: Create Release
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: softprops/action-gh-release@v0.1.7
+        with:
+          files: D:/build/*
