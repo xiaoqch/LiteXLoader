@@ -67,6 +67,8 @@ bool Raw_HasBlockEntity(IntVec4 pos)
 
 Actor* Raw_GetBlockEntity(IntVec4 pos)
 {
+    //################## BlockActor is not a type of Actor! ##################
+
     BlockPos bp{ pos.x,pos.y,pos.z };
     BlockSource* bs = Raw_GetBlockSourceByDim(pos.dim);
 
