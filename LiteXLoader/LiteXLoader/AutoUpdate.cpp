@@ -1,5 +1,5 @@
 #define LXL_UPDATE_DOMAIN "https://cdn.jsdelivr.net"
-#define LXL_UPDATE_INFO_REMOTE "/gh/LiteLDev/update/LXL.json"
+#define LXL_UPDATE_INFO_REMOTE "/gh/LiteLDev/update@latest/LXL.json"
 
 #define LXL_UPDATE_PROGRAM "plugins/LiteXLoader/LXLAutoUpdate.dll"
 #define LXL_UPDATE_CHECK_PRELOAD "plugins/preload.conf"
@@ -23,6 +23,8 @@ using namespace std;
 void SetHttpHeader(httplib::Client* cli)
 {
 	cli->set_default_headers({
+		{"cache-control", "max-age=0"},
+		{ "Accept-Encoding", "gzip, deflate, br" },
 		{ "UserAgent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36 Edg/92.0.902.67" }
 	});
 }
@@ -33,6 +35,10 @@ bool CheckAutoUpdate(bool isUpdateManually)
 	{
 		httplib::Client cli(LXL_UPDATE_DOMAIN);
 		SetHttpHeader(&cli);
+
+		//refresh
+		cli.Get(LXL_UPDATE_INFO_REMOTE);
+		Sleep(1000);
 
 		auto response = cli.Get(LXL_UPDATE_INFO_REMOTE);
 		if (!response || response->status != 200)
