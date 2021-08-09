@@ -5,6 +5,7 @@
 #include "ContainerAPI.h"
 #include "NbtAPI.h"
 #include <Kernel/Entity.h>
+#include <Kernel/Container.h>
 using namespace script;
 
 //////////////////// Class Definition ////////////////////
@@ -29,6 +30,8 @@ ClassDefine<EntityClass> EntityClassBuilder =
         .instanceFunction("isPlayer", &EntityClass::isPlayer)
         .instanceFunction("toPlayer", &EntityClass::toPlayer)
         .instanceFunction("getArmor", &EntityClass::getArmor)
+        .instanceFunction("hasContainer", &EntityClass::hasContainer)
+        .instanceFunction("getContainer", &EntityClass::getContainer)
         .instanceFunction("setNbt", &EntityClass::setNbt)
         .instanceFunction("getNbt", &EntityClass::getNbt)
         .instanceFunction("addTag", &EntityClass::addTag)
@@ -295,6 +298,31 @@ Local<Value> EntityClass::getArmor(const Arguments& args)
         return ContainerClass::newContainer(Raw_GetArmor(entity));
     }
     CATCH("Fail in getArmor!");
+}
+
+Local<Value> EntityClass::hasContainer(const Arguments& args)
+{
+    try {
+        Actor* entity = get();
+        if (!entity)
+            return Local<Value>();
+
+        return Boolean::newBoolean(Raw_HasContainer(Raw_GetEntityPos(entity)));
+    }
+    CATCH("Fail in hasContainer!");
+}
+
+Local<Value> EntityClass::getContainer(const Arguments& args)
+{
+    try {
+        Actor* entity = get();
+        if (!entity)
+            return Local<Value>();
+
+        Container* container = Raw_GetContainer(Raw_GetEntityPos(entity));
+        return container ? ContainerClass::newContainer(container) : Local<Value>();
+    }
+    CATCH("Fail in getContainer!");
 }
 
 Local<Value> EntityClass::setOnFire(const Arguments& args)
