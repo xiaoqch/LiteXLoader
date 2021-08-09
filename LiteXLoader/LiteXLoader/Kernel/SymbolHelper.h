@@ -109,12 +109,6 @@ public:
 class Container
 {
 public:
-    //std::vector<ItemStack const *,std::allocator<ItemStack const *> > const Container::getSlots()const 
-    MCINLINE std::vector<ItemStack const*, std::allocator<ItemStack const*> > const getSlots() {
-        std::vector<ItemStack const*, std::allocator<ItemStack const*> > const (Container:: * fnp)()const;
-        *((void**)&fnp) = dlsym("?getSlots@Container@@UEBA?BV?$vector@PEBVItemStack@@V?$allocator@PEBVItemStack@@@std@@@std@@XZ");
-        return (this->*fnp)();
-    }
     //void Container::addItem(ItemStack &)
     MCINLINE void addItem(ItemStack& arg0) {
         void (Container:: * fnp)(ItemStack&)const;
@@ -137,6 +131,18 @@ public:
     MCINLINE bool isEmpty() {
         bool (Container:: * fnp)()const;
         *((void**)&fnp) = dlsym("?isEmpty@Container@@UEBA_NXZ");
+        return (this->*fnp)();
+    }
+    //std::vector<ItemStack,std::allocator<ItemStack> > Container::getSlotCopies()const 
+    MCINLINE std::vector<ItemStack, std::allocator<ItemStack> > getSlotCopies() {
+        std::vector<ItemStack, std::allocator<ItemStack> >(Container:: * fnp)()const;
+        *((void**)&fnp) = dlsym("?getSlotCopies@Container@@UEBA?AV?$vector@VItemStack@@V?$allocator@VItemStack@@@std@@@std@@XZ");
+        return (this->*fnp)();
+    }
+    //std::vector<ItemStack const *,std::allocator<ItemStack const *> > const Container::getSlots()const 
+    MCINLINE std::vector<ItemStack*, std::allocator<ItemStack *> >  getSlots() {
+        std::vector<ItemStack *, std::allocator<ItemStack*> >  (Container:: * fnp)()const;
+        *((void**)&fnp) = dlsym("?getSlots@Container@@UEBA?BV?$vector@PEBVItemStack@@V?$allocator@PEBVItemStack@@@std@@@std@@XZ");
         return (this->*fnp)();
     }
     //int Container::getItemCount(ItemStack const &)const 

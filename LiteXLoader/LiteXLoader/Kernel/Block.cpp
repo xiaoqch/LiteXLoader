@@ -59,3 +59,17 @@ bool Raw_SpawnParticle(IntVec4 pos, const string& type)
 
     return true;
 }
+
+bool Raw_HasBlockEntity(IntVec4 pos)
+{
+    return Raw_GetBlockEntity(pos) != nullptr;
+}
+
+Actor* Raw_GetBlockEntity(IntVec4 pos)
+{
+    BlockPos bp{ pos.x,pos.y,pos.z };
+    BlockSource* bs = Raw_GetBlockSourceByDim(pos.dim);
+
+    return SymCall("?getBlockEntity@BlockSource@@QEAAPEAVBlockActor@@AEBVBlockPos@@@Z",
+        Actor*, BlockSource*, BlockPos*)(bs, &bp);
+}

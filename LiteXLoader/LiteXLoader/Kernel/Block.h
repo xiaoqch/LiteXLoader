@@ -5,6 +5,7 @@ class Block;
 class Container;
 class IntVec4;
 class FloatVec4;
+class Actor;
 
 std::string Raw_GetBlockName(Block* block);
 std::string Raw_GetBlockType(Block* block);
@@ -14,3 +15,6 @@ Block* Raw_NewBlockFromName(string str);
 bool Raw_SetBlockByBlock(IntVec4 pos, Block* block);
 bool Raw_SetBlockByName(IntVec4 pos, const string &name);
 bool Raw_SpawnParticle(IntVec4 pos, const string& type);
+
+bool Raw_HasBlockEntity(IntVec4 pos);
+Actor* Raw_GetBlockEntity(IntVec4 pos);

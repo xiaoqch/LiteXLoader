@@ -17,10 +17,14 @@ ClassDefine<ContainerClass> ContainerClassBuilder =
 		.instanceFunction("addItemToFirstEmptySlot", &ContainerClass::addItemToFirstEmptySlot)
 		.instanceFunction("hasRoomFor", &ContainerClass::hasRoomFor)
 		.instanceFunction("removeItem", &ContainerClass::removeItem)
-		.instanceFunction("getSlot", &ContainerClass::getSlot)
-		.instanceFunction("getAllSlots", &ContainerClass::getAllSlots)
+		.instanceFunction("getItem", &ContainerClass::getItem)
+		.instanceFunction("getAllItems", &ContainerClass::getAllItems)
 		.instanceFunction("removeAllItems", &ContainerClass::removeAllItems)
 		.instanceFunction("isEmpty", &ContainerClass::isEmpty)
+
+		//For Compatibility
+		.instanceFunction("getSlot", &ContainerClass::getItem)
+		.instanceFunction("getAllSlots", &ContainerClass::getAllItems)
 		.build();
 
 //////////////////// Classes ////////////////////
@@ -120,7 +124,7 @@ Local<Value> ContainerClass::removeItem(const Arguments& args)
 	CATCH("Fail in removeItem!");
 }
 
-Local<Value> ContainerClass::getSlot(const Arguments& args)
+Local<Value> ContainerClass::getItem(const Arguments& args)
 {
 	CHECK_ARGS_COUNT(args, 1);
 	CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
@@ -134,10 +138,10 @@ Local<Value> ContainerClass::getSlot(const Arguments& args)
 		}
 		return ItemClass::newItem(item);
 	}
-	CATCH("Fail in getSlot!");
+	CATCH("Fail in getItem!");
 }
 
-Local<Value> ContainerClass::getAllSlots(const Arguments& args)
+Local<Value> ContainerClass::getAllItems(const Arguments& args)
 {
 	try {
 		auto list = Raw_GetAllSlots(container);
@@ -149,7 +153,7 @@ Local<Value> ContainerClass::getAllSlots(const Arguments& args)
 		}
 		return res;
 	}
-	CATCH("Fail in getAllSlots!");
+	CATCH("Fail in getAllItems!");
 }
 
 Local<Value> ContainerClass::removeAllItems(const Arguments& args)
