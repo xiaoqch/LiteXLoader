@@ -1,7 +1,7 @@
 ﻿#include "EventAPI.h"
 #include <iostream>
-#include <tuple>
 #include <vector>
+#include <list>
 #include <map>
 #include <string>
 #include <sstream>
@@ -113,17 +113,17 @@ struct ListenerListType
     Global<Function> func;
 };
 //监听器表
-static std::vector<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)];
+static std::list<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)];
 
 //调用事件监听函数，拦截不执行original
 #define CallEventRtnVoid(TYPE,...) \
-    std::vector<ListenerListType> &nowList = listenerList[int(TYPE)]; \
+    std::list<ListenerListType> &nowList = listenerList[int(TYPE)]; \
     bool passToBDS = true; \
-    for(int i = 0; i < nowList.size(); ++i) { \
-        if(nowList[i].func.isEmpty()) continue; \
-        EngineScope enter(nowList[i].engine); \
+    for(auto &listener : nowList) { \
+        /*if(nowList[i].func.isEmpty()) continue;*/ \
+        EngineScope enter(listener.engine); \
         try{ \
-            auto result = nowList[i].func.get().call({},__VA_ARGS__); \
+            auto result = listener.func.get().call({},__VA_ARGS__); \
             if(result.isBoolean() && result.asBoolean().value() == false) \
                 passToBDS = false; \
         } \
@@ -138,13 +138,13 @@ static std::vector<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)]
 
 //调用事件监听函数，拦截返回false
 #define CallEventRtnBool(TYPE,...) \
-    std::vector<ListenerListType> &nowList = listenerList[int(TYPE)]; \
+    std::list<ListenerListType> &nowList = listenerList[int(TYPE)]; \
     bool passToBDS = true; \
-    for(int i = 0; i < nowList.size(); ++i) { \
-        if(nowList[i].func.isEmpty()) continue; \
-        EngineScope enter(nowList[i].engine); \
+    for(auto &listener : nowList) { \
+        /*if(nowList[i].func.isEmpty()) continue;*/ \
+        EngineScope enter(listener.engine); \
         try{ \
-            auto result = nowList[i].func.get().call({},__VA_ARGS__); \
+            auto result = listener.func.get().call({},__VA_ARGS__); \
             if(result.isBoolean() && result.asBoolean().value() == false) \
                 passToBDS = false; \
         } \
@@ -159,13 +159,13 @@ static std::vector<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)]
 
 //调用事件监听函数，拦截返回RETURN_VALUE
 #define CallEventRtnValue(TYPE,RETURN_VALUE,...) \
-    std::vector<ListenerListType> &nowList = listenerList[int(TYPE)]; \
+    std::list<ListenerListType> &nowList = listenerList[int(TYPE)]; \
     bool passToBDS = true; \
-    for(int i = 0; i < nowList.size(); ++i) { \
-        if(nowList[i].func.isEmpty()) continue; \
-        EngineScope enter(nowList[i].engine); \
+    for(auto &listener : nowList) { \
+        /*if(nowList[i].func.isEmpty()) continue;*/ \
+        EngineScope enter(listener.engine); \
         try{ \
-            auto result = nowList[i].func.get().call({},__VA_ARGS__); \
+            auto result = listener.func.get().call({},__VA_ARGS__); \
             if(result.isBoolean() && result.asBoolean().value() == false) \
                 passToBDS = false; \
         } \
@@ -181,12 +181,12 @@ static std::vector<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)]
 //模拟事件调用监听
 #define FakeCallEvent(ENGINE,TYPE,...) \
     { \
-        std::vector<ListenerListType>& nowList = listenerList[int(TYPE)]; \
-        for (int i = 0; i < nowList.size(); ++i) { \
-            if (nowList[i].engine == ENGINE) { \
-                if(nowList[i].func.isEmpty()) break; \
-                EngineScope enter(nowList[i].engine); \
-                try { nowList[i].func.get().call({},__VA_ARGS__); } \
+        std::list<ListenerListType>& nowList = listenerList[int(TYPE)]; \
+        for (auto &listener : nowList) { \
+            if (listener.engine == ENGINE) { \
+                /*if(nowList[i].func.isEmpty()) break;*/ \
+                EngineScope enter(listener.engine); \
+                try { listener.func.get().call({},__VA_ARGS__); } \
                 catch (const Exception& e) { \
                     ERROR("Event Callback Failed!"); \
                     ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName); \
@@ -238,14 +238,9 @@ bool LxlRemoveAllEventListeners(ScriptEngine* engine)
 {
     for (auto& listeners : listenerList)
     {
-        for (int i = 0; i < listeners.size(); ++i)
-        {
-            if (listeners[i].engine == engine)
-            {
-                listeners.erase(listeners.begin() + i);
-                --i;
-            }
-        }
+        listeners.remove_if([engine](auto& listener) {
+            return listener.engine == engine;
+        });
     }
     return true;
 }
