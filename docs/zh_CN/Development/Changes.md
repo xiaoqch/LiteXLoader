@@ -6,6 +6,10 @@
 
 注意：此处只会列出造成不兼容变化的API更改。如果要查看所有更新日志，请前往GitHub提交页面查看相关提交记录
 
+#### 20210809 - v0.4.1
+
+- 将容器类成员方法`getSlot`和`getAllSlots`分别改名为`getItem`和`getAllItems`（向下兼容）
+
 #### 20210808 - v0.4.1
 
 - 将`lxl.checkVersion`重命名为`lxl.requireVersion`（向下兼容）

@@ -86,7 +86,7 @@
 
 #### 获取容器某个格子的物品对象
 
-`ct.getSlot(index)`  
+`ct.getItem(index)`  
 
 - 参数：
   - index : `Integer`  
@@ -100,7 +100,7 @@
 
 #### 获取容器所有格子的物品对象列表
 
-`ct.getAllSlots()`  
+`ct.getAllItems()`  
 
 - 返回值：容器中所有的物品对象
 - 返回值类型：`Array<Item,Item,...>`

@@ -52,6 +52,7 @@ public:
 	void putCompound(const std::string& k, Tag* v);
 	void putByte(const std::string& k, char v);
 	void putByteArray(const std::string& key, const TagMemoryChunk& value);
+	void destroy();
 
 	//list
 	void addValue2List(Tag* t);

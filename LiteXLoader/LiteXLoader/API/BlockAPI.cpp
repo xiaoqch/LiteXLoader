@@ -2,6 +2,7 @@
 #include "BaseAPI.h"
 #include "BlockAPI.h"
 #include "ContainerAPI.h"
+#include "EntityAPI.h"
 #include "NbtAPI.h"
 #include <Kernel/NBT.h>
 #include <Kernel/Block.h>
@@ -27,6 +28,8 @@ ClassDefine<BlockClass> BlockClassBuilder =
         .instanceFunction("getBlockState", &BlockClass::getBlockState)
         .instanceFunction("hasContainer", &BlockClass::hasContainer)
         .instanceFunction("getContainer", &BlockClass::getContainer)
+        .instanceFunction("hasBlockEntity", &BlockClass::hasBlockEntity)
+        .instanceFunction("getBlockEntity", &BlockClass::getBlockEntity)
 
         //For Compatibility
         .instanceFunction("setTag", &BlockClass::setNbt)
@@ -137,7 +140,7 @@ Local<Value> BlockClass::getRawPtr(const Arguments& args)
 Local<Value> BlockClass::getNbt(const Arguments& args)
 {
     try {
-        return NbtCompound::newNBT(Tag::fromBlock(block));
+        return NbtCompound::newNBT(Tag::fromBlock(block),false);
     }
     CATCH("Fail in getNbt!")
 }
@@ -192,6 +195,23 @@ Local<Value> BlockClass::getContainer(const Arguments& args)
         return container ? ContainerClass::newContainer(container) : Local<Value>();
     }
     CATCH("Fail in getContainer!");
+}
+
+Local<Value> BlockClass::hasBlockEntity(const Arguments& args)
+{
+    try {
+        return Boolean::newBoolean(Raw_HasBlockEntity({ pos.x, pos.y, pos.z, pos.dim }));
+    }
+    CATCH("Fail in hasBlockEntity!");
+}
+
+Local<Value> BlockClass::getBlockEntity(const Arguments& args)
+{
+    try {
+        Actor* entity = Raw_GetBlockEntity({ pos.x, pos.y, pos.z, pos.dim });
+        return entity ? EntityClass::newEntity(entity) : Local<Value>();
+    }
+    CATCH("Fail in getBlockEntity!");
 }
 
 

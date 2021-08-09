@@ -81,5 +81,5 @@ extern int lxlLogLevel;
 #define WARN(t)  { if(lxlLogLevel >= 3) std::cout << PREFIX "[Warning] " << (t) << std::endl; }
 #define ERROR(t)  { if(lxlLogLevel >= 2) std::cerr << PREFIX "[Error] " << (t) << std::endl; }
 #define FATAL(t)  { if(lxlLogLevel >= 1) std::cerr << PREFIX "[FATAL] " << (t) << std::endl; }
-#define PRINT(t)  { std::cout << t << std::endl; }
-#define ERRPRINT(t)  { if(lxlLogLevel >= 2) std::cerr << t << std::endl; }
+#define PRINT(t)  { std::cout << (t) << std::endl; }
+#define ERRPRINT(t)  { if(lxlLogLevel >= 2) std::cerr << (t) << std::endl; }

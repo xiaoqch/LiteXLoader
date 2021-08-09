@@ -41,8 +41,7 @@ ItemStack* Raw_GetSlot(Container* container, int slot)
 
 std::vector<ItemStack*> Raw_GetAllSlots(Container* container)
 {
-	return SymCall("?getSlots@Container@@UEBA?BV?$vector@PEBVItemStack@@V?$allocator@PEBVItemStack@@@std@@@std@@XZ",
-		vector<ItemStack*>, Container*)(container);
+	return container->getSlots();
 }
 
 bool Raw_RemoveAllItems(Container* container)
@@ -58,8 +57,8 @@ bool Raw_IsEmpty(Container* container)
 
 int Raw_GetContainerSize(Container* container)
 {
-	using _QWORD = int8_t;
-	return (*(__int64 (**)(void))(*(_QWORD*)container + 112i64))();		//IDA char __fastcall Container::addItemToFirstEmptySlot
+	using _QWORD = unsigned long long;
+	return (*(signed int(__fastcall**)(__int64))(*(_QWORD*)container + 112i64))((unsigned long long)container);		//IDA Container::getSlotCopies
 }
 
 bool Raw_HasContainer(FloatVec4 pos)

@@ -29,8 +29,8 @@ public:
     Local<Value> addItemToFirstEmptySlot(const Arguments& args);
     Local<Value> hasRoomFor(const Arguments& args);
     Local<Value> removeItem(const Arguments& args);
-    Local<Value> getSlot(const Arguments& args);
-    Local<Value> getAllSlots(const Arguments& args);
+    Local<Value> getItem(const Arguments& args);
+    Local<Value> getAllItems(const Arguments& args);
     Local<Value> removeAllItems(const Arguments& args);
     Local<Value> isEmpty(const Arguments& args);
 };

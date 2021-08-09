@@ -9,8 +9,13 @@ class NbtBase
 {
 protected:
     Tag* nbt;
+    bool canDelete = false;
 
 public:
+    ~NbtBase() {
+        if(canDelete)
+            delete nbt;
+    }
     Local<Value> getType(const Arguments& args);
     Local<Value> toString(const Arguments& args);
 };
@@ -41,7 +46,7 @@ public:
     explicit NbtValue(Tag* p);
 
     static Tag* extractNBT(Local<Value> v);
-    static Local<Object> newNBT(Tag* p);
+    static Local<Object> newNBT(Tag* p, bool canDelete = true);
     TagType getValueType() { return type; }
 
     Local<Value> set(const Arguments& args);
@@ -56,7 +61,7 @@ public:
     explicit NbtList(Tag* p);
 
     static Tag* extractNBT(Local<Value> v);
-    static Local<Object> newNBT(Tag* p);
+    static Local<Object> newNBT(Tag* p, bool canDelete = true);
 
     Local<Value> getSize(const Arguments& args);
     Local<Value> getTypeOf(const Arguments& args);
@@ -88,7 +93,7 @@ public:
     explicit NbtCompound(Tag* p);
 
     static Tag* extractNBT(Local<Value> v);
-    static Local<Object> newNBT(Tag* p);
+    static Local<Object> newNBT(Tag* p, bool canDelete = true);
 
     Local<Value> getKeys(const Arguments& args);
     Local<Value> getTypeOf(const Arguments& args);

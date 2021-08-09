@@ -47,6 +47,8 @@ public:
     Local<Value> getBlockState(const Arguments& args);
     Local<Value> hasContainer(const Arguments& args);
     Local<Value> getContainer(const Arguments& args);
+    Local<Value> hasBlockEntity(const Arguments& args);
+    Local<Value> getBlockEntity(const Arguments& args);
 };
 
 //////////////////// APIs ////////////////////
