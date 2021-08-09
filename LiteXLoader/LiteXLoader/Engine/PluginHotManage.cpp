@@ -4,9 +4,11 @@
 #include "LoaderHelper.h"
 #include "MessageSystem.h"
 #include "GlobalShareData.h"
+#include <AutoUpdate.h>
 #include <Configs.h>
 #include <Version.h>
 #include <string>
+#include <thread>
 using namespace std;
 
 void HotManageMessageCallback(ModuleMessage& msg)
@@ -68,6 +70,14 @@ bool ProcessHotManageCmd(const std::string& cmd)
     if (cmd == "lxl version")
     {
         printf("LiteXLoader v%d.%d.%d\n", LXL_VERSION_MAJOR, LXL_VERSION_MINOR, LXL_VERSION_REVISION);
+        return false;
+    }
+    else if (cmd == "lxl update")
+    {
+        std::thread([]
+        {
+            CheckAutoUpdate(true);
+        }).detach();
         return false;
     }
     

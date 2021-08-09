@@ -76,6 +76,8 @@ DependsDir=./plugins/lib	# LXL依赖库目录，默认为plugins/lib
   重新加载插件列表中的所有插件
 - `lxl version`  
   输出当前安装的LXL版本
+- `lxl update`  
+  手动检查LiteXLoader自动更新
 
 【热管理使用警示】
 

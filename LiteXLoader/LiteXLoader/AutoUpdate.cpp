@@ -10,6 +10,7 @@
 #include <string>
 #include <thread>
 #include <chrono>
+#include <process.h>
 #include <filesystem>
 #include <Version.h>
 #include <Kernel/Base.h>
@@ -19,10 +20,25 @@
 #include <Kernel/Data.h>
 using namespace std;
 
-bool ProcessUpdateInfo(const string &info)
+bool CheckAutoUpdate(bool isUpdateManually)
 {
 	try
 	{
+		httplib::Client cli(LXL_UPDATE_DOMAIN);
+
+		auto response = cli.Get(LXL_UPDATE_INFO_REMOTE);
+		if (!response || response->status != 200)
+		{
+			if (isUpdateManually)
+			{
+				PRINT("LXL自动更新信息拉取失败！");
+			}
+			else
+				DEBUG("LXL自动更新信息拉取失败！");
+			return false;
+		}
+		string info{ response->body };
+
 		JSON_ROOT data = JSON_ROOT::parse(info);
 
 		if (data["AutoUpdate"].is_object())
@@ -34,22 +50,40 @@ bool ProcessUpdateInfo(const string &info)
 			string bdsRemote = data["AutoUpdate"]["BDS"].get<string>();
 			if (bds != bdsRemote && !LXL_VERSION_IS_BETA)
 			{
-				INFO("提示：您的BDS版本和当前主线维护版本不一致，自动更新将不会推送");
-				INFO("如果有需要，请前往LXL相关页面手动更新加载器")
-				return false;
+				INFO("提示：您的BDS版本和当前主线维护版本不一致，自动更新将不会推送，避免发生版本冲突");
+				INFO("如果有需要，请前往LXL相关页面手动更新加载器");
+				if (isUpdateManually)
+					return false;
+				else
+					_endthreadex(0);
 			}
 
 			//Get Version
 			string verRemote = data["AutoUpdate"]["Version"].get<string>();
 			auto versRemote = SplitStrWithPattern(verRemote, ".");
 			if (versRemote.size() < 3)
-				return true;
+			{
+				if (isUpdateManually)
+				{
+					PRINT("版本信息解析失败！格式错误");
+				}
+				else
+					DEBUG("版本信息解析失败！格式错误");
+				return false;
+			}
+				
 			int a = stoi(versRemote[0]);
 			int b = stoi(versRemote[1]);
 			int c = stoi(versRemote[2]);
 
 			if (a <= LXL_VERSION_MAJOR && b <= LXL_VERSION_MINOR && c <= LXL_VERSION_REVISION)
+			{
+				if (isUpdateManually)
+				{
+					PRINT("当前版本已是最新版本，无需更新。");
+				}
 				return true;
+			}
 
 			//Check existing update
 			auto ini = Raw_IniOpen(LXL_UPDATE_INFO_RECORD);
@@ -63,7 +97,12 @@ bool ProcessUpdateInfo(const string &info)
 			Raw_IniClose(ini);
 
 			//Downloading
-			DEBUG("检测到新版本，启动更新");
+			if (isUpdateManually)
+			{
+				PRINT("检测到新版本，启动更新");
+			}
+			else
+				DEBUG("检测到新版本，启动更新");
 			filesystem::remove_all(LXL_UPDATE_CACHE_PATH);
 			filesystem::create_directories(LXL_UPDATE_CACHE_PATH);
 			
@@ -74,8 +113,13 @@ bool ProcessUpdateInfo(const string &info)
 			httplib::Client cli(domain.c_str());
 			if (!cli.is_valid())
 			{
-				DEBUG("更新启动失败！");
-				return true;
+				if (isUpdateManually)
+				{
+					PRINT("更新启动失败！");
+				}
+				else
+					DEBUG("更新启动失败！");
+				return false;
 			}
 
 			auto iniUpdate = Raw_IniOpen(LXL_UPDATE_INFO_RECORD);
@@ -94,7 +138,12 @@ bool ProcessUpdateInfo(const string &info)
 				}
 				else
 				{
-					DEBUG("自动更新下载文件失败！错误码：" + to_string(response->status));
+					if (isUpdateManually)
+					{
+						PRINT("自动更新下载文件失败！错误码：" + to_string(response->status));
+					}
+					else
+						DEBUG("自动更新下载文件失败！错误码：" + to_string(response->status));
 					return true;
 				}
 
@@ -113,9 +162,14 @@ bool ProcessUpdateInfo(const string &info)
 		}
 	}
 	catch (JSON_ROOT::exception& e) {
-		DEBUG(string("LXL版本更新信息解析失败！") + e.what());
+		if (isUpdateManually)
+		{
+			PRINT(string("LXL版本更新信息解析失败！") + e.what());
+		}
+		else
+			DEBUG(string("LXL版本更新信息解析失败！") + e.what());
 	}
-	return true;
+	return false;
 }
 
 void AddPreload()
@@ -154,25 +208,10 @@ void InitAutoUpdateCheck()
 
 	std::thread([]()
 	{
-		httplib::Client cli(LXL_UPDATE_DOMAIN);
-		if (!cli.is_valid())
-		{
-			WARN("LXL自动更新系统启动失败！");
-			return ;
-		}
-
 		while (true)
 		{
 			std::this_thread::sleep_for(std::chrono::seconds(LXL_UPDATE_CHECK_INTERVAL));
-
-			auto response = cli.Get(LXL_UPDATE_INFO_REMOTE);
-			if (response && response->status == 200)
-			{
-				DEBUG("LXL自动更新信息获取成功");
-
-				if (!ProcessUpdateInfo(response->body))
-					break;
-			}
+			CheckAutoUpdate(false);
 		}
 	}).detach();
 }
