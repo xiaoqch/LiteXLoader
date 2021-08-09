@@ -52,9 +52,14 @@ jobs:
       with:
         name: LiteXLoader
         path: D:/build
+
+    - name: Zip files
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: pwsh
+        run: Compress-Archive -Path D:/build/* D:/LiteXLoader.zip
     
     - name: Create Release
       if: startsWith(github.ref, 'refs/tags/v')
       uses: softprops/action-gh-release@v0.1.7
       with:
-        files: D:/build/*
+        files: D:/LiteXLoader.zip
