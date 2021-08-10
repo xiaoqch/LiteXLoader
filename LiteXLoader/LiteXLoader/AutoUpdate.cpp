@@ -1,5 +1,5 @@
 #define LXL_UPDATE_DOMAIN "https://cdn.jsdelivr.net"
-#define LXL_UPDATE_INFO_REMOTE "/gh/LiteLDev/update@latest/LXL.json"
+#define LXL_UPDATE_INFO_REMOTE "/gh/LiteLDev/update@master/LXL.json"
 
 #define LXL_UPDATE_PROGRAM "plugins/LiteXLoader/LXLAutoUpdate.dll"
 #define LXL_UPDATE_CHECK_PRELOAD "plugins/preload.conf"
