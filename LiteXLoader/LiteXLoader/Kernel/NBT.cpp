@@ -1,5 +1,6 @@
 ﻿#include "Global.h"
 #include "NBT.h"
+#include "Data.h"
 #include <vector>
 #include <map>
 using namespace std;
@@ -204,8 +205,7 @@ void TagToJson_List_Helper(JSON_VALUE& res, Tag* nbt)
             res.push_back(tag->asString());
             break;
         case TagType::ByteArray:
-            res.push_back("");
-            WARN("There are no symbol to read a ByteArray in BDS");
+            res.push_back("<ByteArray>");
             break;
         case TagType::List: {
             JSON_VALUE arrJson = JSON_VALUE::array();
@@ -258,8 +258,7 @@ void TagToJson_Compound_Helper(JSON_VALUE& res, Tag* nbt)
             res.push_back({ key,tag.asString() });
             break;
         case TagType::ByteArray:
-            res.push_back({ key,"" });
-            WARN("There are no symbol to read a ByteArray in BDS");
+            res.push_back({ key,"<ByteArray>" });
             break;
         case TagType::List: {
             JSON_VALUE arrJson = JSON_VALUE::array();
@@ -310,8 +309,10 @@ string TagToJson(Tag* nbt, int formatIndent)
         result = nbt->asString();
         break;
     case TagType::ByteArray:
-        result = "";
-        WARN("There are no symbol to read a ByteArray in BDS");
+        auto& bytes = nbt->asByteArray();
+        char* res = Raw_Base64Encode((char*)bytes.data.get(), bytes.size);
+        result = string(res);
+        free(res);
         break;
     case TagType::List: {
         JSON_VALUE jsonRes = JSON_VALUE::array();
