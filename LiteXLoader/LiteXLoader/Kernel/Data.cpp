@@ -4,9 +4,6 @@
 #include "ThirdParty.h"
 #include <filesystem>
 #include "i18n.h"
-//////////////// Hash ////////////////
-#include <Hash/md5.h>
-#include <Hash/sha1.h>
 using namespace std;
 
 DB_ROOT Raw_NewDB(const string &dir)
@@ -381,10 +378,30 @@ string Raw_Name2Xuid(string name)
 
 string Raw_toMD5(const string& str)
 {
-    return Chocobo1::MD5().addData(str.c_str(), str.size()).finalize().toString();
+    unsigned char md5[MD5_DIGEST_LENGTH];
+    const char map[] = "0123456789abcdef";
+    string hexmd5;
+
+    MD5((const unsigned char*)str.c_str(), str.length(), md5);
+    for (size_t i = 0; i < MD5_DIGEST_LENGTH; ++i) {
+        hexmd5 += map[md5[i] / 16];
+        hexmd5 += map[md5[i] % 16];
+    }
+
+    return hexmd5;
 }
 
 string Raw_toSHA1(const string& str)
 {
-    return Chocobo1::SHA1().addData(str.c_str(), str.size()).finalize().toString();
+    unsigned char sha1[SHA_DIGEST_LENGTH];
+    const char map[] = "0123456789abcdef";
+    string hexsha1;
+
+    SHA1((const unsigned char*)str.c_str(), str.length(), sha1);
+    for (size_t i = 0; i < SHA_DIGEST_LENGTH; ++i) {
+        hexsha1 += map[sha1[i] / 16];
+        hexsha1 += map[sha1[i] % 16];
+    }
+
+    return hexsha1;
 }
