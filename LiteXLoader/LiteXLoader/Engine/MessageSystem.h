@@ -15,7 +15,7 @@ public:
 		RemoteCall, RemoteCallReturn,
 		RemoteRequire, RemoteRequireReturn,
 		LxlCommand,
-		CallbackIntoTick,
+		CallFuncIntoTick,
 		LXL_MODULE_MSG_END
 	};
 	struct MessagePackData
