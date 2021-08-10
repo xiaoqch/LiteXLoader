@@ -1,6 +1,7 @@
 #include "SystemAPI.h"
 #include "APIHelp.h"
 #include <Kernel/System.h>
+#include <Engine/TimeTaskSystem.h>
 #include <filesystem>
 #include <fstream>
 using namespace script;
@@ -24,7 +25,7 @@ Local<Value> SystemCmd(const Arguments& args)
             EngineScope scope(engine);
             try
             {
-                callback.get().call({}, Number::newNumber(exitCode), String::newString(output));
+                NewTimeout(callback.get(), { Number::newNumber(exitCode), String::newString(output) }, 1);
             }
             catch (const Exception& e)
             {
@@ -56,7 +57,7 @@ Local<Value> SystemNewProcess(const Arguments& args)
             EngineScope scope(engine);
             try
             {
-                callback.get().call({}, Number::newNumber(exitCode), String::newString(output));
+                NewTimeout(callback.get(), { Number::newNumber(exitCode), String::newString(output) }, 1);
             }
             catch (const Exception& e)
             {

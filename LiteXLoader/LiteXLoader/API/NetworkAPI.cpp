@@ -1,6 +1,7 @@
 #include "APIHelp.h"
 #include "NetworkAPI.h"
 #include <Kernel/System.h>
+#include <Engine/TimeTaskSystem.h>
 #include <string>
 #include <vector>
 using namespace std;
@@ -23,7 +24,7 @@ Local<Value> HttpGet(const Arguments& args)
             EngineScope scope(engine);
             try
             {
-                callback.get().call({}, Number::newNumber(status), String::newString(body));
+                NewTimeout(callback.get(), { Number::newNumber(status), String::newString(body) }, 1);
             }
             catch (const Exception& e)
             {
@@ -55,7 +56,7 @@ Local<Value> HttpPost(const Arguments& args)
             EngineScope scope(engine);
             try
             {
-                callback.get().call({}, Number::newNumber(status), String::newString(data));
+                NewTimeout(callback.get(), { Number::newNumber(status), String::newString(data) }, 1);
             }
             catch (const Exception& e)
             {
