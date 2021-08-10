@@ -557,22 +557,6 @@ pl.removeBossBar();
 
 <br>
 
-#### 写入玩家对应的NBT对象
-
-`pl.setNbt(nbt)`
-
-- 参数：
-  - nbt : `NbtCompound`  
-    NBT对象
-- 返回值：是否成功写入
-- 返回值类型：`Boolean`
-
-### 此接口正在修复中！暂时请勿使用
-
-关于NBT对象的更多使用，请参考 [NBT接口文档](zh_CN/Development/NbtAPI/NBT.md)
-
-<br>
-
 #### 为玩家增加一个Tag
 
 `pl.addTag(tag)`

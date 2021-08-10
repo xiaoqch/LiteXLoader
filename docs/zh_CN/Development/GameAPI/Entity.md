@@ -183,22 +183,6 @@
 
 <br>
 
-#### 写入实体对应的NBT对象
-
-`en.setNbt(nbt)`
-
-- 参数：
-  - nbt : `NbtCompound`  
-    NBT对象
-- 返回值：是否成功写入
-- 返回值类型：`Boolean`
-
-### 此接口正在修复中！暂时请勿使用
-
-关于NBT对象的更多使用，请参考 [NBT接口文档](zh_CN/Development/NbtAPI/NBT.md)
-
-<br>
-
 ### 其他实体函数 API
 
 下面这些API提供了与游戏中指定位置实体互动的API
