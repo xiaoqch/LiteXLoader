@@ -10,6 +10,7 @@ using namespace std;
 //////////////////// 消息处理注册 ////////////////////
 
 #include "PluginHotManage.h"
+#include "LoaderHelper.h"
 
 void ProcessModuleMessage(ModuleMessage &msg)
 {
@@ -21,6 +22,12 @@ void ProcessModuleMessage(ModuleMessage &msg)
         break;
     case ModuleMessage::MessageType::LxlCommand:
         HotManageMessageCallback(msg);
+        break;
+    case ModuleMessage::MessageType::RemoteRequire:
+        RemoteLoadCallback(msg);
+        break;
+    case ModuleMessage::MessageType::RemoteRequireReturn:
+        RemoteLoadReturnCallback(msg);
         break;
     default:
         break;
@@ -107,6 +114,7 @@ int ModuleMessage::broadcastAll(ModuleMessage& msg)
     for (auto& mod : globalShareData->moduleMessageSystemsList)
     {
         ModuleMessage msgSend(msg);
+
         if (PostThreadMessage(mod.second.threadId, (UINT)msgSend.getType(), msgSend.getWParam(), msgSend.getLParam()))
             ++sent;
     }
@@ -119,8 +127,18 @@ bool ModuleMessage::sendTo(ModuleMessage& msg, string toModuleType)
     try
     {
         ModuleMessage msgSend(msg);
+
         unsigned int threadId = globalShareData->moduleMessageSystemsList.at(toModuleType).threadId;
-        PostThreadMessage(threadId, (UINT)msgSend.getType(), msgSend.getWParam(), msgSend.getLParam());
+        bool res = PostThreadMessage(threadId, (UINT)msgSend.getType(), msgSend.getWParam(), msgSend.getLParam());
+        if (res)
+        {
+            //多线程锁
+            globalShareData->syncWaitListLock.lock();
+            globalShareData->syncWaitList[msgSend.getId()] = true;
+            globalShareData->syncWaitListLock.unlock();
+        }
+        msg.destroy();
+        return res;
     }
     catch (const std::out_of_range& e)
     {
@@ -130,34 +148,39 @@ bool ModuleMessage::sendTo(ModuleMessage& msg, string toModuleType)
 
 bool ModuleMessage::sendBack(ModuleMessage& msg)
 {
-    return PostThreadMessage(packData->senderThread, (UINT)msg.getType(), msg.getWParam(), msg.getLParam());
+    ModuleMessage msgSend(msg);
+    bool res = PostThreadMessage(packData->senderThread, (UINT)msgSend.getType(), msgSend.getWParam(), msgSend.getLParam());
+    if (res)
+    {
+        //多线程锁
+        globalShareData->syncWaitListLock.lock();
+        globalShareData->syncWaitList[msgSend.getId()] = true;
+        globalShareData->syncWaitListLock.unlock();
+    }
+    msg.destroy();
+    return res;
 }
 
 bool ModuleMessage::waitForMessage(int messageId, int maxWaitTime)
 {
-    //多线程锁
-    globalShareData->syncWaitListLock.lock();
-    globalShareData->syncWaitList[messageId] = true;
-    globalShareData->syncWaitListLock.unlock();
-
     auto fromTime = GetCurrentTimeStampMS();
-    bool isSuccess = false;
-    while (maxWaitTime < 0 ? true : GetCurrentTimeStampMS() - fromTime <= maxWaitTime)
+    
+    try
     {
-        Sleep(LXL_MESSAGE_SYSTEM_WAIT_CHECK_INTERVAL);
-        //多线程锁
-        lock_guard<mutex> lock(globalShareData->syncWaitListLock);
-        if (!globalShareData->syncWaitList[messageId])
+        while (maxWaitTime < 0 ? true : GetCurrentTimeStampMS() - fromTime <= maxWaitTime)
         {
-            isSuccess = true;
-            break;
+            Sleep(LXL_MESSAGE_SYSTEM_WAIT_CHECK_INTERVAL);
+            //多线程锁
+            lock_guard<mutex> lock(globalShareData->syncWaitListLock);
+            globalShareData->syncWaitList.at(messageId);
         }
     }
+    catch (const std::out_of_range &)
+    {
+        return true;
+    }
 
-    //多线程锁
-    lock_guard<mutex> lock(globalShareData->syncWaitListLock);
-    globalShareData->syncWaitList.erase(messageId);
-    return isSuccess;
+    return false;
 }
 
 
@@ -184,7 +207,7 @@ unsigned __stdcall ModuleMessageLoop(void* pParam)
                 //多线程锁
                 lock_guard<mutex> lock(globalShareData->syncWaitListLock);
 
-                globalShareData->syncWaitList.at(msg.getId()) = false;
+                globalShareData->syncWaitList.erase(msg.getId());
             }
             catch (...) { ; }
 
