@@ -11,14 +11,17 @@ using namespace std;
 
 #include "PluginHotManage.h"
 #include "LoaderHelper.h"
+#include "RemoteCall.h"
 
 void ProcessModuleMessage(ModuleMessage &msg)
 {
     switch (msg.getType())
     {
     case ModuleMessage::MessageType::RemoteCall:
+        RemoteCallCallback(msg);
         break;
     case ModuleMessage::MessageType::RemoteCallReturn:
+        RemoteCallReturnCallback(msg);
         break;
     case ModuleMessage::MessageType::LxlCommand:
         HotManageMessageCallback(msg);
@@ -42,7 +45,7 @@ ModuleMessage::ModuleMessage(ModuleMessage::MessageType type, string data)
     packData = new MessagePackData;
 
     packData->id = getNextMessageId();
-
+    packData->senderThread = globalShareData->moduleMessageSystemsList[LXL_MODULE_TYPE].threadId;
     this->type = type;
     this->data = data;
 }

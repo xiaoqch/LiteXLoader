@@ -61,7 +61,7 @@ void RemoteLoadCallback(ModuleMessage& msg)
     int backId;
     string filePath;
 
-    sin >> isHotLoad >> backId >> filePath;
+    sin >> backId >> isHotLoad >> filePath;
     bool res = LxlLoadPlugin(filePath, isHotLoad);
 
     ModuleMessage msgBack(backId, ModuleMessage::MessageType::RemoteRequireReturn, string(res ? "1" : "0"));
@@ -88,15 +88,19 @@ bool LxlLoadPlugin(const std::string& filePath, bool isHotLoad)
         //Remote Load
         DEBUG("Remote Load begin");
 
-        int backId = ModuleMessage::getNextMessageId();
         ostringstream sout;
-        sout << isHotLoad << "\n" << backId << "\n" << filePath;
+        int backId = ModuleMessage::getNextMessageId();
+        sout << backId << "\n" << isHotLoad << "\n" << filePath;
 
         ModuleMessage msg(ModuleMessage::MessageType::RemoteRequire, sout.str());
 
         if (suffix == ".lua")
         {
-            ModuleMessage::sendTo(msg, LXL_LANG_LUA);
+            if (!ModuleMessage::sendTo(msg, LXL_LANG_LUA))
+            {
+                ERROR("Fail to send remote load request!");
+                return false;
+            }
         }
         else
         {
