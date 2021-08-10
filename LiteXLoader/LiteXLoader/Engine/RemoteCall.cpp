@@ -120,33 +120,42 @@ bool LxlRemoveAllExportedFuncs(ScriptEngine* engine)
 
 Local<Value> LxlExport(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 2)
-    CHECK_ARG_TYPE(args[0], ValueKind::kFunction)
-    CHECK_ARG_TYPE(args[1], ValueKind::kString)
+    CHECK_ARGS_COUNT(args, 2);
+    CHECK_ARG_TYPE(args[0], ValueKind::kFunction);
+    CHECK_ARG_TYPE(args[1], ValueKind::kString);
 
     try {
         return Boolean::newBoolean(LxlExportFunc(EngineScope::currentEngine(), args[0].asFunction(), args[1].toStr()));
     }
-    CATCH("Fail in LxlExport!")
+    CATCH("Fail in LxlExport!");
 }
 
 Local<Value> LxlImport(const Arguments &args)
 {
-    CHECK_ARGS_COUNT(args, 1)
-    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
 
-    string funcName;
-    try {
-        funcName = args[0].toStr();
-        ExportedFuncData* funcData = &(globalShareData->exportedFuncs).at(funcName);
+    try
+    {
+        string funcName = args[0].toStr();
 
         //远程调用
-        return Function::newFunction([ funcData{ funcData }, funcName{ funcName } ]
-            (const Arguments& args)->Local<Value>
+        return Function::newFunction([funcName{ funcName }]
+        (const Arguments& args)->Local<Value>
         {
             Local<Array> argsList = Array::newArray();
             for (int i = 0; i < args.size(); ++i)
                 argsList.add(args[i]);
+
+            ExportedFuncData* funcData;
+            try {
+                funcData = &(globalShareData->exportedFuncs).at(funcName);
+            }
+            catch (const std::out_of_range& e)
+            {
+                ERROR(string("Fail to import! Function [") + funcName + "] has not been exported!");
+                return Local<Value>();
+            }
 
             Local<Value> res = MakeRemoteCall(funcData, funcName, ValueToJson(argsList));
             if (res.isArray())
@@ -154,11 +163,6 @@ Local<Value> LxlImport(const Arguments &args)
             else
                 return res;
         });
-    }
-    catch (const std::out_of_range& e)
-    {
-        ERROR(string("Fail to import! Function [") + funcName + "] has not been exported!");
-        return Local<Value>();
     }
     CATCH("Fail in LxlImport!")
 }
