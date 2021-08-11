@@ -310,16 +310,6 @@ void InitEventListeners()
         IF_LISTENED_END();
     });
 
-// ===== onChangeDimension =====
-    Event::addEventListener([](ChangeDimEV ev)
-    {
-        IF_LISTENED(EVENT_TYPES::onChangeDim)
-        {
-            CallEventRtnVoid(EVENT_TYPES::onChangeDim, PlayerClass::newPlayer(ev.Player));
-        }
-        IF_LISTENED_END();
-    });
-
 // ===== onMobDie =====
     Event::addEventListener([](MobDieEV ev)
     {
@@ -396,13 +386,21 @@ THook(void, "?sendLoginMessageLocal@ServerNetworkHandler@@QEAAXAEBVNetworkIdenti
     "AEBVConnectionRequest@@AEAVServerPlayer@@@Z",
     ServerNetworkHandler* _this, NetworkIdentifier* ni, ConnectionRequest* cr, ServerPlayer* sp)
 {
-    string id = "", os = "";
-    SymCall("?getDeviceId@ConnectionRequest@@QEBA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ",
-        void, ConnectionRequest*, string*)(cr, &id);
-    int type = SymCall("?getDeviceOS@ConnectionRequest@@QEBA?AW4BuildPlatform@@XZ",
-        int, ConnectionRequest*, string*)(cr, &os);
+    try
+    {
+        string id = "", os = "";
+        SymCall("?getDeviceId@ConnectionRequest@@QEBA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ",
+            void, ConnectionRequest*, string*)(cr, &id);
+        int type = SymCall("?getDeviceOS@ConnectionRequest@@QEBA?AW4BuildPlatform@@XZ",
+            int, ConnectionRequest*, string*)(cr, &os);
 
-    localShareData->deviceInfoRecord[(uintptr_t)sp] = { id,type };
+        localShareData->deviceInfoRecord[(uintptr_t)sp] = { id,type };
+    }
+    catch (const seh_exception& e)
+    {
+        ERROR("SEH Exception Caught!");
+        ERRPRINT(e.what());
+    }
     return original(_this, ni, cr, sp);
 }
 
@@ -456,6 +454,18 @@ THook(void, "?sendPlayerMove@PlayerEventCoordinator@@QEAAXAEAVPlayer@@@Z",
     }
     IF_LISTENED_END();
     return original(_this, pl);
+}
+
+// ===== onChangeDim =====
+THook(void*, "?changeDimension@ServerPlayer@@UEAAXV?$AutomaticID@VDimension@@H@@_N@Z",
+    Actor* ac, unsigned int a3)
+{
+    IF_LISTENED(EVENT_TYPES::onChangeDim)
+    {
+        CallEventRtnValue(EVENT_TYPES::onChangeDim, original(ac, a3), PlayerClass::newPlayer((Player*)ac), Number::newNumber((int)a3));
+    }
+    IF_LISTENED_END();
+    return original(ac, a3);
 }
 
 // ===== onSpawnProjectile =====
@@ -675,14 +685,14 @@ THook(void, "?_destroyBlocks@WitherBoss@@AEAAXAEAVLevel@@AEBVAABB@@AEAVBlockSour
 THook(bool, "?mayPlace@BlockSource@@QEAA_NAEBVBlock@@AEBVBlockPos@@EPEAVActor@@_N@Z",
     BlockSource* _this, Block* a2, BlockPos* a3, unsigned __int8 a4, Actor* a5, bool a6)
 {
-    if (Raw_IsPlayer(a5))
+    IF_LISTENED(EVENT_TYPES::onPlaceBlock)
     {
-        IF_LISTENED(EVENT_TYPES::onPlaceBlock)
+        if (Raw_IsPlayer(a5))
         {
             CallEventRtnBool(EVENT_TYPES::onPlaceBlock, PlayerClass::newPlayer((Player*)a5), BlockClass::newBlock(a2, a3, _this));
         }
-        IF_LISTENED_END();
     }
+    IF_LISTENED_END();
     return original(_this, a2, a3, a4, a5, a6);
 }
 
@@ -1075,7 +1085,7 @@ THook(bool, "?_trySpawnBlueFire@FireBlock@@AEBA_NAEAVBlockSource@@AEBVBlockPos@@
 {
     IF_LISTENED(EVENT_TYPES::onFireSpread)
     {
-        CallEventRtnBool(EVENT_TYPES::onFireSpread, IntPos::newPos(*bp, Raw_GetBlockDimension(bs)));
+        CallEventRtnValue(EVENT_TYPES::onFireSpread, true, IntPos::newPos(*bp, Raw_GetBlockDimension(bs)));
     }
     IF_LISTENED_END();
     return original(_this, bs, bp);
@@ -1090,81 +1100,89 @@ THook(__int64, "?retrieve@FishingHook@@QEAAHXZ",
 THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@VCommandContext@@@std@@_N@Z",
     MinecraftCommands* _this, unsigned int* a2, std::shared_ptr<CommandContext> x, char a4)
 {
-    Player* player = MakeSP(x->getOrigin());
-    string cmd = x->getCmd();
-    if (cmd.front() == '/')
-        cmd = cmd.substr(1);
-    if (!cmd.empty())
+    try
     {
-        if (player)
+        Player* player = MakeSP(x->getOrigin());
+        string cmd = x->getCmd();
+        if (cmd.front() == '/')
+            cmd = cmd.substr(1);
+        if (!cmd.empty())
         {
-            // Player Command
-            vector<string> paras;
-            string prefix = LxlFindCmdReg(true, cmd, paras);
-
-            if (!prefix.empty())
+            if (player)
             {
-                //Lxl Registered Cmd
-                int perm = localShareData->playerCmdCallbacks[prefix].perm;
+                // Player Command
+                vector<string> paras;
+                string prefix = LxlFindCmdReg(true, cmd, paras);
 
-                if (Raw_GetPlayerPermLevel(player) >= perm)
+                if (!prefix.empty())
                 {
-                    bool callbackRes = CallPlayerCmdCallback(player, prefix, paras);
+                    //Lxl Registered Cmd
+                    int perm = localShareData->playerCmdCallbacks[prefix].perm;
+
+                    if (Raw_GetPlayerPermLevel(player) >= perm)
+                    {
+                        bool callbackRes = CallPlayerCmdCallback(player, prefix, paras);
+                        IF_LISTENED(EVENT_TYPES::onPlayerCmd)
+                        {
+                            CallEventRtnBool(EVENT_TYPES::onPlayerCmd, PlayerClass::newPlayer(player), String::newString(cmd));
+                        }
+                        IF_LISTENED_END();
+                        if (!callbackRes)
+                            return false;
+                    }
+                }
+                else
+                {
+                    //Other Cmd
                     IF_LISTENED(EVENT_TYPES::onPlayerCmd)
                     {
                         CallEventRtnBool(EVENT_TYPES::onPlayerCmd, PlayerClass::newPlayer(player), String::newString(cmd));
                     }
                     IF_LISTENED_END();
+                }
+            }
+            else
+            {
+                // PreProcess
+                if (!ProcessDebugEngine(cmd))
+                    return false;
+                ProcessStopServer(cmd);
+                if (!ProcessHotManageCmd(cmd))
+                    return false;
+
+                //CallEvents
+                vector<string> paras;
+                string prefix = LxlFindCmdReg(false, cmd, paras);
+
+                if (!prefix.empty())
+                {
+                    //Lxl Registered Cmd
+
+                    bool callbackRes = CallServerCmdCallback(prefix, paras);
+                    IF_LISTENED(EVENT_TYPES::onConsoleCmd)
+                    {
+                        CallEventRtnBool(EVENT_TYPES::onConsoleCmd, String::newString(cmd));
+                    }
+                    IF_LISTENED_END();
                     if (!callbackRes)
                         return false;
                 }
-            }
-            else
-            {
-                //Other Cmd
-                IF_LISTENED(EVENT_TYPES::onPlayerCmd)
+                else
                 {
-                    CallEventRtnBool(EVENT_TYPES::onPlayerCmd, PlayerClass::newPlayer(player), String::newString(cmd));
+                    //Other Cmd
+                    IF_LISTENED(EVENT_TYPES::onConsoleCmd)
+                    {
+                        CallEventRtnBool(EVENT_TYPES::onConsoleCmd, String::newString(cmd));
+                    }
+                    IF_LISTENED_END();
                 }
-                IF_LISTENED_END();
             }
         }
-        else
-        {
-            // PreProcess
-            if (!ProcessDebugEngine(cmd))
-                return false;
-            ProcessStopServer(cmd);
-            if (!ProcessHotManageCmd(cmd))
-                return false;
-
-            //CallEvents
-            vector<string> paras;
-            string prefix = LxlFindCmdReg(false, cmd, paras);
-
-            if (!prefix.empty())
-            {
-                //Lxl Registered Cmd
-
-                bool callbackRes = CallServerCmdCallback(prefix,paras);
-                IF_LISTENED(EVENT_TYPES::onConsoleCmd)
-                {
-                    CallEventRtnBool(EVENT_TYPES::onConsoleCmd, String::newString(cmd));
-                }
-                IF_LISTENED_END();
-                if (!callbackRes)
-                    return false;
-            }
-            else
-            {
-                //Other Cmd
-                IF_LISTENED(EVENT_TYPES::onConsoleCmd)
-                {
-                    CallEventRtnBool(EVENT_TYPES::onConsoleCmd, String::newString(cmd));
-                }
-                IF_LISTENED_END();
-            }
-        }
+    }
+    catch (const seh_exception& e)
+    {
+        ERROR("SEH Exception Caught!");
+        ERRPRINT(e.what());
     }
     return original(_this, a2, x, a4);
 }
@@ -1173,20 +1191,28 @@ THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@V
 THook(void, "?handle@?$PacketHandlerDispatcherInstance@VModalFormResponsePacket@@$0A@@@UEBAXAEBVNetworkIdentifier@@AEAVNetEventCallback@@AEAV?$shared_ptr@VPacket@@@std@@@Z",
     void* _this, NetworkIdentifier* id, ServerNetworkHandler* handler, void* pPacket)
 {
-    //IF_LISTENED(EVENT_TYPES::onFormSelected)
-    Packet* packet = *(Packet**)pPacket;
-    Player* p = Raw_GetPlayerFromPacket(handler, id, packet);
-
-    if (p)
+    try
     {
-        unsigned formId = dAccess<unsigned>(packet, 48);
-        string data = dAccess<string>(packet,56);
+        //IF_LISTENED(EVENT_TYPES::onFormSelected)
+        Packet* packet = *(Packet**)pPacket;
+        Player* p = Raw_GetPlayerFromPacket(handler, id, packet);
 
-        if (data.back() == '\n')
-            data.pop_back();
-          
-        CallFormCallback(p, formId, data);
-        // No CallEvent here
+        if (p)
+        {
+            unsigned formId = dAccess<unsigned>(packet, 48);
+            string data = dAccess<string>(packet, 56);
+
+            if (data.back() == '\n')
+                data.pop_back();
+
+            CallFormCallback(p, formId, data);
+            // No CallEvent here
+        }
+    }
+    catch (const seh_exception& e)
+    {
+        ERROR("SEH Exception Caught!");
+        ERRPRINT(e.what());
     }
 
     original(_this, id, handler, pPacket);
@@ -1226,13 +1252,13 @@ THook(void, "?onScoreChanged@ServerScoreboard@@UEAAXAEBUScoreboardId@@AEBVObject
 THook(ostream&, "??$_Insert_string@DU?$char_traits@D@std@@_K@std@@YAAEAV?$basic_ostream@DU?$char_traits@D@std@@@0@AEAV10@QEBD_K@Z",
     ostream& _this, const char* str, unsigned size)
 {
-    if (&_this == &cout)
+    IF_LISTENED(EVENT_TYPES::onConsoleOutput)
     {
-        IF_LISTENED(EVENT_TYPES::onConsoleOutput)
+        if (&_this == &cout)
         {
             CallEventRtnValue(EVENT_TYPES::onConsoleOutput, _this, String::newString(string(str)));
         }
-        IF_LISTENED_END();
     }
+    IF_LISTENED_END();
     return original(_this, str, size);
 }

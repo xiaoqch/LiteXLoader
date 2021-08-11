@@ -14,7 +14,7 @@ struct ExportedFuncData
 {
 	std::string fromEngineType;
 	ScriptEngine* engine;
-	Global<Function> func;	/////////////// 可能有问题，不崩就不改
+	Global<Function> func;
 };
 
 //远程调用信息
@@ -37,9 +37,6 @@ struct GlobalDataType
 
 	//导出函数表
 	std::unordered_map<std::string, ExportedFuncData> exportedFuncs;
-
-	//远程调用信息
-	std::unordered_map<std::string, RemoteEngineData> remoteEngineList;
 
 	//模块消息系统线程集合
 	std::unordered_map<std::string, MessageSystemData> moduleMessageSystemsList;

@@ -87,7 +87,8 @@ LXL使用 `NbtValue`、`NbtList`、`NbtCompound`三种数据类型来共同表�
 - 返回值：对应的Json字符串
 - 返回值类型：`String`
 
-提示：如果这个NBT对象储存的是`List`或者`Compound`类型的 NBT，将递归展开为`Array`或`Object`
+提示：如果这个NBT对象储存的是`List`或者`Compound`类型，将递归展开为`Array`或`Object`  
+如果这个NBT对象储存的是`ByteArray`类型，输出的字节串将先进行base64编码后再输出
 
 <br>
 

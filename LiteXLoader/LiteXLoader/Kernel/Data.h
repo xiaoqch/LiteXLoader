@@ -55,6 +55,10 @@ bool Raw_ClearMoneyHist(int time);
 std::string Raw_Xuid2Name(std::string xuid);
 std::string Raw_Name2Xuid(std::string name);
 
-//Hash
+//Data Verify
 std::string Raw_toMD5(const std::string& str);
 std::string Raw_toSHA1(const std::string& str);
+
+//Base64
+char* Raw_Base64Encode(const char* buffer, int length, bool newLine = false);
+char* Raw_Base64Decode(char* input, int length, bool newLine = false);

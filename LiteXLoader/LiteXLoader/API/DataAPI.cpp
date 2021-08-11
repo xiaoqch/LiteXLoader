@@ -653,14 +653,13 @@ Local<Value> MoneyGetHintory(const Arguments& args)
             Local<Object> obj = Object::newObject();
 
             note.clear();
-            sin >> from >> tmp >> to >> money >> time1 >> time2 >> note;
-            while (sin)
-            {
-                sin >> tmp;
-                note += " " + tmp;
-            }
+            sin >> from >> tmp >> to >> money >> time1 >> time2;
+            sin.get();
+            getline(sin, note);
             if (note.front() == '(')
                 note.erase(0, 1);
+            if (note.back() == '\n')
+                note.pop_back();
             if (note.back() == ')')
                 note.pop_back();
 

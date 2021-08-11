@@ -88,7 +88,7 @@
   `function(entity1,entity2)`
 - 参数：
   - entity1 : `Entity`  
-    尝试骑乘的玩家对象
+    尝试骑乘的实体对象
   - entity2 : `Entity`  
     被骑乘的实体对象
 - 拦截事件：函数返回`false`

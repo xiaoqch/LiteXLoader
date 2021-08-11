@@ -34,11 +34,11 @@ class CompoundTag;
 THook(bool, "?load@Actor@@UEAA_NAEBVCompoundTag@@AEAVDataLoadHelper@@@Z",
 	Actor* _this, CompoundTag* tag, DataLoadHelper* data)
 {
-	if (!gDataHelperPlayer)
+	/*if (!gDataHelperPlayer)
 	{
 		if (Raw_IsPlayer(_this))
 			gDataHelperPlayer = data;
-	}
+	}*/
 	if (!gDataHelperActor)
 	{
 		if(!Raw_IsPlayer(_this))

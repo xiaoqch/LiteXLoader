@@ -69,7 +69,6 @@ void entry()
     InitGlobalShareData();
 
     //初始化消息系统
-    InitRemoteCallSystem();
     InitMessageSystem();
 
     //欢迎

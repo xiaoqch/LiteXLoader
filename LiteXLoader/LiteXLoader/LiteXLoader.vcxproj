@@ -62,6 +62,7 @@
     <ClCompile Include="Engine\LocalShareData.cpp" />
     <ClCompile Include="Engine\MessageSystem.cpp" />
     <ClCompile Include="Engine\PluginHotManage.cpp" />
+    <ClCompile Include="Engine\TimeTaskSystem.cpp" />
     <ClCompile Include="Kernel\Container.cpp" />
     <ClCompile Include="Kernel\Device.cpp" />
     <ClCompile Include="dllmain.cpp" />
@@ -121,6 +122,7 @@
     <ClInclude Include="Engine\MessageSystem.h" />
     <ClInclude Include="Engine\PluginHotManage.h" />
     <ClInclude Include="Engine\RemoteCall.h" />
+    <ClInclude Include="Engine\TimeTaskSystem.h" />
     <ClInclude Include="Kernel\Base.h" />
     <ClInclude Include="Kernel\Block.h" />
     <ClInclude Include="Kernel\Container.h" />

@@ -1,5 +1,6 @@
 ﻿#include "Global.h"
 #include "NBT.h"
+#include "Data.h"
 #include <vector>
 #include <map>
 using namespace std;
@@ -152,7 +153,9 @@ void Tag::setBlock(Block* blk) {
 Tag* Tag::fromActor(Actor* actor) {
     Tag* tmp = Tag::createTag(TagType::Compound);
     SymCall("?save@Actor@@UEAA_NAEAVCompoundTag@@@Z",
-        char, Actor*, Tag*)(actor, tmp);
+        void, Actor*, Tag*)(actor, tmp);
+    SymCall("?saveWithoutId@Actor@@UEAAXAEAVCompoundTag@@@Z",
+        void, Actor*, Tag*)(actor, tmp);
     return tmp;
 }
 
@@ -204,9 +207,13 @@ void TagToJson_List_Helper(JSON_VALUE& res, Tag* nbt)
             res.push_back(tag->asString());
             break;
         case TagType::ByteArray:
-            res.push_back("");
-            WARN("There are no symbol to read a ByteArray in BDS");
+        {
+            auto& bytes = nbt->asByteArray();
+            char* resStr = Raw_Base64Encode((char*)bytes.data.get(), bytes.size);
+            res.push_back(string(resStr));
+            free(resStr);
             break;
+        }
         case TagType::List: {
             JSON_VALUE arrJson = JSON_VALUE::array();
             TagToJson_List_Helper(arrJson, tag);
@@ -258,9 +265,13 @@ void TagToJson_Compound_Helper(JSON_VALUE& res, Tag* nbt)
             res.push_back({ key,tag.asString() });
             break;
         case TagType::ByteArray:
-            res.push_back({ key,"" });
-            WARN("There are no symbol to read a ByteArray in BDS");
+        {
+            auto& bytes = nbt->asByteArray();
+            char* resStr = Raw_Base64Encode((char*)bytes.data.get(), bytes.size);
+            res.push_back({ key,string(resStr) });
+            free(resStr);
             break;
+        }
         case TagType::List: {
             JSON_VALUE arrJson = JSON_VALUE::array();
             TagToJson_List_Helper(arrJson, &tag);
@@ -310,9 +321,13 @@ string TagToJson(Tag* nbt, int formatIndent)
         result = nbt->asString();
         break;
     case TagType::ByteArray:
-        result = "";
-        WARN("There are no symbol to read a ByteArray in BDS");
+    {
+        auto& bytes = nbt->asByteArray();
+        char* res = Raw_Base64Encode((char*)bytes.data.get(), bytes.size);
+        result = string(res);
+        free(res);
         break;
+    }
     case TagType::List: {
         JSON_VALUE jsonRes = JSON_VALUE::array();
         TagToJson_List_Helper(jsonRes, nbt);

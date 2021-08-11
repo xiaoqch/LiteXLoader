@@ -5,6 +5,10 @@
 std::string ReadFileFrom(const std::string& filePath);
 ScriptEngine* NewEngine();
 
+class ModuleMessage;
+void RemoteLoadCallback(ModuleMessage& msg);
+void RemoteLoadReturnCallback(ModuleMessage& msg);
+
 //加载插件
 bool LxlLoadPlugin(const std::string& filePath, bool isHotLoad = false);
 //卸载插件

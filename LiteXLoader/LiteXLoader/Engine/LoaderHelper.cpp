@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <sstream>
 #include <filesystem>
 #include <exception>
 #include <filesystem>
@@ -16,6 +17,7 @@
 #include <Loader.h>
 #include <Engine/LoaderHelper.h>
 #include <Engine/RemoteCall.h>
+#include <Engine/MessageSystem.h>
 #include <API/CommandAPI.h>
 using namespace script;
 using namespace std;
@@ -50,11 +52,68 @@ ScriptEngine* NewEngine()
     return engine;
 }
 
+//远程装载回调
+void RemoteLoadCallback(ModuleMessage& msg)
+{
+    istringstream sin(msg.getData());
+
+    bool isHotLoad;
+    int backId;
+    string filePath;
+
+    sin >> backId >> isHotLoad >> filePath;
+    bool res = LxlLoadPlugin(filePath, isHotLoad);
+
+    ModuleMessage msgBack(backId, ModuleMessage::MessageType::RemoteRequireReturn, string(res ? "1" : "0"));
+    msg.sendBack(msgBack);
+}
+
+void RemoteLoadReturnCallback(ModuleMessage& msg)
+{
+    if (msg.getData() == "0")
+    {
+        ERROR("Romote Load Failed!");
+    }
+}
+
 //加载插件
 bool LxlLoadPlugin(const std::string& filePath, bool isHotLoad)
 {
     if (filePath == LXL_DEBUG_ENGINE_NAME)
         return true;
+
+    string suffix = filesystem::path(filePath).extension().u8string();
+    if (suffix != LXL_PLUGINS_SUFFIX)
+    {
+        //Remote Load
+        DEBUG("Remote Load begin");
+
+        ostringstream sout;
+        int backId = ModuleMessage::getNextMessageId();
+        sout << backId << "\n" << isHotLoad << "\n" << filePath;
+
+        ModuleMessage msg(ModuleMessage::MessageType::RemoteRequire, sout.str());
+
+        if (suffix == ".lua")
+        {
+            if (!ModuleMessage::sendTo(msg, LXL_LANG_LUA))
+            {
+                ERROR("Fail to send remote load request!");
+                return false;
+            }
+        }
+        else
+        {
+            ERROR("Unknown type of Script file!");
+            return false;
+        }
+
+        if (!ModuleMessage::waitForMessage(backId, LXL_MAXWAIT_REMOTE_LOAD))
+        {
+            ERROR("Remote Load Timeout!");
+            return false;
+        }
+    }
 
     //多线程锁
     lock_guard<mutex> lock(globalShareData->hotManageLock);

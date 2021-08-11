@@ -2,6 +2,7 @@
 #include "APIHelp.h"
 #include <Kernel/System.h>
 #include <Engine/EngineOwnData.h>
+#include <Engine/TimeTaskSystem.h>
 #include <windows.h>
 #include <chrono>
 #include <map>
@@ -92,83 +93,6 @@ Local<Value> RandomGuid(const Arguments& args)
 }
 
 
-/////////////// Helper ///////////////
-int timeTaskId = 0;
-std::unordered_map<int, bool> timeTaskMap;
-
-#define TIMETASK_INTERVAL data0
-#define TIMETASK_TASKID data1
-#define TIMETASK_IS_FUNC data2
-#define TIMETASK_FUNC data3
-
-void HandleTimeTaskMessage(utils::Message& msg);
-void CleanUpTimeTaskMessage(utils::Message& msg);
-
-
-void NewTimeTask(int timeTaskId, int timeout, bool isInterval, bool isFunc, Local<Value> func)
-{
-    utils::Message timeTask(HandleTimeTaskMessage, CleanUpTimeTaskMessage);
-    timeTask.TIMETASK_INTERVAL = isInterval ? timeout : 0;
-    timeTask.TIMETASK_IS_FUNC = isFunc;
-    timeTask.TIMETASK_FUNC = (uintptr_t) new Global<Value>(func);
-    timeTask.TIMETASK_TASKID = timeTaskId;
-
-    EngineScope::currentEngine()->messageQueue()->postMessage(timeTask, std::chrono::milliseconds(timeout));
-}
-
-void HandleTimeTaskMessage(utils::Message& msg)
-{
-    int nextInterval = msg.TIMETASK_INTERVAL;
-    bool isInterval = (nextInterval != 0);
-    int id = msg.TIMETASK_TASKID;
-
-    bool isFunc = (bool) msg.TIMETASK_IS_FUNC;
-    Global<Value>* func = (Global<Value>*)(msg.TIMETASK_FUNC);
-
-    try
-    {
-        timeTaskMap.at(id);
-    }
-    catch (...)
-    {
-        return;
-    }
-
-    try
-    {
-        if (func->isEmpty())
-        {
-            timeTaskMap.erase(id);
-            return;
-        }
-
-        if (isFunc)
-            func->get().asFunction().call();
-        else
-            EngineScope::currentEngine()->eval(func->get().toStr());
-    }
-    catch (const Exception& e)
-    {
-        ERROR(string("Error occurred in ") + (isInterval ? "setInterval" : "setTimeout"));
-        ERRPRINT(e);
-    }
-
-    if (isInterval)
-    {
-        NewTimeTask(id, nextInterval, true, isFunc, func->get());
-    }
-    else
-    {
-        timeTaskMap.erase(id);
-    }
-}
-
-void CleanUpTimeTaskMessage(utils::Message& msg)
-{
-    delete ((Global<Value>*)(msg.TIMETASK_FUNC));
-}
-
-
 //////////////////// APIs ////////////////////
 
 Local<Value> SetTimeout(const Arguments& args)
@@ -188,10 +112,10 @@ Local<Value> SetTimeout(const Arguments& args)
         if (timeout <= 0)
             timeout = 1;
 
-        timeTaskMap[++timeTaskId] = true;
-        NewTimeTask(timeTaskId, timeout, false, isFunc, args[0]);
-
-        return Number::newNumber(timeTaskId);
+        if (isFunc)
+            return Number::newNumber(NewTimeout(args[0].asFunction(), {}, timeout));
+        else
+            return Number::newNumber(NewTimeout(args[0].asString(), timeout));
     }
     CATCH("Fail in SetTimeout!")
 }
@@ -209,15 +133,14 @@ Local<Value> SetInterval(const Arguments& args)
             return Local<Value>();
         }
 
-        Global<Value> func{ args[0] };
         int timeout = args[1].toInt();
         if (timeout <= 0)
             timeout = 1;
 
-        timeTaskMap[++timeTaskId] = true;
-        NewTimeTask(timeTaskId, timeout, true, isFunc, args[0]);
-
-        return Number::newNumber(timeTaskId);
+        if(isFunc)
+            return Number::newNumber(NewInterval(args[0].asFunction(), {}, timeout));
+        else
+            return Number::newNumber(NewInterval(args[0].asString(), timeout));
     }
     CATCH("Fail in SetInterval!")
 }
@@ -229,8 +152,7 @@ Local<Value> ClearInterval(const Arguments& args)
     CHECK_ARG_TYPE(args[0], ValueKind::kNumber)
 
     try {
-        timeTaskMap.erase(args[0].toInt());
-        return Boolean::newBoolean(true);
+        return Boolean::newBoolean(ClearTimeTask(args[0].toInt()));
     }
     CATCH("Fail in ClearInterval!")
 }
