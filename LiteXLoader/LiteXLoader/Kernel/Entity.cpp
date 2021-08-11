@@ -44,12 +44,16 @@ std::string Raw_GetEntityTypeName(Actor* actor)
 {
     return SymCall("?EntityTypeToString@@YA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@W4ActorType@@W4ActorTypeNamespaceRules@@@Z",
         string, int, int)
-        (actor->getEntityTypeId(), 1);
+        (Raw_GetEntityTypeId(actor), 1);
 }
 
 int Raw_GetEntityTypeId(Actor* actor)
 {
-    return actor->getEntityTypeId();
+    Player* pl = Raw_ToPlayer(actor);
+    if (!pl)
+        return actor->getEntityTypeId();
+    else
+        return SymCall("?getEntityTypeId@Player@@UEBA?AW4ActorType@@XZ", int, Player*)(pl);
 }
 
 FloatVec4 Raw_GetEntityPos(Actor* actor)
