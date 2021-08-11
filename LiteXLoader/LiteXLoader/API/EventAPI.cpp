@@ -310,16 +310,6 @@ void InitEventListeners()
         IF_LISTENED_END();
     });
 
-// ===== onChangeDimension =====
-    Event::addEventListener([](ChangeDimEV ev)
-    {
-        IF_LISTENED(EVENT_TYPES::onChangeDim)
-        {
-            CallEventRtnVoid(EVENT_TYPES::onChangeDim, PlayerClass::newPlayer(ev.Player));
-        }
-        IF_LISTENED_END();
-    });
-
 // ===== onMobDie =====
     Event::addEventListener([](MobDieEV ev)
     {
@@ -456,6 +446,18 @@ THook(void, "?sendPlayerMove@PlayerEventCoordinator@@QEAAXAEAVPlayer@@@Z",
     }
     IF_LISTENED_END();
     return original(_this, pl);
+}
+
+// ===== onChangeDim =====
+THook(void*, "?changeDimension@ServerPlayer@@UEAAXV?$AutomaticID@VDimension@@H@@_N@Z",
+    Actor* ac, unsigned int a3)
+{
+    IF_LISTENED(EVENT_TYPES::onChangeDim)
+    {
+        CallEventRtnValue(EVENT_TYPES::onChangeDim, original(ac, a3), PlayerClass::newPlayer((Player*)ac), Number::newNumber((int)a3));
+    }
+    IF_LISTENED_END();
+    return original(ac, a3);
 }
 
 // ===== onSpawnProjectile =====
