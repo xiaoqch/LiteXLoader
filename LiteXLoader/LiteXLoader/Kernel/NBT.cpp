@@ -153,7 +153,9 @@ void Tag::setBlock(Block* blk) {
 Tag* Tag::fromActor(Actor* actor) {
     Tag* tmp = Tag::createTag(TagType::Compound);
     SymCall("?save@Actor@@UEAA_NAEAVCompoundTag@@@Z",
-        char, Actor*, Tag*)(actor, tmp);
+        void, Actor*, Tag*)(actor, tmp);
+    SymCall("?saveWithoutId@Actor@@UEAAXAEAVCompoundTag@@@Z",
+        void, Actor*, Tag*)(actor, tmp);
     return tmp;
 }
 
