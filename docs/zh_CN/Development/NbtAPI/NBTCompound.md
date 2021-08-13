@@ -22,6 +22,7 @@
     要查询的键名
 - 返回值：对应的值的数据类型
 - 返回值类型：`Enum`
+  - 如果要读取的NBT不存在，将返回`Null`
 
 可能的返回值有：`NBT.End` `NBT.Byte` `NBT.Short` `NBT.Int` `NBT.Long`   
 `NBT.Float` `NBT.Double` `NBT.ByteArray` `NBT.String`  
@@ -53,6 +54,7 @@
     要操作的键名
 - 返回值：键对应的NBT对象
 - 返回值类型：`NbtValue` 或 `NbtList` 或 `NbtCompound` 
+  - 如果要读取的NBT不存在，将返回`Null`
 
 <br>
 
@@ -105,6 +107,7 @@
 - 返回值：键对应的值的具体数据
 - 返回值类型：`任意类型`，以储存的数据类型为准
   - 如果目标位置储存的是`List`类型 NBT，将返回一个`NbtList`对象；如果目标位置储存的是`Compound`类型 NBT，将返回一个`NbtCompound`对象
+  - 如果要读取的NBT不存在，将返回`Null`
 
 <br>
 

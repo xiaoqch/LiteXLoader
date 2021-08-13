@@ -193,7 +193,6 @@ Local<Value> NbtList::getTypeOf(const Arguments& args)
 
         if (index >= list.size() || index < 0)
         {
-            ERROR("Bad Index of NBT List!");
             return Local<Value>();
         }
 
@@ -535,7 +534,6 @@ Local<Value> NbtList::getData(const Arguments& args)
 
         if (index >= list.size() || index < 0)
         {
-            ERROR("Bad Index of NBT List!");
             return Local<Value>();
         }
 
@@ -556,7 +554,6 @@ Local<Value> NbtList::getTag(const Arguments& args)
 
         if (index >= list.size() || index < 0)
         {
-            ERROR("Bad Index of NBT List!");
             return Local<Value>();
         }
 
@@ -581,7 +578,6 @@ Local<Value> NbtList::getTag(const Arguments& args)
             res = NbtValue::newNBT(list[index]);
             break;
         default:
-            ERROR("Unknown type of tag!");
             res = Local<Value>();
             break;
         }
@@ -659,7 +655,6 @@ Local<Value> NbtCompound::getTypeOf(const Arguments& args)
     }
     catch (const out_of_range& e)
     {
-        ERROR("Key no found in NBT Compound!");
         return Local<Value>();
     }
     CATCH("Fail in NBTgetTypeOf!")
@@ -894,7 +889,6 @@ Local<Value> NbtCompound::getData(const Arguments& args)
     }
     catch (const out_of_range& e)
     {
-        ERROR("Key no found in NBT Compound!");
         return Local<Value>();
     }
     CATCH("Fail in NBTgetData!")
@@ -931,7 +925,6 @@ Local<Value> NbtCompound::getTag(const Arguments& args)
             res = NbtValue::newNBT(&(list.at(key)));
             break;
         default:
-            ERROR("Unknown type of tag!");
             res = Local<Value>();
             break;
         }
@@ -939,7 +932,6 @@ Local<Value> NbtCompound::getTag(const Arguments& args)
     }
     catch (const out_of_range& e)
     {
-        ERROR("Key no found in NBT Compound!");
         return Local<Value>();
     }
     CATCH("Fail in NBTgetTag!");
@@ -1008,7 +1000,6 @@ Local<Value> NbtStatic::createTag(const Arguments& args)
             tag = Tag::createTag(TagType::Compound);
             break;
         default:
-            ERROR("Unknown type of tag!");
             return Local<Value>();
         }
 
@@ -1078,7 +1069,6 @@ Local<Value> Tag2Value_ListHelper(Tag* nbt, bool autoExpansion = false)
             else
                 res.add(Tag2Value_CompoundHelper(tag, autoExpansion));
         default:
-            ERROR("Unknown type of tag!");
             res.add(Local<Value>());
             break;
         }
@@ -1137,7 +1127,6 @@ Local<Value> Tag2Value_CompoundHelper(Tag* nbt, bool autoExpansion)
             else
                 res.set(key, Tag2Value_CompoundHelper(&tag, autoExpansion));
         default:
-            ERROR("Unknown type of tag!");
             res.set(key, Local<Value>());
             break;
         }
@@ -1194,7 +1183,6 @@ Local<Value> Tag2Value(Tag* nbt, bool autoExpansion)
             value = Tag2Value_CompoundHelper(nbt, autoExpansion);
         break;
     default:
-        ERROR("Unknown type of tag!");
         value = Local<Value>();
         break;
     }
@@ -1263,7 +1251,6 @@ bool TagSetValue(Tag* nbt, Local<Value> value)
         break;
     }
     default:
-        ERROR("Unknown type of tag!");
         return false;
         break;
     }
