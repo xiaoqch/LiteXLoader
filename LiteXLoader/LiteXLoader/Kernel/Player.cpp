@@ -173,14 +173,14 @@ bool Raw_GiveItem(Player* player, ItemStack* item)
 
 int Raw_ClearItem(Player *player, std::string type)
 {
-    int cnt = 0;
+    int res = 0;
 
     //Hand
     ItemStack* item = Raw_GetHand(player);
     if (Raw_GetItemTypeName(item) == type)
     {
         Raw_SetNull(item);
-        ++cnt;
+        ++res;
     }
 
     //OffHand
@@ -188,7 +188,7 @@ int Raw_ClearItem(Player *player, std::string type)
     if (Raw_GetItemTypeName(item) == type)
     {
         Raw_SetNull(item);
-        ++cnt;
+        ++res;
     }
 
     //Inventory
@@ -198,8 +198,9 @@ int Raw_ClearItem(Player *player, std::string type)
     {
         if (Raw_GetItemTypeName(items[i]) == type)
         {
-            Raw_RemoveItem(container, i, Raw_GetCount(items[i]));
-            ++cnt;
+            int cnt = Raw_GetCount(items[i]);
+            Raw_RemoveItem(container, i, cnt);
+            res += cnt;
         }
     }
 
@@ -210,13 +211,14 @@ int Raw_ClearItem(Player *player, std::string type)
     {
         if (Raw_GetItemTypeName(items[i]) == type)
         {
-            Raw_RemoveItem(container, i, Raw_GetCount(items[i]));
-            ++cnt;
+            int cnt = Raw_GetCount(items[i]);
+            Raw_RemoveItem(container, i, cnt);
+            res += cnt;
         }
     }
 
     Raw_RefreshItems(player);
-    return cnt;
+    return res;
 }
 
 int Raw_GetScore(Player* player, const std::string &key)
