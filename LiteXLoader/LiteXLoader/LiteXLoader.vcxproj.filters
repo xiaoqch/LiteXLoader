@@ -151,9 +151,6 @@
     <ClCompile Include="API\DeviceAPI.cpp">
       <Filter>API</Filter>
     </ClCompile>
-    <ClCompile Include="CheckNotice.cpp">
-      <Filter>Main</Filter>
-    </ClCompile>
     <ClCompile Include="API\GameSystemAPI.cpp">
       <Filter>API</Filter>
     </ClCompile>
@@ -308,9 +305,6 @@
     </ClInclude>
     <ClInclude Include="API\DeviceAPI.h">
       <Filter>API</Filter>
-    </ClInclude>
-    <ClInclude Include="CheckNotice.h">
-      <Filter>Main</Filter>
     </ClInclude>
     <ClInclude Include="API\GameSystemAPI.h">
       <Filter>API</Filter>

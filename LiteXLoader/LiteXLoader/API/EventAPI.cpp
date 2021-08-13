@@ -29,7 +29,6 @@
 #include "PlayerAPI.h"
 #include <Loader.h>
 #include <Configs.h>
-#include <CheckNotice.h>
 #include <AutoUpdate.h>
 using namespace std;
 using namespace script;
@@ -349,7 +348,6 @@ void InitEventListeners()
             if (localShareData->isFirstInstance)
             {
                 InitAutoUpdateCheck();
-                CheckNotice();
             }
 
             IF_LISTENED(EVENT_TYPES::onServerStarted)
