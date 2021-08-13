@@ -499,7 +499,10 @@ THook(void, "?setArmor@Player@@UEAAXW4ArmorSlot@@AEBVItemStack@@@Z",
 {
     IF_LISTENED(EVENT_TYPES::onSetArmor)
     {
-        CallEventRtnVoid(EVENT_TYPES::onSetArmor, PlayerClass::newPlayer(_this), Number::newNumber((int)slot), ItemClass::newItem(it));
+        if (Raw_IsPlayerValid(_this))
+        {
+            CallEventRtnVoid(EVENT_TYPES::onSetArmor, PlayerClass::newPlayer(_this), Number::newNumber((int)slot), ItemClass::newItem(it));
+        }
     }
     IF_LISTENED_END();
     return original(_this, slot, it);
@@ -624,9 +627,11 @@ THook(void, "?inventoryChanged@Player@@UEAAXAEAVContainer@@HAEBVItemStack@@1_N@Z
 {
     IF_LISTENED(EVENT_TYPES::onInventoryChange)
     {
-        bool isPutIn = Raw_IsNull(oldItem);
-        CallEventRtnVoid(EVENT_TYPES::onInventoryChange, PlayerClass::newPlayer((Player*)_this), slotNumber,
-            ItemClass::newItem(oldItem), ItemClass::newItem(newItem));
+        if (Raw_IsPlayerValid(_this))
+        {
+            CallEventRtnVoid(EVENT_TYPES::onInventoryChange, PlayerClass::newPlayer((Player*)_this), slotNumber,
+                ItemClass::newItem(oldItem), ItemClass::newItem(newItem));
+        }
     }
     IF_LISTENED_END();
 
