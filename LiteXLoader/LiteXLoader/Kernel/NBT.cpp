@@ -122,7 +122,14 @@ void Tag::putByteArray(const string& key, const TagMemoryChunk& value) {
 
 void Tag::destroy() 
 {
-    SymCall("??1CompoundTag@@UEAA@XZ", void, Tag*)(this);
+    __try
+    {
+        SymCall("??1CompoundTag@@UEAA@XZ", void, Tag*)(this);
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    {
+        ;
+    }
 }
 
 void Tag::addValue2List(Tag* t) {
