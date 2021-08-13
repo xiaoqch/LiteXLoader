@@ -1,11 +1,14 @@
-#define LXL_UPDATE_DOMAIN "https://cdn.jsdelivr.net"
-#define LXL_UPDATE_INFO_REMOTE "/gh/LiteLDev/update@master/LXL.json"
+#define LXL_UPDATE_DOMAIN "https://lxl-upgrade.amd.rocks"
+#define LXL_UPDATE_INFO_REMOTE "/LXL/LXL.json"
+
+#define LXL_UPDATE_CHECK_INTERVAL 10*60
+#define LXL_UPDATE_CHECK_TIMEOUT 60
 
 #define LXL_UPDATE_PROGRAM "plugins/LiteXLoader/LXLAutoUpdate.dll"
 #define LXL_UPDATE_CHECK_PRELOAD "plugins/preload.conf"
+
 #define LXL_UPDATE_CACHE_PATH "plugins/LiteXLoader/Update/"
 #define LXL_UPDATE_INFO_RECORD "plugins/LiteXLoader/Update/Update.ini"
-#define LXL_UPDATE_CHECK_INTERVAL 10*60
 
 #include <string>
 #include <thread>
@@ -20,24 +23,12 @@
 #include <Kernel/Data.h>
 using namespace std;
 
-void SetHttpHeader(httplib::Client* cli)
-{
-	cli->set_default_headers({
-		{ "cache-control", "max-age=0" },
-		{ "UserAgent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36 Edg/92.0.902.67" }
-	});
-}
-
 bool CheckAutoUpdate(bool isUpdateManually)
 {
 	try
 	{
 		httplib::Client cli(LXL_UPDATE_DOMAIN);
-		SetHttpHeader(&cli);
-
-		//refresh
-		cli.Get(LXL_UPDATE_INFO_REMOTE);
-		Sleep(1000);
+		cli.set_connection_timeout(LXL_UPDATE_CHECK_TIMEOUT, 0);
 
 		auto response = cli.Get(LXL_UPDATE_INFO_REMOTE);
 		if (!response || response->status != 200)
@@ -50,29 +41,26 @@ bool CheckAutoUpdate(bool isUpdateManually)
 				DEBUG("LXL自动更新信息拉取失败！");
 			return false;
 		}
-		string info{ response->body };
 
+		string info{ response->body };
 		JSON_ROOT data = JSON_ROOT::parse(info);
 
-		if (data["AutoUpdate"].is_object())
+		string bds = Raw_GetBDSVersion();
+		if (bds.front() == 'v')
+			bds.erase(0, 1);
+		if (!data[bds].is_object())
 		{
-			//Check BDS Version
-			string bds = Raw_GetBDSVersion();
-			if (bds.front() == 'v')
-				bds.erase(0, 1);
-			string bdsRemote = data["AutoUpdate"]["BDS"].get<string>();
-			if (bds != bdsRemote && !LXL_VERSION_IS_BETA)
-			{
-				INFO("提示：您的BDS版本和当前主线维护版本不一致，自动更新将不会推送，避免发生版本冲突");
-				INFO("如果有需要，请前往LXL相关页面手动更新加载器");
-				if (isUpdateManually)
-					return false;
-				else
-					_endthreadex(0);
-			}
-
+			INFO("提示：您的BDS版本不存在于当前主线维护版本中，自动更新将不会推送");
+			INFO("如果有需要，请前往LXL相关页面手动更新加载器");
+			if (isUpdateManually)
+				return false;
+			else
+				_endthreadex(0);
+		}
+		else
+		{
 			//Get Version
-			string verRemote = data["AutoUpdate"]["Version"].get<string>();
+			string verRemote = data[bds]["Version"].get<string>();
 			auto versRemote = SplitStrWithPattern(verRemote, ".");
 			if (versRemote.size() < 3)
 			{
@@ -105,7 +93,14 @@ bool CheckAutoUpdate(bool isUpdateManually)
 			{
 				auto versExisting = SplitStrWithPattern(existing, ".");
 				if (a == stoi(versExisting[0]) && b == stoi(versExisting[1]) && c == stoi(versExisting[2]))
+				{
+					if (isUpdateManually)
+					{
+						PRINT("自动更新已下载完毕。请重启服务器升级到新版LXL");
+					}
 					return true;
+				}
+					
 			}
 			Raw_IniClose(ini);
 
@@ -119,12 +114,12 @@ bool CheckAutoUpdate(bool isUpdateManually)
 			filesystem::remove_all(LXL_UPDATE_CACHE_PATH);
 			filesystem::create_directories(LXL_UPDATE_CACHE_PATH);
 			
-			string url = data["AutoUpdate"]["URL"];
+			string url = data[bds]["URL"];
 			string domain, path;
 			SplitHttpUrl(url, domain, path);
 
 			httplib::Client cli(domain.c_str());
-			SetHttpHeader(&cli);
+			cli.set_connection_timeout(LXL_UPDATE_CHECK_TIMEOUT, 0);
 			if (!cli.is_valid())
 			{
 				if (isUpdateManually)
@@ -137,12 +132,14 @@ bool CheckAutoUpdate(bool isUpdateManually)
 			}
 
 			auto iniUpdate = Raw_IniOpen(LXL_UPDATE_INFO_RECORD);
-			for (auto& file : data["AutoUpdate"]["Files"])
+			for (auto& file : data[bds]["Files"])
 			{
 				string fileName = file["Name"].get<string>();
 				string filePath = path + fileName;
 				string localPath = LXL_UPDATE_CACHE_PATH + fileName;
+				string md5 = "";
 
+				//源文件
 				auto response = cli.Get(filePath.c_str());
 				if (response && response->status == 200)
 				{
@@ -161,8 +158,28 @@ bool CheckAutoUpdate(bool isUpdateManually)
 					return true;
 				}
 
+				//MD5
+				response = cli.Get((filePath+".md5").c_str());
+				if (response && response->status == 200)
+				{
+					md5 = response->body;
+					if (md5.back() == '\n')
+						md5.pop_back();
+					if (md5.back() == '\r')
+						md5.pop_back();
+				}
+				else
+				{
+					if (isUpdateManually)
+					{
+						PRINT("自动更新下载MD5校验文件失败！错误码：" + to_string(response->status));
+					}
+					else
+						DEBUG("自动更新下载MD5校验文件失败！错误码：" + to_string(response->status));
+					return true;
+				}
+
 				string install = file["Install"].get<string>();
-				string md5 = file["MD5"].get<string>();
 
 				iniUpdate->SetValue(fileName.c_str(), "Install", install.c_str());
 				iniUpdate->SetValue(fileName.c_str(), "MD5", md5.c_str());

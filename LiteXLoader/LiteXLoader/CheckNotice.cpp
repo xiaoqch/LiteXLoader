@@ -1,4 +1,4 @@
-#define LXL_UPDATE_CHECK "https://cdn.jsdelivr.net/gh/LiteLDev/update/LXL.json"
+#define LXL_UPDATE_CHECK "https://lxl-upgrade.amd.rocks/LXL/LXL.json"
 
 #include "CheckNotice.h"
 #include <Kernel/System.h>
