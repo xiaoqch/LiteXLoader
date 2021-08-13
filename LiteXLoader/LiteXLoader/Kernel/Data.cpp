@@ -75,7 +75,7 @@ JSON_ROOT Raw_JsonOpen(const std::string& path, const std::string& defContent)
             {
                 ERROR("Fail to parse default json content!");
                 ERRPRINT(e.what());
-                jsonConf = JSON_VALUE::array();
+                jsonConf = JSON_VALUE::object();
             }
         }
         else

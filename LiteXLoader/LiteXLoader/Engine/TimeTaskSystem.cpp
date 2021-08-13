@@ -73,6 +73,11 @@ void HandleTimeTaskMessage(utils::Message& msg)
             ERROR(string("Error occurred in ") + (isInterval ? "setInterval" : "setTimeout"));
             ERRPRINT(e);
         }
+        catch (const seh_exception& e)
+        {
+            ERROR("SEH Exception Caught!");
+            ERRPRINT(e.what());
+        }
 
         if (isInterval)
         {
