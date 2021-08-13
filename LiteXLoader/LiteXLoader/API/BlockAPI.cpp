@@ -278,7 +278,7 @@ Local<Value> SetBlock(const Arguments& args)
         IntVec4 pos;
         Local<Value> block;
 
-        if (args.size() == 1)
+        if (args.size() == 2)
         {
             // IntPos
             IntPos* posObj = IntPos::extractPos(args[0]);
@@ -298,7 +298,7 @@ Local<Value> SetBlock(const Arguments& args)
                 return Local<Value>();
             }
         }
-        else if (args.size() == 4)
+        else if (args.size() == 5)
         {
             // Number Pos
             CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
@@ -345,7 +345,7 @@ Local<Value> SpawnParticle(const Arguments& args)
         IntVec4 pos;
         Local<Value> type;
 
-        if (args.size() == 1)
+        if (args.size() == 2)
         {
             // IntPos
             CHECK_ARG_TYPE(args[1], ValueKind::kString);
@@ -367,7 +367,7 @@ Local<Value> SpawnParticle(const Arguments& args)
                 return Local<Value>();
             }
         }
-        else if (args.size() == 4)
+        else if (args.size() == 5)
         {
             // Number Pos
             CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
