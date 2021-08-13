@@ -32,7 +32,7 @@
 #### `"onRespawnAnchorExplode"` - 发生由重生锚引起的爆炸
 
 - 监听函数原型
-  `function(pos)`
+  `function(pos,player)`
 - 参数：
   - pos : `IntPos`  
     爆炸发生的重生锚的坐标
