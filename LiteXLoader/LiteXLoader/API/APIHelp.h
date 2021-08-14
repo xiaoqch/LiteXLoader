@@ -24,6 +24,13 @@ extern int lxlLogLevel;
 #define toStr() asString().toString()
 #define toInt() asNumber().toInt32()
 
+// 实例类类型检查
+template <typename T>
+bool inline IsInstanceOf(Local<Value> v)
+{
+    return EngineScope::currentEngine()->isInstanceOf<T>(v);
+}
+
 // 至少COUNT个参数
 #define CHECK_ARGS_COUNT(ARGS,COUNT) \
     if(ARGS.size()<COUNT) \

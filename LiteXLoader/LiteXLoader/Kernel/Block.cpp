@@ -46,7 +46,7 @@ bool Raw_SetBlockByName(IntVec4 pos, const string& name)
     return Raw_SetBlockByBlock(pos, newBlock);
 }
 
-bool Raw_SpawnParticle(IntVec4 pos, const string& type)
+bool Raw_SpawnParticle(FloatVec4 pos, const string& type)
 {
     string name = type;
     Level* level = mc->getLevel();
@@ -55,7 +55,7 @@ bool Raw_SpawnParticle(IntVec4 pos, const string& type)
 
     SymCall("?spawnParticleEffect@Level@@UEAAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBVVec3@@PEAVDimension@@@Z",
         void, Level*, string&, const Vec3&, void*)
-        (level, name, { (float)pos.x,(float)pos.y,(float)pos.z }, dim);
+        (level, name, { pos.x,pos.y,pos.z }, dim);
 
     return true;
 }

@@ -16,7 +16,7 @@
    - 参数：
      - name : `String`  
        生物的命名空间名称，如 `minectaft:creeper`
-     - pos : `FloatPos`  
+     - pos : `IntPos `/ `FloatPos`  
        生成生物的位置的坐标对象（或者使用x, y, z, dimid来确定生成位置）
    - 返回值：生成的实体对象
    - 返回值类型：`Entity`
@@ -57,7 +57,7 @@
 `en.teleport(x,y,z,dimid)`
 
 - 参数：
-  - pos : `FloatPos`  
+  - pos :`IntPos `/ `FloatPos`  
     目标位置坐标（或者使用x, y, z, dimid来确定实体位置）
 - 返回值：是否成功传送
 - 返回值类型：`Boolean`
@@ -193,7 +193,7 @@
 `mc.explode(x,y,z,dimid,source,power,range,isDestroy,isFire)`
 
 - 参数：
-  - pos : `FloatPos`  
+  - pos : `IntPos `/ `FloatPos`  
     引发爆炸的位置坐标（或者使用x, y, z, dimid来确定实体位置）
   - source : `Entity`  
     设置爆炸来源的实体对象，可以为`Null`

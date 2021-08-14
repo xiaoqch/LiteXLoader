@@ -16,8 +16,8 @@
    `mc.getBlock(x,y,z,dimid)`
    
    - 参数：
-     - pos : `IntPos`  
-       方块坐标对象（或者使用x, y, z, dimid来确定方块位置）
+     - pos : `IntPos `  
+       方块所在坐标（或者使用x, y, z, dimid来确定方块位置）
    - 返回值：生成的方块对象 
    - 返回值类型：`Block`
      - 如返回值为 `Null` 则表示获取方块失败
@@ -114,7 +114,7 @@
 `mc.setBlock(x,y,z,dimid,block)`
 
 - 参数：
-  - pos : `IntPos`  
+  - pos : `IntPos `  
     目标方块位置（或者使用x, y, z, dimid来确定方块位置）
   - block : `Block` 或 `String`  
     要设置成的方块对象或者方块名
@@ -134,8 +134,8 @@
 `mc.spawnParticle(x,y,z,dimid,type)`
 
 - 参数：
-  - pos : `IntPos`  
-    目标方块位置（或者使用x, y, z, dimid来确定方块位置）
+  - pos : `IntPos `/ `FloatPos`  
+    目标生成位置（或者使用x, y, z, dimid来确定方块位置）
   - type : `String`  
     要生成的粒子效果名称（可查阅wiki得知）
 - 返回值：是否成功生成

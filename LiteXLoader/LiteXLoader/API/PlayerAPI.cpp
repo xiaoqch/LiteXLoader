@@ -382,11 +382,30 @@ Local<Value> PlayerClass::teleport(const Arguments& args)
 
         if (args.size() == 1)
         {
-            // FloatPos
-            FloatPos* posObj = FloatPos::extractPos(args[0]);
-            if (posObj)
+            if (IsInstanceOf<IntPos>(args[0]))
             {
-                pos = *posObj;
+                // IntPos
+                IntPos* posObj = IntPos::extractPos(args[0]);
+                if (posObj->dim < 0)
+                    return Boolean::newBoolean(false);
+                else
+                {
+                    pos.x = posObj->x;
+                    pos.y = posObj->y;
+                    pos.z = posObj->z;
+                    pos.dim = posObj->dim;
+                }
+            }
+            else if (IsInstanceOf<FloatPos>(args[0]))
+            {
+                // FloatPos
+                FloatPos* posObj = FloatPos::extractPos(args[0]);
+                if (posObj->dim < 0)
+                    return Boolean::newBoolean(false);
+                else
+                {
+                    pos = *posObj;
+                }
             }
             else
             {

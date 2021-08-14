@@ -137,7 +137,7 @@
 - 参数：
   - item : `Item`  
     生成掉落物实体所使用的物品对象
-  - pos : `FloatPos`  
+  - pos : `IntPos `/ `FloatPos`  
     生成掉落物实体的位置的坐标对象（或者使用x, y, z, dimid来确定生成位置）
 - 返回值：生成的掉落物实体对象
 - 返回值类型：`Entity`

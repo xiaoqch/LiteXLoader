@@ -225,13 +225,30 @@ Local<Value> GetBlock(const Arguments& args)
         if (args.size() == 1)
         {
             // IntPos
-            auto posObj = IntPos::extractPos(args[0]);
-            if (posObj)
+            if (IsInstanceOf<IntPos>(args[0]))
             {
+                // IntPos
+                IntPos* posObj = IntPos::extractPos(args[0]);
                 if (posObj->dim < 0)
-                    return Local<Value>();
+                    return Boolean::newBoolean(false);
                 else
+                {
                     pos = *posObj;
+                }
+            }
+            else if (IsInstanceOf<FloatPos>(args[0]))
+            {
+                // FloatPos
+                FloatPos* posObj = FloatPos::extractPos(args[0]);
+                if (posObj->dim < 0)
+                    return Boolean::newBoolean(false);
+                else
+                {
+                    pos.x = posObj->x;
+                    pos.y = posObj->y;
+                    pos.z = posObj->z;
+                    pos.dim = posObj->dim;
+                }
             }
             else
             {
@@ -280,15 +297,30 @@ Local<Value> SetBlock(const Arguments& args)
 
         if (args.size() == 2)
         {
-            // IntPos
-            IntPos* posObj = IntPos::extractPos(args[0]);
-            if (posObj)
+            if (IsInstanceOf<IntPos>(args[0]))
             {
+                // IntPos
+                IntPos* posObj = IntPos::extractPos(args[0]);
                 if (posObj->dim < 0)
                     return Boolean::newBoolean(false);
                 else
                 {
                     pos = *posObj;
+                    block = args[1];
+                }
+            }
+            else if (IsInstanceOf<FloatPos>(args[0]))
+            {
+                // FloatPos
+                FloatPos* posObj = FloatPos::extractPos(args[0]);
+                if (posObj->dim < 0)
+                    return Boolean::newBoolean(false);
+                else
+                {
+                    pos.x = posObj->x;
+                    pos.y = posObj->y;
+                    pos.z = posObj->z;
+                    pos.dim = posObj->dim;
                     block = args[1];
                 }
             }
@@ -341,8 +373,7 @@ Local<Value> SpawnParticle(const Arguments& args)
 
     try
     {
-        IntPos* posObj = IntPos::extractPos(args[0]);
-        IntVec4 pos;
+        FloatVec4 pos;
         Local<Value> type;
 
         if (args.size() == 2)
@@ -350,9 +381,25 @@ Local<Value> SpawnParticle(const Arguments& args)
             // IntPos
             CHECK_ARG_TYPE(args[1], ValueKind::kString);
 
-            IntPos* posObj = IntPos::extractPos(args[0]);
-            if (posObj)
+            if (IsInstanceOf<IntPos>(args[0]))
             {
+                // IntPos
+                IntPos* posObj = IntPos::extractPos(args[0]);
+                if (posObj->dim < 0)
+                    return Boolean::newBoolean(false);
+                else
+                {
+                    pos.x = posObj->x;
+                    pos.y = posObj->y;
+                    pos.z = posObj->z;
+                    pos.dim = posObj->dim;
+                    type = args[1];
+                }
+            }
+            else if (IsInstanceOf<FloatPos>(args[0]))
+            {
+                // FloatPos
+                FloatPos* posObj = FloatPos::extractPos(args[0]);
                 if (posObj->dim < 0)
                     return Boolean::newBoolean(false);
                 else
@@ -376,7 +423,7 @@ Local<Value> SpawnParticle(const Arguments& args)
             CHECK_ARG_TYPE(args[3], ValueKind::kNumber);
             CHECK_ARG_TYPE(args[4], ValueKind::kString);
 
-            pos = { args[0].toInt(), args[1].toInt(), args[2].toInt(), args[3].toInt() };
+            pos = {  args[0].asNumber().toFloat(), args[1].asNumber().toFloat(), args[2].asNumber().toFloat(), args[3].toInt() };
             type = args[4];
         }
         else

@@ -78,77 +78,77 @@ void PrintValue(std::ostream &out, Local<Value> v)
             FloatPos* floatpos = FloatPos::extractPos(v);
             if (floatpos != nullptr)
             {
-                out << DimId2Name(floatpos->dim) << "(" << floatpos->x << "," << floatpos->y << "," << floatpos->z << ")";
+                out << fixed << setprecision(2) << DimId2Name(floatpos->dim) << "(" << floatpos->x << "," << floatpos->y << "," << floatpos->z << ")";
                 break;
             }
 
             //其他自定义类型
-            if (EngineScope::currentEngine()->isInstanceOf<BlockClass>(v))
+            if (IsInstanceOf<BlockClass>(v))
             {
                 out << "<Block>";
                 break;
             }
-            if (EngineScope::currentEngine()->isInstanceOf<DbClass>(v))
+            if (IsInstanceOf<DbClass>(v))
             {
                 out << "<Database>";
                 break;
             }
-            if (EngineScope::currentEngine()->isInstanceOf<ConfJsonClass>(v))
+            if (IsInstanceOf<ConfJsonClass>(v))
             {
                 out << "<ConfJson>";
                 break;
             }
-            if (EngineScope::currentEngine()->isInstanceOf<ConfIniClass>(v))
+            if (IsInstanceOf<ConfIniClass>(v))
             {
                 out << "<ConfIni>";
                 break;
             }
-            if (EngineScope::currentEngine()->isInstanceOf<DeviceClass>(v))
+            if (IsInstanceOf<DeviceClass>(v))
             {
                 out << "<DeviceInfo>";
                 break;
             }
-            if (EngineScope::currentEngine()->isInstanceOf<ContainerClass>(v))
+            if (IsInstanceOf<ContainerClass>(v))
             {
                 out << "<Container>";
                 break;
             }
-            if (EngineScope::currentEngine()->isInstanceOf<EntityClass>(v))
+            if (IsInstanceOf<EntityClass>(v))
             {
                 out << "<Entity>";
                 break;
             }
-            if (EngineScope::currentEngine()->isInstanceOf<SimpleFormClass>(v))
+            if (IsInstanceOf<SimpleFormClass>(v))
             {
                 out << "<SimpleForm>";
                 break;
             }
-            if (EngineScope::currentEngine()->isInstanceOf<CustomFormClass>(v))
+            if (IsInstanceOf<CustomFormClass>(v))
             {
                 out << "<CustomForm>";
                 break;
             }
-            if (EngineScope::currentEngine()->isInstanceOf<ItemClass>(v))
+            if (IsInstanceOf<ItemClass>(v))
             {
                 out << "<Item>";
                 break;
             }
-            if (EngineScope::currentEngine()->isInstanceOf<PlayerClass>(v))
+            if (IsInstanceOf<PlayerClass>(v))
             {
                 out << "<Player>";
                 break;
             }
-            if (EngineScope::currentEngine()->isInstanceOf<NbtValue>(v))
+            if (IsInstanceOf<NbtValue>(v))
             {
                 out << "<NbtValue>";
                 break;
             }
-            if (EngineScope::currentEngine()->isInstanceOf<NbtList>(v))
+            if (IsInstanceOf<NbtList>(v))
             {
                 out << "<NbtList>";
                 break;
             }
-            if (EngineScope::currentEngine()->isInstanceOf<NbtCompound>(v))
+            if (IsInstanceOf<NbtCompound>(v))
             {
                 out << "<NbtCompound>";
                 break;

@@ -209,11 +209,30 @@ Local<Value> EntityClass::teleport(const Arguments& args)
 
         if (args.size() == 1)
         {
-            // FloatPos
-            FloatPos* posObj = FloatPos::extractPos(args[0]);
-            if (posObj)
+            if (IsInstanceOf<IntPos>(args[0]))
             {
-                pos = *posObj;
+                // IntPos
+                IntPos* posObj = IntPos::extractPos(args[0]);
+                if (posObj->dim < 0)
+                    return Boolean::newBoolean(false);
+                else
+                {
+                    pos.x = posObj->x;
+                    pos.y = posObj->y;
+                    pos.z = posObj->z;
+                    pos.dim = posObj->dim;
+                }
+            }
+            else if (IsInstanceOf<FloatPos>(args[0]))
+            {
+                // FloatPos
+                FloatPos* posObj = FloatPos::extractPos(args[0]);
+                if (posObj->dim < 0)
+                    return Boolean::newBoolean(false);
+                else
+                {
+                    pos = *posObj;
+                }
             }
             else
             {
@@ -432,14 +451,30 @@ Local<Value> SpawnMob(const Arguments& args)
 
         if (args.size() == 2)
         {
-            // FloatPos
-            auto posObj = FloatPos::extractPos(args[1]);
-            if (posObj)
+            if (IsInstanceOf<IntPos>(args[1]))
             {
+                // IntPos
+                IntPos* posObj = IntPos::extractPos(args[1]);
                 if (posObj->dim < 0)
-                    return Local<Value>();
+                    return Boolean::newBoolean(false);
                 else
+                {
+                    pos.x = posObj->x;
+                    pos.y = posObj->y;
+                    pos.z = posObj->z;
+                    pos.dim = posObj->dim;
+                }
+            }
+            else if (IsInstanceOf<FloatPos>(args[1]))
+            {
+                // FloatPos
+                FloatPos* posObj = FloatPos::extractPos(args[1]);
+                if (posObj->dim < 0)
+                    return Boolean::newBoolean(false);
+                else
+                {
                     pos = *posObj;
+                }
             }
             else
             {
@@ -480,15 +515,33 @@ Local<Value> Explode(const Arguments& args)
         int beginIndex;
         if (args.size() == 6)
         {
-            // FloatPos
+            // PosObj
             beginIndex = 1;
-            auto posObj = FloatPos::extractPos(args[0]);
-            if (posObj)
+
+            if (IsInstanceOf<IntPos>(args[0]))
             {
+                // IntPos
+                IntPos* posObj = IntPos::extractPos(args[0]);
                 if (posObj->dim < 0)
-                    return Local<Value>();
+                    return Boolean::newBoolean(false);
                 else
+                {
+                    pos.x = posObj->x;
+                    pos.y = posObj->y;
+                    pos.z = posObj->z;
+                    pos.dim = posObj->dim;
+                }
+            }
+            else if (IsInstanceOf<FloatPos>(args[0]))
+            {
+                // FloatPos
+                FloatPos* posObj = FloatPos::extractPos(args[0]);
+                if (posObj->dim < 0)
+                    return Boolean::newBoolean(false);
+                else
+                {
                     pos = *posObj;
+                }
             }
             else
             {
