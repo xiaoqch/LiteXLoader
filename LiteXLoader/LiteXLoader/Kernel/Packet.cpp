@@ -6,17 +6,17 @@ using namespace std;
 
 #define RAND_FORM_ID() (unsigned)((rand()<<16)+rand())
 
-void* Raw_CreatePacket(int type)
+Packet* Raw_CreatePacket(int type)
 {
-    unsigned long long packet[2];
+    unsigned long long packet[2] = { 0 };
     SymCall("?createPacket@MinecraftPackets@@SA?AV?$shared_ptr@VPacket@@@std@@W4MinecraftPacketIds@@@Z",
         void*, void*, int)(packet, type);
-    return (void*)*packet;
+    return (Packet*)*packet;
 }
 
-bool Raw_SendPacket(Player *player,void *packet)
+bool Raw_SendPacket(Player *player,Packet *packet)
 {
-    ((ServerPlayer*)player)->sendNetworkPacket(*(Packet*)packet);
+    ((ServerPlayer*)player)->sendNetworkPacket(*packet);
     return true;
 }
 
@@ -24,7 +24,7 @@ int Raw_SendFormPacket(Player* player, const string &data)
 {
     unsigned id = RAND_FORM_ID();
 
-    void *packet = Raw_CreatePacket(100);   //表单数据包
+    Packet *packet = Raw_CreatePacket(100);   //表单数据包
     dAccess<unsigned>(packet, 48) = id;
     dAccess<string>(packet, 56) = data;
 
@@ -34,7 +34,7 @@ int Raw_SendFormPacket(Player* player, const string &data)
 
 bool Raw_SendTransferPacket(Player* player, const string& address, short port)
 {
-    void *packet = Raw_CreatePacket(85);    //跨服传送数据包
+    Packet*packet = Raw_CreatePacket(85);    //跨服传送数据包
     dAccess<string>(packet, 48) = address;
     dAccess<short>(packet, 80) = port;
 
@@ -44,7 +44,7 @@ bool Raw_SendTransferPacket(Player* player, const string& address, short port)
 
 bool Raw_SendSetDisplayObjectivePacket(Player* player, const string& title, const string& name)
 {
-    void* packet = Raw_CreatePacket(107);   //显示侧边栏数据包
+    Packet* packet = Raw_CreatePacket(107);   //显示侧边栏数据包
     dAccess<string>(packet, 48) = "sidebar";
     dAccess<string>(packet, 80) = name;
     dAccess<string>(packet, 112) = title;
@@ -56,8 +56,8 @@ bool Raw_SendSetDisplayObjectivePacket(Player* player, const string& title, cons
 
 bool Raw_SendSetScorePacket(Player* player, char type, const vector<ScorePacketInfo>& data)
 {
-    void* packet = Raw_CreatePacket(108);   //修改分数数据包
-    dAccess<char>(packet, 48) = type;   //set
+    Packet* packet = Raw_CreatePacket(108);   //修改分数数据包
+    dAccess<char>(packet, 48) = type;
     dAccess<vector<ScorePacketInfo>>(packet, 56) = data;
 
     return Raw_SendPacket(player, packet);
@@ -65,7 +65,7 @@ bool Raw_SendSetScorePacket(Player* player, char type, const vector<ScorePacketI
 
 bool Raw_SendBossEventPacket(Player* player, string name, float percent, int type)
 {
-    void* packet = Raw_CreatePacket(74);   //Boss事件数据包
+    Packet* packet = Raw_CreatePacket(74);   //Boss事件数据包
     dAccess<ActorUniqueID>(packet, 56) = dAccess<ActorUniqueID>(packet, 64) = player->getUniqueID();
     dAccess<int>(packet, 72) = type;    //0显示, 1更新, 2隐藏
     dAccess<string>(packet, 80) = name;
@@ -76,7 +76,7 @@ bool Raw_SendBossEventPacket(Player* player, string name, float percent, int typ
 
 bool Raw_SendCrashClientPacket(Player* player)
 {
-    void* pkt = Raw_CreatePacket(58);
+    Packet* pkt = Raw_CreatePacket(58);
     dAccess<int, 14>(pkt) = 0;
     dAccess<int, 15>(pkt) = 0;
     dAccess<bool, 48>(pkt) = 1;
@@ -86,7 +86,7 @@ bool Raw_SendCrashClientPacket(Player* player)
 
 bool Raw_SendCommandRequestPacket(Player* player,const string &cmd)
 {
-    void* pkt = Raw_CreatePacket(77);
+    Packet* pkt = Raw_CreatePacket(77);
     dAccess<string, 48>(pkt) = cmd;
     
     void* clientId = SymCall("?getClientId@Player@@QEBAAEBVNetworkIdentifier@@XZ",

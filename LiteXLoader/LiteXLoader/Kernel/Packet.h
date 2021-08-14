@@ -4,7 +4,7 @@
 class Packet;
 class ScorePacketInfo;
 
-void* Raw_CreatePacket(int type);
+Packet* Raw_CreatePacket(int type);
 
 bool Raw_SendPacket(Player *player,void *packet);
 
