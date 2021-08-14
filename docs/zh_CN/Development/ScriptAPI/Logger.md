@@ -145,7 +145,7 @@
 `logger.setLogLevel(level)`
 
 - 参数：
-  - level : `Number`  
+  - level : `Integer`  
     日志输出等级    
 - 返回值：无
 

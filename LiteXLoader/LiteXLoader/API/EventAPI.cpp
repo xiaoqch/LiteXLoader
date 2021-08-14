@@ -16,6 +16,7 @@
 #include <Kernel/SymbolHelper.h>
 #include <Kernel/Packet.h>
 #include <Kernel/Global.h>
+#include <Engine/TimeTaskSystem.h>
 #include <Engine/PluginHotManage.h>
 #include <Engine/EngineOwnData.h>
 #include <Engine/GlobalShareData.h>
@@ -120,7 +121,6 @@ static std::list<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)];
     std::list<ListenerListType> &nowList = listenerList[int(TYPE)]; \
     bool passToBDS = true; \
     for(auto &listener : nowList) { \
-        /*if(nowList[i].func.isEmpty()) continue;*/ \
         EngineScope enter(listener.engine); \
         try{ \
             auto result = listener.func.get().call({},__VA_ARGS__); \
@@ -141,7 +141,6 @@ static std::list<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)];
     std::list<ListenerListType> &nowList = listenerList[int(TYPE)]; \
     bool passToBDS = true; \
     for(auto &listener : nowList) { \
-        /*if(nowList[i].func.isEmpty()) continue;*/ \
         EngineScope enter(listener.engine); \
         try{ \
             auto result = listener.func.get().call({},__VA_ARGS__); \
@@ -162,7 +161,6 @@ static std::list<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)];
     std::list<ListenerListType> &nowList = listenerList[int(TYPE)]; \
     bool passToBDS = true; \
     for(auto &listener : nowList) { \
-        /*if(nowList[i].func.isEmpty()) continue;*/ \
         EngineScope enter(listener.engine); \
         try{ \
             auto result = listener.func.get().call({},__VA_ARGS__); \
@@ -184,7 +182,6 @@ static std::list<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)];
         std::list<ListenerListType>& nowList = listenerList[int(TYPE)]; \
         for (auto &listener : nowList) { \
             if (listener.engine == ENGINE) { \
-                /*if(nowList[i].func.isEmpty()) break;*/ \
                 EngineScope enter(listener.engine); \
                 try { listener.func.get().call({},__VA_ARGS__); } \
                 catch (const Exception& e) { \
@@ -197,6 +194,22 @@ static std::list<ListenerListType> listenerList[int(EVENT_TYPES::EVENT_COUNT)];
             } \
         } \
     }
+
+//延迟调用事件
+#define CallEventDelayed(TYPE,...) \
+    std::list<ListenerListType> &nowList = listenerList[int(TYPE)]; \
+    for(auto &listener : nowList) { \
+        EngineScope enter(listener.engine); \
+        try{ \
+            NewTimeout(listener.func.get(), { __VA_ARGS__ }, 5); \
+        } \
+        catch(const Exception& e) \
+        { \
+            ERROR("Event Callback Failed!"); \
+            ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName); \
+            ERRPRINT(e); \
+        } \
+    }\
 
 
 #define IF_LISTENED(EVENT) if(!listenerList[int(EVENT)].empty()) { try
@@ -354,7 +367,7 @@ void InitEventListeners()
 
             IF_LISTENED(EVENT_TYPES::onServerStarted)
             {
-                CallEventRtnVoid(EVENT_TYPES::onServerStarted);
+                CallEventDelayed(EVENT_TYPES::onServerStarted);
             }
             IF_LISTENED_END();
         }
