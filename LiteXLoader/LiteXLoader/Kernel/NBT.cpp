@@ -168,14 +168,16 @@ Tag* Tag::fromActor(Actor* actor) {
 
 bool Tag::setActor(Actor* actor)
 {
+    void* vtbl = dlsym("??_7DefaultDataLoadHelper@@6B@");
     return SymCall("?load@Actor@@UEAA_NAEBVCompoundTag@@AEAVDataLoadHelper@@@Z",
-        bool, Actor*, Tag*, DataLoadHelper*)(actor, this, gDataHelperActor);
+        bool, Actor*, Tag*, void*)(actor, this, &vtbl);
 }
 
 bool Tag::setPlayer(Player* player)
 {
+    void* vtbl = dlsym("??_7DefaultDataLoadHelper@@6B@");
     return SymCall("?load@ServerPlayer@@UEAA_NAEBVCompoundTag@@AEAVDataLoadHelper@@@Z",
-        bool, ServerPlayer*, Tag*, DataLoadHelper*)((ServerPlayer*)player, this, gDataHelperPlayer);
+        bool, ServerPlayer*, Tag*, void*)((ServerPlayer*)player, this, &vtbl);
 }
 
 //toJson

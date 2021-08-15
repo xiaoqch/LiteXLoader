@@ -70,8 +70,6 @@ extern bool isServerStarted;
 extern bool isCmdRegisterEnabled;
 extern CommandRegistry* CmdReg;
 extern Minecraft* mc;
-extern DataLoadHelper* gDataHelperPlayer;
-extern DataLoadHelper* gDataHelperActor;
 
 // 输出
 extern int lxlLogLevel;
