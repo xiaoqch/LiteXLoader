@@ -191,6 +191,18 @@
 - 返回值：实体的NBT对象
 - 返回值类型：`NbtCompound`
 
+<br>
+
+#### 写入实体对应的NBT对象
+
+`en.setNbt(nbt)`
+
+- 参数：
+  - nbt : `NbtCompound`  
+    NBT对象
+- 返回值：是否成功写入
+- 返回值类型：`Boolean`
+
 关于NBT对象的更多使用，请参考 [NBT接口文档](zh_CN/Development/NbtAPI/NBT.md)
 
 <br>

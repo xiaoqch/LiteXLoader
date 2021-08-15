@@ -553,6 +553,18 @@ pl.removeBossBar();
 - 返回值：玩家的NBT对象
 - 返回值类型：`NbtCompound`
 
+<br>
+
+#### 写入玩家对应的NBT对象
+
+`pl.setNbt(nbt)`
+
+- 参数：
+  - nbt : `NbtCompound`  
+    NBT对象
+- 返回值：是否成功写入
+- 返回值类型：`Boolean`
+
 关于NBT对象的更多使用，请参考 [NBT接口文档](zh_CN/Development/NbtAPI/NBT.md)
 
 <br>
@@ -577,6 +589,18 @@ pl.removeBossBar();
   - tag: `String`  
     要移除的tag字符串
 - 返回值：是否移除成功
+- 返回值类型：`Boolean`
+
+<br>
+
+#### 检查玩家是否拥有某个Tag
+
+`pl.hasTag(tag)`
+
+- 参数：
+  - tag: `String`  
+    要检查的tag字符串
+- 返回值：是否拥有这个Tag
 - 返回值类型：`Boolean`
 
 <br>

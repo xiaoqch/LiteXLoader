@@ -91,6 +91,7 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceFunction("getNbt", &PlayerClass::getNbt)
         .instanceFunction("addTag", &PlayerClass::addTag)
         .instanceFunction("removeTag", &PlayerClass::removeTag)
+        .instanceFunction("hasTag", &PlayerClass::hasTag)
         .instanceFunction("getAllTags", &PlayerClass::getAllTags)
         .instanceFunction("getAbilities", &PlayerClass::getAbilities)
         .instanceFunction("getAttributes", &PlayerClass::getAttributes)
@@ -1164,6 +1165,21 @@ Local<Value> PlayerClass::removeTag(const Arguments& args)
     CATCH("Fail in removeTag!");
 }
 
+Local<Value> PlayerClass::hasTag(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        return Boolean::newBoolean(Raw_EntityHasTag((Actor*)player, args[0].toStr()));
+    }
+    CATCH("Fail in hasTag!");
+}
+
 Local<Value> PlayerClass::getAllTags(const Arguments& args)
 {
     try {
@@ -1171,17 +1187,11 @@ Local<Value> PlayerClass::getAllTags(const Arguments& args)
         if (!player)
             return Local<Value>();
 
-        Local<Array> res = Array::newArray();
-
-        auto list = Tag::fromActor(player)->asCompound();
-        try
-        {
-            return Tag2Value(&list.at("Tags"), true);
-        }
-        catch (...)
-        {
-            return Array::newArray();
-        }
+        auto res = Raw_EntityGetAllTags((Actor*)player);
+        Local<Array> arr = Array::newArray();
+        for (auto& tag : res)
+            arr.add(String::newString(tag));
+        return arr;
     }
     CATCH("Fail in getAllTags!");
 }
