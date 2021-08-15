@@ -59,6 +59,7 @@ ClassDefine<NbtList> NbtListBuilder =
         .instanceFunction("getData", &NbtList::getData)
         .instanceFunction("getTag", &NbtList::getTag)
         .instanceFunction("toArray", &NbtList::toArray)
+        .instanceFunction("destroy", &NbtList::destroy)
         .build();
 
 ClassDefine<NbtCompound> NbtCompoundBuilder =
@@ -82,6 +83,7 @@ ClassDefine<NbtCompound> NbtCompoundBuilder =
         .instanceFunction("getData", &NbtCompound::getData)
         .instanceFunction("getTag", &NbtCompound::getTag)
         .instanceFunction("toObject", &NbtCompound::toObject)
+        .instanceFunction("destroy", &NbtList::destroy)
         .build();
 
 
@@ -104,6 +106,16 @@ Local<Value> NbtBase::toString(const Arguments& args)
         return String::newString(TagToJson(nbt, args.size() >= 1 ? args[0].toInt() : -1));
     }
     CATCH("Fail in NBTtoJson!");
+}
+
+Local<Value> NbtBase::destroy(const Arguments& args)
+{
+    if (canDelete)
+    {
+        nbt->destroy();
+        //delete nbt;
+    }
+    return Boolean::newBoolean(true);
 }
 
 

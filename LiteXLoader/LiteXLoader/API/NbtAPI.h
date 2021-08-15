@@ -12,15 +12,9 @@ protected:
     bool canDelete = false;
 
 public:
-    ~NbtBase() {
-        if (canDelete)
-        {
-            nbt->destroy();
-            //delete nbt;
-        }
-    }
     Local<Value> getType(const Arguments& args);
     Local<Value> toString(const Arguments& args);
+    Local<Value> destroy(const Arguments& args);
 };
 
 
