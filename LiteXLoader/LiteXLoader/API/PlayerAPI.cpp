@@ -131,7 +131,7 @@ Local<Value> GetPlayer(const Arguments& args)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
 
     try{
-        string target = args[0].toStr();
+		string target = args[0].toStr();
 		transform(target.begin(), target.end(), target.begin(), ::tolower);	//lower case the string
         auto playerList = Raw_GetOnlinePlayers();
 		auto found = Local<Value>();
@@ -140,7 +140,6 @@ Local<Value> GetPlayer(const Arguments& args)
         {
             if(Raw_GetXuid(p) == target)
                 return PlayerClass::newPlayer(p);
-			
 			string pName = Raw_GetPlayerName(p);
 			transform(pName.begin(), pName.end(), pName.begin(), ::tolower);
 			if(pName.find(target) == 0){	//0 ís the index where the "target" appear in "pName"
@@ -152,9 +151,9 @@ Local<Value> GetPlayer(const Arguments& args)
 				if(curDelta == 0)
 					return PlayerClass::newPlayer(p);
 			}
-        }
-        return found;	//Player/Null
-    }
+		}
+		return found;	//Player/Null
+	}
     CATCH("Fail in GetPlayer!")
 }
 
