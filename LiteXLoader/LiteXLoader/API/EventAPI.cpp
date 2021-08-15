@@ -24,6 +24,7 @@
 #include "APIHelp.h"
 #include "BaseAPI.h"
 #include "BlockAPI.h"
+#include "GuiAPI.h"
 #include "CommandAPI.h"
 #include "ItemAPI.h"
 #include "EntityAPI.h"

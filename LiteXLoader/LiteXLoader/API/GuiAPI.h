@@ -58,3 +58,6 @@ public:
 
 Local<Value> NewSimpleForm(const Arguments& args);
 Local<Value> NewCustomForm(const Arguments& args);
+
+// 表单回调
+bool CallFormCallback(Player* player, unsigned formId, const std::string& data);

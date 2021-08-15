@@ -1,5 +1,10 @@
 #include "APIHelp.h"
 #include "GuiAPI.h"
+#include "PlayerAPI.h"
+#include <Engine/GlobalShareData.h>
+#include <Engine/LocalShareData.h>
+#include <Engine/EngineOwnData.h>
+#include <Engine/LoaderHelper.h>
 #include <Kernel/Gui.h>
 #include <Kernel/Packet.h>
 #include <Kernel/Player.h>
@@ -348,4 +353,51 @@ Local<Value> NewSimpleForm(const Arguments& args)
 Local<Value> NewCustomForm(const Arguments& args)
 {
     return CustomFormClass::newForm();
+}
+
+
+//表单回调
+bool CallFormCallback(Player* player, unsigned formId, const string& data)
+{
+    bool passToBDS = true;
+
+    try
+    {
+        for (auto engine : lxlModules)
+        {
+            EngineScope enter(engine);
+            FormCallbackData callback;
+            try
+            {
+                callback = ENGINE_GET_DATA(engine)->formCallbacks.at(formId);
+            }
+            catch (...)
+            {
+                continue;
+            }
+
+            EngineScope scope(callback.engine);
+            Local<Value> res{};
+            try
+            {
+                res = callback.func.get().call({}, PlayerClass::newPlayer(player), JsonToValue(data));
+            }
+            catch (const Exception& e)
+            {
+                ERROR("Form Callback Failed!");
+                ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName);
+                ERRPRINT(e);
+            }
+            if (res.isNull() || (res.isBoolean() && res.asBoolean().value() == false))
+                passToBDS = false;
+
+            ENGINE_OWN_DATA()->formCallbacks.erase(formId);
+        }
+    }
+    catch (...)
+    {
+        ;
+    }
+
+    return passToBDS;
 }

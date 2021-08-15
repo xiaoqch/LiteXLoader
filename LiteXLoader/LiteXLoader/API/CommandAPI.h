@@ -39,5 +39,3 @@ void ProcessStopServer(const std::string& cmd);
 bool CallPlayerCmdCallback(Player* player, const std::string& cmdPrefix, const std::vector<std::string>& paras);
 // 控制台自定义命令注册回调
 bool CallServerCmdCallback(const std::string& cmdPrefix, const std::vector<std::string>& paras);
-// 表单回调
-bool CallFormCallback(Player* player, unsigned formId, const std::string& data);
