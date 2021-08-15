@@ -131,28 +131,28 @@ Local<Value> GetPlayer(const Arguments& args)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
 
     try{
-		string target = args[0].toStr();
-		transform(target.begin(), target.end(), target.begin(), ::tolower);	//lower case the string
+        string target = args[0].toStr();
+        transform(target.begin(), target.end(), target.begin(), ::tolower);	//lower case the string
         auto playerList = Raw_GetOnlinePlayers();
-		auto found = Local<Value>();
-		int delta = 2147483647;	//c++ int max
+        auto found = Local<Value>();
+        int delta = 2147483647;	//c++ int max
         for(Player *p : playerList)
         {
             if(Raw_GetXuid(p) == target)
                 return PlayerClass::newPlayer(p);
-			string pName = Raw_GetPlayerName(p);
-			transform(pName.begin(), pName.end(), pName.begin(), ::tolower);
-			if(pName.find(target) == 0){	//0 ís the index where the "target" appear in "pName"
-				curDelta = pName.length() - target.length();
-				if(curDelta < delta){
-					found = PlayerClass::newPlayer(p);
-					delta = curDelta;
-				}
-				if(curDelta == 0)
-					return PlayerClass::newPlayer(p);
-			}
-		}
-		return found;	//Player/Null
+            string pName = Raw_GetPlayerName(p);
+            transform(pName.begin(), pName.end(), pName.begin(), ::tolower);
+            if(pName.find(target) == 0){	//0 ís the index where the "target" appear in "pName"
+                curDelta = pName.length() - target.length();
+                if(curDelta < delta){
+                    found = PlayerClass::newPlayer(p);
+                    delta = curDelta;
+                }
+                if(curDelta == 0)
+                    return PlayerClass::newPlayer(p);
+            }
+        }
+        return found;	//Player/Null
 	}
     CATCH("Fail in GetPlayer!")
 }
