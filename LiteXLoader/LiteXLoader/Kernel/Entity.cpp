@@ -154,6 +154,32 @@ bool Raw_RemoveTag(Actor* ac, const string& str) {
         bool, Actor*, const string*)(ac, &str);
 }
 
+std::vector<std::string> Raw_EntityGetAllTags(Actor* ac)
+{
+    try
+    {
+        auto &nbt = Tag::fromActor(ac)->asCompound();
+        auto &list = nbt.at("Tags").asList();
+
+        vector<string> res;
+        for (auto& tag : list)
+        {
+            res.emplace_back(tag->asString());
+        }
+        return res;
+    }
+    catch (...)
+    {
+        return {};
+    }
+}
+
+bool Raw_EntityHasTag(Actor* ac, const string& str)
+{
+    auto tags = Raw_EntityGetAllTags(ac);
+    return find(tags.begin(), tags.end(), str) != tags.end();
+}
+
 bool Raw_Explode(FloatVec4 pos, Actor* source, float power, float range, float isDestroy, float isFire)
 {
     Vec3 vec{ pos.x,pos.y,pos.z };

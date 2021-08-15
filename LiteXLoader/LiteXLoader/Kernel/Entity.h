@@ -29,5 +29,7 @@ float Raw_GetSpeed(Actor* ac);
 
 bool Raw_AddTag(Actor* ac, const std::string& str);
 bool Raw_RemoveTag(Actor* ac, const std::string& str);
+std::vector<std::string> Raw_EntityGetAllTags(Actor* ac);
+bool Raw_EntityHasTag(Actor* ac, const string& str);
 
 bool Raw_Explode(FloatVec4 pos, Actor* source, float power, float range, float isDestroy, float isFire);

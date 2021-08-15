@@ -36,6 +36,7 @@ ClassDefine<EntityClass> EntityClassBuilder =
         .instanceFunction("getNbt", &EntityClass::getNbt)
         .instanceFunction("addTag", &EntityClass::addTag)
         .instanceFunction("removeTag", &EntityClass::removeTag)
+        .instanceFunction("hasTag", &EntityClass::hasTag)
         .instanceFunction("getAllTags", &EntityClass::getAllTags)
 
         //For Compatibility
@@ -420,6 +421,21 @@ Local<Value> EntityClass::removeTag(const Arguments& args)
     CATCH("Fail in removeTag!");
 }
 
+Local<Value> EntityClass::hasTag(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+
+    try {
+        Actor* entity = get();
+        if (!entity)
+            return Local<Value>();
+
+        return Boolean::newBoolean(Raw_EntityHasTag(entity, args[0].toStr()));
+    }
+    CATCH("Fail in hasTag!");
+}
+
 Local<Value> EntityClass::getAllTags(const Arguments& args)
 {
     try {
@@ -427,15 +443,11 @@ Local<Value> EntityClass::getAllTags(const Arguments& args)
         if (!entity)
             return Local<Value>();
 
-        auto list = Tag::fromActor(entity)->asCompound();
-        try
-        {
-            return Tag2Value(&list.at("Tags"), true);
-        }
-        catch (...)
-        {
-            return Array::newArray();
-        }
+        auto res = Raw_EntityGetAllTags(entity);
+        Local<Array> arr = Array::newArray();
+        for (auto& tag : res)
+            arr.add(String::newString(tag));
+        return arr;
     }
     CATCH("Fail in getAllTags!");
 }

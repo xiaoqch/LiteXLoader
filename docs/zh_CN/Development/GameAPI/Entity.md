@@ -163,6 +163,18 @@
 
 <br>
 
+#### 检查实体是否拥有某个Tag
+
+`en.hasTag(tag)`
+
+- 参数：
+  - tag: `String`  
+    要检查的tag字符串
+- 返回值：是否拥有这个Tag
+- 返回值类型：`Boolean`
+
+<br>
+
 #### 返回实体拥有的所有Tag列表
 
 `en.getAllTags()`
