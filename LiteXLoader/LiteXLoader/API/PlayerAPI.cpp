@@ -153,7 +153,7 @@ Local<Value> GetPlayer(const Arguments& args)
             }
         }
         return found;	//Player/Null
-	}
+    }
     CATCH("Fail in GetPlayer!")
 }
 
