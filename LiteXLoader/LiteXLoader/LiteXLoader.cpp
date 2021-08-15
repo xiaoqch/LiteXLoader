@@ -61,8 +61,11 @@ void entry()
     Raw_DirCreate(std::filesystem::path(LXL_CONFIG_PATH).remove_filename().u8string());
     iniConf = Raw_IniOpen(LXL_CONFIG_PATH);
     if (!iniConf)
-        ERROR(_TRS("init.loadConfig.fail"));
+        ERROR("Fail to Load config file of LiteXLoader! Default settings applied.");
     lxlLogLevel = Raw_IniGetInt(iniConf,"Main","LxlLogLevel",1);
+
+    //国际化
+    InitI18n(LXL_LANGPACK_DIR + Raw_IniGetString(iniConf, "Main", "Language", "en_US") + ".json");
 
     //初始化全局数据
     InitLocalShareData();
@@ -72,12 +75,9 @@ void entry()
     InitMessageSystem();
 
     //欢迎
-    if(localShareData->isFirstInstance)
+    if (localShareData->isFirstInstance)
         Welcome();
     LoaderInfo();
-
-    //国际化
-    InitI18n(LXL_LANGPACK_DIR + Raw_IniGetString(iniConf, "Main", "Language", "en_US") + ".json");
 
     //初始化经济系统
     Raw_InitEcnonmicSystem();
@@ -93,6 +93,10 @@ void entry()
 
     //初始化事件监听
     InitEventListeners();
+
+    //UnlockCmd
+    extern bool isUnlockCmdEnabled;
+    isUnlockCmdEnabled = Raw_IniGetBool(iniConf, "Modules", "BuiltInUnlockCmd", true);
 
     Raw_IniClose(iniConf);
 }

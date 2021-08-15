@@ -3,6 +3,8 @@
 
 /////////////////// Built in UnlockCmd ///////////////////
 
+bool isUnlockCmdEnabled = true;
+
 THook(void, "?registerCommand@CommandRegistry@@QEAAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PEBDW4CommandPermissionLevel@@UCommandFlag@@3@Z",
     void* a1, void* a2, void* a3, char a4, short a5, short a6)
 {
