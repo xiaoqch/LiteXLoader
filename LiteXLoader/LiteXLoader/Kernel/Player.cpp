@@ -7,6 +7,7 @@
 #include "SymbolHelper.h"
 #include "ThirdParty.h"
 #include "Global.h"
+#include <bitset>
 using namespace std;
 class NetworkHandler;
 string  Raw_GetPlayerName(Player* player)
@@ -139,6 +140,8 @@ Container* Raw_GetEnderChest(Player* pl)
 bool Raw_RefreshItems(Player* pl)
 {
     SymCall("?sendInventory@ServerPlayer@@UEAAX_N@Z",void,ServerPlayer*,bool)((ServerPlayer*)pl, true);
+    bitset<4> bits("1111");
+    SymCall("?sendArmor@ServerPlayer@@UEAAXAEBV?$bitset@$03@std@@@Z", void, ServerPlayer*, bitset<4>*)((ServerPlayer*)pl, &bits);
     return true;
 }
 
