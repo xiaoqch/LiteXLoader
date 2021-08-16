@@ -32,16 +32,17 @@
 
 每一个实体对象都包含一些固定的对象属性。对于某个特定的实体对象`en`，有以下这些属性
 
-| 属性         | 含义             | 类型       |
-| ------------ | ---------------- | ---------- |
-| en.name      | 实体名称         | `String`   |
-| en.type      | 实体标准类型名   | `String`   |
-| en.id        | 实体的游戏内id   | `Integer`  |
-| en.pos       | 实体所在坐标     | `FloatPos` |
-| en.maxHealth | 实体最大生命值   | `Integer`  |
-| en.health    | 实体当前生命值   | `Integer`  |
-| en.inAir     | 实体当前是否悬空 | `Boolean`  |
-| en.speed     | 实体当前速度     | `Float`    |
+| 属性         | 含义               | 类型       |
+| ------------ | ------------------ | ---------- |
+| en.name      | 实体名称           | `String`   |
+| en.type      | 实体标准类型名     | `String`   |
+| en.id        | 实体的游戏内id     | `Integer`  |
+| en.pos       | 实体所在坐标       | `FloatPos` |
+| en.blockPos  | 实体所在的方块坐标 | `IntPos`   |
+| en.maxHealth | 实体最大生命值     | `Integer`  |
+| en.health    | 实体当前生命值     | `Integer`  |
+| en.inAir     | 实体当前是否悬空   | `Boolean`  |
+| en.speed     | 实体当前速度       | `Float`    |
 
 这些对象属性都是只读的，无法被修改
 

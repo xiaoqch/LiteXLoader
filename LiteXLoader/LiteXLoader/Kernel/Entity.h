@@ -11,6 +11,7 @@ std::string Raw_GetEntityName(Actor* actor);
 std::string Raw_GetEntityTypeName(Actor* actor);
 int Raw_GetEntityTypeId(Actor* actor);
 FloatVec4 Raw_GetEntityPos(Actor* actor);
+IntVec4 Raw_GetEntityBlockPos(Actor* actor);
 int Raw_GetHealth(Actor *actor);
 int Raw_GetMaxHealth(Actor *actor);
 bool Raw_GetIsInAir(Actor *actor);

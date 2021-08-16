@@ -27,6 +27,7 @@ public:
 
     Local<Value> getName();
     Local<Value> getPos();
+    Local<Value> getBlockPos();
     Local<Value> getRealName();
     Local<Value> getXuid();
     Local<Value> getUuid();

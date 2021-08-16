@@ -48,6 +48,7 @@
 | ------------ | --------------------------- | ---------- |
 | pl.name      | 玩家名                      | `String`   |
 | pl.pos       | 玩家所在坐标                | `FloatPos` |
+| pl.blockPos  | 玩家所在的方块坐标          | `IntPos`   |
 | pl.realName  | 玩家的真实名字              | `String`   |
 | pl.xuid      | 玩家Xuid字符串              | `String`   |
 | pl.uuid      | 玩家Uuid字符串              | `String`   |

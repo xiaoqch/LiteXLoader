@@ -29,6 +29,7 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
 
         .instanceProperty("name", &PlayerClass::getName)
         .instanceProperty("pos", &PlayerClass::getPos)
+        .instanceProperty("blockPos", &PlayerClass::getBlockPos)
         .instanceProperty("realName", &PlayerClass::getRealName)
         .instanceProperty("xuid", &PlayerClass::getXuid)
         .instanceProperty("uuid", &PlayerClass::getUuid)
@@ -240,6 +241,18 @@ Local<Value> PlayerClass::getPos()
         return FloatPos::newPos(Raw_GetPlayerPos(player));
     }
     CATCH("Fail in getPlayerPos!")
+}
+
+Local<Value> PlayerClass::getBlockPos()
+{
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        return IntPos::newPos(Raw_GetPlayerBlockPos(player));
+    }
+    CATCH("Fail in getPlayerBlockPos!")
 }
 
 Local<Value> PlayerClass::getXuid()

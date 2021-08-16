@@ -4,11 +4,13 @@
 class Player;
 class Container;
 class ItemStack;
+class IntVec4;
 class FloatVec4;
 class ActorUniqueID;
 
 std::string Raw_GetPlayerName(Player* player);
 FloatVec4 Raw_GetPlayerPos(Player* player);
+IntVec4 Raw_GetPlayerBlockPos(Player* player);
 std::string Raw_GetXuid(Player* player);
 std::string Raw_GetUuid(Player *player);
 std::string Raw_GetRealName(Player* player);

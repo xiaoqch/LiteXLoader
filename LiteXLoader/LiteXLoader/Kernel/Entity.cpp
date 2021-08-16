@@ -62,7 +62,15 @@ FloatVec4 Raw_GetEntityPos(Actor* actor)
     SymCall("?getFeetPos@CommandUtils@@YA?AVVec3@@PEBVActor@@@Z",
         Vec3*, Vec3*, Actor*)(&pos, actor);
 
-    return {pos.x,pos.y,pos.z,WActor(*actor).getDimID()};
+    return {pos.x,pos.y,pos.z,Raw_GetEntityDimId(actor)};
+}
+
+IntVec4 Raw_GetEntityBlockPos(Actor* actor)
+{
+    BlockPos pos;
+    SymCall("?getFeetBlockPos@CommandUtils@@YA?AVBlockPos@@PEBVActor@@@Z",
+        BlockPos*, BlockPos*, Actor*)(&pos, actor);
+    return { pos.x,pos.y,pos.z,Raw_GetEntityDimId(actor) };
 }
 
 int Raw_GetHealth(Actor *actor)

@@ -20,6 +20,11 @@ FloatVec4 Raw_GetPlayerPos(Player* player)
     return Raw_GetEntityPos((Actor*)player);
 }
 
+IntVec4 Raw_GetPlayerBlockPos(Player* player)
+{
+    return Raw_GetEntityBlockPos((Actor*)player);
+}
+
 string Raw_GetXuid(Player* player)
 {
     return offPlayer::getXUIDString(player);
