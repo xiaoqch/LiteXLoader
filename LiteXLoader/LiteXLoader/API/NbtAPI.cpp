@@ -1023,7 +1023,31 @@ Local<Value> NbtStatic::createTag(const Arguments& args)
                 return Local<Value>();
             }
         }
-        return NbtValue::newNBT(tag);
+        
+        Local<Value> res;
+        switch (type)
+        {
+        case TagType::End:
+        case TagType::Byte:
+        case TagType::Short:
+        case TagType::Int:
+        case TagType::Long:
+        case TagType::Float:
+        case TagType::Double:
+        case TagType::String:
+        case TagType::ByteArray:
+            res = NbtValue::newNBT(tag);
+            break;
+        case TagType::List:
+            res = NbtList::newNBT(tag);
+            break;
+        case TagType::Compound:
+            res = NbtCompound::newNBT(tag);
+            break;
+        default:
+            return Local<Value>();
+        }
+        return res;
     }
     CATCH("Fail in NBTcreateTag!")
 }
