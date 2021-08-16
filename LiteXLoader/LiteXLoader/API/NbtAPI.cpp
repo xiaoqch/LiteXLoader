@@ -860,7 +860,7 @@ Local<Value> NbtCompound::setTag(const Arguments& args)
             return this->getScriptObject();
         }
 
-        ERROR("Unknown type! Cannot add Tag into List");
+        ERROR("Unknown type! Cannot add Tag into Compound");
         return Local<Value>();
     }
     CATCH("Fail in NBTsetTag!");
@@ -1015,14 +1015,17 @@ Local<Value> NbtStatic::createTag(const Arguments& args)
             return Local<Value>();
         }
 
-        if (!TagSetValue(tag, args[1]))
+        if (args.size() >= 2)
         {
-            ERROR("Fail to set value of tag!");
-            return Local<Value>();
+            if (!TagSetValue(tag, args[1]))
+            {
+                ERROR("Fail to set value of tag!");
+                return Local<Value>();
+            }
         }
         return NbtValue::newNBT(tag);
     }
-    CATCH("Fail in NBTwriteInt!")
+    CATCH("Fail in NBTcreateTag!")
 }
 
 
