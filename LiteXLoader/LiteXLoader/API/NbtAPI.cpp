@@ -480,8 +480,7 @@ Local<Value> NbtList::setTag(const Arguments& args)
 
 Local<Value> NbtList::addTag(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 2);
-    CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
+    CHECK_ARGS_COUNT(args, 1);
 
     try
     {
