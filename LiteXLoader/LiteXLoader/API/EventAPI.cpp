@@ -861,7 +861,7 @@ THook(bool, "?explode@Level@@UEAAXAEAVBlockSource@@PEAVActor@@AEBVVec3@@M_N3M3@Z
 
 // ===== onRespawnAnchorExplode =====
 THook(void, "?explode@RespawnAnchorBlock@@CAXAEAVPlayer@@AEBVBlockPos@@AEAVBlockSource@@AEAVLevel@@@Z",
-    void* _this, Player* pl, BlockPos* bp, BlockSource* bs, Level* level)
+    Player* pl, BlockPos* bp, BlockSource* bs, Level* level)
 {
     IF_LISTENED(EVENT_TYPES::onRespawnAnchorExplode)
     {
@@ -869,7 +869,7 @@ THook(void, "?explode@RespawnAnchorBlock@@CAXAEAVPlayer@@AEBVBlockPos@@AEAVBlock
             PlayerClass::newPlayer(pl));
     }
     IF_LISTENED_END();
-    return original(_this, pl, bp, bs, level);
+    return original(pl, bp, bs, level);
 }
 
 // ===== onBlockExploded =====
