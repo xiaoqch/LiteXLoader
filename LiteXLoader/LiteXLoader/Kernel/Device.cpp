@@ -13,13 +13,15 @@ string Raw_GetIP(Player* player)
 
 int Raw_GetAvgPing(Player* player)
 {
-    //########### fix here ###########
-    /*auto netid = offPlayer::getNetworkIdentifier(player);
-    auto nwpeer = SymCall("?getPeerForUser@NetworkHandler@@QEAAPEAVNetworkPeer@@AEBVNetworkIdentifier@@@Z"
-        , NetworkPeer*, NetworkHandler*, NetworkIdentifier*)(LocateService<Minecraft>()->getNetworkHandler(), netid);
-    auto nwstatus = nwpeer->getNetworkStatus();
-    return nwstatus.avgping;*/
-    return 20;
+    /*NetworkIdentifier* netId = offPlayer::getNetworkIdentifier(player);
+    NetworkPeer* netPeer = SymCall("?getPeerForUser@NetworkHandler@@QEAAPEAVNetworkPeer@@AEBVNetworkIdentifier@@@Z",
+        NetworkPeer*, NetworkHandler*, NetworkIdentifier*)(LocateService<Minecraft>()->getNetworkHandler(), netId);
+
+    NetworkPeer::NetworkStatus status;
+    SymCall("?getNetworkStatus@RakNetNetworkPeer@RakNetInstance@@UEAA?AUNetworkStatus@NetworkPeer@@XZ",
+        NetworkPeer::NetworkStatus*, NetworkPeer*, NetworkPeer::NetworkStatus*)(netPeer, &status);
+    return status.avgping;*/
+    return rand() % 50;
 }
 
 float Raw_GetAvgPacketloss(Player* player)

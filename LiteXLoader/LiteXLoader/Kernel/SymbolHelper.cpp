@@ -5,7 +5,7 @@ using namespace std;
 
 BlockSource* Raw_GetBlockSourceByActor(Actor* actor)
 {
-	return dAccess<BlockSource*>(actor, 872);
+	return SymCall("?getRegionConst@Actor@@QEBAAEBVBlockSource@@XZ", BlockSource*, Actor*)(actor);
 }
 
 //////////////////////// Helper ////////////////////////

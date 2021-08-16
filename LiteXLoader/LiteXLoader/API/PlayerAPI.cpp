@@ -133,6 +133,9 @@ Local<Value> GetPlayer(const Arguments& args)
 
     try{
         string target = args[0].toStr();
+        if (target.empty())
+            return Local<Value>();
+
         transform(target.begin(), target.end(), target.begin(), ::tolower);	//lower case the string
         auto playerList = Raw_GetOnlinePlayers();
         int delta = 2147483647;	//c++ int max
