@@ -22,6 +22,7 @@ ClassDefine<DbClass> DbClassBuilder =
         .instanceFunction("set", &DbClass::set)
         .instanceFunction("delete", &DbClass::del)
         .instanceFunction("close", &DbClass::close)
+        .instanceFunction("listKey", &DbClass::listKey)
         .build();
 
 ClassDefine<ConfJsonClass> ConfJsonClassBuilder =
