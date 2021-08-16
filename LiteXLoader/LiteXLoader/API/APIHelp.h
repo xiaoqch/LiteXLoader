@@ -34,12 +34,22 @@ bool inline IsInstanceOf(Local<Value> v)
 // 至少COUNT个参数
 #define CHECK_ARGS_COUNT(ARGS,COUNT) \
     if(ARGS.size()<COUNT) \
-    {ERROR("Too Few arguments!"); return Local<Value>();}
+    { \
+        ERROR("Too Few arguments!"); \
+        ERROR(std::string("In API: ") + __FUNCTION__); \
+        ERROR("In Plugin: " + ENGINE_OWN_DATA()->pluginName); \
+        return Local<Value>(); \
+    }
 
 // 检查是否TYPE类型 
 #define CHECK_ARG_TYPE(ARG,TYPE) \
     if(ARG.getKind() != TYPE) \
-    {ERROR("Wrong type of argument!"); return Local<Value>();}
+    { \
+        ERROR("Wrong type of argument!"); \
+        ERROR(std::string("In API: ") + __FUNCTION__); \
+        ERROR("In Plugin: " + ENGINE_OWN_DATA()->pluginName); \
+        return Local<Value>(); \
+    }
 
 // 判断是否为浮点数
 bool CheckIsFloat(const Local<Value> &num);
@@ -47,9 +57,19 @@ bool CheckIsFloat(const Local<Value> &num);
 // 截获引擎异常
 #define CATCH(LOG) \
     catch(const seh_exception &e) \
-    { ERROR("SEH Exception Caught!"); ERRPRINT(e.what()); ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName); return Local<Value>(); } \
+    { \
+        ERROR("SEH Exception Caught!"); \
+        ERRPRINT(e.what()); \
+        ERROR(std::string("In API: ") + __FUNCTION__); \
+        ERROR("In Plugin: " + ENGINE_OWN_DATA()->pluginName); \
+        return Local<Value>(); \
+    } \
     catch(const Exception& e) \
-    { ERROR(LOG##"\n"); ERRPRINT(e); ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName); return Local<Value>();}
+    { \
+        ERROR(LOG##"\n"); ERRPRINT(e); \
+        ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName); \
+        return Local<Value>(); \
+    }
 
 
 // 序列化
