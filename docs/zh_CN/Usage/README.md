@@ -4,16 +4,17 @@
 
 `LiteXLoader`（以下简称**LXL**）是一个基岩版官方服务端 `Bedrock Delicated Server`（以下简称**BDS**）的插件框架，提供强大的跨语言脚本插件支持能力和稳定的开发API支持。  
 
+`LiteXLoader` 主要发布和更新于**MineBBS**。你可以在哪里下载到`LiteXLoader`以及绝大多数相关插件
+
 ## 💻 安装
 
-`LiteXLoader` 主要发布于**MineBBS**。在安装 `LiteXLoader` 之前，你需要先配置好其依赖的 `LiteLoader` 加载器环境。
+在安装 `LiteXLoader` 之前，你需要先配置好其依赖的 `LiteLoader` 加载器环境。  
+`LiteLoader`是知名的BDS C++插件加载器，提供了强大的底层API支持。LXL使用其提供的接口，并进行了很多拓展。
 
-- 请[点击此处 移步MineBBS](https://www.minebbs.com/resources/liteloader.2059/)下载对应版本的 `LiteLoader` ，按要求解压之后运行SymDB2.exe生成相关数据
-
-在完成上述操作，并确认成功后，接下来安装`LiteXLoader` ：
-
-1. [点击此处 移步MineBBS](https://www.minebbs.com/resources/litexloader-x-bds.2670/)下载对应版本的`LiteXLoader`，解压
-2. 把全部内容复制到 **BDS** 的`plugins`目录中。如果复制时提示文件有冲突，选择覆盖即可。
+1. [点击此处 前往MineBBS](https://www.minebbs.com/resources/liteloader.2059/)下载对应版本的 `LiteLoader` ，按要求解压之后运行SymDB2.exe生成相关数据
+2. 完成上述操作，并确认成功
+3. [点击此处 前往MineBBS](https://www.minebbs.com/resources/litexloader-x-bds.2670/)下载对应版本的`LiteXLoader`，解压
+4. 把全部内容复制到 **BDS** 的`plugins`目录中。如果复制时提示文件有冲突，选择覆盖即可。
 
 安装完毕！接下来，你就可以安装你想要的 **LXL** 插件了
 
