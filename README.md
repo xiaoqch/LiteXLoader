@@ -128,9 +128,11 @@ LXL插件主要发布于**MineBBS**，请 [点击这里 前往MineBBS](https://w
 请👉[移步 LXL 文档站](https://lxl.litetitle.com/#/zh_CN/Development/)👈查看详细的**API文档**和**插件开发教程**  
 如果有修订需求或者有新增API的需要，欢迎联系作者或者发布Issue  
 
-[【点击这里】](https://www.minebbs.com/resources/litexloader-x-bds.2670/edit) 查看更多开源的LXL插件，作为示例插件。  
+[点击这里](https://www.minebbs.com/resources/litexloader-x-bds.2670/edit) 查看更多开源的LXL插件，作为示例插件。  
 你可以直接在生产环境中使用它们
 也可以在这里学习插件开发的方法和技巧
+
+<br>
 
 ### VSCode 开发辅助插件 & 补全库
 
@@ -142,9 +144,11 @@ LXL插件主要发布于**MineBBS**，请 [点击这里 前往MineBBS](https://w
 
 ![LXLDevHelper](assets/LXLDevHelper.gif)
 
-[【点击这里】](https://www.minebbs.com/resources/lxldevhelper.2672/)
+[点击这里](https://www.minebbs.com/resources/lxldevhelper.2672/)
 查看扩展说明与介绍  
 VSCode扩展商店搜索`LXL`，安装**LXLDevHelper**，即刻体验
+
+<br>
 
 ### Blockly-LXL 图形化开发套件
 
@@ -155,8 +159,10 @@ VSCode扩展商店搜索`LXL`，安装**LXLDevHelper**，即刻体验
 
 ![Blockly-LXL](assets/BLLXL.png)
 
-[【点击这里】](https://www.minebbs.com/resources/blockly-lxl.2671/)
+[点击这里](https://www.minebbs.com/resources/blockly-lxl.2671/)
 查看相关安装与使用说明
+
+<br>
 
 ### CommonJs  for LXL
 
@@ -164,7 +170,7 @@ CJS.JS作者是callstackexceed，这个插件为在LXL下使用Js开发插件提
 
 ![CommonJs](assets/CommonJS.png)
 
-[【点击这里】](https://github.com/callstackexceed/cjs.js) 前往GitHub查看使用说明，并下载使用
+[点击这里](https://github.com/callstackexceed/cjs.js) 前往GitHub查看使用说明，并下载使用
 
 项目作者callstackexceed，也是MC addon `NormaConstructor`的一个开发者。  
 `NormaConstructor`是一个开源的快速建造（类WorldEdit）插件，目前运行在Scripting API和LXL上。  
