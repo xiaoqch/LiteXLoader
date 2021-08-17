@@ -47,6 +47,18 @@ void RemoteCallCallback(ModuleMessage& msg)
             ERROR(string("Fail to post remote call result return! Error Code: ") + to_string(GetLastError()));
         }
     }
+    catch (const Exception& e)
+    {
+        ERROR("Error occurred in remote engine!\n"); ERRPRINT(e);
+        ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName);
+        
+        //Feedback
+        ModuleMessage msgBack(backId, ModuleMessage::MessageType::RemoteCallReturn, "[null]");
+        if (!msg.sendBack(msgBack))
+        {
+            ERROR(string("Fail to post remote call result return! Error Code: ") + to_string(GetLastError()));
+        }
+    }
     catch (...)
     {
         WARN("Error occurred in remote engine!");
