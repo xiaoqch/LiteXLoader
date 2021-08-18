@@ -550,10 +550,7 @@ Local<Value> PlayerClass::runcmd(const Arguments& args)
         if (!player)
             return Local<Value>();
 
-        string cmd{ args[0].toStr() };
-        if (cmd[0] == '/')
-            cmd.erase(0, 1);
-        return Boolean::newBoolean(Raw_RuncmdAs(player,cmd));
+        return Boolean::newBoolean(Raw_RuncmdAs(player, args[0].toStr()));
     }
     CATCH("Fail in runcmd!");
 }
