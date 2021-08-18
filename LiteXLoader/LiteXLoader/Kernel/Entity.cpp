@@ -102,15 +102,8 @@ bool Raw_KillEntity(Actor* actor)
 
 bool Raw_IsPlayer(Actor* actor)
 {
-    Player* pl = (Player*)actor;
-    auto plList = Raw_GetOnlinePlayers();
-
-    for (auto& player : plList)
-        if (player == pl)
-        {
-            return true;
-        }
-    return false;
+    auto vtbl = dlsym("??_7ServerPlayer@@6B@");
+    return *(void**)actor == vtbl;
 }
 
 Player* Raw_ToPlayer(Actor* actor)
