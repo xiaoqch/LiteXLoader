@@ -38,6 +38,7 @@
     <ClCompile Include="API\APIHelp.cpp" />
     <ClCompile Include="API\BaseAPI.cpp" />
     <ClCompile Include="API\BlockAPI.cpp" />
+    <ClCompile Include="API\BlockEntityAPI.cpp" />
     <ClCompile Include="API\CommandAPI.cpp" />
     <ClCompile Include="API\ContainerAPI.cpp" />
     <ClCompile Include="API\DataAPI.cpp" />
@@ -63,6 +64,7 @@
     <ClCompile Include="Engine\MessageSystem.cpp" />
     <ClCompile Include="Engine\PluginHotManage.cpp" />
     <ClCompile Include="Engine\TimeTaskSystem.cpp" />
+    <ClCompile Include="Kernel\BlockEntity.cpp" />
     <ClCompile Include="Kernel\Container.cpp" />
     <ClCompile Include="Kernel\Device.cpp" />
     <ClCompile Include="dllmain.cpp" />
@@ -92,6 +94,7 @@
   <ItemGroup>
     <ClInclude Include="API\BaseAPI.h" />
     <ClInclude Include="API\BlockAPI.h" />
+    <ClInclude Include="API\BlockEntityAPI.h" />
     <ClInclude Include="API\CommandAPI.h" />
     <ClInclude Include="API\ContainerAPI.h" />
     <ClInclude Include="API\DataAPI.h" />
@@ -125,6 +128,7 @@
     <ClInclude Include="Engine\TimeTaskSystem.h" />
     <ClInclude Include="Kernel\Base.h" />
     <ClInclude Include="Kernel\Block.h" />
+    <ClInclude Include="Kernel\BlockEntity.h" />
     <ClInclude Include="Kernel\Container.h" />
     <ClInclude Include="Kernel\Data.h" />
     <ClInclude Include="Kernel\Device.h" />

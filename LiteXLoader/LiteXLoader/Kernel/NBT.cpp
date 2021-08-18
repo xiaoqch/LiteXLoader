@@ -180,6 +180,21 @@ bool Tag::setPlayer(Player* player)
         bool, ServerPlayer*, Tag*, void*)((ServerPlayer*)player, this, &vtbl);
 }
 
+bool Tag::setBlockEntity(BlockActor* ble)
+{
+    void* vtbl = dlsym("??_7DefaultDataLoadHelper@@6B@");
+    SymCall("?load@BlockActor@@UEAAXAEAVLevel@@AEBVCompoundTag@@AEAVDataLoadHelper@@@Z",
+        void, BlockActor *, Level*, Tag*, void*)(ble, mc->getLevel(),this, &vtbl);
+    return true;
+}
+
+Tag* Tag::fromBlockEntity(BlockActor* ble)
+{
+    Tag* tmp = Tag::createTag(TagType::Compound);
+    SymCall("?save@BlockActor@@UEBA_NAEAVCompoundTag@@@Z", void, BlockActor*, Tag*)(ble,tmp);
+    return tmp;
+}
+
 //toJson
 
 void TagToJson_Compound_Helper(JSON_VALUE& res, Tag* nbt);

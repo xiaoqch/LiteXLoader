@@ -62,10 +62,12 @@ public:
 	void setBlock(Block* blk);
 	bool setActor(Actor* actor);
 	bool setPlayer(Player* actor);
+	bool setBlockEntity(BlockActor* ble);
 	static Tag* fromItem(ItemStack* item);
 	static Tag* fromBlock(Block* blk);
 	static Tag* fromActor(Actor* actor);
 	static Tag* fromPlayer(Player* player);
+	static Tag* fromBlockEntity(BlockActor* ble);
 };
 
 std::string TagToJson(Tag* nbt, int formatIndent);
