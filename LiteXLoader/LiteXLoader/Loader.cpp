@@ -34,7 +34,7 @@ void LoadDepends()
 {
     std::filesystem::directory_iterator deps(Raw_IniGetString(iniConf, "Main", "DependsDir", LXL_DEPENDS_DIR));
     for (auto& i : deps) {
-        if (i.is_regular_file() && i.path().extension() == LXL_PLUGINS_SUFFIX)
+        if (i.is_regular_file() && i.path().filename() == string("BaseLib")+ LXL_PLUGINS_SUFFIX)
         {
             try
             {
