@@ -201,7 +201,6 @@ Local<Value> BlockClass::getContainer(const Arguments& args)
 Local<Value> BlockClass::hasBlockEntity(const Arguments& args)
 {
     try {
-        //return Boolean::newBoolean(Raw_HasBlockEntity({ pos.x, pos.y, pos.z, pos.dim }));
         return Boolean::newBoolean(Raw_HasBlockEntity(block));
     }
     CATCH("Fail in hasBlockEntity!");
