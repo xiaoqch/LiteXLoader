@@ -6,6 +6,7 @@
 #include "NbtAPI.h"
 #include <Kernel/NBT.h>
 #include <Kernel/Block.h>
+#include <Kernel/BlockEntity.h>
 #include <Kernel/Container.h>
 #include <Kernel/SymbolHelper.h>
 #include <exception>
@@ -200,7 +201,7 @@ Local<Value> BlockClass::getContainer(const Arguments& args)
 Local<Value> BlockClass::hasBlockEntity(const Arguments& args)
 {
     try {
-        return Boolean::newBoolean(Raw_HasBlockEntity({ pos.x, pos.y, pos.z, pos.dim }));
+        return Boolean::newBoolean(Raw_HasBlockEntity(block));
     }
     CATCH("Fail in hasBlockEntity!");
 }
@@ -208,8 +209,9 @@ Local<Value> BlockClass::hasBlockEntity(const Arguments& args)
 Local<Value> BlockClass::getBlockEntity(const Arguments& args)
 {
     try {
-        Actor* entity = Raw_GetBlockEntity({ pos.x, pos.y, pos.z, pos.dim });
-        return entity ? EntityClass::newEntity(entity) : Local<Value>();
+        //Actor* entity = Raw_GetBlockEntity({ pos.x, pos.y, pos.z, pos.dim });
+        //return entity ? EntityClass::newEntity(entity) : Local<Value>();
+        return Local<Value>();
     }
     CATCH("Fail in getBlockEntity!");
 }

@@ -181,6 +181,12 @@
     <ClCompile Include="API\PacketAPI.cpp">
       <Filter>API</Filter>
     </ClCompile>
+    <ClCompile Include="Kernel\BlockEntity.cpp">
+      <Filter>Kernel</Filter>
+    </ClCompile>
+    <ClCompile Include="API\BlockEntityAPI.cpp">
+      <Filter>API</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="API\BaseAPI.h">
@@ -346,6 +352,12 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="API\PacketAPI.h">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="Kernel\BlockEntity.h">
+      <Filter>Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="API\BlockEntityAPI.h">
       <Filter>API</Filter>
     </ClInclude>
   </ItemGroup>

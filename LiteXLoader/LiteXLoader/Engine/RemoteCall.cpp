@@ -26,11 +26,13 @@ void RemoteCallCallback(ModuleMessage& msg)
     sin.get();
     getline(sin, argsList);
 
+    ScriptEngine* engine = nullptr;
     try
     {
         //Real Call
         ExportedFuncData* funcData = &(globalShareData->exportedFuncs).at(funcName);
-        EngineScope enter(funcData->engine);
+        engine = funcData->engine;
+        EngineScope enter(engine);
 
         Local<Array> args = JsonToValue(argsList).asArray();
         vector<Local<Value>> argsVector;
@@ -49,8 +51,13 @@ void RemoteCallCallback(ModuleMessage& msg)
     }
     catch (const Exception& e)
     {
-        ERROR("Error occurred in remote engine!\n"); ERRPRINT(e);
-        ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName);
+        ERROR("Error occurred in remote engine!\n");
+        if (engine)
+        {
+            EngineScope enter(engine);
+            ERRPRINT(e);
+            ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName);
+        }
         
         //Feedback
         ModuleMessage msgBack(backId, ModuleMessage::MessageType::RemoteCallReturn, "[null]");
