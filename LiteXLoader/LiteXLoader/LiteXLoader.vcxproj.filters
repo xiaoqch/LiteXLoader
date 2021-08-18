@@ -178,6 +178,9 @@
     <ClCompile Include="Engine\TimeTaskSystem.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="API\PacketAPI.cpp">
+      <Filter>API</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="API\BaseAPI.h">
@@ -341,6 +344,9 @@
     </ClInclude>
     <ClInclude Include="Engine\TimeTaskSystem.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="API\PacketAPI.h">
+      <Filter>API</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
