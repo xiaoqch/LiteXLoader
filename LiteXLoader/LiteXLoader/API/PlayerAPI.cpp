@@ -6,6 +6,7 @@
 #include "ItemAPI.h"
 #include "GuiAPI.h"
 #include "NbtAPI.h"
+#include <LiteXLoader/PacketAPI.h>
 #include <Engine/EngineOwnData.h>
 #include <Engine/GlobalShareData.h>
 #include <Kernel/Player.h>
@@ -17,6 +18,7 @@
 #include <vector>
 #include <unordered_map>
 #include <algorithm>
+#include <LiteXLoader/Kernel/Packet.h>
 using namespace std;
 using namespace script;
 
@@ -83,6 +85,7 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceFunction("sendModalForm", &PlayerClass::sendModalForm)
         .instanceFunction("sendCustomForm", &PlayerClass::sendCustomForm)
         .instanceFunction("sendForm", &PlayerClass::sendForm)
+        .instanceFunction("sendPacket",&PlayerClass::sendPacket)
 
         .instanceFunction("setExtraData", &PlayerClass::setExtraData)
         .instanceFunction("getExtraData", &PlayerClass::getExtraData)
@@ -1001,6 +1004,25 @@ Local<Value> PlayerClass::sendForm(const Arguments& args)
         return Local<Value>();
     }
     CATCH("Fail in sendForm!")
+}
+
+Local<Value> PlayerClass::sendPacket(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1)
+    CHECK_ARG_TYPE(args[0], ValueKind::kObject)
+
+    try
+    {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+        auto id = PacketClass::_getPacketid(args[0]);
+        auto wb = PacketClass::extractPacket(args[0]);
+        auto pkt = MyPkt(id, wb);
+        Raw_SendPacket(player, &pkt);
+    }
+    CATCH("Fail in sendPacket")
+    return Local<Value>();
 }
 
 Local<Value> PlayerClass::setExtraData(const Arguments& args)

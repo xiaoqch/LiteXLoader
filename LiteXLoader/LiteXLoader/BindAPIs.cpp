@@ -17,6 +17,7 @@ using namespace script;
 #include <API/ServerAPI.h>
 #include <API/ScriptAPI.h>
 #include <API/StaticClasses.h>
+#include <LiteXLoader/PacketAPI.h>
 
 void BindAPIs(ScriptEngine *engine)
 {
@@ -96,4 +97,7 @@ void BindAPIs(ScriptEngine *engine)
 
     extern ClassDefine<NbtCompound> NbtCompoundBuilder;
     engine->registerNativeClass<NbtCompound>(NbtCompoundBuilder);
+
+    extern ClassDefine<PacketClass> PacketClassBuilder;
+    engine->registerNativeClass<PacketClass>(PacketClassBuilder);
 }

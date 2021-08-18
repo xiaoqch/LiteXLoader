@@ -29,12 +29,18 @@ class Packet {
 };
 static_assert(sizeof(Packet) == 48);
 
-template <int pid, bool batching = true, bool compress = true>
+
 class MyPkt : public Packet {
   public:
-    string_view view;
+      string_view view;
+     int pid;
+     bool batching = true;
+     bool compress = true;
     MyPkt() { compressible = compress; }
-    MyPkt(string_view sv) : view(sv) { compressible = compress; }
+    MyPkt(int id, string_view sv) : view(sv) { 
+        this->pid = id;
+        compressible = compress;
+    }
     inline virtual ~MyPkt() {}
     virtual int getId() const { return pid; }
     virtual std::string getName() const { return "MyPkt"; }
@@ -42,4 +48,4 @@ class MyPkt : public Packet {
     virtual void dummyread() {}
     virtual bool disallowBatching() const { return !batching; }
 };
-static_assert(offsetof(MyPkt<0>, view) == 48);
+static_assert(offsetof(MyPkt, view) == 48);

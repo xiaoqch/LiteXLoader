@@ -14,9 +14,9 @@ Packet* Raw_CreatePacket(int type)
     return (Packet*)*packet;
 }
 
-bool Raw_SendPacket(Player *player,Packet *packet)
+bool Raw_SendPacket(Player *player,void *packet)
 {
-    ((ServerPlayer*)player)->sendNetworkPacket(*packet);
+    ((ServerPlayer*)player)->sendNetworkPacket(*(Packet*)packet);
     return true;
 }
 
