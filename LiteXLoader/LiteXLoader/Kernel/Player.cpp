@@ -282,16 +282,20 @@ bool Raw_RemoveScore(Player* player, const std::string &key)
 
 bool Raw_SetSidebar(Player *player, std::string title, const std::vector<std::pair<std::string,int>> &data)
 {
-    Raw_SendSetDisplayObjectivePacket(player, title, "__fake_score_objective__");
+    Raw_SendSetDisplayObjectivePacket(player, title, "FakeScoreObj");
 
     vector<ScorePacketInfo> info;
     for (auto& x : data)
     {
-        ScorePacketInfo i(globalScoreBoard->createScoreboardId(x.first),x.second,x.first);
-        info.push_back(i);
+        ScoreboardId* id = SymCall("?createScoreboardId@ServerScoreboard@@UEAAAEBUScoreboardId@@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z",
+            ScoreboardId*, Scoreboard* ,const string*)(globalScoreBoard, &x.first);
+        ScorePacketInfo i(id,x.second,x.first);
+        info.emplace_back(i);
     }
 
-    return Raw_SendSetScorePacket(player, 0, info);    //set
+    Raw_SendSetScorePacket(player, 0, info);    //set
+    Raw_SendSetDisplayObjectivePacket(player, title, "FakeScoreObj");
+    return true;
 }
 
 bool Raw_RemoveSidebar(Player *player)

@@ -168,7 +168,7 @@ public:
 struct ScorePacketInfo
 {
     ScoreboardId sid;
-    string obj_name = "__fake_score_objective__";
+    string obj_name = "FakeScoreObj";
     unsigned score;
     enum Type : char { Invalid = 0, Player = 1, Actor = 2, Fake = 3 };
     Type type = Fake;
@@ -176,8 +176,8 @@ struct ScorePacketInfo
     unsigned long long aid;
     string fake_name;
 
-    ScorePacketInfo(const ScoreboardId &s, unsigned num, const string& fake)
-        : sid(s), score(num), fake_name(fake)
+    ScorePacketInfo(ScoreboardId *s, unsigned num, const string& fake)
+        : sid(*s), score(num), fake_name(fake)
     { }
 };
 
