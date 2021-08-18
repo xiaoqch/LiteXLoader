@@ -17,7 +17,7 @@ using namespace script;
 #include <API/ServerAPI.h>
 #include <API/ScriptAPI.h>
 #include <API/StaticClasses.h>
-#include <LiteXLoader/PacketAPI.h>
+#include <API/PacketAPI.h>
 
 void BindAPIs(ScriptEngine *engine)
 {

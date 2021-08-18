@@ -6,7 +6,7 @@
 #include "ItemAPI.h"
 #include "GuiAPI.h"
 #include "NbtAPI.h"
-#include <LiteXLoader/PacketAPI.h>
+#include <API/PacketAPI.h>
 #include <Engine/EngineOwnData.h>
 #include <Engine/GlobalShareData.h>
 #include <Kernel/Player.h>
