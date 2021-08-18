@@ -178,6 +178,9 @@
     <ClCompile Include="Engine\TimeTaskSystem.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="API\PacketAPI.cpp">
+      <Filter>API</Filter>
+    </ClCompile>
     <ClCompile Include="Kernel\BlockEntity.cpp">
       <Filter>Kernel</Filter>
     </ClCompile>
@@ -347,6 +350,9 @@
     </ClInclude>
     <ClInclude Include="Engine\TimeTaskSystem.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="API\PacketAPI.h">
+      <Filter>API</Filter>
     </ClInclude>
     <ClInclude Include="Kernel\BlockEntity.h">
       <Filter>Kernel</Filter>
