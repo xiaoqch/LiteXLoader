@@ -3,6 +3,7 @@
 #include "BlockAPI.h"
 #include "ContainerAPI.h"
 #include "EntityAPI.h"
+#include "BlockEntityAPI.h"
 #include "NbtAPI.h"
 #include <Kernel/NBT.h>
 #include <Kernel/Block.h>
@@ -209,9 +210,8 @@ Local<Value> BlockClass::hasBlockEntity(const Arguments& args)
 Local<Value> BlockClass::getBlockEntity(const Arguments& args)
 {
     try {
-        //Actor* entity = Raw_GetBlockEntity({ pos.x, pos.y, pos.z, pos.dim });
-        //return entity ? EntityClass::newEntity(entity) : Local<Value>();
-        return Local<Value>();
+        BlockActor* be = Raw_GetBlockEntity(pos);
+        return be ? BlockEntityClass::newBlockEntity(be) : Local<Value>();
     }
     CATCH("Fail in getBlockEntity!");
 }

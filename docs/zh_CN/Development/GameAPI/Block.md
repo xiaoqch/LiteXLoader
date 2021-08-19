@@ -1,10 +1,10 @@
 ## 📦 方块对象 API
 
-在LXL中，使用「方块对象」来操作和获取某一个方块的相关信息。
+在LXL中，使用「方块对象」来操作和获取某一类方块的相关信息。
 
 ### 获取一个方块对象
 
-获取玩家对象有两种方式：
+获取方块对象有两种方式：
 
 1. 通过注册**事件监听**函数，或者调用某些**返回方块对象**的函数，获取到BDS给出的与相关事件有关的方块对象  
    详见 [事件监听文档 - EventAPI](zh_CN/Development/EventAPI/Listen.md)  
@@ -101,6 +101,26 @@
 - 返回值类型：`Container`
 
 关于容器对象的更多使用，请参考 [容器对象 API文档](zh_CN/Development/GameAPI/Container.md)
+
+<br>
+
+#### 判断方块是否拥有方块实体
+
+`bl.hasBlockEntity()`
+
+- 返回值：这个方块是否拥有方块实体
+- 返回值类型：`Boolean`
+
+<br>
+
+#### 获取方块所拥有的方块实体
+
+`bl.getBlockEntity()`
+
+- 返回值：这个方块所拥有的方块实体
+- 返回值类型：`BlockEntity`
+
+关于方块实体对象的更多使用，请参考 [方块实体对象 API文档](zh_CN/Development/GameAPI/BlockEntity.md)
 
 <br>
 

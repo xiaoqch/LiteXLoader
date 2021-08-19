@@ -2,6 +2,7 @@
 using namespace script;
 #include <API/BaseAPI.h>
 #include <API/BlockAPI.h>
+#include <API/BlockEntityAPI.h>
 #include <API/CommandAPI.h>
 #include <API/DeviceAPI.h>
 #include <API/ItemAPI.h>
@@ -76,6 +77,9 @@ void BindAPIs(ScriptEngine *engine)
 
     extern ClassDefine<EntityClass> EntityClassBuilder;
     engine->registerNativeClass<EntityClass>(EntityClassBuilder);
+
+    extern ClassDefine<BlockEntityClass> BlockEntityClassBuilder;
+    engine->registerNativeClass<BlockEntityClass>(BlockEntityClassBuilder);
 
     extern ClassDefine<SimpleFormClass> SimpleFormClassBuilder;
     engine->registerNativeClass<SimpleFormClass>(SimpleFormClassBuilder);
