@@ -81,3 +81,9 @@ extern int lxlLogLevel;
 #define FATAL(t)  { if(lxlLogLevel >= 1) std::cerr << PREFIX "[FATAL] " << (t) << std::endl; }
 #define PRINT(t)  { std::cout << (t) << std::endl; }
 #define ERRPRINT(t)  { if(lxlLogLevel >= 2) std::cerr << (t) << std::endl; }
+
+// Call
+template<typename RTN = void, typename... Args>
+RTN inline VirtualCall(void* _this, uintptr_t off, Args... args) {
+    return (*(RTN(**)(void*, Args...))(*(uintptr_t*)_this + off))(_this, args...);
+}

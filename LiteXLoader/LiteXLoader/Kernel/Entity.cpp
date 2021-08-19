@@ -102,6 +102,8 @@ bool Raw_KillEntity(Actor* actor)
 
 bool Raw_IsPlayer(Actor* actor)
 {
+    if (!actor)
+        return false;
     auto vtbl = dlsym("??_7ServerPlayer@@6B@");
     return *(void**)actor == vtbl;
 }
