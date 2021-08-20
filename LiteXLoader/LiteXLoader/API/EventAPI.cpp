@@ -600,9 +600,10 @@ THook(bool, "?drop@Player@@UEAA_NAEBVItemStack@@_N@Z",
 THook(bool, "?take@Player@@QEAA_NAEAVActor@@HH@Z",
     Player* _this, Actor* actor, int a2, int a3)
 {
-    IF_LISTENED(EVENT_TYPES::onTakeItem)       //################### 有无办法改成获取item ###################
+    IF_LISTENED(EVENT_TYPES::onTakeItem)
     {
-        CallEventRtnBool(EVENT_TYPES::onTakeItem, PlayerClass::newPlayer(_this), EntityClass::newEntity(actor));
+        ItemStack* it = (ItemStack*)((uintptr_t)actor + 1824);
+        CallEventRtnBool(EVENT_TYPES::onTakeItem, PlayerClass::newPlayer(_this), EntityClass::newEntity(actor), ItemClass::newItem(it));
     }
     IF_LISTENED_END();
     return original(_this, actor, a2, a3);

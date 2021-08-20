@@ -120,6 +120,15 @@
 - 返回值：这个方块所拥有的方块实体
 - 返回值类型：`BlockEntity`
 
+<br>
+
+#### 删除方块所拥有的方块实体
+
+`bl.removeBlockEntity()`
+
+- 返回值：是否成功删除
+- 返回值类型：`Boolean`
+
 关于方块实体对象的更多使用，请参考 [方块实体对象 API文档](zh_CN/Development/GameAPI/BlockEntity.md)
 
 <br>
