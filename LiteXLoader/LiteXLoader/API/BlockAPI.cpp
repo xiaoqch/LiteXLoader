@@ -32,6 +32,7 @@ ClassDefine<BlockClass> BlockClassBuilder =
         .instanceFunction("getContainer", &BlockClass::getContainer)
         .instanceFunction("hasBlockEntity", &BlockClass::hasBlockEntity)
         .instanceFunction("getBlockEntity", &BlockClass::getBlockEntity)
+        .instanceFunction("removeBlockEntity", &BlockClass::removeBlockEntity)
 
         //For Compatibility
         .instanceFunction("setTag", &BlockClass::setNbt)
@@ -211,11 +212,18 @@ Local<Value> BlockClass::getBlockEntity(const Arguments& args)
 {
     try {
         BlockActor* be = Raw_GetBlockEntity(pos);
-        return be ? BlockEntityClass::newBlockEntity(be) : Local<Value>();
+        return be ? BlockEntityClass::newBlockEntity(be,pos.dim) : Local<Value>();
     }
     CATCH("Fail in getBlockEntity!");
 }
 
+Local<Value> BlockClass::removeBlockEntity(const Arguments& args)
+{
+    try {
+        return Boolean::newBoolean(Raw_RemoveBlockEntity(pos));
+    }
+    CATCH("Fail in removeBlockEntity!");
+}
 
 //公用API
 Local<Value> GetBlock(const Arguments& args)

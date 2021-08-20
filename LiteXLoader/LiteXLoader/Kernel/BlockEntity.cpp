@@ -26,8 +26,16 @@ unsigned int Raw_GetBlockEntityType(BlockActor* ba)
 	return *SymCall("?getType@BlockActor@@QEBAAEBW4BlockActorType@@XZ", unsigned int*, BlockActor*)(ba);
 }
 
-IntVec4 Raw_GetBlockEntityPos(BlockActor* ba)
+BlockPos Raw_GetBlockEntityPos(BlockActor* ba)
 {
-	BlockPos bp = ba->getPosition();
-	return { bp.x,bp.y,bp.z,Raw_GetBlockDimension(Raw_GetBlockSourceByActor((Actor*)ba)) };		//####### May have problem
+	return ba->getPosition();
+}
+
+bool Raw_RemoveBlockEntity(IntVec4 pos)
+{
+	int res;
+	BlockPos bp{ pos.x,pos.y,pos.z };
+	SymCall("?removeBlockEntity@BlockSource@@QEAA?AV?$shared_ptr@VBlockActor@@@std@@AEBVBlockPos@@@Z",
+		int*, BlockSource*, BlockPos*, int*)(Raw_GetBlockSourceByDim(pos.dim), &bp, &res);
+	return true;
 }

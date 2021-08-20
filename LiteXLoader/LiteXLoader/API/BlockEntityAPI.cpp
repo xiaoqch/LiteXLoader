@@ -1,8 +1,11 @@
 #include "APIHelp.h"
+#include "BaseAPI.h"
+#include "BlockAPI.h"
 #include "BlockEntityAPI.h"
 #include "NbtAPI.h"
 #include <Kernel/Block.h>
 #include <Kernel/BlockEntity.h>
+#include <Kernel/SymbolHelper.h>
 #include <Kernel/Nbt.h>
 using namespace script;
 
@@ -13,22 +16,24 @@ ClassDefine<BlockEntityClass> BlockEntityClassBuilder =
 		.constructor(nullptr)
 		.instanceFunction("getRawPtr", &BlockEntityClass::getRawPtr)
 
+		.instanceProperty("pos", &BlockEntityClass::getPos)
 		.instanceProperty("type", &BlockEntityClass::getType)
 
 		.instanceFunction("setNbt", &BlockEntityClass::setNbt)
 		.instanceFunction("getNbt", &BlockEntityClass::getNbt)
+		.instanceFunction("getBlock", &BlockEntityClass::getBlock)
 		.build();
 
 
 //////////////////// Classes ////////////////////
 
-BlockEntityClass::BlockEntityClass(BlockActor* be)
-	:ScriptClass(ScriptClass::ConstructFromCpp<BlockEntityClass>{}),blockEntity(be)
+BlockEntityClass::BlockEntityClass(BlockActor* be, int dim)
+	:ScriptClass(ScriptClass::ConstructFromCpp<BlockEntityClass>{}),blockEntity(be),dim(dim)
 { }
 
-Local<Object> BlockEntityClass::newBlockEntity(BlockActor * be)
+Local<Object> BlockEntityClass::newBlockEntity(BlockActor * be,int dim)
 {
-	auto newp = new BlockEntityClass(be);
+	auto newp = new BlockEntityClass(be, dim);
 	return newp->getScriptObject();
 }
 
@@ -50,12 +55,20 @@ Local<Value> BlockEntityClass::getRawPtr(const Arguments& args)
 	CATCH("Fail in getRawPtr!")
 }
 
+Local<Value> BlockEntityClass::getPos()
+{
+	try {
+		return IntPos::newPos(Raw_GetBlockEntityPos(blockEntity), dim);
+	}
+	CATCH("Fail in getBlockEntityPos!")
+}
+
 Local<Value> BlockEntityClass::getType()
 {
 	try {
 		return Number::newNumber((int)Raw_GetBlockEntityType(blockEntity));
 	}
-	CATCH("Fail in getBlockType!")
+	CATCH("Fail in getBlockEntityType!")
 }
 
 Local<Value> BlockEntityClass::getNbt(const Arguments& args)
@@ -79,4 +92,13 @@ Local<Value> BlockEntityClass::setNbt(const Arguments& args)
 		return Boolean::newBoolean(true);
 	}
 	CATCH("Fail in setNbt!")
+}
+
+Local<Value> BlockEntityClass::getBlock(const Arguments& args)
+{
+	try {
+		BlockPos bp = Raw_GetBlockEntityPos(blockEntity);
+		return BlockClass::newBlock(Raw_GetBlockByPos(&bp, dim), &bp, dim);
+	}
+	CATCH("Fail in getBlock!")
 }

@@ -49,6 +49,7 @@ public:
     Local<Value> getContainer(const Arguments& args);
     Local<Value> hasBlockEntity(const Arguments& args);
     Local<Value> getBlockEntity(const Arguments& args);
+    Local<Value> removeBlockEntity(const Arguments& args);
 };
 
 //////////////////// APIs ////////////////////
