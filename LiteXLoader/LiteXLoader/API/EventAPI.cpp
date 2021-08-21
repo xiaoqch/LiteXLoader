@@ -48,7 +48,7 @@ enum class EVENT_TYPES : int
     onOpenContainer, onCloseContainer, onContainerChange, onOpenContainerScreen, 
     onMobDie, onMobHurt, onExplode, onBlockExploded, onCmdBlockExecute, onRedStoneUpdate, onProjectileHitEntity,
     onProjectileHitBlock, onBlockInteracted, onUseRespawnAnchor, onFarmLandDecay, onUseFrameBlock,
-    onPistonPush, onHopperSearchItem, onHopperPushOut, onFireSpread,
+    onPistonPush, onHopperSearchItem, onHopperPushOut, onFireSpread, onNpcCmd,
     onScoreChanged, onServerStarted, onConsoleCmd, onFormSelected, onConsoleOutput,
     EVENT_COUNT
 };
@@ -103,6 +103,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onHopperSearchItem",EVENT_TYPES::onHopperSearchItem},
     {"onHopperPushOut",EVENT_TYPES::onHopperPushOut},
     {"onFireSpread",EVENT_TYPES::onFireSpread},
+    {"onNpcCmd",EVENT_TYPES::onNpcCmd},
     {"onScoreChanged",EVENT_TYPES::onScoreChanged},
     {"onServerStarted",EVENT_TYPES::onServerStarted},
     {"onConsoleCmd",EVENT_TYPES::onConsoleCmd},
@@ -590,7 +591,7 @@ THook(bool, "?drop@Player@@UEAA_NAEBVItemStack@@_N@Z",
 {
     IF_LISTENED(EVENT_TYPES::onDropItem)
     {
-        CallEventRtnBool(EVENT_TYPES::onDropItem, PlayerClass::newPlayer(_this), ItemClass::newItem(a2));
+        CallEventRtnBool(EVENT_TYPES::onDropItem, PlayerClass::newPlayer(_this), ItemClass::newItem(a2));       //###### Q lost items ######
     }
     IF_LISTENED_END();
     return original(_this, a2, a3);
@@ -1119,13 +1120,41 @@ THook(__int64, "?retrieve@FishingHook@@QEAAHXZ",
     FishingHook* _this)
 */
 
+
+// ===== onNpcCmd =====
+THook(bool, "?executeCommandAction@NpcComponent@@QEAAXAEAVActor@@AEBVPlayer@@HAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z",
+    void* _this, Actor *ac, Player *pl, int a4, string &cmd)
+{
+    
+    return original(_this, ac, pl, a4, cmd);
+}
+
+// ===== onNpcCmd =====
+THook(void, "?run@Command@@QEBAXAEBVCommandOrigin@@AEAVCommandOutput@@@Z",
+    Command* _this, CommandOrigin* a2, CommandOutput* a3)
+{
+    IF_LISTENED(EVENT_TYPES::onNpcCmd)
+    {
+        if (Raw_GetEntityTypeName(a2->getEntity()) == "minecraft:npc")
+        {
+            CallEventRtnVoid(EVENT_TYPES::onNpcCmd, EntityClass::newEntity(a2->getEntity()), String::newString(""));
+            //############ 改 ###############
+        }
+    }
+    IF_LISTENED_END();
+    return original(_this,a2,a3);
+}
+
+
 // ===== onPlayerCmd & onConsoleCmd =====
 THook(bool, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@VCommandContext@@@std@@_N@Z",
     MinecraftCommands* _this, unsigned int* a2, std::shared_ptr<CommandContext> x, char a4)
 {
     try
     {
-        Player* player = MakeSP(x->getOrigin());
+        Actor *ac = x->getOrigin().getEntity();
+        Player* player = Raw_ToPlayer(ac);
+
         string cmd = x->getCmd();
         if (cmd.front() == '/')
             cmd = cmd.substr(1);
