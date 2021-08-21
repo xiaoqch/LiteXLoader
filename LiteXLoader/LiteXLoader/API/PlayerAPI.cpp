@@ -683,7 +683,7 @@ Local<Value> PlayerClass::rename(const Arguments& args)
 
         return Boolean::newBoolean(Raw_RenamePlayer(player,args[0].toStr()));
     }
-    CATCH("Fail in RenamePlayer!")
+    CATCH("Fail in RenamePlayer!");
 }
 
 Local<Value> PlayerClass::addLevel(const Arguments& args)
@@ -698,7 +698,7 @@ Local<Value> PlayerClass::addLevel(const Arguments& args)
 
         return Boolean::newBoolean(Raw_AddLevel(player, args[0].toInt()));
     }
-    CATCH("Fail in addLevel!")
+    CATCH("Fail in addLevel!");
 }
 
 Local<Value> PlayerClass::transServer(const Arguments& args)
@@ -714,7 +714,7 @@ Local<Value> PlayerClass::transServer(const Arguments& args)
 
         return Boolean::newBoolean(Raw_TransServer(player, args[0].toStr(), (short) args[1].toInt()));
     }
-    CATCH("Fail in transServer!")
+    CATCH("Fail in transServer!");
 }
 
 Local<Value> PlayerClass::crash(const Arguments& args)
@@ -726,7 +726,7 @@ Local<Value> PlayerClass::crash(const Arguments& args)
 
         return Boolean::newBoolean(Raw_CrashPlayer(player));
     }
-    CATCH("Fail in crashPlayer!")
+    CATCH("Fail in crashPlayer!");
 }
 
 Local<Value> PlayerClass::getDevice(const Arguments& args)
@@ -738,13 +738,13 @@ Local<Value> PlayerClass::getDevice(const Arguments& args)
 
         return DeviceClass::newDevice(player);
     }
-    CATCH("Fail in getDevice!")
+    CATCH("Fail in getDevice!");
 }
 
 Local<Value> PlayerClass::getScore(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args,1)
-    CHECK_ARG_TYPE(args[0],ValueKind::kString)
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
     
     try{
         Player* player = get();
@@ -753,14 +753,14 @@ Local<Value> PlayerClass::getScore(const Arguments& args)
 
         return Number::newNumber(Raw_GetScore(player,args[0].toStr()));
     }
-    CATCH("Fail in getScore!")
+    CATCH("Fail in getScore!");
 }
 
 Local<Value> PlayerClass::setScore(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args,2)
-    CHECK_ARG_TYPE(args[0],ValueKind::kString)
-    CHECK_ARG_TYPE(args[1],ValueKind::kNumber)
+    CHECK_ARGS_COUNT(args, 2);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+    CHECK_ARG_TYPE(args[1], ValueKind::kNumber);
     
     try{
         Player* player = get();
@@ -769,14 +769,14 @@ Local<Value> PlayerClass::setScore(const Arguments& args)
 
         return Boolean::newBoolean(Raw_SetScore(player,args[0].toStr(),args[1].toInt()));
     }
-    CATCH("Fail in getScore!")
+    CATCH("Fail in getScore!");
 }
 
 Local<Value> PlayerClass::addScore(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args,2)
-    CHECK_ARG_TYPE(args[0],ValueKind::kString)
-    CHECK_ARG_TYPE(args[1],ValueKind::kNumber)
+    CHECK_ARGS_COUNT(args, 2);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+    CHECK_ARG_TYPE(args[1], ValueKind::kNumber);
     
     try{
         Player* player = get();
@@ -785,13 +785,13 @@ Local<Value> PlayerClass::addScore(const Arguments& args)
 
         return Boolean::newBoolean(Raw_AddScore(player,args[0].toStr(),args[1].toInt()));
     }
-    CATCH("Fail in addScore!")
+    CATCH("Fail in addScore!");
 }
 
 Local<Value> PlayerClass::removeScore(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args,1)
-    CHECK_ARG_TYPE(args[0],ValueKind::kString)
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
     
     try{
         Player* player = get();
@@ -800,14 +800,16 @@ Local<Value> PlayerClass::removeScore(const Arguments& args)
 
         return Boolean::newBoolean(Raw_RemoveScore(player,args[0].toStr()));
     }
-    CATCH("Fail in removeScore!")
+    CATCH("Fail in removeScore!");
 }
 
 Local<Value> PlayerClass::setSidebar(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args,2)
-    CHECK_ARG_TYPE(args[0],ValueKind::kString)
-    CHECK_ARG_TYPE(args[1],ValueKind::kObject)
+    CHECK_ARGS_COUNT(args, 2);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+    CHECK_ARG_TYPE(args[1], ValueKind::kObject);
+    if (args.size() >= 3)
+        CHECK_ARG_TYPE(args[2], ValueKind::kNumber);
     
     try
     {
@@ -823,7 +825,11 @@ Local<Value> PlayerClass::setSidebar(const Arguments& args)
             data.push_back(make_pair(key, source.get(key).toInt()));
         }
 
-        return Boolean::newBoolean(Raw_SetSidebar(player,args[0].toStr(),data));
+        int sortOrder = 1;
+        if (args.size() >= 3)
+            sortOrder = args[2].toInt();
+
+        return Boolean::newBoolean(Raw_SetSidebar(player,args[0].toStr(),data,sortOrder));
     }
     CATCH("Fail in setSidebar!")
 }
@@ -842,9 +848,9 @@ Local<Value> PlayerClass::removeSidebar(const Arguments& args)
 
 Local<Value> PlayerClass::setBossBar(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args,2)
-    CHECK_ARG_TYPE(args[0],ValueKind::kString)
-    CHECK_ARG_TYPE(args[1],ValueKind::kNumber)
+    CHECK_ARGS_COUNT(args, 2);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+    CHECK_ARG_TYPE(args[1], ValueKind::kNumber);
     
     try{
         Player* player = get();
@@ -877,12 +883,12 @@ Local<Value> PlayerClass::removeBossBar(const Arguments& args)
 
 Local<Value> PlayerClass::sendSimpleForm(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args,4)
-    CHECK_ARG_TYPE(args[0],ValueKind::kString)
-    CHECK_ARG_TYPE(args[1],ValueKind::kString)
-    CHECK_ARG_TYPE(args[2],ValueKind::kArray)
-    CHECK_ARG_TYPE(args[3], ValueKind::kArray)
-    CHECK_ARG_TYPE(args[4],ValueKind::kFunction)
+    CHECK_ARGS_COUNT(args, 4);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+    CHECK_ARG_TYPE(args[1], ValueKind::kString);
+    CHECK_ARG_TYPE(args[2], ValueKind::kArray);
+    CHECK_ARG_TYPE(args[3], ValueKind::kArray);
+    CHECK_ARG_TYPE(args[4], ValueKind::kFunction);
 
     try
     {   
@@ -913,17 +919,17 @@ Local<Value> PlayerClass::sendSimpleForm(const Arguments& args)
 
         return Number::newNumber(formId);
     }
-    CATCH("Fail in sendSimpleForm!")
+    CATCH("Fail in sendSimpleForm!");
 }
 
 Local<Value> PlayerClass::sendModalForm(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 5)
-    CHECK_ARG_TYPE(args[0], ValueKind::kString)
-    CHECK_ARG_TYPE(args[1], ValueKind::kString)
-    CHECK_ARG_TYPE(args[2], ValueKind::kString)
-    CHECK_ARG_TYPE(args[3], ValueKind::kString)
-    CHECK_ARG_TYPE(args[4], ValueKind::kFunction)
+    CHECK_ARGS_COUNT(args, 5);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+    CHECK_ARG_TYPE(args[1], ValueKind::kString);
+    CHECK_ARG_TYPE(args[2], ValueKind::kString);
+    CHECK_ARG_TYPE(args[3], ValueKind::kString);
+    CHECK_ARG_TYPE(args[4], ValueKind::kFunction);
 
     try {
         Player* player = get();
@@ -936,14 +942,14 @@ Local<Value> PlayerClass::sendModalForm(const Arguments& args)
 
         return Number::newNumber(formId);
     }
-    CATCH("Fail in sendModalForm!")
+    CATCH("Fail in sendModalForm!");
 }
 
 Local<Value> PlayerClass::sendCustomForm(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args,2)
-    CHECK_ARG_TYPE(args[0],ValueKind::kString)
-    CHECK_ARG_TYPE(args[1],ValueKind::kFunction)
+    CHECK_ARGS_COUNT(args, 2);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+    CHECK_ARG_TYPE(args[1], ValueKind::kFunction);
 
     try{
         Player* player = get();
@@ -965,13 +971,13 @@ Local<Value> PlayerClass::sendCustomForm(const Arguments& args)
 
         return Local<Value>();
     }
-    CATCH("Fail in sendCustomForm!")
+    CATCH("Fail in sendCustomForm!");
 }
 
 Local<Value> PlayerClass::sendForm(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 2)
-    CHECK_ARG_TYPE(args[1], ValueKind::kFunction)
+    CHECK_ARGS_COUNT(args, 2);
+    CHECK_ARG_TYPE(args[1], ValueKind::kFunction);
 
     try {
         Player* player = get();
@@ -1003,13 +1009,13 @@ Local<Value> PlayerClass::sendForm(const Arguments& args)
 
         return Local<Value>();
     }
-    CATCH("Fail in sendForm!")
+    CATCH("Fail in sendForm!");
 }
 
 Local<Value> PlayerClass::sendPacket(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 1)
-    CHECK_ARG_TYPE(args[0], ValueKind::kObject)
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kObject);
 
     try
     {
@@ -1021,14 +1027,14 @@ Local<Value> PlayerClass::sendPacket(const Arguments& args)
         auto pkt = MyPkt(id, wb);
         Raw_SendPacket(player, &pkt);
     }
-    CATCH("Fail in sendPacket")
+    CATCH("Fail in sendPacket");
     return Local<Value>();
 }
 
 Local<Value> PlayerClass::setExtraData(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args,2)
-    CHECK_ARG_TYPE(args[0],ValueKind::kString)
+    CHECK_ARGS_COUNT(args, 2);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
 
     try
     {
@@ -1043,13 +1049,13 @@ Local<Value> PlayerClass::setExtraData(const Arguments& args)
         ENGINE_OWN_DATA()->playerDataDB[Raw_GetPlayerName(player) + "-" + key] = args[1];
         return Boolean::newBoolean(true);
     }
-    CATCH("Fail in setExtraData!")
+    CATCH("Fail in setExtraData!");
 }
 
 Local<Value> PlayerClass::getExtraData(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args,1)
-    CHECK_ARG_TYPE(args[0],ValueKind::kString)
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
 
     try
     {
@@ -1067,7 +1073,7 @@ Local<Value> PlayerClass::getExtraData(const Arguments& args)
     {
         return Local<Value>();
     }
-    CATCH("Fail in getExtraData!")
+    CATCH("Fail in getExtraData!");
 }
 
 Local<Value> PlayerClass::delExtraData(const Arguments& args)
@@ -1104,7 +1110,7 @@ Local<Value> PlayerClass::setOnFire(const Arguments& args)
         bool result = Raw_SetOnFire((Actor*)player, time);
         return Boolean::newBoolean(result);
     }
-    CATCH("Fail in setOnFire!")
+    CATCH("Fail in setOnFire!");
 }
 
 Local<Value> PlayerClass::giveItem(const Arguments& args)

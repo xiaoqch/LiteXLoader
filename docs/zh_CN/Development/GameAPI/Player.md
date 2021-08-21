@@ -473,16 +473,17 @@ pl:crash()
 
 #### 设置玩家自定义侧边栏
 
-`pl.setSidebar(title,data)`
+`pl.setSidebar(title,data[,sortOrder])`
 
 - 参数：
 
   - title : `String`  
     侧边栏标题  
-
   - data : `Object<String-Integer>`  
     侧边栏对象内容对象  
     对象中的每个键 - 值对将被设置为侧边栏内容的一行
+  - sortOrder : `Number`  
+    （可选参数）侧边栏内容的排序顺序。`0`为按分数升序，`1`为按分数降序。默认值为`1`
 
 - 返回值：是否成功设置
 

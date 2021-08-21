@@ -42,14 +42,14 @@ bool Raw_SendTransferPacket(Player* player, const string& address, short port)
     return true;
 }
 
-bool Raw_SendSetDisplayObjectivePacket(Player* player, const string& title, const string& name)
+bool Raw_SendSetDisplayObjectivePacket(Player* player, const string& title, const string& name, char sortOrder)
 {
     Packet* packet = Raw_CreatePacket(107);   //显示侧边栏数据包
     dAccess<string>(packet, 48) = "sidebar";
     dAccess<string>(packet, 80) = name;
     dAccess<string>(packet, 112) = title;
     dAccess<string>(packet, 144) = "dummy";
-    dAccess<char>(packet, 176) = 0;
+    dAccess<char>(packet, 176) = sortOrder;
     
     return Raw_SendPacket(player, packet);
 }

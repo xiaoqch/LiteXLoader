@@ -280,9 +280,9 @@ bool Raw_RemoveScore(Player* player, const std::string &key)
     return false;
 }
 
-bool Raw_SetSidebar(Player *player, std::string title, const std::vector<std::pair<std::string,int>> &data)
+bool Raw_SetSidebar(Player *player, std::string title, const std::vector<std::pair<std::string,int>> &data, int sortOrder)
 {
-    Raw_SendSetDisplayObjectivePacket(player, title, "FakeScoreObj");
+    Raw_SendSetDisplayObjectivePacket(player, title, "FakeScoreObj", (char)sortOrder);
 
     vector<ScorePacketInfo> info;
     for (auto& x : data)
@@ -294,13 +294,13 @@ bool Raw_SetSidebar(Player *player, std::string title, const std::vector<std::pa
     }
 
     Raw_SendSetScorePacket(player, 0, info);    //set
-    Raw_SendSetDisplayObjectivePacket(player, title, "FakeScoreObj");
+    Raw_SendSetDisplayObjectivePacket(player, title, "FakeScoreObj", (char)sortOrder);
     return true;
 }
 
 bool Raw_RemoveSidebar(Player *player)
 {
-    return Raw_SendSetDisplayObjectivePacket(player, "", "");
+    return Raw_SendSetDisplayObjectivePacket(player, "", "", 0);
 }
 
 bool Raw_SetBossBar(Player *player, std::string title, float percent)
