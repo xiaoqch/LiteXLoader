@@ -38,3 +38,6 @@ public:
 
 //////////////// SEH Exception ////////////////
 #include <seh_exception/seh_exception.hpp>
+
+//////////////// ThreadPool ////////////////
+#include <ThreadPool/ThreadPool.hpp>

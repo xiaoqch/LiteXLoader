@@ -2,6 +2,7 @@
 #include <ScriptX/ScriptX.h>
 #include <map>
 #include <string>
+#include <Kernel/ThirdParty.h>
 using namespace script;
 
 
@@ -69,6 +70,9 @@ extern std::vector<RegCmdQueue> toRegCmdQueue;
 
 //本地引擎表
 extern std::vector<ScriptEngine*> lxlModules;
+
+//线程池
+extern ThreadPool pool;
 
 //////////////////// APIs ////////////////////
 

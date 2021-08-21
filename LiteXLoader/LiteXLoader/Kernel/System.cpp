@@ -1,5 +1,6 @@
 #include "Global.h"
 #include "System.h"
+#include <Engine/LocalShareData.h>
 #include <string>
 #include <ctime>
 #include <cstdio>
@@ -135,7 +136,7 @@ bool Raw_NewProcess(const std::string &cmd, std::function<void(int,std::string)>
 	CloseHandle(hWrite);
     CloseHandle(pi.hThread);
  
-    std::thread([hRead{std::move(hRead)},hProcess{std::move(pi.hProcess)},
+    pool.enqueue([hRead{std::move(hRead)},hProcess{std::move(pi.hProcess)},
         callback{std::move(callback)},timeLimit{std::move(timeLimit)}, wCmd{std::move(wCmd)}] ()
     {
         if(timeLimit == -1)
@@ -162,7 +163,7 @@ bool Raw_NewProcess(const std::string &cmd, std::function<void(int,std::string)>
         CloseHandle(hProcess);
 
         callback((int)exitCode,strOutput);
-    }).detach();
+    });
 
     return true;
 }
@@ -178,7 +179,7 @@ bool Raw_HttpGet(const string& url, function<void(int, string)> callback)
         delete cli;
         return false;
     }
-    std::thread([cli, callback{ std::move(callback) }, path{ std::move(path) }]()
+    pool.enqueue([cli, callback{ std::move(callback) }, path{ std::move(path) }]()
     {
         auto response = cli->Get(path.c_str());
         delete cli;
@@ -187,7 +188,7 @@ bool Raw_HttpGet(const string& url, function<void(int, string)> callback)
             callback(-1, "");
         else
             callback(response->status, response->body);
-    }).detach();
+    });
 
     return true;
 }
@@ -203,7 +204,7 @@ bool Raw_HttpPost(const string& url, const string& data, const string& type, fun
         delete cli;
         return false;
     }
-    std::thread([cli, data{ std::move(data) }, type{ std::move(type) }, callback{ std::move(callback) },
+    pool.enqueue([cli, data{ std::move(data) }, type{ std::move(type) }, callback{ std::move(callback) },
         path{ std::move(path) }]()
     {
         auto response = cli->Post(path.c_str(), data, type.c_str());
@@ -213,7 +214,7 @@ bool Raw_HttpPost(const string& url, const string& data, const string& type, fun
             callback(-1, "");
         else
             callback(response->status, response->body);
-    }).detach();
+    });
 
     return true;
 }
