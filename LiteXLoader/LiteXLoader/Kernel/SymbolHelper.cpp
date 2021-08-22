@@ -57,3 +57,11 @@ Actor* Raw_GetFishingHookOwner(FishingHook* fh)
 	return SymCall("?getOwner@FishingHook@@QEAAPEAVActor@@XZ",
 		Actor*, FishingHook*)(fh);
 }
+
+Actor* Raw_GetDamageSourceEntity(ActorDamageSource* ads)
+{
+	char v83;
+	auto v6 = *(void**)(*(__int64(__fastcall**)(void*, char*))(*(uintptr_t*)ads + 64))(ads, &v83);
+	return SymCall("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z",
+		Actor*, Level*, void*, bool)(mc->getLevel(), v6, 0);
+}

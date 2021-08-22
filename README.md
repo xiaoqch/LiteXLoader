@@ -128,7 +128,7 @@ LXL插件主要发布于**MineBBS**，请 [点击这里 前往MineBBS](https://w
 请👉[移步 LXL 文档站](https://lxl.litetitle.com/#/zh_CN/Development/)👈查看详细的**API文档**和**插件开发教程**  
 如果有修订需求或者有新增API的需要，欢迎联系作者或者发布Issue  
 
-[点击这里](https://www.minebbs.com/resources/litexloader-x-bds.2670/edit) 查看更多开源的LXL插件，作为示例插件。  
+[点击这里](https://github.com/LiteLDev-LXL) 查看更多开源的LXL插件，作为示例插件。  
 你可以直接在生产环境中使用它们
 也可以在这里学习插件开发的方法和技巧
 

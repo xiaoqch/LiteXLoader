@@ -194,3 +194,4 @@ Block* Raw_GetBlockByPos(BlockPos* bp, BlockSource* bs);
 Block* Raw_GetBlockByPos(BlockPos* bp, int dimid);
 Block* Raw_GetBlockByPos(int x, int y, int z, BlockSource* bs);
 Actor* Raw_GetFishingHookOwner(FishingHook* fh);
+Actor* Raw_GetDamageSourceEntity(ActorDamageSource* ads);

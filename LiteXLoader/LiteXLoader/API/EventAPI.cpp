@@ -315,24 +315,15 @@ void InitEventListeners()
         return true;
     });
 
-// ===== onPlayerDie =====
-    Event::addEventListener([](PlayerDeathEV ev)
-    {
-        IF_LISTENED(EVENT_TYPES::onPlayerDie)
-        {
-            CallEventRtnVoid(EVENT_TYPES::onPlayerDie, PlayerClass::newPlayer(ev.Player));
-        }
-        IF_LISTENED_END();
-    });
-
 // ===== onMobDie =====
     Event::addEventListener([](MobDieEV ev)
     {
         IF_LISTENED(EVENT_TYPES::onMobDie)
         {
-            if (ev.mob && ev.DamageSource)
+            if (ev.mob)
             {
-                CallEventRtnVoid(EVENT_TYPES::onMobDie, EntityClass::newEntity(ev.mob), EntityClass::newEntity(ev.DamageSource));
+                CallEventRtnVoid(EVENT_TYPES::onMobDie, EntityClass::newEntity(ev.mob),
+                    (ev.DamageSource ? EntityClass::newEntity(ev.DamageSource) : Local<Value>()));
             }
         }
         IF_LISTENED_END();
@@ -481,6 +472,23 @@ THook(void*, "?changeDimension@ServerPlayer@@UEAAXV?$AutomaticID@VDimension@@H@@
     }
     IF_LISTENED_END();
     return original(ac, a3);
+}
+
+// ===== onPlayerDie =====
+THook(void, "?die@Player@@UEAAXAEBVActorDamageSource@@@Z",
+    Player* _this, ActorDamageSource* src)
+{
+    IF_LISTENED(EVENT_TYPES::onPlayerDie)
+    {
+        if (_this)
+        {
+            Actor* source = Raw_GetDamageSourceEntity(src);
+            CallEventRtnVoid(EVENT_TYPES::onPlayerDie, PlayerClass::newPlayer(_this),
+                (source ? EntityClass::newEntity(source) : Local<Value>()));
+        }
+    }
+    IF_LISTENED_END();
+    return original(_this, src);
 }
 
 // ===== onSpawnProjectile =====
