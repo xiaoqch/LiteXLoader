@@ -3,6 +3,8 @@
 #include <string>
 #include "BaseAPI.h"
 #include "BlockAPI.h"
+#include "ItemAPI.h"
+#include "EntityAPI.h"
 #include "CommandAPI.h"
 #include "EventAPI.h"
 #include "FileSystemAPI.h"
