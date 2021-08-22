@@ -407,5 +407,8 @@
     <Library Include="..\third-party\LiteLoader\libssl.lib">
       <Filter>Lib</Filter>
     </Library>
+    <Library Include="..\third-party\nbt-cpp\lib\nbt-cpp.lib">
+      <Filter>Lib</Filter>
+    </Library>
   </ItemGroup>
 </Project>

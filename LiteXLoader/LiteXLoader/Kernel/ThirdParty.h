@@ -41,3 +41,6 @@ public:
 
 //////////////// ThreadPool ////////////////
 #include <ThreadPool/ThreadPool.hpp>
+
+//////////////// Nbt ////////////////
+#include <nbt-cpp/include/nbt.hpp>
