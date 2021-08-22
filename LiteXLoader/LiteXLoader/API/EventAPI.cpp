@@ -457,7 +457,10 @@ THook(void, "?sendPlayerMove@PlayerEventCoordinator@@QEAAXAEAVPlayer@@@Z",
 {
     IF_LISTENED(EVENT_TYPES::onMove)
     {
-        CallEventRtnVoid(EVENT_TYPES::onMove, PlayerClass::newPlayer(pl), FloatPos::newPos(Raw_GetPlayerPos(pl)));
+        if (Raw_EntityIsMoving((Actor*)pl))
+        {
+            CallEventRtnVoid(EVENT_TYPES::onMove, PlayerClass::newPlayer(pl), FloatPos::newPos(Raw_GetPlayerPos(pl)));
+        }
     }
     IF_LISTENED_END();
     return original(_this, pl);

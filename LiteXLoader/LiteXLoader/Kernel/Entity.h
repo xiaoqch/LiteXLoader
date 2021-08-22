@@ -27,6 +27,7 @@ Container* Raw_GetArmor(Actor* ac);
 int Raw_GetEntityDimId(Actor* actor);
 Actor* Raw_GetEntityByUniqueId(ActorUniqueID id);
 float Raw_GetSpeed(Actor* ac);
+bool Raw_EntityIsMoving(Actor* ac);
 
 bool Raw_AddTag(Actor* ac, const std::string& str);
 bool Raw_RemoveTag(Actor* ac, const std::string& str);

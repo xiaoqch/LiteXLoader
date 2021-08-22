@@ -147,6 +147,11 @@ float Raw_GetSpeed(Actor* ac) {
         , float, Actor*)(ac);
 }
 
+bool Raw_EntityIsMoving(Actor* ac)
+{
+    return SymCall("?isMoving@Actor@@QEBA_NXZ", bool, Actor*)(ac);
+}
+
 bool Raw_AddTag(Actor* ac, const string& str) {
     return SymCall("?addTag@Actor@@QEAA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z",
         bool, Actor*, const string*)(ac, &str);
