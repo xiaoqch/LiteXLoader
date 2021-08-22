@@ -45,7 +45,7 @@ enum class EVENT_TYPES : int
     onRespawn, onChangeDim, onJump, onSneak, onAttack, onEat, onMove, onSpawnProjectile,
     onFireworkShootWithCrossbow, onSetArmor, onRide, onStepOnPressurePlate,
     onUseItem, onTakeItem, onDropItem, onUseItemOn, onInventoryChange,
-    onStartDestroyBlock, onDestroyBlock, onWitherBossDestroy, onPlaceBlock, onBedExplode, onRespawnAnchorExplode,
+    onStartDestroyBlock, onDestroyBlock, onWitherBossDestroy, onPlaceBlock, onBedExplode, onRespawnAnchorExplode, onLiquidSpread,
     onOpenContainer, onCloseContainer, onContainerChange, onOpenContainerScreen, 
     onMobDie, onMobHurt, onExplode, onBlockExploded, onCmdBlockExecute, onRedStoneUpdate, onProjectileHitEntity,
     onProjectileHitBlock, onBlockInteracted, onUseRespawnAnchor, onFarmLandDecay, onUseFrameBlock,
@@ -86,6 +86,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onExplode",EVENT_TYPES::onExplode},
     {"onBedExplode",EVENT_TYPES::onBedExplode},
     {"onRespawnAnchorExplode",EVENT_TYPES::onRespawnAnchorExplode},
+    {"onLiquidSpread",EVENT_TYPES::onLiquidSpread},
     {"onBlockExploded",EVENT_TYPES::onBlockExploded},
     {"onOpenContainer",EVENT_TYPES::onOpenContainer},
     {"onCloseContainer",EVENT_TYPES::onCloseContainer},
@@ -887,6 +888,20 @@ THook(void, "?explode@RespawnAnchorBlock@@CAXAEAVPlayer@@AEBVBlockPos@@AEAVBlock
     }
     IF_LISTENED_END();
     return original(pl, bp, bs, level);
+}
+
+// ===== onLiquidSpread =====
+THook(bool, "?_canSpreadTo@LiquidBlockDynamic@@AEBA_NAEAVBlockSource@@AEBVBlockPos@@1E@Z",
+    void* _this, BlockSource* bs, BlockPos* to, BlockPos* from, char id)
+{
+    IF_LISTENED(EVENT_TYPES::onLiquidSpread)
+    {
+        auto fromBlock = Raw_GetBlockByPos(from, bs);
+        auto toBlock = Raw_GetBlockByPos(to, bs);
+        CallEventRtnBool(EVENT_TYPES::onLiquidSpread, BlockClass::newBlock(fromBlock, from, bs), BlockClass::newBlock(toBlock, to, bs));
+    }
+    IF_LISTENED_END();
+    return original(_this, bs, to, from, id);
 }
 
 // ===== onBlockExploded =====
