@@ -5,6 +5,7 @@
 #include "Item.h"
 #include "Container.h"
 #include "SymbolHelper.h"
+#include "Scoreboard.h"
 #include "ThirdParty.h"
 #include "Global.h"
 #include <bitset>
@@ -246,9 +247,7 @@ bool Raw_SetScore(Player* player, const std::string &key, int value)
     Objective* obj = globalScoreBoard->getObjective(key);
     if (obj)
     {
-        bool a1 = true;
-        bool &pa = a1;
-        globalScoreBoard->modifyPlayerScore(pa,globalScoreBoard->getScoreboardId(*(Actor*)player), *obj, value, 0);   //Set
+        globalScoreBoard->modifyPlayerScore(globalScoreBoard->getScoreboardId(*(Actor*)player), obj, value, 0);   //Set
         return true;
     }
     return false;
@@ -259,9 +258,7 @@ bool Raw_AddScore(Player* player, const std::string &key, int value)
     Objective* obj = globalScoreBoard->getObjective(key);
     if (obj)
     {
-        bool a1 = true;
-        bool& pa = a1;
-        globalScoreBoard->modifyPlayerScore(pa, globalScoreBoard->getScoreboardId(*(Actor*)player), *obj, value, 1);   //Add
+        globalScoreBoard->modifyPlayerScore(globalScoreBoard->getScoreboardId(*(Actor*)player), obj, value, 1);   //Add
         return true;
     }
     return false;
@@ -274,7 +271,7 @@ bool Raw_RemoveScore(Player* player, const std::string &key)
     {
         bool a1 = true;
         bool& pa = a1;
-        globalScoreBoard->modifyPlayerScore(pa, globalScoreBoard->getScoreboardId(*(Actor*)player), *obj, 0, 2);   //Remove
+        globalScoreBoard->modifyPlayerScore(globalScoreBoard->getScoreboardId(*(Actor*)player), obj, 0, 2);   //Remove
         return true;
     }
     return false;

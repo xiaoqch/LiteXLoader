@@ -84,6 +84,7 @@
     <ClCompile Include="Kernel\NBT.cpp" />
     <ClCompile Include="Kernel\Packet.cpp" />
     <ClCompile Include="Kernel\Player.cpp" />
+    <ClCompile Include="Kernel\Scoreboard.cpp" />
     <ClCompile Include="Kernel\Server.cpp" />
     <ClCompile Include="Kernel\SymbolHelper.cpp" />
     <ClCompile Include="Kernel\System.cpp" />
@@ -143,6 +144,7 @@
     <ClInclude Include="Kernel\Packet.h" />
     <ClInclude Include="Kernel\Global.h" />
     <ClInclude Include="Kernel\Player.h" />
+    <ClInclude Include="Kernel\Scoreboard.h" />
     <ClInclude Include="Kernel\Server.h" />
     <ClInclude Include="Kernel\SymbolHelper.h" />
     <ClInclude Include="Kernel\System.h" />

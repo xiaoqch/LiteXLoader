@@ -1,4 +1,4 @@
-﻿#include "EventAPI.h"
+#include "EventAPI.h"
 #include <iostream>
 #include <vector>
 #include <list>
@@ -14,6 +14,7 @@
 #include <Kernel/Entity.h>
 #include <Kernel/Player.h>
 #include <Kernel/SymbolHelper.h>
+#include <Kernel/Scoreboard.h>
 #include <Kernel/Packet.h>
 #include <Kernel/Global.h>
 #include <Engine/TimeTaskSystem.h>

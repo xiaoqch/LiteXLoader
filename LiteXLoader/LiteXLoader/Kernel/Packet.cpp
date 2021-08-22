@@ -1,6 +1,7 @@
 #include "Global.h"
 #include "Packet.h"
 #include "SymbolHelper.h"
+#include "Scoreboard.h"
 #include <cstdlib>
 using namespace std;
 
