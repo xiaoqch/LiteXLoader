@@ -5,17 +5,18 @@
 //////////////////// Class Definition ////////////////////
 
 ClassDefine<ObjectiveClass> ObjectiveClassBuilder =
-defineClass<ObjectiveClass>("LXL_Objective")
-	.instanceProperty("name", &ObjectiveClass::getName)
-	.instanceProperty("displayname", &ObjectiveClass::getDisplayName)
+	defineClass<ObjectiveClass>("LXL_Objective")
+		.constructor(nullptr)
+		.instanceProperty("name", &ObjectiveClass::getName)
+		.instanceProperty("displayname", &ObjectiveClass::getDisplayName)
 
-	.instanceFunction("setDisplay", &ObjectiveClass::setDisplay)
-	.instanceFunction("setScore", &ObjectiveClass::setScore)
-	.instanceFunction("addScore", &ObjectiveClass::addScore)
-	.instanceFunction("removeScore", &ObjectiveClass::removeScore)
-	.instanceFunction("deleteScore", &ObjectiveClass::deleteScore)
-	.instanceFunction("getScore", &ObjectiveClass::getScore)
-	.build();
+		.instanceFunction("setDisplay", &ObjectiveClass::setDisplay)
+		.instanceFunction("setScore", &ObjectiveClass::setScore)
+		.instanceFunction("addScore", &ObjectiveClass::addScore)
+		.instanceFunction("removeScore", &ObjectiveClass::removeScore)
+		.instanceFunction("deleteScore", &ObjectiveClass::deleteScore)
+		.instanceFunction("getScore", &ObjectiveClass::getScore)
+		.build();
 
 //////////////////// Classes ////////////////////
 
@@ -46,20 +47,25 @@ Objective* ObjectiveClass::get()
 
 Local<Value> ObjectiveClass::getName()
 {
-	return String::newString(objname);
+	try {
+		return String::newString(objname);
+	}
+	CATCH("Fail in getName!")
 }
 
 Local<Value> ObjectiveClass::getDisplayName()
 {
-	Objective* obj = get();
-	return String::newString(obj->getDisplayName());
+	try {
+		Objective* obj = get();
+		return String::newString(obj->getDisplayName());
+	}
+	CATCH("Fail in getDisplayName!")
 }
 
 Local<Value> ObjectiveClass::setDisplay(const Arguments& args)
 {
 	CHECK_ARGS_COUNT(args, 1)
-	if (args.size() >= 1)
-		CHECK_ARG_TYPE(args[0], ValueKind::kString)
+	CHECK_ARG_TYPE(args[0], ValueKind::kString)
 	if (args.size() == 2)
 		CHECK_ARG_TYPE(args[1], ValueKind::kNumber)
 
@@ -238,8 +244,6 @@ Local<Value> RemoveScoreObjective(const Arguments& args)
 
 Local<Value> GetAllScoreObjective(const Arguments& args)
 {
-	CHECK_ARGS_COUNT(args, 0);
-	
 	try {
 		Local<Array> res = Array::newArray();
 

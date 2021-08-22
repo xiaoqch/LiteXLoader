@@ -348,9 +348,6 @@
     <ClInclude Include="Version.h">
       <Filter>Main</Filter>
     </ClInclude>
-    <ClInclude Include="API\StaticClasses.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\TimeTaskSystem.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -364,6 +361,9 @@
       <Filter>Kernel</Filter>
     </ClInclude>
     <ClInclude Include="API\BlockEntityAPI.h">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="API\StaticClasses.h">
       <Filter>API</Filter>
     </ClInclude>
   </ItemGroup>
