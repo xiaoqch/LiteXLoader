@@ -360,6 +360,11 @@ void TagToSNBT_List_Helper(tags::bytearray_list_tag& res, Tag* nbt)
 void TagToSNBT_List_Helper(tags::list_tag& res, Tag* nbt)
 {
     auto& list = nbt->asList();
+    if (list.empty())
+    {
+        res = tags::tag_list_tag();
+        return;
+    }
     for (auto& tag : list)
     {
         switch (list[0]->getTagType())
@@ -498,6 +503,11 @@ void TagToSNBT_Compound_Helper(tags::compound_tag& res, Tag* nbt)
         }
         case TagType::List: {
             auto& list = tag.asList();
+            if (list.empty())
+            {
+                res.value[key] = make_unique<tags::tag_list_tag>();
+                break;
+            }
             switch (list[0]->getTagType())
             {
                 case TagType::Byte:
