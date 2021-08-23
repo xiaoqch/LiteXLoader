@@ -194,3 +194,17 @@
 - 拦截事件：函数返回`false`
 
 注：操作包括放置物品、取下物品、旋转物品。
+
+<br>
+
+#### `"onLiquidSpread"` - 液体方块流动
+
+- 监听函数原型
+  `function(from,to)`
+- 参数：
+  - from : `IntPos`  
+    水源方块位置
+  - to : `IntPos`  
+    即将流经的方块位置
+- 拦截事件：函数返回`false`
+
