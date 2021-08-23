@@ -14,6 +14,7 @@ using namespace std;
 ClassDefine<void> NbtStaticBuilder =
     defineClass("NBT")
         .function("createTag", &NbtStatic::createTag)
+        .function("parseSNBT", &NbtStatic::parseSNBT)
         .property("End", &NbtStatic::getType<TagType::End>)
         .property("Byte", &NbtStatic::getType<TagType::Byte>)
         .property("Short", &NbtStatic::getType<TagType::Short>)
@@ -83,6 +84,7 @@ ClassDefine<NbtCompound> NbtCompoundBuilder =
         .instanceFunction("getData", &NbtCompound::getData)
         .instanceFunction("getTag", &NbtCompound::getTag)
         .instanceFunction("toObject", &NbtCompound::toObject)
+        .instanceFunction("toSNBT", &NbtCompound::toSNBT)
         .instanceFunction("destroy", &NbtList::destroy)
         .build();
 
@@ -958,6 +960,15 @@ Local<Value> NbtCompound::toObject(const Arguments& args)
     CATCH("Fail in NBTtoArray!");
 }
 
+Local<Value> NbtCompound::toSNBT(const Arguments& args)
+{
+    try
+    {
+        return String::newString(TagToSNBT(nbt));
+    }
+    CATCH("Fail in toSNBT!");
+}
+
 //////////////////// APIs ////////////////////
 
 Local<Value> NbtStatic::createTag(const Arguments& args)
@@ -1043,6 +1054,21 @@ Local<Value> NbtStatic::createTag(const Arguments& args)
         return res;
     }
     CATCH("Fail in NBTcreateTag!")
+}
+
+Local<Value> NbtStatic::parseSNBT(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+
+    try {
+        Tag* tag = SNBTToTag(args[0].toStr());
+        if (tag)
+            return NbtCompound::newNBT(tag);
+        else
+            return Local<Value>();
+    }
+    CATCH("Fail in parseSNBT!")
 }
 
 

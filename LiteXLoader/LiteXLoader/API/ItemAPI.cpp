@@ -77,7 +77,7 @@ Local<Value> ItemClass::getName()
         //已预加载
         return String::newString(name);
     }
-    CATCH("Fail in GetItemName!")
+    CATCH("Fail in GetItemName!");
 }
 
 Local<Value> ItemClass::getType()
@@ -86,7 +86,7 @@ Local<Value> ItemClass::getType()
         //已预加载
         return String::newString(type);
     }
-    CATCH("Fail in GetType!")
+    CATCH("Fail in GetType!");
 }
 
 Local<Value> ItemClass::getId()
@@ -95,7 +95,7 @@ Local<Value> ItemClass::getId()
         //已预加载
         return Number::newNumber(id);
     }
-    CATCH("Fail in GetType!")
+    CATCH("Fail in GetType!");
 }
 
 Local<Value> ItemClass::getCount()
@@ -104,7 +104,7 @@ Local<Value> ItemClass::getCount()
         //已预加载
         return Number::newNumber(count);
     }
-    CATCH("Fail in GetCount!")
+    CATCH("Fail in GetCount!");
 }
 
 Local<Value> ItemClass::getAux()
@@ -113,7 +113,7 @@ Local<Value> ItemClass::getAux()
         //已预加载
         return Number::newNumber(aux);
     }
-    CATCH("Fail in GetAux!")
+    CATCH("Fail in GetAux!");
 }
 
 Local<Value> ItemClass::getRawPtr(const Arguments& args)
@@ -121,7 +121,7 @@ Local<Value> ItemClass::getRawPtr(const Arguments& args)
     try {
         return Number::newNumber((intptr_t)item);
     }
-    CATCH("Fail in getRawPtr!")
+    CATCH("Fail in getRawPtr!");
 }
 
 Local<Value> ItemClass::set(const Arguments& args)
@@ -155,7 +155,7 @@ Local<Value> ItemClass::isNull(const Arguments& args)
     try{
         return Boolean::newBoolean(Raw_IsNull(item));
     }
-    CATCH("Fail in isNull!")
+    CATCH("Fail in isNull!");
 }
 
 Local<Value> ItemClass::setNull(const Arguments& args)
@@ -163,13 +163,13 @@ Local<Value> ItemClass::setNull(const Arguments& args)
     try {
         return Boolean::newBoolean(Raw_SetNull(item));
     }
-    CATCH("Fail in setNull!")
+    CATCH("Fail in setNull!");
 }
 
 Local<Value> ItemClass::setLore(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args,1)
-    CHECK_ARG_TYPE(args[0],ValueKind::kArray)
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kArray);
 
     try{
         auto arr = args[0].asArray();
@@ -186,7 +186,7 @@ Local<Value> ItemClass::setLore(const Arguments& args)
         Raw_SetLore(item, lores);
         return Boolean::newBoolean(true);
     }
-    CATCH("Fail in SetLore!")
+    CATCH("Fail in SetLore!");
 }
 
 Local<Value> ItemClass::getNbt(const Arguments& args)
@@ -194,7 +194,7 @@ Local<Value> ItemClass::getNbt(const Arguments& args)
     try {
         return NbtCompound::newNBT(Tag::fromItem(item));
     }
-    CATCH("Fail in getNbt!")
+    CATCH("Fail in getNbt!");
 }
 
 Local<Value> ItemClass::setNbt(const Arguments& args)
@@ -209,7 +209,7 @@ Local<Value> ItemClass::setNbt(const Arguments& args)
         nbt->setItem(item);
         return Boolean::newBoolean(true);
     }
-    CATCH("Fail in setNbt!")
+    CATCH("Fail in setNbt!");
 }
 
 Local<Value> NewItem(const Arguments& args)

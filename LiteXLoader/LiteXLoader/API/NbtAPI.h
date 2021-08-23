@@ -23,6 +23,7 @@ class NbtStatic : public ScriptClass
 {
 public:
     static Local<Value> createTag(const Arguments& args);
+    static Local<Value> parseSNBT(const Arguments& args);
 
     template<TagType T>
     static Local<Value> getType()
@@ -111,6 +112,7 @@ public:
     Local<Value> getTag(const Arguments& args);
 
     Local<Value> toObject(const Arguments& args);
+    Local<Value> toSNBT(const Arguments& args);
 };
 
 

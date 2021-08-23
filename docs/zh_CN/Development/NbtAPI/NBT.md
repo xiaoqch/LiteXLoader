@@ -61,7 +61,7 @@ LXL使用 `NbtValue`、`NbtList`、`NbtCompound`三种数据类型来共同表�
 - 返回值类型：`NbtValue`或`NbtList` 或 `NbtCompound`，取决于你选择的数据类型
   - 如返回值为 `Null` 则表示获取失败
 
-### 从 SNBT  反序列化生成NBT对象
+### 从 SNBT  字符串生成 NBT 对象
 
 SNBT字符串中必须包含一个完整的Compound。通过此接口，根据其生成对应的NBT对象
 
