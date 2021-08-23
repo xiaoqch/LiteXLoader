@@ -61,7 +61,9 @@ LXL使用 `NbtValue`、`NbtList`、`NbtCompound`三种数据类型来共同表�
 - 返回值类型：`NbtValue`或`NbtList` 或 `NbtCompound`，取决于你选择的数据类型
   - 如返回值为 `Null` 则表示获取失败
 
-### 从 SNBT 字符串 生成NBT对象
+### 从 SNBT  反序列化生成NBT对象
+
+SNBT字符串中必须包含一个完整的Compound。通过此接口，根据其生成对应的NBT对象
 
 `NBT.parseSNBT(snbt)`  
 
@@ -69,7 +71,7 @@ LXL使用 `NbtValue`、`NbtList`、`NbtCompound`三种数据类型来共同表�
   - snbt : `string`  
     你要解析的SNBT字符串
 - 返回值：生成的NBT对象
-- 返回值类型：`NbtValue`或`NbtList` 或 `NbtCompound`，取决于SNBT字符串中储存的数据类型
+- 返回值类型：`NbtCompound`
   - 如返回值为 `Null` 则表示获取失败
 
 <br>
@@ -114,17 +116,12 @@ LXL使用 `NbtValue`、`NbtList`、`NbtCompound`三种数据类型来共同表�
 
 #### NBT对象序列化为SNBT
 
-`nbt.toSNBT([space])`
+`nbt.toSNBT()`
 
-- 参数
-  - space : `Integer`  
-    （可选参数）如果要格式化输出的SNBT，则传入此参数  
-    代表每个缩进的空格数量，这样生成的字符串更适合人阅读  
-    此参数默认为0，即不对输出字符串进行格式化
 - 返回值：对应的SNBT字符串
 - 返回值类型：`String`
 
-提示：如果这个NBT对象储存的是`List`或者`Compound`类型，将递归展开为`Array`或`Object`
+> 只有顶层Compound标签可以被转换为SNBT
 
 <br>
 

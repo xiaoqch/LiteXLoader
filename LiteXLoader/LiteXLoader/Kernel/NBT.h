@@ -71,5 +71,5 @@ public:
 };
 
 std::string TagToJson(Tag* nbt, int formatIndent);
-std::string TagToSNBT(Tag* nbt, int formatIndent);
+std::string TagToSNBT(Tag* nbt);
 Tag* SNBTToTag(const string& snbt);
