@@ -83,6 +83,11 @@ void Tag::put(const std::string& k, Tag* v) {
 		, void, void*, string, Tag*)(this, k, v);
 }
 
+void Tag::putEnd(const std::string& k)
+{
+    put(k,Tag::createTag(TagType::End));
+}
+
 void Tag::putShort(const std::string& k, short v) {
 	return SymCall("?putShort@CompoundTag@@QEAAAEAFV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@F@Z"
 		, void, void*, string, short)(this, k, v);
@@ -108,6 +113,12 @@ void Tag::putFloat(const std::string& k, float v) {
 		, void, void*, string, float)(this, k, v);
 }
 
+void Tag::putDouble(const std::string& k, double v) {
+    Tag* tag = Tag::createTag(TagType::Double);
+    tag->asDouble() = v;
+    put(k, tag);
+}
+
 void Tag::putCompound(const std::string& k, Tag* v) {
     return SymCall("?putCompound@CompoundTag@@QEAAAEAV1@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V1@@Z",
         void, void*, string, Tag*)(this, k, v);
@@ -123,6 +134,14 @@ void Tag::putByteArray(const string& key, const TagMemoryChunk& value) {
         void, void*, string, const TagMemoryChunk&)(this, key, value);
 }
 
+void Tag::putByteArray(const std::string& key, void* data, size_t size) {
+    uint8_t* written = new uint8_t[size];
+    memcpy(written, data, size);
+    TagMemoryChunk tmc(size, written);
+
+    putByteArray(key, tmc);
+}
+
 void Tag::destroy() 
 {
     try
@@ -135,10 +154,77 @@ void Tag::destroy()
     }
 }
 
-void Tag::addValue2List(Tag* t) {
+void Tag::add(Tag* t) {
 	SymCall("?add@ListTag@@QEAAXV?$unique_ptr@VTag@@U?$default_delete@VTag@@@std@@@std@@@Z",
 		void, void*, Tag**)(this, &t);
 }
+
+void Tag::addEnd()
+{
+    Tag* t = Tag::createTag(TagType::End);
+    add(t);
+}
+
+void Tag::addByte(char v)
+{
+    Tag* t = Tag::createTag(TagType::Byte);
+    t->asByte() = v;
+    add(t);
+}
+
+void Tag::addShort(short v)
+{
+    Tag* t = Tag::createTag(TagType::Short);
+    t->asShort() = v;
+    add(t);
+}
+
+void Tag::addInt(int v)
+{
+    Tag* t = Tag::createTag(TagType::Int);
+    t->asInt() = v;
+    add(t);
+}
+
+void Tag::addLong(__int64 v)
+{
+    Tag* t = Tag::createTag(TagType::Long);
+    t->asLong() = v;
+    add(t);
+}
+
+void Tag::addFloat(float v)
+{
+    Tag* t = Tag::createTag(TagType::Float);
+    t->asFloat() = v;
+    add(t);
+}
+
+void Tag::addDouble(double v)
+{
+    Tag* t = Tag::createTag(TagType::Double);
+    t->asDouble() = v;
+    add(t);
+}
+
+void Tag::addString(const string& v)
+{
+    Tag* t = Tag::createTag(TagType::String);
+    t->asString() = v;
+    add(t);
+}
+
+void Tag::addByteArray(void* data, size_t size)
+{
+    Tag* t = Tag::createTag(TagType::ByteArray);
+
+    uint8_t* written = new uint8_t[size];
+    memcpy(written, data, size);
+    t->asByteArray() = TagMemoryChunk(size, written);
+
+    add(t);
+}
+
 
 Tag* Tag::fromItem(ItemStack* item) {
 	Tag* tmp = 0;
@@ -515,6 +601,246 @@ string TagToSNBT(Tag* nbt)
     ostringstream sout;
     root.write(sout);
     return sout.str();
+}
+
+
+//////////////////// From SNBT ////////////////////
+
+void SNBTToTag_Compound_Helper(Tag*& nbt, tags::compound_tag& data);
+void SNBTToTag_List_Helper(Tag*& nbt, tags::compound_list_tag& data);
+
+void SNBTToTag_List_Helper(Tag*& nbt, tags::end_list_tag& data)
+{
+    Tag* tag = Tag::createTag(TagType::List);
+    tag->addEnd();
+    nbt->add(tag);
+}
+
+void SNBTToTag_List_Helper(Tag*& nbt, tags::byte_list_tag& data)
+{
+    Tag* tag = Tag::createTag(TagType::List);
+    for (auto& dat : data.value)
+        tag->addByte((char)dat);
+    nbt->add(tag);
+}
+
+void SNBTToTag_List_Helper(Tag*& nbt, tags::short_list_tag& data)
+{
+    Tag* tag = Tag::createTag(TagType::List);
+    for (auto& dat : data.value)
+        tag->addShort((short)dat);
+    nbt->add(tag);
+}
+
+void SNBTToTag_List_Helper(Tag*& nbt, tags::int_list_tag& data)
+{
+    Tag* tag = Tag::createTag(TagType::List);
+    for (auto& dat : data.value)
+        tag->addInt((int)dat);
+    nbt->add(tag);
+}
+
+void SNBTToTag_List_Helper(Tag*& nbt, tags::long_list_tag& data)
+{
+    Tag* tag = Tag::createTag(TagType::List);
+    for (auto& dat : data.value)
+        tag->addLong((long long)dat);
+    nbt->add(tag);
+}
+
+void SNBTToTag_List_Helper(Tag*& nbt, tags::float_list_tag& data)
+{
+    Tag* tag = Tag::createTag(TagType::List);
+    for (auto& dat : data.value)
+        tag->addFloat((float)dat);
+    nbt->add(tag);
+}
+
+void SNBTToTag_List_Helper(Tag*& nbt, tags::double_list_tag& data)
+{
+    Tag* tag = Tag::createTag(TagType::List);
+    for (auto& dat : data.value)
+        tag->addDouble((double)dat);
+    nbt->add(tag);
+}
+
+void SNBTToTag_List_Helper(Tag*& nbt, tags::string_list_tag& data)
+{
+    Tag* tag = Tag::createTag(TagType::List);
+    for (auto& dat : data.value)
+        tag->addString((string)dat);
+    nbt->add(tag);
+}
+
+void SNBTToTag_List_Helper(Tag*& nbt, tags::bytearray_list_tag& data)
+{
+    Tag* tag = Tag::createTag(TagType::List);
+    for (auto& dat : data.value)
+        tag->addByteArray(dat.data(), dat.size());
+    nbt->add(tag);
+}
+
+void SNBTToTag_List_Helper(Tag*& nbt, tags::list_list_tag& data)
+{
+    Tag* tag = Tag::createTag(TagType::List);
+    for (auto& dat : data.value)
+    {
+        Tag* tagList = Tag::createTag(TagType::List);
+        switch (dat->element_id())
+        {
+            case tag_id::tag_end:
+                SNBTToTag_List_Helper(tagList, *(tags::end_list_tag*)dat.get());
+                break;
+            case tag_id::tag_byte:
+                SNBTToTag_List_Helper(tagList, *(tags::byte_list_tag*)dat.get());
+                break;
+            case tag_id::tag_short:
+                SNBTToTag_List_Helper(tagList, *(tags::short_list_tag*)dat.get());
+                break;
+            case tag_id::tag_int:
+                SNBTToTag_List_Helper(tagList, *(tags::int_list_tag*)dat.get());
+                break;
+            case tag_id::tag_long:
+                SNBTToTag_List_Helper(tagList, *(tags::long_list_tag*)dat.get());
+                break;
+            case tag_id::tag_float:
+                SNBTToTag_List_Helper(tagList, *(tags::float_list_tag*)dat.get());
+                break;
+            case tag_id::tag_double:
+                SNBTToTag_List_Helper(tagList, *(tags::double_list_tag*)dat.get());
+                break;
+            case tag_id::tag_string:
+                SNBTToTag_List_Helper(tagList, *(tags::string_list_tag*)dat.get());
+                break;
+            case tag_id::tag_bytearray:
+                SNBTToTag_List_Helper(tagList, *(tags::bytearray_list_tag*)dat.get());
+                break;
+            case tag_id::tag_list:
+                SNBTToTag_List_Helper(tagList, *(tags::list_list_tag*)dat.get());
+                break;
+            case tag_id::tag_compound:
+                SNBTToTag_List_Helper(tagList, *(tags::compound_list_tag*)dat.get());
+                break;
+            default:
+                break;
+        }
+        tag->add(tagList);
+    }
+    nbt->add(tag);
+}
+
+void SNBTToTag_List_Helper(Tag*& nbt, tags::compound_list_tag& data)
+{
+    Tag* tag = Tag::createTag(TagType::List);
+    for (auto& dat : data.value)
+    {
+        Tag* tagComp = Tag::createTag(TagType::Compound);
+        SNBTToTag_Compound_Helper(tagComp, dat);
+        tag->add(tagComp);
+    }
+    nbt->add(tag);
+}
+
+void SNBTToTag_Compound_Helper(Tag*& nbt, tags::compound_tag& data)
+{
+    for (auto& [key, value] : data.value)
+    {
+        switch (value->id())
+        {
+            case tag_id::tag_end:
+                nbt->putEnd(key);
+                break;
+            case tag_id::tag_byte:
+                nbt->putByte(key, ((tags::byte_tag*)value.get())->value);
+                break;
+            case tag_id::tag_short:
+                nbt->putShort(key, ((tags::short_tag*)value.get())->value);
+                break;
+            case tag_id::tag_int:
+                nbt->putInt(key, ((tags::int_tag*)value.get())->value);
+                break;
+            case tag_id::tag_long:
+                nbt->putLong(key, ((tags::long_tag*)value.get())->value);
+                break;
+            case tag_id::tag_float:
+                nbt->putFloat(key, ((tags::float_tag*)value.get())->value);
+                break;
+            case tag_id::tag_double:
+                nbt->putDouble(key, ((tags::double_tag*)value.get())->value);
+                break;
+            case tag_id::tag_string:
+                nbt->putString(key, ((tags::string_tag*)value.get())->value);
+                break;
+            case tag_id::tag_bytearray:
+            {
+                auto& data = ((tags::bytearray_tag*)value.get())->value;
+                nbt->putByteArray(key, data.data(), data.size());
+                break;
+            }
+            case tag_id::tag_list:
+            {
+                Tag* res = Tag::createTag(TagType::List);
+
+                tags::list_tag* data = (tags::list_tag*)value.get();
+                switch (data->element_id())
+                {
+                case tag_id::tag_byte:
+                    SNBTToTag_List_Helper(res, *(tags::byte_list_tag*)data);
+                    break;
+                case tag_id::tag_short:
+                    SNBTToTag_List_Helper(res, *(tags::short_list_tag*)data);
+                    break;
+                case tag_id::tag_int:
+                    SNBTToTag_List_Helper(res, *(tags::int_list_tag*)data);
+                    break;
+                case tag_id::tag_long:
+                    SNBTToTag_List_Helper(res, *(tags::long_list_tag*)data);
+                    break;
+                case tag_id::tag_float:
+                    SNBTToTag_List_Helper(res, *(tags::float_list_tag*)data);
+                    break;
+                case tag_id::tag_double:
+                    SNBTToTag_List_Helper(res, *(tags::double_list_tag*)data);
+                    break;
+                case tag_id::tag_string:
+                    SNBTToTag_List_Helper(res, *(tags::string_list_tag*)data);
+                    break;
+                case tag_id::tag_bytearray:
+                    SNBTToTag_List_Helper(res, *(tags::bytearray_list_tag*)data);
+                    break;
+                case tag_id::tag_list:
+                    SNBTToTag_List_Helper(res, *(tags::list_list_tag*)data);
+                    break;
+                case tag_id::tag_compound:
+                    SNBTToTag_List_Helper(res, *(tags::compound_list_tag*)data);
+                    break;
+                default:
+                    break;
+                }
+                nbt->put(key, res);
+                break;
+            }
+            case tag_id::tag_compound:
+            {
+                Tag* res = Tag::createTag(TagType::Compound);
+                tags::compound_tag *data = (tags::compound_tag*)value.get();
+                SNBTToTag_Compound_Helper(res, *data);
+                nbt->put(key, res);
+                break;
+            }
+        }
+    }
+}
+
+Tag* SNBTToTag(const string& snbt)
+{
+    istringstream sin(snbt);
+    tags::compound_tag root(true);
+    root.read(sin);
+
+    Tag* res = Tag::createTag(TagType::Compound);
+    SNBTToTag_Compound_Helper(res, root);
+    return res;
 }
 
 

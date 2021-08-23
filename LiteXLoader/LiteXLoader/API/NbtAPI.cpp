@@ -487,21 +487,21 @@ Local<Value> NbtList::addTag(const Arguments& args)
         auto value = NbtValue::extractNBT(args[0]);
         if (value)
         {
-            nbt->addValue2List(value);
+            nbt->add(value);
             return this->getScriptObject();
         }
 
         auto list = NbtList::extractNBT(args[0]);
         if (list)
         {
-            nbt->addValue2List(list);
+            nbt->add(list);
             return this->getScriptObject();
         }
 
         auto compound = NbtCompound::extractNBT(args[0]);
         if (compound)
         {
-            nbt->addValue2List(compound);
+            nbt->add(compound);
             return this->getScriptObject();
         }
 
@@ -817,13 +817,7 @@ Local<Value> NbtCompound::setByteArray(const Arguments& args)
         auto key = args[0].toStr();
         auto data = args[1].asByteBuffer();
 
-        int size = data.byteLength();
-        uint8_t* written = new uint8_t[size];
-        memcpy(written, data.getRawBytes(), size);
-        TagMemoryChunk tmc(size, written);
-
-        nbt->putByteArray(key, tmc);
-
+        nbt->putByteArray(key, data.getRawBytes(), data.byteLength());
         return this->getScriptObject();
     }
     CATCH("Fail in NBTsetString!")
