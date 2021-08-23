@@ -197,13 +197,13 @@
 
 <br>
 
-#### `"onLiquidSpread"` - 液体方块流动
+#### `"onLiquidFlow"` - 液体方块流动
 
 - 监听函数原型
   `function(from,to)`
 - 参数：
-  - from : `IntPos`  
-    水源方块位置
+  - from : `Block`  
+    水源方块对象
   - to : `IntPos`  
     即将流经的方块位置
 - 拦截事件：函数返回`false`

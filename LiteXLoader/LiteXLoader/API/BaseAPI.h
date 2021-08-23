@@ -13,6 +13,8 @@ public:
 
     static Local<Object> newPos(int x, int y, int z, int dim=-1);
     static Local<Object> newPos(const BlockPos &b, int dim=-1);
+    static Local<Object> newPos(const BlockPos* b, int dim = -1);
+    static Local<Object> newPos(const BlockPos* b, BlockSource *bs);
     static Local<Object> newPos(const IntVec4 &v);
     static IntPos* extractPos(Local<Value> v);
 

@@ -1,6 +1,7 @@
 #include "BaseAPI.h"
 #include "APIHelp.h"
 #include <Kernel/Base.h>
+#include <Kernel/SymbolHelper.h>
 using namespace script;
 
 //////////////////// Class Definition ////////////////////
@@ -60,6 +61,16 @@ Local<Object> IntPos::newPos(const BlockPos &b, int dim)
 Local<Object> IntPos::newPos(const IntVec4 &v)
 {
     return IntPos::newPos(v.x, v.y, v.z, v.dim);
+}
+
+Local<Object> IntPos::newPos(const BlockPos* b, int dim)
+{
+    return IntPos::newPos(b->x, b->y, b->z, dim);
+}
+
+Local<Object> IntPos::newPos(const BlockPos* b, BlockSource* bs)
+{
+    return IntPos::newPos(b->x, b->y, b->z, Raw_GetBlockDimension(bs));
 }
 
 IntPos* IntPos::extractPos(Local<Value> v)
