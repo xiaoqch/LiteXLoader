@@ -697,7 +697,6 @@ THook(bool, "?checkBlockDestroyPermissions@BlockSource@@QEAA_NAEAVActor@@AEBVBlo
 }
 
 // ===== onWitherBossDestroy =====
-
 THook(void, "?_destroyBlocks@WitherBoss@@AEAAXAEAVLevel@@AEBVAABB@@AEAVBlockSource@@H@Z",
     void* _this, Level* a2, AABB* a3, BlockSource* a4, int a5)
 {
@@ -870,7 +869,7 @@ THook(bool, "?explode@Level@@UEAAXAEAVBlockSource@@PEAVActor@@AEBVVec3@@M_N3M3@Z
     {
         if (!actor)
         {
-            CallEventRtnBool(EVENT_TYPES::onBedExplode, IntPos::newPos(pos->x, pos->y, pos->z, Raw_GetBlockDimension(bs)))
+            CallEventRtnBool(EVENT_TYPES::onBedExplode, IntPos::newPos(pos->x, pos->y, pos->z, Raw_GetBlockDimension(bs)));
         }
     }
     IF_LISTENED_END();
@@ -883,7 +882,7 @@ THook(void, "?explode@RespawnAnchorBlock@@CAXAEAVPlayer@@AEBVBlockPos@@AEAVBlock
 {
     IF_LISTENED(EVENT_TYPES::onRespawnAnchorExplode)
     {
-        CallEventRtnVoid(EVENT_TYPES::onRespawnAnchorExplode, IntPos::newPos(bp->x, bp->y, bp->z, Raw_GetBlockDimension(bs)),
+        CallEventRtnVoid(EVENT_TYPES::onRespawnAnchorExplode, IntPos::newPos(bp,bs),
             PlayerClass::newPlayer(pl));
     }
     IF_LISTENED_END();
@@ -927,7 +926,7 @@ THook(bool, "?_performCommand@BaseCommandBlock@@AEAA_NAEAVBlockSource@@AEBVComma
         string cmd = offBaseCommandBlock::getCMD(_this);
         BlockPos bpos = offBaseCommandBlock::getPos(_this);
 
-        CallEventRtnBool(EVENT_TYPES::onCmdBlockExecute, String::newString(cmd), IntPos::newPos(bpos,Raw_GetBlockDimension(a2)));
+        CallEventRtnBool(EVENT_TYPES::onCmdBlockExecute, String::newString(cmd), IntPos::newPos(&bpos,a2));
     }
     IF_LISTENED_END();
     return original(_this, a2, a3, a4);
@@ -1041,14 +1040,14 @@ THook(unsigned short, "?onBlockInteractedWith@VanillaServerGameplayEventListener
 
 // ===== onUseRespawnAnchor =====
 THook(bool, "?trySetSpawn@RespawnAnchorBlock@@CA_NAEAVPlayer@@AEBVBlockPos@@AEAVBlockSource@@AEAVLevel@@@Z",
-    Player* pl, BlockPos* a2, BlockSource* a3, Level* a4)
+    Player* pl, BlockPos* bp, BlockSource* bs, Level* a4)
 {
     IF_LISTENED(EVENT_TYPES::onUseRespawnAnchor)
     {
-        CallEventRtnBool(EVENT_TYPES::onUseRespawnAnchor,PlayerClass::newPlayer(pl),IntPos::newPos(*a2, Raw_GetBlockDimension(a3)));
+        CallEventRtnBool(EVENT_TYPES::onUseRespawnAnchor,PlayerClass::newPlayer(pl),IntPos::newPos(bp, bs));
     }
     IF_LISTENED_END();
-    return original(pl, a2, a3, a4);
+    return original(pl, bp, bs, a4);
 }
 
 // ===== onFarmLandDecay =====
@@ -1057,7 +1056,7 @@ THook(void, "?transformOnFall@FarmBlock@@UEBAXAEAVBlockSource@@AEBVBlockPos@@PEA
 {
     IF_LISTENED(EVENT_TYPES::onFarmLandDecay)
     {
-        CallEventRtnVoid(EVENT_TYPES::onFarmLandDecay,IntPos::newPos(*bp, Raw_GetBlockDimension(bs)),EntityClass::newEntity(ac));
+        CallEventRtnVoid(EVENT_TYPES::onFarmLandDecay,IntPos::newPos(bp,bs),EntityClass::newEntity(ac));
     }
     IF_LISTENED_END();
     return original(_this,bs,bp,ac,a5);
@@ -1135,7 +1134,7 @@ THook(bool, "?_trySpawnBlueFire@FireBlock@@AEBA_NAEAVBlockSource@@AEBVBlockPos@@
 {
     IF_LISTENED(EVENT_TYPES::onFireSpread)
     {
-        CallEventRtnValue(EVENT_TYPES::onFireSpread, true, IntPos::newPos(*bp, Raw_GetBlockDimension(bs)));
+        CallEventRtnValue(EVENT_TYPES::onFireSpread, true, IntPos::newPos(bp, bs));
     }
     IF_LISTENED_END();
     return original(_this, bs, bp);
