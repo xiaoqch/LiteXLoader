@@ -335,7 +335,7 @@
 
 <br>
 
-#### `"onMove"` - 玩家移动
+#### `"onMove"` - 玩家正在移动
 
 - 监听函数原型
   `function(player,pos)`

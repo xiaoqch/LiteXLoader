@@ -38,22 +38,39 @@ LXL使用 `NbtValue`、`NbtList`、`NbtCompound`三种数据类型来共同表�
 
 ## 🥽 获取一个 NBT 对象
 
-1. 通过调用实体、方块、物品API中**返回NBT对象**的函数，来获取对应的NBT对象。  
-   详见实体、物品、方块等各自的文档说明
-2. 根据你提供的数据，来创建新的NBT对象  
-   `NBT.createTag(type[,data])`
-   - 参数：
-     - type : `Enum`  
-       你要创建的NBT对象的数据类型。可选值如下  
-       `NBT.End`  `NBT.Byte`  `NBT.Short`  `NBT.Int`  `NBT.Long`   
-       `NBT.Float ` `NBT.Double ` `NBT.ByteArray`  `NBT.String`  
-       `NBT.List`  `NBT.Compound`
-     - data: `任意类型`（可选参数）  
-       根据你要创建的对象类型设置初始数据  
-       如创建`NBT.Float`类型的 NBT 对象，那你需要传入一个`Float`类型的值  
-   - 返回值：生成的NBT对象
-   - 返回值类型：`NbtValue`或`NbtList` 或 `NbtCompound`，取决于你选择的数据类型
-     - 如返回值为 `Null` 则表示获取失败
+### 从事件或API获取
+
+通过调用实体、方块、物品API中**返回NBT对象**的函数，来获取对应的NBT对象。  
+详见实体、物品、方块等各自的文档说明
+
+### 创建新的NBT对象
+
+根据你提供的数据，来创建新的NBT对象  
+`NBT.createTag(type[,data])`
+
+- 参数：
+  - type : `Enum`  
+    你要创建的NBT对象的数据类型。可选值如下  
+    `NBT.End`  `NBT.Byte`  `NBT.Short`  `NBT.Int`  `NBT.Long`   
+    `NBT.Float ` `NBT.Double ` `NBT.ByteArray`  `NBT.String`  
+    `NBT.List`  `NBT.Compound`
+  - data: `任意类型`（可选参数）  
+    根据你要创建的对象类型设置初始数据  
+    如创建`NBT.Float`类型的 NBT 对象，那你需要传入一个`Float`类型的值  
+- 返回值：生成的NBT对象
+- 返回值类型：`NbtValue`或`NbtList` 或 `NbtCompound`，取决于你选择的数据类型
+  - 如返回值为 `Null` 则表示获取失败
+
+### 从 SNBT 字符串 生成NBT对象
+
+`NBT.parseSNBT(snbt)`  
+
+- 参数：
+  - snbt : `string`  
+    你要解析的SNBT字符串
+- 返回值：生成的NBT对象
+- 返回值类型：`NbtValue`或`NbtList` 或 `NbtCompound`，取决于SNBT字符串中储存的数据类型
+  - 如返回值为 `Null` 则表示获取失败
 
 <br>
 
@@ -75,9 +92,9 @@ LXL使用 `NbtValue`、`NbtList`、`NbtCompound`三种数据类型来共同表�
 
 <br>
 
-#### 解析NBT对象生成字符串
+#### 将NBT对象转换为字符串
 
-`nbt.toString([value])`
+`nbt.toString([space])`
 
 - 参数
   - space : `Integer`  
@@ -90,6 +107,25 @@ LXL使用 `NbtValue`、`NbtList`、`NbtCompound`三种数据类型来共同表�
 提示：如果这个NBT对象储存的是`List`或者`Compound`类型，将递归展开为`Array`或`Object`  
 如果这个NBT对象储存的是`ByteArray`类型，输出的字节串将先进行base64编码后再输出
 
+> 上述函数输出的字符串符合Json标准格式，但是无法进行反序列化。  
+> 如果有反序列化的需求，请使用下方的SNBT接口
+
+<br>
+
+#### NBT对象序列化为SNBT
+
+`nbt.toSNBT([space])`
+
+- 参数
+  - space : `Integer`  
+    （可选参数）如果要格式化输出的SNBT，则传入此参数  
+    代表每个缩进的空格数量，这样生成的字符串更适合人阅读  
+    此参数默认为0，即不对输出字符串进行格式化
+- 返回值：对应的SNBT字符串
+- 返回值类型：`String`
+
+提示：如果这个NBT对象储存的是`List`或者`Compound`类型，将递归展开为`Array`或`Object`
+
 <br>
 
 #### 清理此NBT对象
@@ -100,7 +136,7 @@ LXL使用 `NbtValue`、`NbtList`、`NbtCompound`三种数据类型来共同表�
 - 返回值类型：`Boolean`
 
 注意，只有根Compound标签可以被清理，而且，请谨慎使用此函数，不当的使用将会造成服务器崩溃  
-合适的清理有助于解决内存泄漏问题。在清理完后，请千万不要再使用此NBT对象和他的所有子对象
+合适的清理有助于解决内存占用问题。在清理完后，请千万不要再使用此NBT对象和他的所有子对象
 
 <br>
 

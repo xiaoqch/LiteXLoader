@@ -5,6 +5,7 @@
 #include <map>
 using namespace std;
 
+//////////////////// NBT Class ////////////////////
 
 char& Tag::asByte()
 {
@@ -183,8 +184,6 @@ bool Tag::setPlayer(Player* player)
 bool Tag::setBlockEntity(BlockActor* ble)
 {
     void* vtbl = dlsym("??_7DefaultDataLoadHelper@@6B@");
-    //SymCall("?load@BlockActor@@UEAAXAEAVLevel@@AEBVCompoundTag@@AEAVDataLoadHelper@@@Z",
-    //    void, BlockActor *, Level*, Tag*, void*)(ble, mc->getLevel(),this, &vtbl);
     VirtualCall(ble, 0x8, mc->getLevel(), this, &vtbl);    //IDA Virtual Table from BlockActor::load
     return true;
 }
@@ -192,12 +191,20 @@ bool Tag::setBlockEntity(BlockActor* ble)
 Tag* Tag::fromBlockEntity(BlockActor* ble)
 {
     Tag* tmp = Tag::createTag(TagType::Compound);
-    //SymCall("?save@BlockActor@@UEBA_NAEAVCompoundTag@@@Z", void, BlockActor*, Tag*)(ble,tmp);
     VirtualCall(ble, 0x10, tmp);    //IDA Virtual Table from BlockActor::save
     return tmp;
 }
 
-//toJson
+
+//////////////////// SNBT ////////////////////
+
+std::string TagToSNBT(Tag* nbt, int formatIndent)
+{
+
+}
+
+
+//////////////////// To Json ////////////////////
 
 void TagToJson_Compound_Helper(JSON_VALUE& res, Tag* nbt);
 

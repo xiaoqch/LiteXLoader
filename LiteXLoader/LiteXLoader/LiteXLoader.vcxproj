@@ -161,6 +161,7 @@
     <Library Include="..\third-party\LiteLoader\libssl.lib" />
     <Library Include="..\third-party\LiteLoader\LiteLoader.lib" />
     <Library Include="..\third-party\Lua\lib\lua.lib" />
+    <Library Include="..\third-party\nbt-cpp\lib\nbt-cpp.lib" />
     <Library Include="..\third-party\ScriptX\lib\ScriptX-Js.lib" />
     <Library Include="..\third-party\ScriptX\lib\ScriptX-Lua.lib" />
     <Library Include="..\third-party\V8\lib\v8.lib" />
