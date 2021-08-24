@@ -26,6 +26,10 @@ class Tag {
 private:
 	char filler[0x28];
 public:
+	//share
+	static Tag* createTag(TagType t);
+	char getTagType();
+
 	//value
 	char&		asByte();
 	short&		asShort();
@@ -37,10 +41,6 @@ public:
 	std::vector<Tag*> &asList();
 	std::map<std::string, Tag> &asCompound();
 	TagMemoryChunk& asByteArray();
-
-	//share
-	static Tag* createTag(TagType t);
-	char getTagType();
 
 	//compound
 	void put(const std::string& k, Tag* v);

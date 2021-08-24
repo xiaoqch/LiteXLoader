@@ -846,7 +846,7 @@ Tag* SNBTToTag(const string& snbt)
 {
     istringstream sin(snbt);
     tags::compound_tag root(true);
-    sin >> contexts::bedrock_disk >> root;
+    sin >> contexts::mojangson >> root;
 
     Tag* res = Tag::createTag(TagType::Compound);
     SNBTToTag_Compound_Helper(res, root);
