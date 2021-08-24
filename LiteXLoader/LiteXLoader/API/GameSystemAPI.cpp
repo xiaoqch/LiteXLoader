@@ -8,7 +8,7 @@ ClassDefine<ObjectiveClass> ObjectiveClassBuilder =
 	defineClass<ObjectiveClass>("LXL_Objective")
 		.constructor(nullptr)
 		.instanceProperty("name", &ObjectiveClass::getName)
-		.instanceProperty("displayname", &ObjectiveClass::getDisplayName)
+		.instanceProperty("displayName", &ObjectiveClass::getDisplayName)
 
 		.instanceFunction("setDisplay", &ObjectiveClass::setDisplay)
 		.instanceFunction("setScore", &ObjectiveClass::setScore)
