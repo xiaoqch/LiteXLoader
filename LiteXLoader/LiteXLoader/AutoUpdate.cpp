@@ -77,7 +77,8 @@ bool CheckAutoUpdate(bool isUpdateManually)
 			int b = stoi(versRemote[1]);
 			int c = stoi(versRemote[2]);
 
-			if (a <= LXL_VERSION_MAJOR && b <= LXL_VERSION_MINOR && c <= LXL_VERSION_REVISION)
+			if (a < LXL_VERSION_MAJOR || (a == LXL_VERSION_MAJOR && b < LXL_VERSION_MINOR) 
+				|| (a == LXL_VERSION_MAJOR && b == LXL_VERSION_MINOR && c <= LXL_VERSION_REVISION))
 			{
 				if (isUpdateManually)
 				{
