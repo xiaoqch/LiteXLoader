@@ -10,6 +10,10 @@ class Objective;
 
 struct ScoreInfo
 {
+	Objective* getObjective()
+	{
+		return dAccess<Objective*>(this, 0);
+	}
 	int getCount()
 	{
 		return dAccess<int>(this, 12);
@@ -25,16 +29,16 @@ class Objective
 public:
 	inline ScoreInfo getPlayerScore(const ScoreboardId& a1)
 	{
-		return SymCall("?getPlayerScore@Objective@@QEBA?AUSreInfo@@AEBUScoreboardId@@@Z", 
+		return SymCall("?getPlayerScore@Objective@@QEBA?AUScoreInfo@@AEBUScoreboardId@@@Z", 
 			ScoreInfo, Objective*, const ScoreboardId&)(this, a1);
 	}
 	inline std::string getName()
 	{
-		return dAccess<std::string, 64>(this);
+		return dAccess<std::string>(this, 64);
 	}
 	inline std::string getDisplayName()
 	{
-		return dAccess<std::string, 96>(this);
+		return dAccess<std::string>(this, 64);
 	}
 };
 
@@ -43,7 +47,7 @@ class DisplayObjective
 public:
 	inline Objective* getObjective()
 	{
-		return dAccess<Objective*, 0>(this);
+		return dAccess<Objective*>(this, 0);
 	}
 };
 
@@ -57,17 +61,16 @@ public:
 class ScoreboardIdentityRef
 {
 public:
-	inline bool modifyScoreInObjective(int a1, Objective* a2, int a3, PlayerScoreSetFunction a4)
+	inline bool modifyScoreInObjective(int* a1, Objective* a2, int a3, PlayerScoreSetFunction a4)
 	{
 		return SymCall("?modifyScoreInObjective@ScoreboardIdentityRef@@QEAA_NAEAHAEAVObjective@@"
-			"HW4PlayerScoreSetFunction@@@Z", bool, ScoreboardIdentityRef*, int&, Objective*, int,
-			PlayerScoreSetFunction&)(this, a1, a2, a3, a4);
+			"HW4PlayerScoreSetFunction@@@Z", bool, ScoreboardIdentityRef*, int*, Objective*, int,
+			PlayerScoreSetFunction)(this, a1, a2, a3, a4);
 	}
 	inline bool removeFromObjective(Scoreboard* scb, Objective* obj)
 	{
-		return SymCall("?getIdScores@Scoreboard@@QEBA?AV?$vector@UScoreInfo@@V?$allocator@UScoreInfo"
-			"@@@std@@@std@@AEBUScoreboardId@@@Z", bool, ScoreboardIdentityRef*, Scoreboard*, 
-			Objective*)(this, scb, obj);
+		return SymCall("?removeFromObjective@ScoreboardIdentityRef@@QEAA_NAEAVScoreboard@@AEAV"
+			"Objective@@@Z", bool, ScoreboardIdentityRef*, Scoreboard*, Objective*)(this, scb, obj);
 	}
 };
 
@@ -78,6 +81,14 @@ public:
 	static constexpr const char* DISPLAY_SLOT_LIST = "list";
 	static constexpr const char* DISPLAY_SLOT_SIDEBAR = "sidebar";
 	static constexpr const char* DISPLAY_SLOT_BELOWNAME = "belowname";
+	inline std::vector<ScoreInfo> getIdScores(const ScoreboardId& id)
+	{
+		std::vector<ScoreInfo> rv;
+		SymCall("?getIdScores@Scoreboard@@QEBA?AV?$vector@UScoreInfo@@V?$allocator@UScoreInfo"
+			"@@@std@@@std@@AEBUScoreboardId@@@Z", void, Scoreboard*,
+			std::vector<ScoreInfo>&, const ScoreboardId&)(this, rv, id);
+		return rv;
+	}
 	inline const ScoreboardIdentityRef& registerScoreboardIdentity(ScoreboardId& a1, const std::string& a2)
 	{
 		return SymCall(
@@ -205,6 +216,6 @@ extern Scoreboard* globalScoreBoard;
 bool Raw_SetDisplayObjective(const std::string& objname, const std::string& slot, int sort);
 Objective* Raw_ClearDisplayObjective(const std::string& slot);
 Objective* Raw_GetDisplayObjective(const std::string& slot);
-bool Raw_ModifyScoreInObjective(const std::string& objname, const std::string& id, char mode, int score);
+int Raw_ModifyScoreInObjective(const std::string& objname, const std::string& id, char mode, int score);
 bool Raw_RemoveFromObjective(const std::string& objname, const std::string& id);
 int Raw_GetScore(const std::string& objname, const std::string& id);

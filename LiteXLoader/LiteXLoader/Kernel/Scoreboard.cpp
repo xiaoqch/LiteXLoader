@@ -7,9 +7,9 @@ bool checkSlotName(const std::string& slot)
 {
 	switch (H(slot.c_str()))
 	{
-	case H("sidebar"): break;
-	case H("list"): break;
-	case H("belowname"): break;
+	case H(Scoreboard::DISPLAY_SLOT_LIST): break;
+	case H(Scoreboard::DISPLAY_SLOT_BELOWNAME): break;
+	case H(Scoreboard::DISPLAY_SLOT_SIDEBAR): break;
 	default: 
 		return false;
 	}
@@ -41,11 +41,18 @@ Objective* Raw_GetDisplayObjective(const std::string& slot)
 	}
 	return nullptr;
 }
-bool Raw_ModifyScoreInObjective(const std::string& objname, const std::string& id, char mode, int score)
+int Raw_ModifyScoreInObjective(const std::string& objname, const std::string& id, char mode, int score)
 {
 	auto obj = scb->getObjective(objname);
 	auto identity = scb->getScoreboardId(id);
-	return scb->getScoreboardIdentityRef(&identity)->modifyScoreInObjective(0, obj, score, (PlayerScoreSetFunction)mode);
+	if (obj != 0)
+	{
+		int a1 = 0;
+		bool res = scb->getScoreboardIdentityRef(&identity)->
+			modifyScoreInObjective(&a1, obj, score, (PlayerScoreSetFunction)mode);
+		if (res) return a1;
+	}
+	return 0;
 }
 bool Raw_RemoveFromObjective(const std::string& objname, const std::string& id)
 {
@@ -57,5 +64,9 @@ int Raw_GetScore(const std::string& objname, const std::string& id)
 {
 	auto obj = scb->getObjective(objname);
 	auto identity = scb->getScoreboardId(id);
-	return obj->getPlayerScore(identity).getCount();
+	auto scores = scb->getIdScores(identity);
+	for (auto& it : scores)
+		if (it.getObjective() == obj) 
+			return it.getCount();
+	return 0;
 }

@@ -91,7 +91,7 @@ Local<Value> ObjectiveClass::setScore(const Arguments& args)
 		int score = args[1].toInt();
 		bool res = Raw_ModifyScoreInObjective(objname, id, 0, score);
 
-		return Boolean::newBoolean(res);
+		return Number::newNumber(res);
 	}
 	CATCH("Fail in setScore");
 }
@@ -107,7 +107,7 @@ Local<Value> ObjectiveClass::addScore(const Arguments& args)
 		int score = args[1].toInt();
 		bool res = Raw_ModifyScoreInObjective(objname, id, 1, score);
 
-		return Boolean::newBoolean(res);
+		return Number::newNumber(res);
 	}
 	CATCH("Fail in addScore");
 }
@@ -123,7 +123,7 @@ Local<Value> ObjectiveClass::removeScore(const Arguments& args)
 		int score = args[1].toInt();
 		bool res = Raw_ModifyScoreInObjective(objname, id, 2, score);
 
-		return Boolean::newBoolean(res);
+		return Number::newNumber(res);
 	}
 	CATCH("Fail in removeScore");
 }
@@ -153,7 +153,7 @@ Local<Value> ObjectiveClass::getScore(const Arguments& args)
 
 		return Number::newNumber(res);
 	}
-	CATCH("Fail in deleteScore");
+	CATCH("Fail in getScore");
 }
 
 //////////////////// APIs ////////////////////
