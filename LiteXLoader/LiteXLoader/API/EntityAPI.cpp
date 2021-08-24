@@ -23,6 +23,7 @@ ClassDefine<EntityClass> EntityClassBuilder =
         .instanceProperty("maxHealth", &EntityClass::getMaxHealth)
         .instanceProperty("health", &EntityClass::getHealth)
         .instanceProperty("inAir", &EntityClass::getInAir)
+        .instanceProperty("inWater", &EntityClass::getInWater)
         .instanceProperty("speed",&EntityClass::getSpeed)
 
         .instanceFunction("teleport", &EntityClass::teleport)
@@ -193,6 +194,18 @@ Local<Value> EntityClass::getInAir()
         return Boolean::newBoolean(Raw_GetIsInAir(entity));
     }
     CATCH("Fail in getInAir!")
+}
+
+Local<Value> EntityClass::getInWater()
+{
+    try {
+        Actor* entity = get();
+        if (!entity)
+            return Local<Value>();
+
+        return Boolean::newBoolean(Raw_GetIsInWater(entity));
+    }
+    CATCH("Fail in getInWater!")
 }
 
 Local<Value> EntityClass::getSpeed()

@@ -88,6 +88,11 @@ bool Raw_GetIsInAir(Actor *actor)
     return !(dAccess<bool,448>(actor));
 }
 
+bool Raw_GetIsInWater(Actor* actor)
+{
+    return SymCall("?isInWater@Actor@@UEBA_NXZ", bool, Actor*)(actor);
+}
+
 bool Raw_TeleportEntity(Actor* actor, const FloatVec4 &pos)
 {
     WActor(*actor).teleport({pos.x,pos.y,pos.z},pos.dim);

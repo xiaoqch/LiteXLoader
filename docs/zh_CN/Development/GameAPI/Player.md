@@ -54,6 +54,7 @@
 | pl.maxHealth | 玩家最大生命值              | `Integer`  |
 | pl.health    | 玩家当前生命值              | `Integer`  |
 | pl.inAir     | 玩家当前是否悬空            | `Boolean`  |
+| pl.inWater   | 玩家当前是否在水中          | `Boolean`  |
 | pl.sneaking  | 玩家当前是否正在潜行        | `Boolean`  |
 | pl.speed     | 玩家当前速度                | `Float`    |
 | pl.direction | 玩家当前朝向（0 - 4）       | `Integer`  |

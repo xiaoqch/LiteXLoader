@@ -40,6 +40,7 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceProperty("maxHealth", &PlayerClass::getMaxHealth)
         .instanceProperty("health", &PlayerClass::getHealth)
         .instanceProperty("inAir", &PlayerClass::getInAir)
+        .instanceProperty("inWater", &PlayerClass::getInWater)
         .instanceProperty("sneaking", &PlayerClass::getSneaking)
         .instanceProperty("speed",&PlayerClass::getSpeed)
         .instanceProperty("direction", &PlayerClass::getDirection)
@@ -400,6 +401,18 @@ Local<Value> PlayerClass::getInAir()
         return Boolean::newBoolean(Raw_GetIsInAir((Actor*)player));
     }
     CATCH("Fail in GetInAir!")
+}
+
+Local<Value> PlayerClass::getInWater()
+{
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        return Boolean::newBoolean(Raw_GetIsInWater((Actor*)player));
+    }
+    CATCH("Fail in getInWater!")
 }
 
 Local<Value> PlayerClass::getRawPtr(const Arguments& args)

@@ -15,6 +15,7 @@ IntVec4 Raw_GetEntityBlockPos(Actor* actor);
 int Raw_GetHealth(Actor *actor);
 int Raw_GetMaxHealth(Actor *actor);
 bool Raw_GetIsInAir(Actor *actor);
+bool Raw_GetIsInWater(Actor* actor);
 
 bool Raw_TeleportEntity(Actor* actor, const FloatVec4 &pos);
 bool Raw_KillEntity(Actor* actor);

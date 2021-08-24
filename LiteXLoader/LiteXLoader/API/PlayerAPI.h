@@ -36,6 +36,7 @@ public:
     Local<Value> getMaxHealth();
     Local<Value> getHealth();
     Local<Value> getInAir();
+    Local<Value> getInWater();
     Local<Value> getSneaking();
     Local<Value> getSpeed();
     Local<Value> getDirection();
