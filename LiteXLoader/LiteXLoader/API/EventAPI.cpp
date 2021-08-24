@@ -644,7 +644,7 @@ THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@
     {
         auto sp = dAccess<ServerPlayer*, 8>(_this);
 
-        CallEventRtnBool(EVENT_TYPES::onUseItemOn, PlayerClass::newPlayer(sp), ItemClass::newItem(item), BlockClass::newBlock(bl, bp, WPlayer(*sp).getDimID()));
+        CallEventRtnBool(EVENT_TYPES::onUseItemOn, PlayerClass::newPlayer(sp), ItemClass::newItem(item), BlockClass::newBlock(bl, bp, WPlayer(*sp).getDimID()), Number::newNumber(side));
     }
     IF_LISTENED_END();
     return original(_this, item, bp, side, a5, bl);

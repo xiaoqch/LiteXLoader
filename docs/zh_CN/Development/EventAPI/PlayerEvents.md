@@ -172,7 +172,7 @@
 #### `"onUseItemOn"` - 玩家对方块使用物品（点击右键）
 
 - 监听函数原型
-  `function(player,item,block)`
+  `function(player,item,block,side)`
 - 参数：
   - player : `Player`  
     使用物品的玩家对象
@@ -180,6 +180,9 @@
     被使用的物品对象
   - block : `Block`  
     被点击到的方块对象
+  - side : `Number`  
+    方块被点击的面  
+    依次为：`0`-下 `1`-上 `2`-北 `3`-南 `4`-西 `5`-东
 - 拦截事件：函数返回`false`
 
 注：Win10客户端玩家右键会在服务端连续多次激发这个事件
