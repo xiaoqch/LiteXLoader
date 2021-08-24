@@ -208,3 +208,8 @@ bool Raw_Explode(FloatVec4 pos, Actor* source, float power, float range, float i
         (mc->getLevel(), Raw_GetBlockSourceByDim(pos.dim), source, &vec, power, isFire, isDestroy, range, true);
     return true;
 }
+
+void Raw_RefreshActorData(Actor* ac)
+{
+    SymCall("?_sendDirtyActorData@Actor@@QEAAXXZ", uintptr_t, Actor*)(ac);
+}

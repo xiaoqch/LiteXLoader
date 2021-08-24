@@ -173,6 +173,12 @@ bool Raw_CrashPlayer(Player* player)
     return Raw_SendCrashClientPacket(player);
 }
 
+bool Raw_RefrashChunks(Player* player)
+{
+    SymCall("?resendAllChunks@ServerPlayer@@UEAAXXZ", void, Player*)(player);
+    return true;
+}
+
 bool Raw_GiveItem(Player* player, ItemStack* item)
 {
     bool res = SymCall("?add@Player@@UEAA_NAEAVItemStack@@@Z", bool, Player*, ItemStack*)(player, item);

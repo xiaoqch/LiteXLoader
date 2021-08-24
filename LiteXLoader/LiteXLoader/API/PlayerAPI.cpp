@@ -62,6 +62,7 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceFunction("transServer", &PlayerClass::transServer)
         .instanceFunction("crash", &PlayerClass::crash)
         .instanceFunction("setOnFire", &PlayerClass::setOnFire)
+        .instanceFunction("refreshChunks", &PlayerClass::refreshChunks)
         .instanceFunction("giveItem", &PlayerClass::giveItem)
         .instanceFunction("clearItem", &PlayerClass::clearItem)
 
@@ -1122,6 +1123,18 @@ Local<Value> PlayerClass::setOnFire(const Arguments& args)
         int time = args[0].toInt();
         bool result = Raw_SetOnFire((Actor*)player, time);
         return Boolean::newBoolean(result);
+    }
+    CATCH("Fail in setOnFire!");
+}
+
+Local<Value> PlayerClass::refreshChunks(const Arguments& args)
+{
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        return Boolean::newBoolean(Raw_RefrashChunks(player));
     }
     CATCH("Fail in setOnFire!");
 }

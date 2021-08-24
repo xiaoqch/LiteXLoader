@@ -366,6 +366,15 @@ pl.rename("newname");
 
 <br>
 
+#### 刷新玩家加载的所有区块
+
+`pl.refreshChunks()`
+
+- 返回值：是否成功刷新
+- 返回值类型：`Boolean`
+
+<br>
+
 #### 修改玩家操作权限  
 
 `pl.setPermLevel(level)`

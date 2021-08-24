@@ -1,6 +1,7 @@
 ﻿#include "Global.h"
 #include "NBT.h"
 #include "Data.h"
+#include "Entity.h"
 #include <vector>
 #include <map>
 #include <sstream>
@@ -258,15 +259,19 @@ Tag* Tag::fromActor(Actor* actor) {
 bool Tag::setActor(Actor* actor)
 {
     void* vtbl = dlsym("??_7DefaultDataLoadHelper@@6B@");
-    return SymCall("?load@Actor@@UEAA_NAEBVCompoundTag@@AEAVDataLoadHelper@@@Z",
+    bool res = SymCall("?load@Actor@@UEAA_NAEBVCompoundTag@@AEAVDataLoadHelper@@@Z",
         bool, Actor*, Tag*, void*)(actor, this, &vtbl);
+    Raw_RefreshActorData(actor);
+    return res;
 }
 
 bool Tag::setPlayer(Player* player)
 {
     void* vtbl = dlsym("??_7DefaultDataLoadHelper@@6B@");
-    return SymCall("?load@ServerPlayer@@UEAA_NAEBVCompoundTag@@AEAVDataLoadHelper@@@Z",
+    bool res = SymCall("?load@ServerPlayer@@UEAA_NAEBVCompoundTag@@AEAVDataLoadHelper@@@Z",
         bool, ServerPlayer*, Tag*, void*)((ServerPlayer*)player, this, &vtbl);
+    Raw_RefreshActorData(player);
+    return res;
 }
 
 bool Tag::setBlockEntity(BlockActor* ble)
