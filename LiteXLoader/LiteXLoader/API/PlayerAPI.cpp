@@ -61,6 +61,7 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceFunction("setOnFire", &PlayerClass::setOnFire)
         .instanceFunction("transServer", &PlayerClass::transServer)
         .instanceFunction("crash", &PlayerClass::crash)
+        .instanceFunction("hurt", &PlayerClass::hurt)
         .instanceFunction("setOnFire", &PlayerClass::setOnFire)
         .instanceFunction("refreshChunks", &PlayerClass::refreshChunks)
         .instanceFunction("giveItem", &PlayerClass::giveItem)
@@ -1111,9 +1112,26 @@ Local<Value> PlayerClass::delExtraData(const Arguments& args)
     CATCH("Fail in delExtraData!")
 }
 
+Local<Value> PlayerClass::hurt(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
+
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        int damage = args[0].toInt();
+        return Boolean::newBoolean(Raw_HurtPlayer(player, damage));
+    }
+    CATCH("Fail in hurt!");
+}
+
 Local<Value> PlayerClass::setOnFire(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
 
     try {
         Player* player = get();

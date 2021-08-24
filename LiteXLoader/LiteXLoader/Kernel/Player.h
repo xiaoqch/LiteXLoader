@@ -22,6 +22,7 @@ int Raw_GetDirection(Player* player);
 bool Raw_RuncmdAs(Player *player, const std::string &cmd);
 bool Raw_TeleportPlayer(Player* player, const FloatVec4 &pos);
 bool Raw_KillPlayer(Player* player);
+bool Raw_HurtPlayer(Player* player, int damage);
 bool Raw_SetPlayerPermLevel(Player* player, int permLevel);
 bool Raw_SetGameMode(Player* player, int gameMode);
 bool Raw_KickPlayer(Player* player, const std::string &msg);

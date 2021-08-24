@@ -82,6 +82,15 @@ bool Raw_KillPlayer(Player* player)
     return true;
 }
 
+bool Raw_HurtPlayer(Player *player, int damage)
+{
+    char a[16];
+    ActorDamageSource* ad = SymCall("??0ActorDamageSource@@QEAA@W4ActorDamageCause@@@Z",
+        ActorDamageSource*, ActorDamageSource*, int)((ActorDamageSource*)a, 12);    //ActorDamageCause::Void
+    return SymCall("?_hurt@Player@@MEAA_NAEBVActorDamageSource@@H_N1@Z",
+        bool, Player*, ActorDamageSource*, int, bool, bool)(player, ad, damage, true, false);
+}
+
 bool Raw_SetPlayerPermLevel(Player* player, int permLevel)
 {
     ((ServerPlayer*)player)->setPermissions((CommandPermissionLevel)permLevel);

@@ -28,6 +28,7 @@ ClassDefine<EntityClass> EntityClassBuilder =
 
         .instanceFunction("teleport", &EntityClass::teleport)
         .instanceFunction("kill", &EntityClass::kill)
+        .instanceFunction("hurt", &EntityClass::hurt)
         .instanceFunction("setOnFire", &EntityClass::setOnFire)
         .instanceFunction("isPlayer", &EntityClass::isPlayer)
         .instanceFunction("toPlayer", &EntityClass::toPlayer)
@@ -371,9 +372,26 @@ Local<Value> EntityClass::getContainer(const Arguments& args)
     CATCH("Fail in getContainer!");
 }
 
+Local<Value> EntityClass::hurt(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
+
+    try {
+        Actor* entity = get();
+        if (!entity)
+            return Local<Value>();
+
+        int damage = args[0].toInt();
+        return Boolean::newBoolean(Raw_HurtEntity(entity, damage));
+    }
+    CATCH("Fail in hurt!");
+}
+
 Local<Value> EntityClass::setOnFire(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
 
     try {
         Actor* entity = get();

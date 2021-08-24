@@ -134,6 +134,14 @@ int Raw_GetEntityDimId(Actor* actor)
     return WActor(*actor).getDimID();
 }
 
+bool Raw_HurtEntity(Actor* actor, int damage)
+{
+    char a[16];
+    ActorDamageSource* ad = SymCall("??0ActorDamageSource@@QEAA@W4ActorDamageCause@@@Z",
+        ActorDamageSource*, ActorDamageSource*, int)((ActorDamageSource*)a, 12);    //ActorDamageCause::Void
+    return SymCall("?_hurt@Mob@@MEAA_NAEBVActorDamageSource@@H_N1@Z",
+        bool, Mob*, ActorDamageSource*, int, bool, bool)((Mob*)actor, ad, damage, true, false);
+}
 
 bool Raw_SetOnFire(Actor* actor, int time) {
     SymCall("?setOnFire@Actor@@UEAAXH@Z", void, 
