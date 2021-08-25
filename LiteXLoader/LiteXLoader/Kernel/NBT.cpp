@@ -231,6 +231,7 @@ Tag* Tag::fromItem(ItemStack* item) {
 	Tag* tmp = 0;
 	SymCall("?save@ItemStackBase@@QEBA?AV?$unique_ptr@VCompoundTag@@U?$default_delete@VCompoundTag@@@std@@@std@@XZ",
 		void*, void*, Tag**)(item, &tmp);
+
 	return tmp;
 }
 
@@ -253,6 +254,8 @@ Tag* Tag::fromActor(Actor* actor) {
         void, Actor*, Tag*)(actor, tmp);
     SymCall("?saveWithoutId@Actor@@UEAAXAEAVCompoundTag@@@Z",
         void, Actor*, Tag*)(actor, tmp);
+    VirtualCall(actor, 0x810, tmp);    //IDA Virtual Table from Actor::addAdditionalSaveData
+    
     return tmp;
 }
 
@@ -261,6 +264,8 @@ bool Tag::setActor(Actor* actor)
     void* vtbl = dlsym("??_7DefaultDataLoadHelper@@6B@");
     bool res = SymCall("?load@Actor@@UEAA_NAEBVCompoundTag@@AEAVDataLoadHelper@@@Z",
         bool, Actor*, Tag*, void*)(actor, this, &vtbl);
+    VirtualCall(actor, 0x808, this, &vtbl);    //IDA Virtual Table from Actor::readAdditionalSaveData
+
     Raw_RefreshActorData(actor);
     return res;
 }
@@ -270,6 +275,10 @@ bool Tag::setPlayer(Player* player)
     void* vtbl = dlsym("??_7DefaultDataLoadHelper@@6B@");
     bool res = SymCall("?load@ServerPlayer@@UEAA_NAEBVCompoundTag@@AEAVDataLoadHelper@@@Z",
         bool, ServerPlayer*, Tag*, void*)((ServerPlayer*)player, this, &vtbl);
+
+    SymCall("?readAdditionalSaveData@Player@@MEAAXAEBVCompoundTag@@AEAVDataLoadHelper@@@Z",
+        void, Player*, Tag*, void*)(player, this, &vtbl);
+    //VirtualCall(player, 0x808, this, &vtbl);    //IDA Virtual Table from Actor::readAdditionalSaveData
     Raw_RefreshActorData(player);
     return res;
 }

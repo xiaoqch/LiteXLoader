@@ -26,6 +26,7 @@ ClassDefine<ItemClass> ItemClassBuilder =
         .instanceFunction("clone", &ItemClass::clone)
         .instanceFunction("isNull", &ItemClass::isNull)
         .instanceFunction("setNull", &ItemClass::setNull)
+        .instanceFunction("setAux", &ItemClass::setAux)
         .instanceFunction("setLore", &ItemClass::setLore)
         .instanceFunction("setNbt", &ItemClass::setNbt)
         .instanceFunction("getNbt", &ItemClass::getNbt)
@@ -164,6 +165,17 @@ Local<Value> ItemClass::setNull(const Arguments& args)
         return Boolean::newBoolean(Raw_SetNull(item));
     }
     CATCH("Fail in setNull!");
+}
+
+Local<Value> ItemClass::setAux(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
+
+    try {
+        return Boolean::newBoolean(Raw_SetItemAux(item,args[0].toInt()));
+    }
+    CATCH("Fail in setAux!");
 }
 
 Local<Value> ItemClass::setLore(const Arguments& args)

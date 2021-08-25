@@ -37,6 +37,7 @@ public:
     Local<Value> clone(const Arguments& args);
     Local<Value> isNull(const Arguments& args);
     Local<Value> setNull(const Arguments& args);
+    Local<Value> setAux(const Arguments& args);
     Local<Value> setLore(const Arguments& args);
     Local<Value> getNbt(const Arguments& args);
     Local<Value> setNbt(const Arguments& args);

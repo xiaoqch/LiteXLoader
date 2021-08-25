@@ -130,6 +130,12 @@ bool Raw_SetNull(ItemStack* item)
     return true;
 }
 
+bool Raw_SetItemAux(ItemStack* item, int aux)
+{
+    SymCall("?setAuxValue@ItemStackBase@@QEAAXF@Z", void, ItemStack*, short)(item, aux);
+    return true;
+}
+
 bool Raw_SetLore(ItemStack* item, vector<string> lores)
 {
     if (Raw_IsNull(item))
