@@ -650,6 +650,32 @@ THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@
     return original(_this, item, bp, side, a5, bl);
 }
 
+/* onTurnLectern // 由于还是不能拦截掉书，暂时注释
+THook(void, "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVLecternUpdatePacket@@@Z",
+    ServerNetworkHandler* handler, NetworkIdentifier* id, Packet* pkt)
+{
+    IF_LISTENED(EVENT_TYPES::onTurnLectern)
+    {
+        // Packet* pkt = *(Packet**)pPacket;
+        Player* player = Raw_GetPlayerFromPacket(handler, id, pkt);
+        if (!player)
+            return;
+
+        int page = *((DWORD*)pkt + 12);
+        dAccess<bool>(pkt, 56) = false;
+        bool shouldDropBook = *((BYTE*)pkt + 56);
+        int totalPages = *((DWORD*)pkt + 13);
+        auto* bp = new BlockPos;
+        bp->x = *((DWORD*)pkt + 15);
+        bp->y = *((DWORD*)pkt + 16);
+        bp->z = *((DWORD*)pkt + 17);
+        CallEventRtnVoid(EVENT_TYPES::onTurnLectern, PlayerClass::newPlayer(player), IntPos::newPos(bp, Raw_GetPlayerDimId(player)), page, totalPages, Boolean::newBoolean(shouldDropBook));
+    }
+    IF_LISTENED_END();
+    original(handler,id,pkt);
+}
+*/
+
 // ===== onInventoryChange =====
 THook(void, "?inventoryChanged@Player@@UEAAXAEAVContainer@@HAEBVItemStack@@1_N@Z",
     Player* _this, void* container, int slotNumber, ItemStack* oldItem, ItemStack* newItem, bool is)
