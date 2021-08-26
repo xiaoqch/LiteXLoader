@@ -124,6 +124,24 @@
 
 <br>
 
+#### 根据物品对象生成掉落物实体
+
+通过此函数，根据物品对象，在指定的位置生成一个同样内容的掉落物实体
+
+`mc.spawnItem(item,pos)`    
+`mc.spawnItem(item,x,y,z,dimid)`  
+
+- 参数：
+  - item : `Item`  
+    生成掉落物实体所使用的物品对象
+  - pos : `IntPos `/ `FloatPos`  
+    生成掉落物实体的位置的坐标对象（或者使用x, y, z, dimid来确定生成位置）
+- 返回值：生成的掉落物实体对象
+- 返回值类型：`Entity`
+  - 如返回值为 `Null` 则表示生成失败
+
+<br>
+
 #### 获取物品对应的NBT对象
 
 `it.getNbt()`
@@ -144,24 +162,6 @@
 - 返回值类型：`Boolean`
 
 关于NBT对象的更多使用，请参考 [NBT接口文档](zh_CN/Development/NbtAPI/NBT.md)
-
-<br>
-
-#### 根据物品对象生成掉落物实体
-
-通过此函数，根据物品对象，在指定的位置生成一个同样内容的掉落物实体
-
-`mc.spawnItem(item,pos)`    
-`mc.spawnItem(item,x,y,z,dimid)`  
-
-- 参数：
-  - item : `Item`  
-    生成掉落物实体所使用的物品对象
-  - pos : `IntPos `/ `FloatPos`  
-    生成掉落物实体的位置的坐标对象（或者使用x, y, z, dimid来确定生成位置）
-- 返回值：生成的掉落物实体对象
-- 返回值类型：`Entity`
-  - 如返回值为 `Null` 则表示生成失败
 
 <br>
 

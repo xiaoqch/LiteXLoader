@@ -1,5 +1,6 @@
 #pragma once
 #include "Global.h"
+#include <optional>
 
 enum class ObjectiveSortOrder : char { ASCENDING = 0, DESCENDING = 1 };
 enum class PlayerScoreSetFunction : char { SET = 0, ADD = 1, REMOVE = 2 };
@@ -216,6 +217,6 @@ extern Scoreboard* globalScoreBoard;
 bool Raw_SetDisplayObjective(const std::string& objname, const std::string& slot, int sort);
 Objective* Raw_ClearDisplayObjective(const std::string& slot);
 Objective* Raw_GetDisplayObjective(const std::string& slot);
-int Raw_ModifyScoreInObjective(const std::string& objname, const std::string& id, char mode, int score);
+std::optional<int> Raw_ModifyScoreInObjective(const std::string& objname, const std::string& id, char mode, int score);
 bool Raw_RemoveFromObjective(const std::string& objname, const std::string& id);
 int Raw_GetScore(const std::string& objname, const std::string& id);

@@ -4,6 +4,7 @@ using namespace script;
 
 //////////////////// Classes ////////////////////
 class Player;
+class ActorUniqueID;
 class PlayerClass : public ScriptClass
 {
 private:
@@ -11,11 +12,7 @@ private:
     bool isValid = true;
 
 public:
-	explicit PlayerClass(Player *p)
-        :ScriptClass(ScriptClass::ConstructFromCpp<PlayerClass>{})
-    {
-        set(p);
-    }
+    explicit PlayerClass(Player* p);
 
     void set(Player* player);
     Player* get();
@@ -71,7 +68,8 @@ public:
     Local<Value> getScore(const Arguments& args);
     Local<Value> setScore(const Arguments& args);
     Local<Value> addScore(const Arguments& args);
-    Local<Value> removeScore(const Arguments& args);
+    Local<Value> reduceScore(const Arguments& args);
+    Local<Value> deleteScore(const Arguments& args);
     Local<Value> setSidebar(const Arguments& args);
     Local<Value> removeSidebar(const Arguments& args);
     Local<Value> setBossBar(const Arguments& args);

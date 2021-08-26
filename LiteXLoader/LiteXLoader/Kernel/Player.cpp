@@ -279,17 +279,22 @@ bool Raw_AddScore(Player* player, const std::string &key, int value)
     return false;
 }
 
-bool Raw_RemoveScore(Player* player, const std::string &key)
+bool Raw_ReduceScore(Player* player, const std::string &key, int value)
 {
     Objective* obj = globalScoreBoard->getObjective(key);
     if (obj)
     {
         bool a1 = true;
         bool& pa = a1;
-        globalScoreBoard->modifyPlayerScore(globalScoreBoard->getScoreboardId(*(Actor*)player), obj, 0, 2);   //Remove
+        globalScoreBoard->modifyPlayerScore(globalScoreBoard->getScoreboardId(*(Actor*)player), obj, value, 2);   //Reduce
         return true;
     }
     return false;
+}
+
+bool Raw_DeleteScore(Player* player, const std::string& key)
+{
+    return Raw_RemoveFromObjective(key, Raw_GetPlayerName(player));
 }
 
 bool Raw_SetSidebar(Player *player, std::string title, const std::vector<std::pair<std::string,int>> &data, int sortOrder)

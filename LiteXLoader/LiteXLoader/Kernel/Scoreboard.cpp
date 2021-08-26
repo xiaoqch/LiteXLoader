@@ -41,7 +41,7 @@ Objective* Raw_GetDisplayObjective(const std::string& slot)
 	}
 	return nullptr;
 }
-int Raw_ModifyScoreInObjective(const std::string& objname, const std::string& id, char mode, int score)
+std::optional<int> Raw_ModifyScoreInObjective(const std::string& objname, const std::string& id, char mode, int score)
 {
 	auto obj = scb->getObjective(objname);
 	auto identity = scb->getScoreboardId(id);
@@ -52,7 +52,7 @@ int Raw_ModifyScoreInObjective(const std::string& objname, const std::string& id
 			modifyScoreInObjective(&a1, obj, score, (PlayerScoreSetFunction)mode);
 		if (res) return a1;
 	}
-	return 0;
+	return std::nullopt;
 }
 bool Raw_RemoveFromObjective(const std::string& objname, const std::string& id)
 {

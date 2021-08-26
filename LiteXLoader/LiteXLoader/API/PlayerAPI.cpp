@@ -78,7 +78,8 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceFunction("getScore", &PlayerClass::getScore)
         .instanceFunction("setScore", &PlayerClass::setScore)
         .instanceFunction("addScore", &PlayerClass::addScore)
-        .instanceFunction("removeScore", &PlayerClass::removeScore)
+        .instanceFunction("reduceScore", &PlayerClass::reduceScore)
+        .instanceFunction("deleteScore", &PlayerClass::deleteScore)
         .instanceFunction("setSidebar", &PlayerClass::setSidebar)
         .instanceFunction("removeSidebar", &PlayerClass::removeSidebar)
         .instanceFunction("setBossBar", &PlayerClass::setBossBar)
@@ -109,12 +110,18 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceFunction("getTag", &PlayerClass::getNbt)
         .instanceFunction("removeItem", &PlayerClass::removeItem)
         .instanceFunction("getAllItems", &PlayerClass::getAllItems)
+        .instanceFunction("removeScore", &PlayerClass::deleteScore)
         .build();
 
 
 //////////////////// Classes ////////////////////
 
 //生成函数
+PlayerClass::PlayerClass(Player* p)
+    :ScriptClass(ScriptClass::ConstructFromCpp<PlayerClass>{})
+{
+    set(p);
+}
 Local<Object> PlayerClass::newPlayer(Player *p)
 {
     auto newp = new PlayerClass(p);
@@ -766,7 +773,7 @@ Local<Value> PlayerClass::getScore(const Arguments& args)
         if (!player)
             return Local<Value>();
 
-        return Number::newNumber(Raw_GetScore(player,args[0].toStr()));
+        return Number::newNumber(Raw_GetScore(player, args[0].toStr()));
     }
     CATCH("Fail in getScore!");
 }
@@ -782,7 +789,7 @@ Local<Value> PlayerClass::setScore(const Arguments& args)
         if (!player)
             return Local<Value>();
 
-        return Boolean::newBoolean(Raw_SetScore(player,args[0].toStr(),args[1].toInt()));
+        return Boolean::newBoolean(Raw_SetScore(player,args[0].toStr(), args[1].toInt()));
     }
     CATCH("Fail in getScore!");
 }
@@ -798,22 +805,38 @@ Local<Value> PlayerClass::addScore(const Arguments& args)
         if (!player)
             return Local<Value>();
 
-        return Boolean::newBoolean(Raw_AddScore(player,args[0].toStr(),args[1].toInt()));
+        return Boolean::newBoolean(Raw_AddScore(player,args[0].toStr(), args[1].toInt()));
     }
     CATCH("Fail in addScore!");
 }
 
-Local<Value> PlayerClass::removeScore(const Arguments& args)
+Local<Value> PlayerClass::reduceScore(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
+    CHECK_ARG_TYPE(args[1], ValueKind::kNumber);
     
     try{
         Player* player = get();
         if (!player)
             return Local<Value>();
 
-        return Boolean::newBoolean(Raw_RemoveScore(player,args[0].toStr()));
+        return Boolean::newBoolean(Raw_ReduceScore(player,args[0].toStr(), args[1].toInt()));
+    }
+    CATCH("Fail in removeScore!");
+}
+
+Local<Value> PlayerClass::deleteScore(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        return Boolean::newBoolean(Raw_DeleteScore(player, args[0].toStr()));
     }
     CATCH("Fail in removeScore!");
 }

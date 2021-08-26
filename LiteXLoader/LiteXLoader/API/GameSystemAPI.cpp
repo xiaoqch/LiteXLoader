@@ -1,6 +1,10 @@
-#include "GameSystemAPI.h"
 #include "APIHelp.h"
 #include <Kernel/Scoreboard.h>
+#include <Kernel/Player.h>
+#include "GameSystemAPI.h"
+#include "PlayerAPI.h"
+#include <optional>
+using namespace std;
 
 //////////////////// Class Definition ////////////////////
 
@@ -13,7 +17,7 @@ ClassDefine<ObjectiveClass> ObjectiveClassBuilder =
 		.instanceFunction("setDisplay", &ObjectiveClass::setDisplay)
 		.instanceFunction("setScore", &ObjectiveClass::setScore)
 		.instanceFunction("addScore", &ObjectiveClass::addScore)
-		.instanceFunction("removeScore", &ObjectiveClass::removeScore)
+		.instanceFunction("reduceScore", &ObjectiveClass::reduceScore)
 		.instanceFunction("deleteScore", &ObjectiveClass::deleteScore)
 		.instanceFunction("getScore", &ObjectiveClass::getScore)
 		.build();
@@ -83,15 +87,24 @@ Local<Value> ObjectiveClass::setDisplay(const Arguments& args)
 Local<Value> ObjectiveClass::setScore(const Arguments& args)
 {
 	CHECK_ARGS_COUNT(args, 2)
-	CHECK_ARG_TYPE(args[0], ValueKind::kString)
 	CHECK_ARG_TYPE(args[1], ValueKind::kNumber)
 
 	try {
-		string id = args[0].toStr();
-		int score = args[1].toInt();
-		bool res = Raw_ModifyScoreInObjective(objname, id, 0, score);
+		string id;
+		if (args[0].isString())
+			id = args[0].toStr();
+		else if (IsInstanceOf<PlayerClass>(args[0]))
+			id = Raw_GetPlayerName(PlayerClass::extractPlayer(args[0]));
+		else
+		{
+			ERROR("Wrong type of argument in setScore!");
+			return Local<Value>();
+		}
 
-		return Number::newNumber(res);
+		int score = args[1].toInt();
+		std::optional<int> res = Raw_ModifyScoreInObjective(objname, id, 0, score);
+
+		return res ? Number::newNumber(*res) : Local<Value>();
 	}
 	CATCH("Fail in setScore");
 }
@@ -103,27 +116,47 @@ Local<Value> ObjectiveClass::addScore(const Arguments& args)
 	CHECK_ARG_TYPE(args[1], ValueKind::kNumber)
 
 	try {
-		string id = args[0].toStr();
-		int score = args[1].toInt();
-		bool res = Raw_ModifyScoreInObjective(objname, id, 1, score);
+		string id;
+		if (args[0].isString())
+			id = args[0].toStr();
+		else if (IsInstanceOf<PlayerClass>(args[0]))
+			id = Raw_GetPlayerName(PlayerClass::extractPlayer(args[0]));
+		else
+		{
+			ERROR("Wrong type of argument in addScore!");
+			return Local<Value>();
+		}
 
-		return Number::newNumber(res);
+		int score = args[1].toInt();
+		std::optional<int> res = Raw_ModifyScoreInObjective(objname, id, 1, score);
+
+		return res ? Number::newNumber(*res) : Local<Value>();
 	}
 	CATCH("Fail in addScore");
 }
 
-Local<Value> ObjectiveClass::removeScore(const Arguments& args)
+Local<Value> ObjectiveClass::reduceScore(const Arguments& args)
 {
 	CHECK_ARGS_COUNT(args, 2)
 	CHECK_ARG_TYPE(args[0], ValueKind::kString)
 	CHECK_ARG_TYPE(args[1], ValueKind::kNumber)
 
 	try {
-		string id = args[0].toStr();
-		int score = args[1].toInt();
-		bool res = Raw_ModifyScoreInObjective(objname, id, 2, score);
+		string id;
+		if (args[0].isString())
+			id = args[0].toStr();
+		else if (IsInstanceOf<PlayerClass>(args[0]))
+			id = Raw_GetPlayerName(PlayerClass::extractPlayer(args[0]));
+		else
+		{
+			ERROR("Wrong type of argument in reduceScore!");
+			return Local<Value>();
+		}
 
-		return Number::newNumber(res);
+		int score = args[1].toInt();
+		std::optional<int> res = Raw_ModifyScoreInObjective(objname, id, 2, score);
+
+		return res ? Number::newNumber(*res) : Local<Value>();
 	}
 	CATCH("Fail in removeScore");
 }
@@ -134,7 +167,17 @@ Local<Value> ObjectiveClass::deleteScore(const Arguments& args)
 	CHECK_ARG_TYPE(args[0], ValueKind::kString)
 
 	try {
-		string id = args[0].toStr();
+		string id;
+		if (args[0].isString())
+			id = args[0].toStr();
+		else if (IsInstanceOf<PlayerClass>(args[0]))
+			id = Raw_GetPlayerName(PlayerClass::extractPlayer(args[0]));
+		else
+		{
+			ERROR("Wrong type of argument in deleteScore!");
+			return Local<Value>();
+		}
+
 		bool res = Raw_RemoveFromObjective(objname, id);
 
 		return Boolean::newBoolean(res);
@@ -148,7 +191,17 @@ Local<Value> ObjectiveClass::getScore(const Arguments& args)
 	CHECK_ARG_TYPE(args[0], ValueKind::kString)
 		
 	try {
-		string id = args[0].toStr();
+		string id;
+		if (args[0].isString())
+			id = args[0].toStr();
+		else if (IsInstanceOf<PlayerClass>(args[0]))
+			id = Raw_GetPlayerName(PlayerClass::extractPlayer(args[0]));
+		else
+		{
+			ERROR("Wrong type of argument in getScore!");
+			return Local<Value>();
+		}
+
 		int res = Raw_GetScore(objname, id);
 
 		return Number::newNumber(res);
@@ -158,7 +211,7 @@ Local<Value> ObjectiveClass::getScore(const Arguments& args)
 
 //////////////////// APIs ////////////////////
 
-Local<Value> GetDisplayObjetive(const Arguments& args)
+Local<Value> GetDisplayObjetives(const Arguments& args)
 {
 	CHECK_ARGS_COUNT(args, 1);
 	CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -242,7 +295,7 @@ Local<Value> RemoveScoreObjective(const Arguments& args)
 	CATCH("Fail in RemoveScoreObjective!")
 }
 
-Local<Value> GetAllScoreObjective(const Arguments& args)
+Local<Value> GetAllScoreObjectives(const Arguments& args)
 {
 	try {
 		Local<Array> res = Array::newArray();
@@ -255,5 +308,5 @@ Local<Value> GetAllScoreObjective(const Arguments& args)
 		}
 		return res;
 	}
-	CATCH("Fail in GetAllScoreObjective!")
+	CATCH("Fail in GetAllScoreObjectives!")
 }

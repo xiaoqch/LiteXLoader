@@ -23,16 +23,16 @@ public:
 	Local<Value> setDisplay(const Arguments& args);
 	Local<Value> setScore(const Arguments& args);
 	Local<Value> addScore(const Arguments& args);
-	Local<Value> removeScore(const Arguments& args);
+	Local<Value> reduceScore(const Arguments& args);
 	Local<Value> deleteScore(const Arguments& args);
 	Local<Value> getScore(const Arguments& args);
 };
 
 //////////////////// APIs ////////////////////
 
-Local<Value> GetDisplayObjetive(const Arguments& args);
+Local<Value> GetDisplayObjetives(const Arguments& args);
 Local<Value> ClearDisplayObjetive(const Arguments& args);
 Local<Value> GetScoreObjetive(const Arguments& args);
 Local<Value> NewScoreObjective(const Arguments& args);
 Local<Value> RemoveScoreObjective(const Arguments& args);
-Local<Value> GetAllScoreObjective(const Arguments& args);
+Local<Value> GetAllScoreObjectives(const Arguments& args);
