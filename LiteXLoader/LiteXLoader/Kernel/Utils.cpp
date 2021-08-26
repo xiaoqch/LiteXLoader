@@ -129,3 +129,33 @@ unsigned long long GetCurrentTimeStampMS()
     unsigned long long nNow = mktime(&currTm) * 1000 + currentTime.wMilliseconds;
     return nNow;
 }
+
+
+///////////// Hacker to get private FILE* /////////////
+
+struct meta_auxiliary {
+    using type1 = FILE * std::filebuf::*;
+    friend type1 get(meta_auxiliary);
+};
+template<typename Tag, typename Tag::type1 M>
+struct Helper_aux {
+    friend typename Tag::type1 get(Tag) {
+        return M;
+    }
+};
+template struct Helper_aux<meta_auxiliary, &std::filebuf::_Myfile>;
+FILE* hack(std::filebuf* buf) {
+    return buf->*get(meta_auxiliary());
+}
+
+
+FILE* GetFILEfromFstream(std::fstream& fs)
+{
+    return hack(fs.rdbuf());
+}
+
+HANDLE GetHANDLEfromFstream(std::fstream& fs)
+{
+    auto cfile = ::_fileno(GetFILEfromFstream(fs));
+    return (HANDLE)::_get_osfhandle(cfile);
+}

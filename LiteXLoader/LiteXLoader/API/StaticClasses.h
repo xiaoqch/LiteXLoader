@@ -122,43 +122,6 @@ static ClassDefine<void> SystemClassBuilder =
         .function("newProcess", &SystemClass::newProcess)
         .build();
 
-
-class FileClass
-{
-public:
-    static Local<Value> readFrom(const Arguments& args) { return FileReadFrom(args); }
-    static Local<Value> writeTo(const Arguments& args) { return FileWriteTo(args); }
-    static Local<Value> writeLine(const Arguments& args) { return FileWriteLine(args); }
-
-    static Local<Value> createDir(const Arguments& args) { return DirCreate(args); }
-    static Local<Value> copy(const Arguments& args) { return PathCopy(args); }
-    static Local<Value> move(const Arguments& args) { return PathMove(args); }
-    static Local<Value> rename(const Arguments& args) { return PathRename(args); }
-    static Local<Value> del(const Arguments& args) { return PathDelete(args); }
-    static Local<Value> exists(const Arguments& args) { return PathExists(args); }
-    static Local<Value> checkIsDir(const Arguments& args) { return CheckIsDir(args); }
-    static Local<Value> getFileSize(const Arguments& args) { return GetFileSize(args); }
-    static Local<Value> getFilesList(const Arguments& args) { return GetFilesList(args); }
-};
-
-static ClassDefine<void> FileClassBuilder =
-    defineClass("file")
-        .function("readFrom", &FileClass::readFrom)
-        .function("writeTo", &FileClass::writeTo)
-        .function("writeLine", &FileClass::writeLine)
-
-        .function("createDir", &FileClass::createDir)
-        .function("mkdir", &FileClass::createDir)
-        .function("copy", &FileClass::copy)
-        .function("move", &FileClass::move)
-        .function("rename", &FileClass::rename)
-        .function("delete", &FileClass::del)
-        .function("exists", &FileClass::exists)
-        .function("checkIsDir", &FileClass::checkIsDir)
-        .function("getFileSize", &FileClass::getFileSize)
-        .function("getFilesList", &FileClass::getFilesList)
-        .build();
-
 class LoggerClass
 {
 public:

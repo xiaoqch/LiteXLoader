@@ -9,9 +9,9 @@ using namespace script;
 
 Local<Value> HttpGet(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 2)
-    CHECK_ARG_TYPE(args[0], ValueKind::kString)
-    CHECK_ARG_TYPE(args[1], ValueKind::kFunction)
+    CHECK_ARGS_COUNT(args, 2);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+    CHECK_ARG_TYPE(args[1], ValueKind::kFunction);
 
     try
     {
@@ -34,16 +34,16 @@ Local<Value> HttpGet(const Arguments& args)
             }
         }));
     }
-    CATCH("Fail in HttpGet")
+    CATCH("Fail in HttpGet");
 }
 
 Local<Value> HttpPost(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 4)
-    CHECK_ARG_TYPE(args[0], ValueKind::kString)
-    CHECK_ARG_TYPE(args[1], ValueKind::kString)
-    CHECK_ARG_TYPE(args[2], ValueKind::kString)
-    CHECK_ARG_TYPE(args[3], ValueKind::kFunction)
+    CHECK_ARGS_COUNT(args, 4);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+    CHECK_ARG_TYPE(args[1], ValueKind::kString);
+    CHECK_ARG_TYPE(args[2], ValueKind::kString);
+    CHECK_ARG_TYPE(args[3], ValueKind::kFunction);
 
     try
     {
@@ -66,13 +66,13 @@ Local<Value> HttpPost(const Arguments& args)
             }
         }));
     }
-    CATCH("Fail in HttpPost")
+    CATCH("Fail in HttpPost");
 }
 
 Local<Value> HttpGetSync(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 1)
-    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
 
     try {
         int status;
@@ -83,5 +83,5 @@ Local<Value> HttpGetSync(const Arguments& args)
         res.set("data", result);
         return res;
     }
-    CATCH("Fail in HttpGetSync.")
+    CATCH("Fail in HttpGetSync");
 }

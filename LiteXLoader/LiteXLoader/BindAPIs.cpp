@@ -47,7 +47,6 @@ void BindAPIs(ScriptEngine *engine)
 
     engine->registerNativeClass(McClassBuilder);
     engine->registerNativeClass(SystemClassBuilder);
-    engine->registerNativeClass(FileClassBuilder);
     engine->registerNativeClass(LoggerClassBuilder);
     engine->registerNativeClass(DataClassBuilder);
     engine->registerNativeClass(MoneyClassBuilder);
@@ -78,6 +77,9 @@ void BindAPIs(ScriptEngine *engine)
 
     extern ClassDefine<EntityClass> EntityClassBuilder;
     engine->registerNativeClass<EntityClass>(EntityClassBuilder);
+
+    extern ClassDefine<FileClass> FileClassBuilder;
+    engine->registerNativeClass<FileClass>(FileClassBuilder);
 
     extern ClassDefine<BlockEntityClass> BlockEntityClassBuilder;
     engine->registerNativeClass<BlockEntityClass>(BlockEntityClassBuilder);

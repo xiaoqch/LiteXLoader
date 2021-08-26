@@ -102,7 +102,7 @@ Local<Value> BlockClass::getName()
         // 已预加载
         return String::newString(name);
     }
-    CATCH("Fail in getBlockName!")
+    CATCH("Fail in getBlockName!");
 }
 
 Local<Value> BlockClass::getType()
@@ -111,7 +111,7 @@ Local<Value> BlockClass::getType()
         // 已预加载
         return String::newString(type);
     }
-    CATCH("Fail in getBlockType!")
+    CATCH("Fail in getBlockType!");
 }
 
 Local<Value> BlockClass::getId()
@@ -120,7 +120,7 @@ Local<Value> BlockClass::getId()
         // 已预加载
         return Number::newNumber(id);
     }
-    CATCH("Fail in getBlockId!")
+    CATCH("Fail in getBlockId!");
 }
 
 Local<Value> BlockClass::getPos()
@@ -129,7 +129,7 @@ Local<Value> BlockClass::getPos()
         // 已预加载
         return IntPos::newPos(pos);
     }
-    CATCH("Fail in getBlockPos!")
+    CATCH("Fail in getBlockPos!");
 }
 
 Local<Value> BlockClass::getRawPtr(const Arguments& args)
@@ -137,7 +137,7 @@ Local<Value> BlockClass::getRawPtr(const Arguments& args)
     try {
         return Number::newNumber((intptr_t)block);
     }
-    CATCH("Fail in getRawPtr!")
+    CATCH("Fail in getRawPtr!");
 }
 
 Local<Value> BlockClass::getNbt(const Arguments& args)
@@ -145,7 +145,7 @@ Local<Value> BlockClass::getNbt(const Arguments& args)
     try {
         return NbtCompound::newNBT(Tag::fromBlock(block),false);
     }
-    CATCH("Fail in getNbt!")
+    CATCH("Fail in getNbt!");
 }
 
 Local<Value> BlockClass::setNbt(const Arguments& args)

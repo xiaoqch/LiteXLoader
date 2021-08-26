@@ -64,7 +64,7 @@
 
 ### 获取一个文件对象
 
-`file.openFile(path,mode[,isBinary])`
+`file.open(path,mode[,isBinary])`
 
 - 参数：
   - path : `String`  
@@ -99,9 +99,10 @@
 
 每一个文件对象都包含一些固定的对象属性。对于某个特定的文件对象`fi`，有以下这些属性
 
-| 属性    | 含义         | 类型     |
-| ------- | ------------ | -------- |
-| fi.path | 当前文件路径 | `String` |
+| 属性    | 含义         | 类型      |
+| ------- | ------------ | --------- |
+| fi.path | 当前文件路径 | `String`  |
+| fi.size | 当前文件大小 | `Integer` |
 
 这些对象属性都是只读的，无法被修改
 
@@ -117,18 +118,18 @@
 如果读写内容不多，使用同步接口有更好的开发体验  
 如果内容较多，可以使用后面的异步读写接口
 
-##### 从文件读取文本
+##### 从文件读取文本 / 二进制数据
 
 `fi.readSync(cnt)`
 
 - 参数：
   - cnt : `Number`  
-    要读取的字符数
-- 返回值：读取的字符串内容
-- 返回值类型：`String`
+    要读取的字符数 / 字节数
+- 返回值：读取的字符串内容 / 二进制数据
+- 返回值类型：`String` / `ByteBuffer`
   - 如返回值为 `Null` 则表示读取失败
 
-从当前文件指针处开始读取
+从当前文件指针处开始读取。如果文件以二进制模式打开，则返回`ByteBuffer`，否则返回`String`
 
 <br>
 
@@ -144,15 +145,30 @@
 
 <br>
 
-##### 写入文本到文件
+##### 从文件读取所有内容
+
+`fi.readAllSync()`
+
+- 返回值：读取的字符串内容 / 二进制数据
+- 返回值类型：`String` / `ByteBuffer`
+  - 如返回值为 `Null` 则表示读取失败
+
+从当前文件指针处开始读取，一直读取到文件末尾为止。  
+如果文件以二进制模式打开，则返回`ByteBuffer`，否则返回`String`
+
+<br>
+
+##### 写入文本 / 二进制数据到文件
 
 `fi.writeSync(str)`
 
 - 参数：
-  - str : `String`  
+  - str : `String` / `ByteBuffer`  
     要写入的内容
 - 返回值：是否成功写入
 - 返回值类型：`Boolean`
+
+如果文件以二进制模式打开，请传入一个`ByteBuffer`，否则需要传入`String`
 
 <br>
 
@@ -170,114 +186,119 @@
 
 <br>
 
-##### 从文件读取二进制数据
-
-`fi.readBytesSync(cnt)`
-
-- 参数：
-  - cnt : `Number`  
-    要读取的字节数
-- 返回值：读取的二进制数据
-- 返回值类型：`ByteBuffer`
-  - 如返回值为 `Null` 则表示读取失败
-
-<br>
-
-##### 写入二进制数据到文件
-
-`fi.writeBytesSync(bytes)`
-
-- 参数：
-  - bytes : `ByteBuffer`  
-    要写入的二进制数据
-- 返回值：是否成功写入
-- 返回值类型：`Boolean`
-
-<br>
-
 #### 异步读写
 
 在数据量较大，耗费时间较长时，建议使用异步读写接口，以减少对服务器的影响。
 
-##### 从文件读取文本（异步）
+### ========= 注意，异步接口正在开发中，请先暂时不要使用，敬请期待 ========= 
+
+##### 从文件读取文本 / 二进制数据（异步）
 
 `fi.read(cnt,callback)`
 
 - 参数：
   - cnt : `Number`  
-    要读取的字符数
+    要读取的字符数 / 字节数
   - callback : `Function`  
-    获取读取结果的回调函数
-- 返回值：读取的字符串内容
-- 返回值类型：`String`
-  - 如返回值为 `Null` 则表示读取失败
+    获取结果的回调函数
+- 返回值：是否成功发送请求
+- 返回值类型：`Boolean`
+
+注：参数callback的回调函数原型：`function(result)`  
+
+- result : `String` / `ByteBuffer`  
+  读取到的文本 / 二进制数据  
+  如 result 为 `Null` 则表示读取失败
+
+从当前文件指针处开始读取。如果文件以二进制模式打开，则返回`ByteBuffer`，否则返回`String`
 
 <br>
 
 ##### 从文件读取一行文本（异步）
 
-`fi.readLine()`
+`fi.readLine(callback)`
 
-- 返回值：读取的字符串内容
-- 返回值类型：`String`
-  - 如返回值为 `Null` 则表示读取失败
+- 参数：
+  - callback : `Function`  
+    获取结果的回调函数
+- 返回值：是否成功发送请求
+- 返回值类型：`Boolean`
+
+注：参数callback的回调函数原型：`function(result)`  
+
+- result : `String`  
+  读取到的文本
 
 > 注意，字符串尾部的换行符要自行处理
 
 <br>
 
-##### 写入文本到文件（异步）
+##### 从文件读取所有内容（异步）
 
-`fi.write(str)`
+`fi.readAll(callback)`
 
 - 参数：
-  - str : `String`  
-    要写入的内容
-- 返回值：是否成功写入
+  - callback : `Function`  
+    获取结果的回调函数
+- 返回值：是否成功发送请求
 - 返回值类型：`Boolean`
+
+注：参数callback的回调函数原型：`function(result)`  
+
+- result : `String` / `ByteBuffer`  
+  读取到的文本 / 二进制数据  
+  如 result 为 `Null` 则表示读取失败
+
+从当前文件指针处开始读取，一直读取到文件末尾为止。  
+如果文件以二进制模式打开，则返回`ByteBuffer`，否则返回`String`
+
+<br>
+
+##### 写入文本 / 二进制数据到文件（异步）
+
+`fi.write(str[,callback])`
+
+- 参数：
+  - str : `String` / `ByteBuffer`  
+    要写入的内容
+  - callback : `Function`  
+    （可选参数）获取结果的回调函数
+- 返回值：是否成功发送请求
+- 返回值类型：`Boolean`
+
+如果文件以二进制模式打开，请传入一个`ByteBuffer`，否则需要传入`String`
+
+注：参数callback的回调函数原型：`function(result)`  
+
+- result : `Boolean`  
+  是否写入成功
 
 <br>
 
 ##### 写入一行文本到文件（异步）
 
-`fi.writeLine(str)`
+`fi.writeLine(str[,callback])`
 
 - 参数：
   - str : `String`  
     要写入的内容
-- 返回值：是否成功写入
+  - callback : `Function`  
+    （可选参数）获取结果的回调函数
+- 返回值：是否成功发送请求
 - 返回值类型：`Boolean`
 
-此函数执行时，将在字符串尾自动添加换行符
+注：参数callback的回调函数原型：`function(result)`  
 
-<br>
+- result : `Boolean`  
+  是否写入成功
 
-##### 从文件读取二进制数据（异步）
-
-`fi.readBytes(cnt)`
-
-- 参数：
-  - cnt : `Number`  
-    要读取的字节数
-- 返回值：读取的二进制数据
-- 返回值类型：`ByteBuffer`
-  - 如返回值为 `Null` 则表示读取失败
-
-<br>
-
-##### 写入二进制数据到文件（异步）
-
-`fi.writeBytes(bytes)`
-
-- 参数：
-  - bytes : `ByteBuffer`  
-    要写入的二进制数据
-- 返回值：是否成功写入
-- 返回值类型：`Boolean`
+> 此函数执行时，将在字符串尾自动添加换行符
 
 <br>
 
 #### 其他通用接口
+
+除了上述的读写接口之外，这里还提供了其他操作文件对象的通用接口
 
 ##### 移动文件指针
 
@@ -322,6 +343,15 @@
 
 <br>
 
+##### 文件指针是否位于文件尾
+
+`fi.isEOF()`
+
+- 返回值：文件指针是否处于文件尾
+- 返回值类型：`Boolean`
+
+<br>
+
 ##### 刷新文件缓冲区
 
 `fi.flush()`
@@ -337,5 +367,18 @@
 
 - 返回值：上一次IO操作产生的错误码
 - 返回值类型：`Integer`
+
+如果在上述接口使用中遇到了失败，可以从这里获取上一个错误码
+
+<br>
+
+##### 清除错误状态
+
+`fi.clear()`
+
+- 返回值：是否成功清除
+- 返回值类型：`Boolean`
+
+如果在上述接口使用中遇到了失败，在获取错误码完成之后，使用此函数清除错误状态，以继续正常使用文件对象
 
 <br>
