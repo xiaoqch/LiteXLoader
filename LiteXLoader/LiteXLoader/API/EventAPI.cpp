@@ -1174,10 +1174,14 @@ THook(__int64, "?retrieve@FishingHook@@QEAAHXZ",
 
 // ===== onNpcCmd =====
 THook(bool, "?executeCommandAction@NpcComponent@@QEAAXAEAVActor@@AEBVPlayer@@HAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z",
-    void* _this, Actor *ac, Player *pl, int a4, string &cmd)
+    void* _this, Actor *ac, Player *pl, int a4, string &a5)
 {
-    
-    return original(_this, ac, pl, a4, cmd);
+    IF_LISTENED(EVENT_TYPES::onNpcCmd)
+    {
+        CallEventRtnBool(EVENT_TYPES::onNpcCmd, EntityClass::newEntity(ac), PlayerClass::newPlayer(pl));
+    }
+    IF_LISTENED_END();
+    return original(_this, ac, pl, a4, a5);
 }
 
 // ===== onNpcCmd =====
