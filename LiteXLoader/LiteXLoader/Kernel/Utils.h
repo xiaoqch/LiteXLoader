@@ -6,6 +6,8 @@
 
 std::vector<std::string> SplitCmdLine(const std::string& paras);
 std::vector<std::string> SplitStrWithPattern(const std::string& str, const std::string& pattern);
+bool StartsWith(const std::string& str, const std::string& start);
+bool EndsWith(const std::string& str, const std::string& end);
 void SplitHttpUrl(const std::string& url, std::string& host, std::string& path);
 
 wchar_t* str2cwstr(std::string str);

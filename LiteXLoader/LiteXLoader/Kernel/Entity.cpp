@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "SymbolHelper.h"
 #include "NBT.h"
+#include "Utils.h"
 #include <string>
 #include <vector>
 using namespace std;
@@ -37,7 +38,11 @@ Actor* Raw_SpawnMob(std::string name, const FloatVec4& pos)
 string Raw_GetEntityName(Actor* actor)
 {
     string name = actor->getNameTag();
-    return name.empty() ? Raw_GetEntityTypeName(actor) : name;
+    if(name.empty())
+        name = Raw_GetEntityTypeName(actor);
+    if (StartsWith(name, "minecraft:"))
+        name = name.substr(10);
+    return name;
 }
 
 std::string Raw_GetEntityTypeName(Actor* actor)
