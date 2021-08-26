@@ -68,11 +68,26 @@ SNBT字符串中必须包含一个完整的Compound。通过此接口，根据�
 `NBT.parseSNBT(snbt)`  
 
 - 参数：
-  - snbt : `string`  
+  - snbt : `String`  
     你要解析的SNBT字符串
 - 返回值：生成的NBT对象
 - 返回值类型：`NbtCompound`
-  - 如返回值为 `Null` 则表示获取失败
+  - 如返回值为 `Null` 则表示解析失败
+
+<br>
+
+### 从二进制 NBT 数据生成 NBT 对象
+
+二进制 NBT 数据中必须包含一个完整的Compound。通过此接口，根据其生成对应的NBT对象
+
+`NBT.parseNBTBinary(nbt)`  
+
+- 参数：
+  - nbt : `ByteBuffer`  
+    你要解析的二进制 NBT 数据
+- 返回值：生成的NBT对象
+- 返回值类型：`NbtCompound`
+  - 如返回值为 `Null` 则表示解析失败
 
 <br>
 

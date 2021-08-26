@@ -211,6 +211,7 @@ static ClassDefine<void> MoneyClassBuilder =
 class NetworkClass
 {
 public:
+    static Local<Value> newWebSocket(const Arguments& args) { return NewWebSocket(args); }
     static Local<Value> httpGet(const Arguments& args) { return HttpGet(args); }
     static Local<Value> httpPost(const Arguments& args) { return HttpPost(args); }
     static Local<Value> httpGetSync(const Arguments& args) { return HttpGetSync(args); }
@@ -218,6 +219,7 @@ public:
 
 static ClassDefine<void> NetworkClassBuilder =
     defineClass("network")
+        .function("newWebSocket", &NetworkClass::newWebSocket)
         .function("httpGet", &NetworkClass::httpGet)
         .function("httpPost", &NetworkClass::httpPost)
         .function("httpGetSync", &NetworkClass::httpGetSync)
