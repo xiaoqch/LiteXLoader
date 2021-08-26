@@ -31,8 +31,8 @@ ClassDefine<ConfJsonClass> ConfJsonClassBuilder =
         .instanceFunction("get", &ConfJsonClass::get)
         .instanceFunction("set", &ConfJsonClass::set)
         .instanceFunction("delete", &ConfJsonClass::del)
-        .instanceFunction("reload", &ConfJsonClass::reload)
-        .instanceFunction("close", &ConfJsonClass::close)
+        .instanceFunction("reload", selectOverloadedFunc<Local<Value> (ConfJsonClass::*)(const Arguments&)>(&ConfJsonClass::reload))
+        .instanceFunction("close", selectOverloadedFunc<Local<Value>(ConfJsonClass::*)(const Arguments&)>(&ConfJsonClass::close))
         .instanceFunction("getPath", &ConfJsonClass::getPath)
         .instanceFunction("read", &ConfJsonClass::read)
         .instanceFunction("write", &ConfJsonClass::write)
@@ -47,8 +47,8 @@ ClassDefine<ConfIniClass> ConfIniClassBuilder =
         .instanceFunction("getFloat", &ConfIniClass::getFloat)
         .instanceFunction("getBool", &ConfIniClass::getBool)
         .instanceFunction("delete", &ConfIniClass::del)
-        .instanceFunction("reload", &ConfIniClass::reload)
-        .instanceFunction("close", &ConfIniClass::close)
+        .instanceFunction("reload", selectOverloadedFunc<Local<Value>(ConfIniClass::*)(const Arguments&)>(&ConfIniClass::reload))
+        .instanceFunction("close", selectOverloadedFunc<Local<Value>(ConfIniClass::*)(const Arguments&)>(&ConfIniClass::close))
         .instanceFunction("getPath", &ConfIniClass::getPath)
         .instanceFunction("read", &ConfIniClass::read)
         .instanceFunction("write", &ConfIniClass::write)
@@ -196,17 +196,17 @@ Local<Value> ConfBaseClass::read(const Arguments& args)
     CATCH("Fail in confRead!")
 }
 
-Local<Value> ConfBaseClass::write(const Arguments& args)
-{
-    CHECK_ARGS_COUNT(args, 1);
-    CHECK_ARG_TYPE(args[0], ValueKind::kString);
-
-    try
-    {
-        return Boolean::newBoolean(Raw_FileWriteTo(confPath, args[0].toStr()));
-    }
-    CATCH("Fail in confWrite!")
-}
+//Local<Value> ConfBaseClass::write(const Arguments& args)
+//{
+//    CHECK_ARGS_COUNT(args, 1);
+//    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+//
+//    try
+//    {
+//        return Boolean::newBoolean(Raw_FileWriteTo(confPath, args[0].toStr()));
+//    }
+//    CATCH("Fail in confWrite!")
+//}
 
 //////////////////// Classes ConfJson ////////////////////
 
@@ -225,7 +225,7 @@ ConfJsonClass::ConfJsonClass(const string& path, const string& defContent)
 
 ConfJsonClass::~ConfJsonClass()
 {
-    flush();
+    close();
 }
 
 Local<Value> ConfJsonClass::get(const Arguments& args)
@@ -281,19 +281,14 @@ Local<Value> ConfJsonClass::del(const Arguments& args)
     {
         return args.size() >= 2 ? args[1] : Local<Value>();
     }
-    CATCH("Fail in confJsonDelete!")
+    CATCH("Fail in confJsonDelete!");
 }
 
 Local<Value> ConfJsonClass::reload(const Arguments& args)
 {
     try
     {
-        string jsonTexts;
-        if (!Raw_FileReadFrom(confPath, jsonTexts))
-            return Boolean::newBoolean(false);
-    
-        jsonConf = JSON_VALUE::parse(jsonTexts);
-        return Boolean::newBoolean(true);
+        return Boolean::newBoolean(reload());
     }
     catch (exception& e)
     {
@@ -301,17 +296,30 @@ Local<Value> ConfJsonClass::reload(const Arguments& args)
         ERRPRINT(e.what());
         return Boolean::newBoolean(false);
     }
-    CATCH("Fail in confJsonReload!")
+    CATCH("Fail in confJsonReload!");
 }
 
 Local<Value> ConfJsonClass::close(const Arguments& args)
 {
     try
     {
-        flush();
-        return Boolean::newBoolean(true);
+        return Boolean::newBoolean(close());
     }
-    CATCH("Fail in confJsonClose!")
+    CATCH("Fail in confJsonClose!");
+}
+
+Local<Value> ConfJsonClass::write(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+
+    try
+    {
+        bool res = Raw_FileWriteTo(confPath, args[0].toStr());
+        reload();
+        return Boolean::newBoolean(res);
+    }
+    CATCH("Fail in confJsonWrite!");
 }
 
 bool ConfJsonClass::flush()
@@ -325,6 +333,22 @@ bool ConfJsonClass::flush()
     }
     else
         return false;
+}
+
+bool ConfJsonClass::close()
+{
+    reload();
+    return true;
+}
+
+bool ConfJsonClass::reload()
+{
+    string jsonTexts;
+    if (!Raw_FileReadFrom(confPath, jsonTexts))
+        return false;
+
+    jsonConf = JSON_VALUE::parse(jsonTexts);
+    return true;
 }
 
 
@@ -348,7 +372,32 @@ ConfIniClass::ConfIniClass(const string& path, const string& defContent)
 
 ConfIniClass::~ConfIniClass()
 {
+    close();
+}
+
+bool ConfIniClass::flush()
+{
+    return iniConf->SaveFile(iniConf->filePath.c_str(), true);
+}
+
+bool ConfIniClass::close()
+{
+    if (isValid())
+    {
+        reload();
+        Raw_IniClose(iniConf);
+        iniConf = nullptr;
+    }
+    return true;
+}
+bool ConfIniClass::reload()
+{
+    if (!isValid())
+        return false;
+
     Raw_IniClose(iniConf);
+    iniConf = Raw_IniOpen(confPath);
+    return true;
 }
 
 Local<Value> ConfIniClass::set(const Arguments& args)
@@ -383,6 +432,7 @@ Local<Value> ConfIniClass::set(const Arguments& args)
             return Local<Value>();
             break;
         }
+        flush();
         return Boolean::newBoolean(true);
     }
     CATCH("Fail in confIniSet!")
@@ -475,7 +525,9 @@ Local<Value> ConfIniClass::del(const Arguments& args)
         if (!isValid())
             return Local<Value>();
 
-        return Boolean::newBoolean(Raw_IniDeleteKey(iniConf, args[0].toStr(), args[1].toStr()));
+        bool res = Raw_IniDeleteKey(iniConf, args[0].toStr(), args[1].toStr());
+        flush();
+        return Boolean::newBoolean(res);
     }
     CATCH("Fail in confIniDelete!");
 }
@@ -484,26 +536,30 @@ Local<Value> ConfIniClass::reload(const Arguments& args)
 {
     try
     {
-        if (!isValid())
-            return Local<Value>();
-
-        Raw_IniClose(iniConf);
-        iniConf = Raw_IniOpen(confPath);
-        return Boolean::newBoolean(true);
+        return Boolean::newBoolean(reload());
     }
     CATCH("Fail in confReload!")
+}
+
+Local<Value> ConfIniClass::write(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+
+    try
+    {
+        bool res = Raw_FileWriteTo(confPath, args[0].toStr());
+        reload();
+        return Boolean::newBoolean(res);
+    }
+    CATCH("Fail in confIniWrite!");
 }
 
 Local<Value> ConfIniClass::close(const Arguments& args)
 {
     try
     {
-        if (isValid())
-        {
-            Raw_IniClose(iniConf);
-            iniConf = nullptr;
-        }
-        return Boolean::newBoolean(true);
+        return Boolean::newBoolean(close());
     }
     CATCH("Fail in confClose!")
 }

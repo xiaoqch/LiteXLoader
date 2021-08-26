@@ -34,6 +34,9 @@ class ConfBaseClass
 {
 protected:
     std::string confPath;
+    virtual bool flush() = 0;
+    virtual bool close() = 0;
+    virtual bool reload() = 0;
 
 public:
     explicit ConfBaseClass(const string& dir);
@@ -42,7 +45,7 @@ public:
     virtual Local<Value> close(const Arguments& args) = 0;
     Local<Value> getPath(const Arguments& args);
     Local<Value> read(const Arguments& args);
-    Local<Value> write(const Arguments& args);
+    virtual Local<Value> write(const Arguments& args) = 0;
 };
 
 
@@ -50,7 +53,9 @@ class ConfJsonClass : public ScriptClass, public ConfBaseClass
 {
 private:
     JSON_ROOT jsonConf;
-    bool flush();
+    bool flush() override;
+    bool close() override;
+    bool reload() override;
 
 public:
     explicit ConfJsonClass(const string& path, const string& defContent);
@@ -61,6 +66,7 @@ public:
     Local<Value> del(const Arguments& args);
     virtual Local<Value> reload(const Arguments& args) override;
     virtual Local<Value> close(const Arguments& args) override;
+    virtual Local<Value> write(const Arguments& args) override;
 
     static Local<Value> newConf(const string& path, const string& defContent = "");
 };
@@ -70,6 +76,9 @@ class ConfIniClass : public ScriptClass, public ConfBaseClass
 {
 private:
     INI_ROOT iniConf;
+    bool flush() override;
+    bool close() override;
+    bool reload() override;
 
 public:
     explicit ConfIniClass(const string& path, const string& defContent);
@@ -88,6 +97,7 @@ public:
     Local<Value> del(const Arguments& args);
     virtual Local<Value> reload(const Arguments& args) override;
     virtual Local<Value> close(const Arguments& args) override;
+    virtual Local<Value> write(const Arguments& args) override;
 
     static Local<Value> newConf(const string& path, const string& defContent = "");
 };
