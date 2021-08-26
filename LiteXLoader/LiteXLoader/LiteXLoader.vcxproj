@@ -157,6 +157,7 @@
     <Library Include="..\third-party\dyncall\lib\libdyncallback_s.lib" />
     <Library Include="..\third-party\dyncall\lib\libdyncall_s.lib" />
     <Library Include="..\third-party\dyncall\lib\libdynload_s.lib" />
+    <Library Include="..\third-party\LightWebSocketClient\lib\LightWSClient.lib" />
     <Library Include="..\third-party\LiteLoader\libcrypto.lib" />
     <Library Include="..\third-party\LiteLoader\libssl.lib" />
     <Library Include="..\third-party\LiteLoader\LiteLoader.lib" />

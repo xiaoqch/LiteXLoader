@@ -43,9 +43,9 @@ ClassDefine<FileClass> FileClassBuilder =
         .instanceFunction("errorCode", &FileClass::errorCode)
         .instanceFunction("clear", &FileClass::clear)
 
-        .property("readMode", [] { return Number::newNumber((int)FileOpenMode::ReadMode); })
-        .property("writeMode", [] { return Number::newNumber((int)FileOpenMode::WriteMode); })
-        .property("appendMode", [] { return Number::newNumber((int)FileOpenMode::AppendMode); })
+        .property("ReadMode", [] { return Number::newNumber((int)FileOpenMode::ReadMode); })
+        .property("WriteMode", [] { return Number::newNumber((int)FileOpenMode::WriteMode); })
+        .property("AppendMode", [] { return Number::newNumber((int)FileOpenMode::AppendMode); })
     
         .function("open", &FileClass::open)
         .function("readFrom", &FileClass::readFromStatic)

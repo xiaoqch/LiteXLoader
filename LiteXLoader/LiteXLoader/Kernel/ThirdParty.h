@@ -44,3 +44,7 @@ public:
 
 //////////////// Nbt ////////////////
 #include <nbt-cpp/include/nbt.hpp>
+
+//////////////// Websocket Client ////////////////
+#include <LightWebSocketClient/include/WebSocketClient.h>
+using namespace cyanray;

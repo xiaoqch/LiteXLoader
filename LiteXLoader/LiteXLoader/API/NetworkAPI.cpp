@@ -1,11 +1,206 @@
 #include "APIHelp.h"
-#include "NetworkAPI.h"
+#include <Kernel/ThirdParty.h>
 #include <Kernel/System.h>
 #include <Engine/TimeTaskSystem.h>
+#include "NetworkAPI.h"
 #include <string>
 #include <vector>
 using namespace std;
 using namespace script;
+
+//////////////////// Classes ////////////////////
+
+ClassDefine<WSClientClass> WSClientClassBuilder =
+    defineClass<WSClientClass>("LXL_WSClient")
+        .constructor(nullptr)
+        .instanceProperty("status", &WSClientClass::getStatus)
+        .instanceFunction("connect", &WSClientClass::connect)
+        .instanceFunction("send", &WSClientClass::send)
+        .instanceFunction("listen", &WSClientClass::listen)
+        .instanceFunction("close", &WSClientClass::close)
+        .instanceFunction("shutdown", &WSClientClass::shutdown)
+        .instanceFunction("errorCode", &WSClientClass::errorCode)
+
+        .property("Open", [] { return Number::newNumber((int)WebSocketClient::Status::Open); })
+        .property("Closing", [] { return Number::newNumber((int)WebSocketClient::Status::Closing); })
+        .property("Closed", [] { return Number::newNumber((int)WebSocketClient::Status::Closed); })
+        .build();
+
+
+//生成函数
+Local<Object> WSClientClass::newWSClient()
+{
+    auto newp = new WSClientClass();
+    return newp->getScriptObject();
+}
+
+WSClientClass::WSClientClass()
+    :ScriptClass(ScriptClass::ConstructFromCpp<WSClientClass>{})
+{
+    ws.OnTextReceived([ li {&listeners} ](WebSocketClient& client, string msg) {
+        std::list<ListenerListType>& nowList = *li[int(WSClientEvents::onTextReceived)];
+        for (auto& listener : nowList)
+        {
+            NewTimeout(listener.func.get(), { String::newString(msg) }, 1);
+        }
+    });
+
+    ws.OnBinaryReceived([li{ &listeners }](WebSocketClient& client, vector<uint8_t> data) {
+        std::list<ListenerListType>& nowList = *li[int(WSClientEvents::onBinaryReceived)];
+        for (auto& listener : nowList)
+        {
+            NewTimeout(listener.func.get(), { ByteBuffer::newByteBuffer(data.data(),data.size()) }, 1);
+        }
+    });
+
+    ws.OnError([li{ &listeners }](WebSocketClient& client, string msg) {
+        std::list<ListenerListType>& nowList = *li[int(WSClientEvents::onError)];
+        for (auto& listener : nowList)
+        {
+            NewTimeout(listener.func.get(), { String::newString(msg) }, 1);
+        }
+    });
+
+    ws.OnLostConnection([li{ &listeners }](WebSocketClient& client, int code) {
+        std::list<ListenerListType>& nowList = *li[int(WSClientEvents::onLostConnection)];
+        for (auto& listener : nowList)
+        {
+            NewTimeout(listener.func.get(), { Number::newNumber(code) }, 1);
+        }
+    });
+}
+
+//成员函数
+void WSClientClass::addListener(const string& event, Local<Function> func)
+{
+    if (event == "onTextReceived")
+        listeners[(int)WSClientEvents::onTextReceived].push_back({ EngineScope::currentEngine(), Global<Function>(func) });
+    else if (event == "onBinaryReceived")
+        listeners[(int)WSClientEvents::onBinaryReceived].push_back({ EngineScope::currentEngine(), Global<Function>(func) });
+    else if (event == "onError")
+        listeners[(int)WSClientEvents::onError].push_back({ EngineScope::currentEngine(), Global<Function>(func) });
+    else if (event == "onLostConnection")
+        listeners[(int)WSClientEvents::onLostConnection].push_back({ EngineScope::currentEngine(), Global<Function>(func) });
+    else
+    {
+        ERROR("WSClient Event \"" + event + "\" No Found!\n");
+    }  
+}
+
+Local<Value> WSClientClass::getStatus()
+{
+    try {
+        return Number::newNumber((int)ws.GetStatus());
+    }
+    catch (const std::exception& e)
+    {
+        return Local<Value>();
+    }
+    CATCH("Fail in connect!");
+}
+
+Local<Value> WSClientClass::connect(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+
+    try {
+        ws.Connect(args[0].toStr());
+        return Boolean::newBoolean(true);
+    }
+    catch (const std::exception& e)
+    {
+        return Boolean::newBoolean(false);
+    }
+    CATCH("Fail in connect!");
+}
+
+Local<Value> WSClientClass::send(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+
+    try {
+        if (args[0].isString())
+            ws.SendText(args[0].toStr());
+        else if (args[0].isByteBuffer())
+            ws.SendBinary((char*)args[0].asByteBuffer().getRawBytes(), args[0].asByteBuffer().byteLength());
+        else
+        {
+            ERROR("Wrong type of argument in WSClientSend!");
+            return Local<Value>();
+        }
+        return Boolean::newBoolean(true);
+    }
+    catch (const std::exception& e)
+    {
+        return Boolean::newBoolean(false);
+    }
+    CATCH("Fail in send!");
+}
+
+Local<Value> WSClientClass::listen(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 2);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+    CHECK_ARG_TYPE(args[0], ValueKind::kFunction);
+
+    try {
+        addListener(args[0].toStr(), args[1].asFunction());
+        return Boolean::newBoolean(true);
+    }
+    catch (const std::exception& e)
+    {
+        return Boolean::newBoolean(false);
+    }
+    CATCH("Fail in listen!");
+}
+
+Local<Value> WSClientClass::close(const Arguments& args)
+{
+    try {
+        ws.Close();
+        return Boolean::newBoolean(true);
+    }
+    catch (const std::exception& e)
+    {
+        return Boolean::newBoolean(false);
+    }
+    CATCH("Fail in close!");
+}
+
+Local<Value> WSClientClass::shutdown(const Arguments& args)
+{
+    try {
+        ws.Shutdown();
+        return Boolean::newBoolean(true);
+    }
+    catch (const std::exception& e)
+    {
+        return Boolean::newBoolean(false);
+    }
+    CATCH("Fail in shutdown!");
+}
+
+Local<Value> WSClientClass::errorCode(const Arguments& args)
+{
+    try {
+        return Number::newNumber(WSAGetLastError());
+    }
+    catch (const std::exception& e)
+    {
+        return Local<Value>();
+    }
+    CATCH("Fail in errorCode!");
+}
+
+
+//////////////////// APIs ////////////////////
+
+Local<Value> NewWebSocket(const Arguments& args)
+{
+    auto newp = new WSClientClass();
+    return newp->getScriptObject();
+}
 
 Local<Value> HttpGet(const Arguments& args)
 {

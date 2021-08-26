@@ -231,7 +231,7 @@ Local<Value> Listen(const Arguments& args)
     try{
         return Boolean::newBoolean(LxlAddEventListener(EngineScope::currentEngine(),args[0].toStr(),args[1].asFunction()));
     }
-    CATCH("Fail to Bind Listener!")
+    CATCH("Fail to Bind Listener!");
 }
 
 

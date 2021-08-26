@@ -410,5 +410,8 @@
     <Library Include="..\third-party\nbt-cpp\lib\nbt-cpp.lib">
       <Filter>Lib</Filter>
     </Library>
+    <Library Include="..\third-party\LightWebSocketClient\lib\LightWSClient.lib">
+      <Filter>Lib</Filter>
+    </Library>
   </ItemGroup>
 </Project>
