@@ -304,8 +304,10 @@ Local<Value> OpenFile(const Arguments& args)
     try{
         string path = args[0].toStr();
         FileOpenMode fMode = (FileOpenMode)(args[1].toInt());
-        ios_base::openmode mode = ios_base::in | ios_base::out;
-        if (fMode == FileOpenMode::AppendMode)
+        ios_base::openmode mode = ios_base::in;
+        if (fMode == FileOpenMode::WriteMode)
+            mode |= ios_base::out;
+        else if (fMode == FileOpenMode::AppendMode)
             mode |= ios_base::app;
 
         bool isBinary = false;
