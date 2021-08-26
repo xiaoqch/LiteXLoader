@@ -489,7 +489,7 @@ void TagToSNBT_Compound_Helper(tags::compound_tag& res, Tag* nbt)
             res.value[key] = make_unique<tags::short_tag>(tag.asShort());
             break;
         case TagType::Int:
-            res.value[key] = make_unique<tags::int_tag>(tag.asShort());
+            res.value[key] = make_unique<tags::int_tag>(tag.asInt());
             break;
         case TagType::Long:
             res.value[key] = make_unique<tags::long_tag>(tag.asLong());
