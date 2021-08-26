@@ -142,7 +142,7 @@ Local<Value> WSClientClass::listen(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 2);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
-    CHECK_ARG_TYPE(args[0], ValueKind::kFunction);
+    CHECK_ARG_TYPE(args[1], ValueKind::kFunction);
 
     try {
         addListener(args[0].toStr(), args[1].asFunction());
