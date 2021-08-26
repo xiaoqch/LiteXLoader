@@ -81,6 +81,9 @@ void BindAPIs(ScriptEngine *engine)
     extern ClassDefine<FileClass> FileClassBuilder;
     engine->registerNativeClass<FileClass>(FileClassBuilder);
 
+    extern ClassDefine<WSClientClass> WSClientClassBuilder;
+    engine->registerNativeClass<WSClientClass>(WSClientClassBuilder);
+
     extern ClassDefine<BlockEntityClass> BlockEntityClassBuilder;
     engine->registerNativeClass<BlockEntityClass>(BlockEntityClassBuilder);
 
