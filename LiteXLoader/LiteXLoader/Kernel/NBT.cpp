@@ -627,6 +627,18 @@ string TagToSNBT(Tag* nbt)
     return sout.str();
 }
 
+string TagToBinaryNBT(Tag* nbt)
+{
+    if (nbt->getTagType() != TagType::Compound)
+        return "";
+    tags::compound_tag root(true);
+    TagToSNBT_Compound_Helper(root, nbt);
+
+    ostringstream sout;
+    sout << contexts::bedrock_disk << root;
+    return sout.str();
+}
+
 
 //////////////////// From SNBT ////////////////////
 
@@ -861,6 +873,17 @@ Tag* SNBTToTag(const string& snbt)
     istringstream sin(snbt);
     tags::compound_tag root(true);
     sin >> contexts::mojangson >> root;
+
+    Tag* res = Tag::createTag(TagType::Compound);
+    SNBTToTag_Compound_Helper(res, root);
+    return res;
+}
+
+Tag* BinaryNBTToTag(void* data, size_t len)
+{
+    istringstream bsin(string((char*)data, len));
+    tags::compound_tag root(true);
+    bsin >> contexts::bedrock_disk >> root;
 
     Tag* res = Tag::createTag(TagType::Compound);
     SNBTToTag_Compound_Helper(res, root);

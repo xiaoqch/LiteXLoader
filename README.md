@@ -227,7 +227,8 @@ VS项目采用多目标构建，构建的每种配置对应一种脚本语言
 [Nlohmann-Json](https://github.com/nlohmann/json) MIT License  
 [Hash](https://github.com/Chocobo1/Hash) GPL v3  
 [ThreadPool](https://github.com/jhasse/ThreadPool) Zlib License  
-[nbt-cpp](https://github.com/handtruth/nbt-cpp) MIT License
+[nbt-cpp](https://github.com/handtruth/nbt-cpp) MIT License  
+[LightWebSocketClient](https://github.com/cyanray/LightWebSocketClient) MIT License
 
 ### Extra Restrictions & Exceptions
 If you provides a server hosting service,you can use this framework for free, but you SHOULD NOT make PRIVATE changes to this framework as a selling point. If you fixed or tweaked the code, please pull request, instead of making it private for commercial use. 

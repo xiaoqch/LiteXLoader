@@ -15,6 +15,7 @@ ClassDefine<void> NbtStaticBuilder =
     defineClass("NBT")
         .function("createTag", &NbtStatic::createTag)
         .function("parseSNBT", &NbtStatic::parseSNBT)
+        .function("parseBinaryNBT", &NbtStatic::parseBinaryNBT)
         .property("End", &NbtStatic::getType<TagType::End>)
         .property("Byte", &NbtStatic::getType<TagType::Byte>)
         .property("Short", &NbtStatic::getType<TagType::Short>)
@@ -85,6 +86,7 @@ ClassDefine<NbtCompound> NbtCompoundBuilder =
         .instanceFunction("getTag", &NbtCompound::getTag)
         .instanceFunction("toObject", &NbtCompound::toObject)
         .instanceFunction("toSNBT", &NbtCompound::toSNBT)
+        .instanceFunction("toBinaryNBT", &NbtCompound::toBinaryNBT)
         .instanceFunction("destroy", &NbtList::destroy)
         .build();
 
@@ -969,12 +971,22 @@ Local<Value> NbtCompound::toSNBT(const Arguments& args)
     CATCH("Fail in toSNBT!");
 }
 
+Local<Value> NbtCompound::toBinaryNBT(const Arguments& args)
+{
+    try
+    {
+        auto res = TagToBinaryNBT(nbt);
+        return ByteBuffer::newByteBuffer(res.data(), res.size());
+    }
+    CATCH("Fail in toBinaryNBT!");
+}
+
 //////////////////// APIs ////////////////////
 
 Local<Value> NbtStatic::createTag(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 1)
-    CHECK_ARG_TYPE(args[0], ValueKind::kNumber)
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
 
     try {
         auto type = args[0].toInt();
@@ -1053,7 +1065,7 @@ Local<Value> NbtStatic::createTag(const Arguments& args)
         }
         return res;
     }
-    CATCH("Fail in NBTcreateTag!")
+    CATCH("Fail in NBTcreateTag!");
 }
 
 Local<Value> NbtStatic::parseSNBT(const Arguments& args)
@@ -1068,7 +1080,23 @@ Local<Value> NbtStatic::parseSNBT(const Arguments& args)
         else
             return Local<Value>();
     }
-    CATCH("Fail in parseSNBT!")
+    CATCH("Fail in parseSNBT!");
+}
+
+Local<Value> NbtStatic::parseBinaryNBT(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kByteBuffer);
+
+    try {
+        auto data = args[0].asByteBuffer();
+        Tag* tag = BinaryNBTToTag(data.getRawBytes(),data.byteLength());
+        if (tag)
+            return NbtCompound::newNBT(tag);
+        else
+            return Local<Value>();
+    }
+    CATCH("Fail in parseBinaryNBT!");
 }
 
 

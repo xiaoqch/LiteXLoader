@@ -24,6 +24,7 @@ class NbtStatic : public ScriptClass
 public:
     static Local<Value> createTag(const Arguments& args);
     static Local<Value> parseSNBT(const Arguments& args);
+    static Local<Value> parseBinaryNBT(const Arguments& args);
 
     template<TagType T>
     static Local<Value> getType()
@@ -113,6 +114,7 @@ public:
 
     Local<Value> toObject(const Arguments& args);
     Local<Value> toSNBT(const Arguments& args);
+    Local<Value> toBinaryNBT(const Arguments& args);
 };
 
 

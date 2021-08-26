@@ -80,7 +80,7 @@ SNBT字符串中必须包含一个完整的Compound。通过此接口，根据�
 
 二进制 NBT 数据中必须包含一个完整的Compound。通过此接口，根据其生成对应的NBT对象
 
-`NBT.parseNBTBinary(nbt)`  
+`NBT.parseBinaryNBT(nbt)`  
 
 - 参数：
   - nbt : `ByteBuffer`  
@@ -136,7 +136,18 @@ SNBT字符串中必须包含一个完整的Compound。通过此接口，根据�
 - 返回值：对应的SNBT字符串
 - 返回值类型：`String`
 
-> 只有顶层Compound标签可以被转换为SNBT
+> 只有完整的顶层Compound标签可以被转换为SNBT
+
+<br>
+
+#### NBT对象序列化为二进制NBT
+
+`nbt.toBinaryNBT()`
+
+- 返回值：对应的二进制NBT数据
+- 返回值类型：`ByteBuffer`
+
+> 只有完整的顶层Compound标签可以被转换为二进制NBT
 
 <br>
 
