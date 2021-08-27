@@ -154,7 +154,7 @@
     <ClCompile Include="CheckNotice.cpp">
       <Filter>Main</Filter>
     </ClCompile>
-    <ClCompile Include="API\GameSystemAPI.cpp">
+    <ClCompile Include="API\ScoreboardAPI.cpp">
       <Filter>API</Filter>
     </ClCompile>
     <ClCompile Include="AutoUpdate.cpp">
@@ -327,7 +327,7 @@
     <ClInclude Include="CheckNotice.h">
       <Filter>Main</Filter>
     </ClInclude>
-    <ClInclude Include="API\GameSystemAPI.h">
+    <ClInclude Include="API\ScoreboardAPI.h">
       <Filter>API</Filter>
     </ClInclude>
     <ClInclude Include="AutoUpdate.h">

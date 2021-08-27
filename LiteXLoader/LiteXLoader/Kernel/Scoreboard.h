@@ -11,6 +11,7 @@ class Objective;
 
 struct ScoreInfo
 {
+	char filler[20];
 	Objective* getObjective()
 	{
 		return dAccess<Objective*>(this, 0);
@@ -30,8 +31,10 @@ class Objective
 public:
 	inline ScoreInfo getPlayerScore(const ScoreboardId& a1)
 	{
-		return SymCall("?getPlayerScore@Objective@@QEBA?AUScoreInfo@@AEBUScoreboardId@@@Z", 
-			ScoreInfo, Objective*, const ScoreboardId&)(this, a1);
+		ScoreInfo sc;
+		SymCall("?getPlayerScore@Objective@@QEBA?AUScoreInfo@@AEBUScoreboardId@@@Z", 
+			ScoreInfo*, Objective*, ScoreInfo*, const ScoreboardId&)(this, &sc, a1);
+		return sc;
 	}
 	inline std::string getName()
 	{
@@ -151,9 +154,8 @@ public:
 	}
 	inline Objective* getObjective(const std::string& a1)
 	{
-		return SymCall("?getObjective@Scoreboard@@QEBAPEAVObjective@@AEBV?$basic_string@DU?$char_"
-			"traits@D@std@@V?$allocator@D@2@@std@@@Z", Objective*, Scoreboard*,
-			const std::string&)(this, a1);
+		return SymCall("?getObjective@Scoreboard@@QEBAPEAVObjective@@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z",
+			Objective*, Scoreboard*,const std::string&)(this, a1);
 	}
 	inline std::vector<Objective*> getObjectives()
 	{
@@ -172,10 +174,15 @@ public:
 			void, Scoreboard*, std::vector<std::string>*)(this, &vec);
 		return vec;
 	}
-	inline const ScoreboardId& getScoreboardId(const Actor& a1)
+	inline const ScoreboardId& getScoreboardId(Actor*a1)
 	{
 		return SymCall("?getScoreboardId@Scoreboard@@QEBAAEBUScoreboardId@@AEBVActor@@@Z",
-			const ScoreboardId&, Scoreboard*, const Actor&)(this, a1);
+			const ScoreboardId&, Scoreboard*, Actor*)(this, a1);
+	}
+	inline const ScoreboardId& getScoreboardId(Player* a1)
+	{
+		return SymCall("?getScoreboardId@Scoreboard@@QEBAAEBUScoreboardId@@AEBVPlayer@@@Z",
+			const ScoreboardId&, Scoreboard*, Player*)(this, a1);
 	}
 	inline const ScoreboardId& getScoreboardId(const std::string& a1)
 	{

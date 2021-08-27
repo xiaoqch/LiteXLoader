@@ -17,7 +17,7 @@
 #include "GuiAPI.h"
 #include "LxlAPI.h"
 #include "SystemAPI.h"
-#include "GameSystemAPI.h"
+#include "ScoreboardAPI.h"
 #include <Engine/RemoteCall.h>
 using namespace script;
 

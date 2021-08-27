@@ -1,7 +1,7 @@
 #include "APIHelp.h"
 #include <Kernel/Scoreboard.h>
 #include <Kernel/Player.h>
-#include "GameSystemAPI.h"
+#include "ScoreboardAPI.h"
 #include "PlayerAPI.h"
 #include <optional>
 using namespace std;

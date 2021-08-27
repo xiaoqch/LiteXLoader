@@ -17,7 +17,7 @@ using namespace script;
 #include <API/PlayerAPI.h>
 #include <API/ServerAPI.h>
 #include <API/ScriptAPI.h>
-#include <API/GameSystemAPI.h>
+#include <API/ScoreboardAPI.h>
 #include <API/StaticClasses.h>
 #include <API/PacketAPI.h>
 #include <API/GameUtilsAPI.h>

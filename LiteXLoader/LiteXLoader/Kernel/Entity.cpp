@@ -49,8 +49,13 @@ std::string Raw_GetEntityTypeName(Actor* actor)
 {
     /*string res = SymCall("?EntityTypeToString@@YA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@W4ActorType@@W4ActorTypeNamespaceRules@@@Z",
         string, int, int) (Raw_GetEntityTypeId(actor), 1);*/
-    HashedString hash = dAccess<HashedString>(actor, 896);      //IDA Actor::Actor
-    return hash.getString();
+    if (Raw_IsPlayer(actor))
+        return "minecraft:player";
+    else
+    {
+        HashedString hash = dAccess<HashedString>(actor, 896);      //IDA Actor::Actor
+        return hash.getString();
+    }
 }
 
 int Raw_GetEntityTypeId(Actor* actor)
