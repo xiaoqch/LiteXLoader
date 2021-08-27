@@ -647,78 +647,59 @@ void SNBTToTag_List_Helper(Tag*& nbt, tags::compound_list_tag& data);
 
 void SNBTToTag_List_Helper(Tag*& nbt, tags::end_list_tag& data)
 {
-    Tag* tag = Tag::createTag(TagType::List);
-    tag->addEnd();
-    nbt->add(tag);
+    nbt->addEnd();
 }
 
 void SNBTToTag_List_Helper(Tag*& nbt, tags::byte_list_tag& data)
 {
-    Tag* tag = Tag::createTag(TagType::List);
     for (auto& dat : data.value)
-        tag->addByte((char)dat);
-    nbt->add(tag);
+        nbt->addByte((char)dat);
 }
 
 void SNBTToTag_List_Helper(Tag*& nbt, tags::short_list_tag& data)
 {
-    Tag* tag = Tag::createTag(TagType::List);
     for (auto& dat : data.value)
-        tag->addShort((short)dat);
-    nbt->add(tag);
+        nbt->addShort((short)dat);
 }
 
 void SNBTToTag_List_Helper(Tag*& nbt, tags::int_list_tag& data)
 {
-    Tag* tag = Tag::createTag(TagType::List);
     for (auto& dat : data.value)
-        tag->addInt((int)dat);
-    nbt->add(tag);
+        nbt->addInt((int)dat);
 }
 
 void SNBTToTag_List_Helper(Tag*& nbt, tags::long_list_tag& data)
 {
-    Tag* tag = Tag::createTag(TagType::List);
     for (auto& dat : data.value)
-        tag->addLong((long long)dat);
-    nbt->add(tag);
+        nbt->addLong((long long)dat);
 }
 
 void SNBTToTag_List_Helper(Tag*& nbt, tags::float_list_tag& data)
 {
-    Tag* tag = Tag::createTag(TagType::List);
     for (auto& dat : data.value)
-        tag->addFloat((float)dat);
-    nbt->add(tag);
+        nbt->addFloat((float)dat);
 }
 
 void SNBTToTag_List_Helper(Tag*& nbt, tags::double_list_tag& data)
 {
-    Tag* tag = Tag::createTag(TagType::List);
     for (auto& dat : data.value)
-        tag->addDouble((double)dat);
-    nbt->add(tag);
+        nbt->addDouble((double)dat);
 }
 
 void SNBTToTag_List_Helper(Tag*& nbt, tags::string_list_tag& data)
 {
-    Tag* tag = Tag::createTag(TagType::List);
     for (auto& dat : data.value)
-        tag->addString((string)dat);
-    nbt->add(tag);
+        nbt->addString((string)dat);
 }
 
 void SNBTToTag_List_Helper(Tag*& nbt, tags::bytearray_list_tag& data)
 {
-    Tag* tag = Tag::createTag(TagType::List);
     for (auto& dat : data.value)
-        tag->addByteArray(dat.data(), dat.size());
-    nbt->add(tag);
+        nbt->addByteArray(dat.data(), dat.size());
 }
 
 void SNBTToTag_List_Helper(Tag*& nbt, tags::list_list_tag& data)
 {
-    Tag* tag = Tag::createTag(TagType::List);
     for (auto& dat : data.value)
     {
         Tag* tagList = Tag::createTag(TagType::List);
@@ -760,21 +741,18 @@ void SNBTToTag_List_Helper(Tag*& nbt, tags::list_list_tag& data)
             default:
                 break;
         }
-        tag->add(tagList);
+        nbt->add(tagList);
     }
-    nbt->add(tag);
 }
 
 void SNBTToTag_List_Helper(Tag*& nbt, tags::compound_list_tag& data)
 {
-    Tag* tag = Tag::createTag(TagType::List);
     for (auto& dat : data.value)
     {
         Tag* tagComp = Tag::createTag(TagType::Compound);
         SNBTToTag_Compound_Helper(tagComp, dat);
-        tag->add(tagComp);
+        nbt->add(tagComp);
     }
-    nbt->add(tag);
 }
 
 void SNBTToTag_Compound_Helper(Tag*& nbt, tags::compound_tag& data)

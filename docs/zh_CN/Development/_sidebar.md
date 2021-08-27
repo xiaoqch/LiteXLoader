@@ -13,9 +13,10 @@
   - [🧰 物品对象](zh_CN/Development/GameAPI/Item.md)
   - [📮 方块实体对象](zh_CN/Development/GameAPI/BlockEntity.md)
   - [👜 容器对象](zh_CN/Development/GameAPI/Container.md)
-  - [📝 计分板](zh_CN/Development/GameAPI/ScoreBoard.md)
+  - [📝 记分板](zh_CN/Development/GameAPI/ScoreBoard.md)
   - [📱 玩家设备信息](zh_CN/Development/GameAPI/Device.md)
   - [💻 服务端设置](zh_CN/Development/GameAPI/Server.md)
+  - [🎮 游戏实用工具](zh_CN/Development/GameAPI/GameUtils.md)
 - 事件系统
 
   - [🔔 监听事件](zh_CN/Development/EventAPI/Listen.md)

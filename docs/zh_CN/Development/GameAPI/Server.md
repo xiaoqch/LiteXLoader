@@ -22,17 +22,3 @@
 - 返回值类型：`Boolean`
 
 <br>
-
-### 设置服务器自定义在线人数 
-
-`mc.setOnlinePlayer(nowCount,maxCount)`
-
-- 参数：
-  - nowCount : `Integer`  
-    当前在线人数  
-  - maxCount : `Integer`  
-    最大在线人数  
-- 返回值：是否设置成功
-- 返回值类型：`Boolean`
-
-<br>

@@ -1337,7 +1337,7 @@ THook(void, "?onScoreChanged@ServerScoreboard@@UEAAXAEBUScoreboardId@@AEBVObject
         auto pls = Raw_GetOnlinePlayers();
         for (auto& pl : pls)
         {
-            if (globalScoreBoard->getScoreboardId(*(Actor*)pl).id == id)
+            if (globalScoreBoard->getScoreboardId(pl).id == id)
             {
                 player = pl;
                 break;

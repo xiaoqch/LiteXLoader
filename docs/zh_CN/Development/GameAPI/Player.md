@@ -369,7 +369,7 @@ pl.rename("newname");
 
 <br>
 
-#### 刷新玩家所有物品
+#### 刷新玩家物品栏、盔甲栏
 
 `pl.refreshItems()`
 

@@ -250,7 +250,7 @@ int Raw_GetScore(Player* player, const std::string &key)
     Objective* obj = globalScoreBoard->getObjective(key);
     if (obj)
     {
-        auto id = globalScoreBoard->getScoreboardId(*(Actor*)player);
+        auto id = globalScoreBoard->getScoreboardId(player);
         auto score = obj->getPlayerScore(id);
         return score.getCount();
     }
@@ -262,7 +262,7 @@ bool Raw_SetScore(Player* player, const std::string &key, int value)
     Objective* obj = globalScoreBoard->getObjective(key);
     if (obj)
     {
-        globalScoreBoard->modifyPlayerScore(globalScoreBoard->getScoreboardId(*(Actor*)player), obj, value, 0);   //Set
+        globalScoreBoard->modifyPlayerScore(globalScoreBoard->getScoreboardId(player), obj, value, 0);   //Set
         return true;
     }
     return false;
@@ -273,7 +273,7 @@ bool Raw_AddScore(Player* player, const std::string &key, int value)
     Objective* obj = globalScoreBoard->getObjective(key);
     if (obj)
     {
-        globalScoreBoard->modifyPlayerScore(globalScoreBoard->getScoreboardId(*(Actor*)player), obj, value, 1);   //Add
+        globalScoreBoard->modifyPlayerScore(globalScoreBoard->getScoreboardId(player), obj, value, 1);   //Add
         return true;
     }
     return false;
@@ -286,7 +286,7 @@ bool Raw_ReduceScore(Player* player, const std::string &key, int value)
     {
         bool a1 = true;
         bool& pa = a1;
-        globalScoreBoard->modifyPlayerScore(globalScoreBoard->getScoreboardId(*(Actor*)player), obj, value, 2);   //Reduce
+        globalScoreBoard->modifyPlayerScore(globalScoreBoard->getScoreboardId(player), obj, value, 2);   //Reduce
         return true;
     }
     return false;

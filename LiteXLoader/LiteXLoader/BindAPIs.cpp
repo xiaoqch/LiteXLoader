@@ -17,9 +17,10 @@ using namespace script;
 #include <API/PlayerAPI.h>
 #include <API/ServerAPI.h>
 #include <API/ScriptAPI.h>
-#include <API/GameSystemAPI.h>
+#include <API/ScoreboardAPI.h>
 #include <API/StaticClasses.h>
 #include <API/PacketAPI.h>
+#include <API/GameUtilsAPI.h>
 
 void BindAPIs(ScriptEngine *engine)
 {
@@ -53,6 +54,7 @@ void BindAPIs(ScriptEngine *engine)
     engine->registerNativeClass(NetworkClassBuilder);
     engine->registerNativeClass(LxlClassBuilder);
     engine->registerNativeClass(NbtStaticBuilder);
+    engine->registerNativeClass(TextClassBuilder);
 
 
     //////////////// 实例类 ////////////////

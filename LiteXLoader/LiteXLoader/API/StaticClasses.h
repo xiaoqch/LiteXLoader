@@ -17,7 +17,7 @@
 #include "GuiAPI.h"
 #include "LxlAPI.h"
 #include "SystemAPI.h"
-#include "GameSystemAPI.h"
+#include "ScoreboardAPI.h"
 #include <Engine/RemoteCall.h>
 using namespace script;
 
@@ -50,7 +50,6 @@ public:
 
     static Local<Value> regConsoleCmd(const Arguments& args) { return RegisterConsoleCmd(args); }
     static Local<Value> setMotd(const Arguments& args) { return SetMotd(args); }
-    static Local<Value> setOnlinePlayer(const Arguments& args) { return SetOnlinePlayer(args); }
     static Local<Value> sendCmdOutput(const Arguments& args) { return SendCmdOutput(args); }
 
     static Local<Value> newIntPos(const Arguments& args) { return NewIntPos(args); }
@@ -85,7 +84,6 @@ static ClassDefine<void> McClassBuilder =
         .function("newCustomForm", &McClass::newCustomForm)
         .function("regConsoleCmd", &McClass::regConsoleCmd)
         .function("setMotd", &McClass::setMotd)
-        .function("setOnlinePlayer", &McClass::setOnlinePlayer)
         .function("sendCmdOutput", &McClass::sendCmdOutput)
         .function("newIntPos", &McClass::newIntPos)
         .function("newFloatPos", &McClass::newFloatPos)

@@ -154,7 +154,7 @@
     <ClCompile Include="CheckNotice.cpp">
       <Filter>Main</Filter>
     </ClCompile>
-    <ClCompile Include="API\GameSystemAPI.cpp">
+    <ClCompile Include="API\ScoreboardAPI.cpp">
       <Filter>API</Filter>
     </ClCompile>
     <ClCompile Include="AutoUpdate.cpp">
@@ -188,6 +188,9 @@
       <Filter>Kernel</Filter>
     </ClCompile>
     <ClCompile Include="API\BlockEntityAPI.cpp">
+      <Filter>API</Filter>
+    </ClCompile>
+    <ClCompile Include="API\GameUtilsAPI.cpp">
       <Filter>API</Filter>
     </ClCompile>
   </ItemGroup>
@@ -324,7 +327,7 @@
     <ClInclude Include="CheckNotice.h">
       <Filter>Main</Filter>
     </ClInclude>
-    <ClInclude Include="API\GameSystemAPI.h">
+    <ClInclude Include="API\ScoreboardAPI.h">
       <Filter>API</Filter>
     </ClInclude>
     <ClInclude Include="AutoUpdate.h">
@@ -364,6 +367,9 @@
       <Filter>API</Filter>
     </ClInclude>
     <ClInclude Include="API\StaticClasses.h">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="API\GameUtilsAPI.h">
       <Filter>API</Filter>
     </ClInclude>
   </ItemGroup>
