@@ -190,6 +190,9 @@
     <ClCompile Include="API\BlockEntityAPI.cpp">
       <Filter>API</Filter>
     </ClCompile>
+    <ClCompile Include="API\GameUtilsAPI.cpp">
+      <Filter>API</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="API\BaseAPI.h">
@@ -364,6 +367,9 @@
       <Filter>API</Filter>
     </ClInclude>
     <ClInclude Include="API\StaticClasses.h">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="API\GameUtilsAPI.h">
       <Filter>API</Filter>
     </ClInclude>
   </ItemGroup>

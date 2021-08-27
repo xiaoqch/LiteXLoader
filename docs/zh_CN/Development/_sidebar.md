@@ -16,6 +16,7 @@
   - [📝 计分板](zh_CN/Development/GameAPI/ScoreBoard.md)
   - [📱 玩家设备信息](zh_CN/Development/GameAPI/Device.md)
   - [💻 服务端设置](zh_CN/Development/GameAPI/Server.md)
+  - [🎮 游戏实用工具](zh_CN/Development/GameAPI/GameUtils.md)
 - 事件系统
 
   - [🔔 监听事件](zh_CN/Development/EventAPI/Listen.md)

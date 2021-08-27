@@ -47,6 +47,7 @@
     <ClCompile Include="API\EventAPI.cpp" />
     <ClCompile Include="API\FileSystemAPI.cpp" />
     <ClCompile Include="API\GameSystemAPI.cpp" />
+    <ClCompile Include="API\GameUtilsAPI.cpp" />
     <ClCompile Include="API\GuiAPI.cpp" />
     <ClCompile Include="API\ItemAPI.cpp" />
     <ClCompile Include="API\LoggerAPI.cpp" />
@@ -105,6 +106,7 @@
     <ClInclude Include="API\EventAPI.h" />
     <ClInclude Include="API\FileSystemAPI.h" />
     <ClInclude Include="API\GameSystemAPI.h" />
+    <ClInclude Include="API\GameUtilsAPI.h" />
     <ClInclude Include="API\GuiAPI.h" />
     <ClInclude Include="API\ItemAPI.h" />
     <ClInclude Include="API\LoggerAPI.h" />
