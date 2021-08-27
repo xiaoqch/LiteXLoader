@@ -41,6 +41,7 @@ WSClientClass::WSClientClass()
         std::list<ListenerListType>& nowList = *li[int(WSClientEvents::onTextReceived)];
         for (auto& listener : nowList)
         {
+            EngineScope enter(listener.engine);
             NewTimeout(listener.func.get(), { String::newString(msg) }, 1);
         }
     });
@@ -49,6 +50,7 @@ WSClientClass::WSClientClass()
         std::list<ListenerListType>& nowList = *li[int(WSClientEvents::onBinaryReceived)];
         for (auto& listener : nowList)
         {
+            EngineScope enter(listener.engine);
             NewTimeout(listener.func.get(), { ByteBuffer::newByteBuffer(data.data(),data.size()) }, 1);
         }
     });
@@ -57,6 +59,7 @@ WSClientClass::WSClientClass()
         std::list<ListenerListType>& nowList = *li[int(WSClientEvents::onError)];
         for (auto& listener : nowList)
         {
+            EngineScope enter(listener.engine);
             NewTimeout(listener.func.get(), { String::newString(msg) }, 1);
         }
     });
@@ -65,6 +68,7 @@ WSClientClass::WSClientClass()
         std::list<ListenerListType>& nowList = *li[int(WSClientEvents::onLostConnection)];
         for (auto& listener : nowList)
         {
+            EngineScope enter(listener.engine);
             NewTimeout(listener.func.get(), { Number::newNumber(code) }, 1);
         }
     });
