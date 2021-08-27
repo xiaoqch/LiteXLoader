@@ -42,7 +42,7 @@ public:
 	}
 	inline std::string getDisplayName()
 	{
-		return dAccess<std::string>(this, 64);
+		return dAccess<std::string>(this, 96);
 	}
 };
 

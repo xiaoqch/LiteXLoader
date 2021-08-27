@@ -50,6 +50,8 @@ std::string Raw_GetEntityTypeName(Actor* actor)
 {
     /*string res = SymCall("?EntityTypeToString@@YA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@W4ActorType@@W4ActorTypeNamespaceRules@@@Z",
         string, int, int) (Raw_GetEntityTypeId(actor), 1);*/
+    if (!actor)
+        return "";
     if (Raw_IsPlayer(actor))
         return "minecraft:player";
     else
