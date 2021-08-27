@@ -35,6 +35,7 @@ ClassDefine<EntityClass> EntityClassBuilder =
         .instanceFunction("getArmor", &EntityClass::getArmor)
         .instanceFunction("hasContainer", &EntityClass::hasContainer)
         .instanceFunction("getContainer", &EntityClass::getContainer)
+        .instanceFunction("refreshItems", &EntityClass::refreshItems)
         .instanceFunction("setNbt", &EntityClass::setNbt)
         .instanceFunction("getNbt", &EntityClass::getNbt)
         .instanceFunction("addTag", &EntityClass::addTag)
@@ -345,6 +346,18 @@ Local<Value> EntityClass::getArmor(const Arguments& args)
         return ContainerClass::newContainer(Raw_GetArmor(entity));
     }
     CATCH("Fail in getArmor!");
+}
+
+Local<Value> EntityClass::refreshItems(const Arguments& args)
+{
+    try {
+        Actor* entity = get();
+        if (!entity)
+            return Local<Value>();
+
+        return Boolean::newBoolean(Raw_RefreshItems(entity));
+    }
+    CATCH("Fail in refreshItems!");
 }
 
 Local<Value> EntityClass::hasContainer(const Arguments& args)

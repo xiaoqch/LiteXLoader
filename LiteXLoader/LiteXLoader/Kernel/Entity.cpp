@@ -6,6 +6,7 @@
 #include "Utils.h"
 #include <string>
 #include <vector>
+#include <bitset>
 using namespace std;
 
 class Spawner;
@@ -225,4 +226,12 @@ bool Raw_Explode(FloatVec4 pos, Actor* source, float power, float range, float i
 void Raw_RefreshActorData(Actor* ac)
 {
     SymCall("?_sendDirtyActorData@Actor@@QEAAXXZ", uintptr_t, Actor*)(ac);
+}
+
+bool Raw_RefreshItems(Actor* ac)
+{
+    SymCall("?sendInventory@Mob@@UEAAX_N@Z", void, Mob*)((Mob*)ac);
+    bitset<4> bits("1111");
+    SymCall("?sendArmor@Mob@@UEAAXAEBV?$bitset@$03@std@@@Z", void, Mob*, bitset<4>*)((Mob*)ac, &bits);
+    return true;
 }
