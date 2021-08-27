@@ -48,9 +48,12 @@ std::optional<int> Raw_ModifyScoreInObjective(const std::string& objname, const 
 	if (obj != 0)
 	{
 		int a1 = 0;
-		bool res = scb->getScoreboardIdentityRef(&identity)->
-			modifyScoreInObjective(&a1, obj, score, (PlayerScoreSetFunction)mode);
-		if (res) return a1;
+		auto ref = scb->getScoreboardIdentityRef(&identity);
+		//if (!ref->hasScoreInObjective(obj))
+		//	;
+		bool res = ref->modifyScoreInObjective(&a1, obj, score, (PlayerScoreSetFunction)mode);
+		if (res)
+			return a1;
 	}
 	return std::nullopt;
 }

@@ -112,7 +112,6 @@ Local<Value> ObjectiveClass::setScore(const Arguments& args)
 Local<Value> ObjectiveClass::addScore(const Arguments& args)
 {
 	CHECK_ARGS_COUNT(args, 2)
-	CHECK_ARG_TYPE(args[0], ValueKind::kString)
 	CHECK_ARG_TYPE(args[1], ValueKind::kNumber)
 
 	try {
@@ -138,7 +137,6 @@ Local<Value> ObjectiveClass::addScore(const Arguments& args)
 Local<Value> ObjectiveClass::reduceScore(const Arguments& args)
 {
 	CHECK_ARGS_COUNT(args, 2)
-	CHECK_ARG_TYPE(args[0], ValueKind::kString)
 	CHECK_ARG_TYPE(args[1], ValueKind::kNumber)
 
 	try {
@@ -164,7 +162,6 @@ Local<Value> ObjectiveClass::reduceScore(const Arguments& args)
 Local<Value> ObjectiveClass::deleteScore(const Arguments& args)
 {
 	CHECK_ARGS_COUNT(args, 1)
-	CHECK_ARG_TYPE(args[0], ValueKind::kString)
 
 	try {
 		string id;
@@ -188,7 +185,6 @@ Local<Value> ObjectiveClass::deleteScore(const Arguments& args)
 Local<Value> ObjectiveClass::getScore(const Arguments& args)
 {
 	CHECK_ARGS_COUNT(args, 1)
-	CHECK_ARG_TYPE(args[0], ValueKind::kString)
 		
 	try {
 		string id;

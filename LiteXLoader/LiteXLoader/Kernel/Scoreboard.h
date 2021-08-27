@@ -76,6 +76,11 @@ public:
 		return SymCall("?removeFromObjective@ScoreboardIdentityRef@@QEAA_NAEAVScoreboard@@AEAV"
 			"Objective@@@Z", bool, ScoreboardIdentityRef*, Scoreboard*, Objective*)(this, scb, obj);
 	}
+	inline bool hasScoreInObjective(Objective* obj)
+	{
+		return SymCall("?hasScoreInObjective@ScoreboardIdentityRef@@QEBA_NAEBVObjective@@@Z",
+			bool, ScoreboardIdentityRef*, Objective*)(this, obj);
+	}
 };
 
 class ObjectiveCriteria {};
