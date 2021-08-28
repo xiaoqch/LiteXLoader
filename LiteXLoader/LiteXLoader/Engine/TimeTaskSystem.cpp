@@ -72,11 +72,21 @@ void HandleTimeTaskMessage(utils::Message& msg)
         {
             ERROR(string("Error occurred in ") + (isInterval ? "setInterval" : "setTimeout"));
             ERRPRINT(e);
+            ERROR("In Plugin: " + ENGINE_OWN_DATA()->pluginName); 
+        }
+        catch (const std::exception& e)
+        {
+            ERROR(string("Error occurred in ") + (isInterval ? "setInterval" : "setTimeout"));
+            ERROR("C++ Uncaught Exception Detected!");
+            ERRPRINT(e.what());
+            ERROR("In Plugin: " + ENGINE_OWN_DATA()->pluginName);
         }
         catch (const seh_exception& e)
         {
-            ERROR("SEH Exception Caught!");
+            ERROR(string("Error occurred in ") + (isInterval ? "setInterval" : "setTimeout"));
+            ERROR("SEH Uncaught Exception Detected!");
             ERRPRINT(e.what());
+            ERROR("In Plugin: " + ENGINE_OWN_DATA()->pluginName);
         }
 
         if (isInterval)
@@ -90,6 +100,8 @@ void HandleTimeTaskMessage(utils::Message& msg)
     }
     catch (...)
     {
+        ERROR("Error occurred in TimeTask!");
+        ERROR("Uncaught Exception Detected!");
         return;
     }
 }

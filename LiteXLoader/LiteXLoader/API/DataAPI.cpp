@@ -227,9 +227,9 @@ Local<Value> ConfJsonClass::get(const Arguments& args)
     }
     catch (const std::out_of_range& e)
     {
-        return Local<Value>();
+        return args.size() >= 2 ? args[1] : Local<Value>();
     }
-    catch (exception& e)
+    catch (const JSON_VALUE::exception& e)
     {
         return args.size() >= 2 ? args[1] : Local<Value>();
     }
@@ -246,9 +246,9 @@ Local<Value> ConfJsonClass::set(const Arguments& args)
         jsonConf[args[0].toStr()] = JSON_VALUE::parse(ValueToJson(args[1]));
         return Boolean::newBoolean(flush());
     }
-    catch (exception& e)
+    catch (const JSON_VALUE::exception& e)
     {
-        return args.size() >= 2 ? args[1] : Local<Value>();
+        return Boolean::newBoolean(false);
     }
     CATCH("Fail in confJsonSet!");
 }
@@ -265,9 +265,9 @@ Local<Value> ConfJsonClass::del(const Arguments& args)
 
         return Boolean::newBoolean(flush());
     }
-    catch (exception& e)
+    catch (const JSON_VALUE::exception& e)
     {
-        return args.size() >= 2 ? args[1] : Local<Value>();
+        return Boolean::newBoolean(false);
     }
     CATCH("Fail in confJsonDelete!");
 }
@@ -278,7 +278,7 @@ Local<Value> ConfJsonClass::reload(const Arguments& args)
     {
         return Boolean::newBoolean(reload());
     }
-    catch (exception& e)
+    catch (const JSON_VALUE::exception& e)
     {
         ERROR("Fail to parse json content in file!");
         ERRPRINT(e.what());
@@ -614,6 +614,18 @@ Local<Value> MoneySet(const Arguments& args)
     {
         return Boolean::newBoolean(Raw_SetMoney(stoull(args[0].toStr()), args[1].asNumber().toInt64()));
     }
+    catch (const std::invalid_argument& e)
+    {
+        ERROR("Bad argument in MoneySet!");
+        ERRPRINT(e.what());
+        return Boolean::newBoolean(false);
+    }
+    catch (const std::out_of_range& e)
+    {
+        ERROR("Bad argument in MoneySet!");
+        ERRPRINT(e.what());
+        return Boolean::newBoolean(false);
+    }
     CATCH("Fail in MoneySet!")
 }
 
@@ -625,6 +637,18 @@ Local<Value> MoneyGet(const Arguments& args)
     try
     {
         return Number::newNumber(Raw_GetMoney(stoull(args[0].toStr())));
+    }
+    catch (const std::invalid_argument& e)
+    {
+        ERROR("Bad argument in MoneyGet!");
+        ERRPRINT(e.what());
+        return Number::newNumber(0);
+    }
+    catch (const std::out_of_range& e)
+    {
+        ERROR("Bad argument in MoneyGet!");
+        ERRPRINT(e.what());
+        return Number::newNumber(0);
     }
     CATCH("Fail in MoneyGet!")
 }
@@ -639,6 +663,18 @@ Local<Value> MoneyAdd(const Arguments& args)
     {
         return Boolean::newBoolean(Raw_AddMoney(stoull(args[0].toStr()), args[1].asNumber().toInt64()));
     }
+    catch (const std::invalid_argument& e)
+    {
+        ERROR("Bad argument in MoneyAdd!");
+        ERRPRINT(e.what());
+        return Boolean::newBoolean(false);
+    }
+    catch (const std::out_of_range& e)
+    {
+        ERROR("Bad argument in MoneyAdd!");
+        ERRPRINT(e.what());
+        return Boolean::newBoolean(false);
+    }
     CATCH("Fail in MoneyAdd!")
 }
 
@@ -651,6 +687,18 @@ Local<Value> MoneyReduce(const Arguments& args)
     try
     {
         return Boolean::newBoolean(Raw_ReduceMoney(stoull(args[0].toStr()), args[1].asNumber().toInt64()));
+    }
+    catch (const std::invalid_argument& e)
+    {
+        ERROR("Bad argument in MoneyReduce!");
+        ERRPRINT(e.what());
+        return Boolean::newBoolean(false);
+    }
+    catch (const std::out_of_range& e)
+    {
+        ERROR("Bad argument in MoneyReduce!");
+        ERRPRINT(e.what());
+        return Boolean::newBoolean(false);
     }
     CATCH("Fail in MoneyReduce!")
 }
@@ -669,6 +717,18 @@ Local<Value> MoneyTrans(const Arguments& args)
             note = args[3].toStr();
         return Boolean::newBoolean(Raw_TransMoney(stoull(args[0].toStr()), stoull(args[1].toStr()),
                 args[2].asNumber().toInt64(), note));
+    }
+    catch (const std::invalid_argument& e)
+    {
+        ERROR("Bad argument in MoneyTrans!");
+        ERRPRINT(e.what());
+        return Boolean::newBoolean(false);
+    }
+    catch (const std::out_of_range& e)
+    {
+        ERROR("Bad argument in MoneyTrans!");
+        ERRPRINT(e.what());
+        return Boolean::newBoolean(false);
     }
     CATCH("Fail in MoneyTrans!")
 }
@@ -718,6 +778,18 @@ Local<Value> MoneyGetHintory(const Arguments& args)
             arr.add(obj);
         }
         return arr;
+    }
+    catch (const std::invalid_argument& e)
+    {
+        ERROR("Bad argument in MoneyGetHintory!");
+        ERRPRINT(e.what());
+        return Local<Value>();
+    }
+    catch (const std::out_of_range& e)
+    {
+        ERROR("Bad argument in MoneyGetHintory!");
+        ERRPRINT(e.what());
+        return Local<Value>();
     }
     CATCH("Fail in MoneyGetHintory!")
 }

@@ -104,7 +104,7 @@ Local<Value> WSClientClass::getStatus()
     try {
         return Number::newNumber((int)ws.GetStatus());
     }
-    catch (const std::exception& e)
+    catch (const std::runtime_error& e)
     {
         return Local<Value>();
     }
@@ -120,7 +120,7 @@ Local<Value> WSClientClass::connect(const Arguments& args)
         ws.Connect(args[0].toStr());
         return Boolean::newBoolean(true);
     }
-    catch (const std::exception& e)
+    catch (const std::runtime_error& e)
     {
         return Boolean::newBoolean(false);
     }
@@ -143,7 +143,7 @@ Local<Value> WSClientClass::send(const Arguments& args)
         }
         return Boolean::newBoolean(true);
     }
-    catch (const std::exception& e)
+    catch (const std::runtime_error& e)
     {
         return Boolean::newBoolean(false);
     }
@@ -160,7 +160,7 @@ Local<Value> WSClientClass::listen(const Arguments& args)
         addListener(args[0].toStr(), args[1].asFunction());
         return Boolean::newBoolean(true);
     }
-    catch (const std::exception& e)
+    catch (const std::runtime_error& e)
     {
         return Boolean::newBoolean(false);
     }
@@ -173,7 +173,7 @@ Local<Value> WSClientClass::close(const Arguments& args)
         ws.Close();
         return Boolean::newBoolean(true);
     }
-    catch (const std::exception& e)
+    catch (const std::runtime_error& e)
     {
         return Boolean::newBoolean(false);
     }
@@ -186,7 +186,7 @@ Local<Value> WSClientClass::shutdown(const Arguments& args)
         ws.Shutdown();
         return Boolean::newBoolean(true);
     }
-    catch (const std::exception& e)
+    catch (const std::runtime_error& e)
     {
         return Boolean::newBoolean(false);
     }
@@ -198,7 +198,7 @@ Local<Value> WSClientClass::errorCode(const Arguments& args)
     try {
         return Number::newNumber(WSAGetLastError());
     }
-    catch (const std::exception& e)
+    catch (const std::runtime_error& e)
     {
         return Local<Value>();
     }
