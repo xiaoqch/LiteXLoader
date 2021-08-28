@@ -37,40 +37,48 @@ Local<Object> WSClientClass::newWSClient()
 WSClientClass::WSClientClass()
     :ScriptClass(ScriptClass::ConstructFromCpp<WSClientClass>{})
 {
-    ws.OnTextReceived([ li {&listeners} ](WebSocketClient& client, string msg) {
-        std::list<ListenerListType>& nowList = *li[int(WSClientEvents::onTextReceived)];
-        for (auto& listener : nowList)
-        {
-            EngineScope enter(listener.engine);
-            NewTimeout(listener.func.get(), { String::newString(msg) }, 1);
-        }
+    ws.OnTextReceived([ nowList {&listeners[int(WSClientEvents::onTextReceived)]} ]
+        (WebSocketClient& client, string msg)
+    {
+        if (!nowList->empty())
+            for (auto& listener : *nowList)
+            {
+                EngineScope enter(listener.engine);
+                NewTimeout(listener.func.get(), { String::newString(msg) }, 1);
+            }
     });
 
-    ws.OnBinaryReceived([li{ &listeners }](WebSocketClient& client, vector<uint8_t> data) {
-        std::list<ListenerListType>& nowList = *li[int(WSClientEvents::onBinaryReceived)];
-        for (auto& listener : nowList)
-        {
-            EngineScope enter(listener.engine);
-            NewTimeout(listener.func.get(), { ByteBuffer::newByteBuffer(data.data(),data.size()) }, 1);
-        }
+    ws.OnBinaryReceived([nowList{ &listeners[int(WSClientEvents::onBinaryReceived)] }]
+        (WebSocketClient& client, vector<uint8_t> data)
+    {
+        if(!nowList->empty())
+            for (auto& listener : *nowList)
+            {
+                EngineScope enter(listener.engine);
+                NewTimeout(listener.func.get(), { ByteBuffer::newByteBuffer(data.data(),data.size()) }, 1);
+            }
     });
 
-    ws.OnError([li{ &listeners }](WebSocketClient& client, string msg) {
-        std::list<ListenerListType>& nowList = *li[int(WSClientEvents::onError)];
-        for (auto& listener : nowList)
-        {
-            EngineScope enter(listener.engine);
-            NewTimeout(listener.func.get(), { String::newString(msg) }, 1);
-        }
+    ws.OnError([nowList{ &listeners[int(WSClientEvents::onError)] }]
+        (WebSocketClient& client, string msg)
+    {
+        if (!nowList->empty())
+            for (auto& listener : *nowList)
+            {
+                EngineScope enter(listener.engine);
+                NewTimeout(listener.func.get(), { String::newString(msg) }, 1);
+            }
     });
 
-    ws.OnLostConnection([li{ &listeners }](WebSocketClient& client, int code) {
-        std::list<ListenerListType>& nowList = *li[int(WSClientEvents::onLostConnection)];
-        for (auto& listener : nowList)
-        {
-            EngineScope enter(listener.engine);
-            NewTimeout(listener.func.get(), { Number::newNumber(code) }, 1);
-        }
+    ws.OnLostConnection([nowList{ &listeners[int(WSClientEvents::onLostConnection)] }]
+        (WebSocketClient& client, int code)
+    {
+        if (!nowList->empty())
+            for (auto& listener : *nowList)
+            {
+                EngineScope enter(listener.engine);
+                NewTimeout(listener.func.get(), { Number::newNumber(code) }, 1);
+            }
     });
 }
 
