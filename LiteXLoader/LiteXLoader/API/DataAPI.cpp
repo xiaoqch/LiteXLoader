@@ -196,18 +196,6 @@ Local<Value> ConfBaseClass::read(const Arguments& args)
     CATCH("Fail in confRead!")
 }
 
-//Local<Value> ConfBaseClass::write(const Arguments& args)
-//{
-//    CHECK_ARGS_COUNT(args, 1);
-//    CHECK_ARG_TYPE(args[0], ValueKind::kString);
-//
-//    try
-//    {
-//        return Boolean::newBoolean(Raw_FileWriteTo(confPath, args[0].toStr()));
-//    }
-//    CATCH("Fail in confWrite!")
-//}
-
 //////////////////// Classes ConfJson ////////////////////
 
 //生成函数

@@ -6,6 +6,7 @@
 #include <Kernel/Utils.h>
 #include <filesystem>
 #include <fstream>
+#include <string>
 using namespace script;
 using namespace std::filesystem;
 using namespace std;
@@ -133,7 +134,8 @@ Local<Value> FileClass::readLineSync(const Arguments& args)
 Local<Value> FileClass::readAllSync(const Arguments& args)
 {
     try {
-        return String::newString(std::string(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()));
+        string res((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+        return isBinary ? ByteBuffer::newByteBuffer(res.data(), res.size()).asValue() : String::newString(res).asValue();
     }
     CATCH("Fail in readAllSync!");
 }
@@ -143,7 +145,6 @@ Local<Value> FileClass::writeSync(const Arguments& args)
     CHECK_ARGS_COUNT(args, 1);
 
     try {
-        string buf;
         if (args[0].isString())
         {
             file << args[0].toStr();
@@ -176,27 +177,207 @@ Local<Value> FileClass::writeLineSync(const Arguments& args)
 
 Local<Value> FileClass::read(const Arguments& args)
 {
-    return Local<Value>();
+    CHECK_ARGS_COUNT(args, 2);
+    CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
+    CHECK_ARG_TYPE(args[1], ValueKind::kFunction);
+
+    try {
+        int cnt = args[0].toInt();
+        Global<Function> callbackFunc{ args[1].asFunction() };
+
+        pool.enqueue([cnt, fp{ &file }, isBinary { isBinary }, lock { &lock },
+            callback{ std::move(callbackFunc) }, engine{ EngineScope::currentEngine() }] ()
+        {
+            char* buf = new char[cnt];
+            lock->lock();
+            fp->read(buf, cnt);
+            size_t bytes = fp->gcount();
+            lock->unlock();
+
+            EngineScope scope(engine);
+            try
+            {
+                Local<Value> res = isBinary ? ByteBuffer::newByteBuffer(buf, bytes).asValue() : String::newString(string_view(buf, bytes)).asValue();
+                delete buf;
+                NewTimeout(callback.get(), { res }, 1);
+            }
+            catch (const Exception& e)
+            {
+                ERROR("FileRead Callback Failed!");
+                ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName);
+                ERRPRINT(e);
+            }
+        });
+        return Boolean::newBoolean(true);
+    }
+    CATCH("Fail in read!");
 }
 
 Local<Value> FileClass::readLine(const Arguments& args)
 {
-    return Local<Value>();
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kFunction);
+
+    try {
+        Global<Function> callbackFunc{ args[0].asFunction() };
+
+        pool.enqueue([fp{ &file }, lock{ &lock },
+            callback{ std::move(callbackFunc) }, engine{ EngineScope::currentEngine() }] ()
+        {
+            string buf;
+            lock->lock();
+            getline(*fp, buf);
+            lock->unlock();
+
+            EngineScope scope(engine);
+            try
+            {
+                NewTimeout(callback.get(), { String::newString(buf) }, 1);
+            }
+            catch (const Exception& e)
+            {
+                ERROR("FileReadLine Callback Failed!");
+                ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName);
+                ERRPRINT(e);
+            }
+        });
+        return Boolean::newBoolean(true);
+    }
+    CATCH("Fail in readLine!");
 }
 
 Local<Value> FileClass::readAll(const Arguments& args)
 {
-    return Local<Value>();
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kFunction);
+
+    try {
+        Global<Function> callbackFunc{ args[0].asFunction() };
+
+        pool.enqueue([fp{ &file }, isBinary{ isBinary }, lock{ &lock },
+            callback{ std::move(callbackFunc) }, engine{ EngineScope::currentEngine() }]()
+        {
+            lock->lock();
+            string res((std::istreambuf_iterator<char>(*fp)), std::istreambuf_iterator<char>());
+            lock->unlock();
+
+            EngineScope scope(engine);
+            try
+            {
+                Local<Value> readed = isBinary ? ByteBuffer::newByteBuffer(res.data(), res.size()).asValue() : String::newString(res).asValue();
+                NewTimeout(callback.get(), { readed }, 1);
+            }
+            catch (const Exception& e)
+            {
+                ERROR("FileReadAll Callback Failed!");
+                ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName);
+                ERRPRINT(e);
+            }
+        });
+        return Boolean::newBoolean(true);
+    }
+    CATCH("Fail in readAll!");
 }
 
 Local<Value> FileClass::write(const Arguments& args)
 {
-    return Local<Value>();
+    CHECK_ARGS_COUNT(args, 1);
+    if (args.size() >= 1)
+        CHECK_ARG_TYPE(args[1], ValueKind::kFunction);
+    
+    try {
+        string data;
+        bool isString = true;
+        if (args[0].isString())
+        {
+            data = std::move(args[0].toStr());
+        }
+        else if (args[0].isByteBuffer())
+        {
+            isString = false;
+            data = std::move(string((char*)args[0].asByteBuffer().getRawBytes(), args[0].asByteBuffer().byteLength()));
+        }
+        else
+        {
+            ERROR("Wrong type of argument in write!");
+            return Local<Value>();
+        }
+
+        Global<Function> callbackFunc;
+        if (args.size() >= 1) 
+            callbackFunc = args[1].asFunction();
+
+        pool.enqueue([fp{ &file }, lock{ &lock }, data{ std::move(data) }, isString, 
+            callback{ std::move(callbackFunc) }, engine{ EngineScope::currentEngine() }]()
+        {
+            lock->lock();
+            if (isString)
+                *fp << data;
+            else
+                fp->write(data.data(), data.size());
+            bool isOk = !fp->fail() && !fp->bad();
+            lock->unlock();
+
+            if (!callback.isEmpty())
+            {
+                EngineScope scope(engine);
+                try
+                {
+                    NewTimeout(callback.get(), { Boolean::newBoolean(isOk) }, 1);
+                }
+                catch (const Exception& e)
+                {
+                    ERROR("FileWrite Callback Failed!");
+                    ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName);
+                    ERRPRINT(e);
+                }
+            }
+        });
+        return Boolean::newBoolean(true);
+    }
+    CATCH("Fail in readLine!");
 }
 
 Local<Value> FileClass::writeLine(const Arguments& args)
 {
-    return Local<Value>();
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+    if (args.size() >= 1)
+        CHECK_ARG_TYPE(args[1], ValueKind::kFunction);
+
+    try {
+        string data{ std::move(args[0].toStr()) };
+
+        Global<Function> callbackFunc;
+        if (args.size() >= 1)
+            callbackFunc = args[1].asFunction();
+
+        pool.enqueue([fp{ &file }, lock{ &lock }, data{ std::move(data) }, 
+            callback{ std::move(callbackFunc) }, engine{ EngineScope::currentEngine() }]()
+        {
+            lock->lock();
+            *fp << data << "\n";
+            bool isOk = !fp->fail() && !fp->bad();
+            lock->unlock();
+
+            if (!callback.isEmpty())
+            {
+                EngineScope scope(engine);
+                try
+                {
+                    NewTimeout(callback.get(), { Boolean::newBoolean(isOk) }, 1);
+                }
+                catch (const Exception& e)
+                {
+                    ERROR("FileWriteLine Callback Failed!");
+                    ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName);
+                    ERRPRINT(e);
+                }
+            }
+        });
+        return Boolean::newBoolean(true);
+    }
+    CATCH("Fail in readLine!");
 }
 
 Local<Value> FileClass::seekTo(const Arguments& args)
@@ -303,6 +484,8 @@ Local<Value> OpenFile(const Arguments& args)
 
     try{
         string path = args[0].toStr();
+        Raw_AutoCreateDirs(path);
+
         FileOpenMode fMode = (FileOpenMode)(args[1].toInt());
         ios_base::openmode mode = ios_base::in;
         if (fMode == FileOpenMode::WriteMode)
@@ -504,7 +687,7 @@ Local<Value> FileReadFrom(const Arguments& args)
     
     try{
         string texts;
-        if(!Raw_FileReadFrom(args[0].asString().toString(),texts))
+        if(!Raw_FileReadFrom(args[0].toStr(),texts))
             return Local<Value>();  //Null
         return String::newString(texts);
     }
@@ -518,7 +701,9 @@ Local<Value> FileWriteTo(const Arguments& args)
     CHECK_ARG_TYPE(args[1], ValueKind::kString);
     
     try{
-        return Boolean::newBoolean(Raw_FileWriteTo(args[0].asString().toString(),args[1].asString().toString()));
+        string path = args[0].toStr();
+        Raw_AutoCreateDirs(path);
+        return Boolean::newBoolean(Raw_FileWriteTo(path,args[1].toStr()));
     }
     CATCH("Fail in FileWriteAll!");
 }
@@ -530,10 +715,13 @@ Local<Value> FileWriteLine(const Arguments& args)
     CHECK_ARG_TYPE(args[1], ValueKind::kString);
     
     try{
-        std::ofstream fileWrite(args[0].asString().toString(),std::ios::app);
+        string path = args[0].toStr();
+        Raw_AutoCreateDirs(path);
+
+        std::ofstream fileWrite(path,std::ios::app);
         if(!fileWrite)
             return Boolean::newBoolean(false);
-        fileWrite << args[1].asString().toString() << std::endl;
+        fileWrite << args[1].toStr() << std::endl;
         return Boolean::newBoolean(fileWrite.good());
     }
     CATCH("Fail in FileWriteLine!");
