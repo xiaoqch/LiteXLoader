@@ -163,6 +163,7 @@ bool Raw_RefreshItems(Player* pl)
 bool Raw_RenamePlayer(Player* player, const string &name)
 {
     player->setNameTag(name);
+    Raw_RefreshActorData((Actor*)player);
     return true;
 }
 
