@@ -29,12 +29,14 @@
 - 返回值类型：`Integer`
   - 如果返回值为`Null`，则代表发送失败
 
-- 参数`callback`的回调函数原型：`function(player,id)`  
+- 参数`callback`的回调函数原型：`function(player,result)`  
 
   - player : `Player`  
     与表单互动的玩家对象
-  - id : `Integer`    
-    玩家点击的表单按钮的序号  
+    
+  - result : `Integer`    
+    玩家点击**确定**按钮为`1`，**取消**按钮为`0`   
+    
     如果id为`Null`，则代表玩家取消了表单
 
 <br>
@@ -67,7 +69,7 @@
 - player : `Player`  
   与表单互动的玩家对象
 - id : `Integer`    
-  玩家点击的表单按钮的序号  
+  玩家点击的表单按钮的序号，从0开始编号  
   如果id为`Null`，则代表玩家取消了表单
 
 <br>
