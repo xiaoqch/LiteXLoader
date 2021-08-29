@@ -45,12 +45,15 @@ std::optional<int> Raw_ModifyScoreInObjective(const std::string& objname, const 
 {
 	auto obj = scb->getObjective(objname);
 	auto identity = scb->getScoreboardId(id);
-	if (obj != 0)
+	if (!SymCall("?isValid@ScoreboardId@@QEBA_NXZ", bool, ScoreboardId*)(identity))
+	{
+		identity = SymCall("?createScoreboardId@ServerScoreboard@@UEAAAEBUScoreboardId@@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z",
+			ScoreboardId*, Scoreboard*, const string&)(globalScoreBoard, id);
+	}
+	if (obj)
 	{
 		int a1 = 0;
-		auto ref = scb->getScoreboardIdentityRef(&identity);
-		//if (!ref->hasScoreInObjective(obj))
-		//	;
+		auto ref = scb->getScoreboardIdentityRef(identity);
 		bool res = ref->modifyScoreInObjective(&a1, obj, score, (PlayerScoreSetFunction)mode);
 		if (res)
 			return a1;
@@ -61,7 +64,7 @@ bool Raw_RemoveFromObjective(const std::string& objname, const std::string& id)
 {
 	auto obj = scb->getObjective(objname);
 	auto identity = scb->getScoreboardId(id); 
-	return scb->getScoreboardIdentityRef(&identity)->removeFromObjective(scb, obj);
+	return scb->getScoreboardIdentityRef(identity)->removeFromObjective(scb, obj);
 }
 int Raw_GetScore(const std::string& objname, const std::string& id)
 {

@@ -7,7 +7,7 @@ class Objective;
 class ObjectiveClass : public ScriptClass
 {
 	std::string objname;
-	bool isValid;
+	bool isValid = false;
 public:
 	explicit ObjectiveClass(Objective* obj)
 		:ScriptClass(ScriptClass::ConstructFromCpp<ObjectiveClass>{})

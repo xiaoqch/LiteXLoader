@@ -90,12 +90,12 @@ public:
 	static constexpr const char* DISPLAY_SLOT_LIST = "list";
 	static constexpr const char* DISPLAY_SLOT_SIDEBAR = "sidebar";
 	static constexpr const char* DISPLAY_SLOT_BELOWNAME = "belowname";
-	inline std::vector<ScoreInfo> getIdScores(const ScoreboardId& id)
+	inline std::vector<ScoreInfo> getIdScores(ScoreboardId* id)
 	{
 		std::vector<ScoreInfo> rv;
 		SymCall("?getIdScores@Scoreboard@@QEBA?AV?$vector@UScoreInfo@@V?$allocator@UScoreInfo"
 			"@@@std@@@std@@AEBUScoreboardId@@@Z", void, Scoreboard*,
-			std::vector<ScoreInfo>&, const ScoreboardId&)(this, rv, id);
+			std::vector<ScoreInfo>&, ScoreboardId*)(this, rv, id);
 		return rv;
 	}
 	inline const ScoreboardIdentityRef& registerScoreboardIdentity(ScoreboardId& a1, const std::string& a2)
@@ -139,18 +139,17 @@ public:
 	// @param a1 "dummy"
 	inline ObjectiveCriteria* getCriteria(const std::string& a1)
 	{
-		return SymCall("?getCriteria@Scoreboard@@QEBAPEAVObjectiveCriteria@@AEBV?$basic_string@DU?$"
-			"char_traits@D@std@@V?$allocator@D@2@@std@@@Z", ObjectiveCriteria*, Scoreboard*,
-			const std::string&)(this, a1);
+		return SymCall("?getCriteria@Scoreboard@@QEBAPEAVObjectiveCriteria@@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z",
+			ObjectiveCriteria*, Scoreboard*, const std::string&) (this, a1);
 	}
 	// @param a1 计分项名
 	// @param a2 计分项显示名称
 	inline Objective* addObjective(const std::string& a1, const std::string& a2,
 		ObjectiveCriteria* crit)
 	{
-		return SymCall("?addObjective@Scoreboard@@QEAAPEAVObjective@@AEBV?$basic_string@DU?$char_"
-			"traits@D@std@@V?$allocator@D@2@@std@@0AEBVObjectiveCriteria@@@Z", Objective*, Scoreboard*,
-			const std::string&, const std::string&, ObjectiveCriteria*)(this, a1, a2, crit);
+		return SymCall("?addObjective@Scoreboard@@QEAAPEAVObjective@@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0AEBVObjectiveCriteria@@@Z",
+			Objective*, Scoreboard*,const std::string&, const std::string&, ObjectiveCriteria*)
+			(this, a1, a2, crit);
 	}
 	inline bool removeObjective(Objective* obj) 
 	{
@@ -179,21 +178,21 @@ public:
 			void, Scoreboard*, std::vector<std::string>*)(this, &vec);
 		return vec;
 	}
-	inline const ScoreboardId& getScoreboardId(Actor*a1)
+	inline const ScoreboardId* getScoreboardId(Actor*a1)
 	{
 		return SymCall("?getScoreboardId@Scoreboard@@QEBAAEBUScoreboardId@@AEBVActor@@@Z",
-			const ScoreboardId&, Scoreboard*, Actor*)(this, a1);
+			ScoreboardId*, Scoreboard*, Actor*)(this, a1);
 	}
-	inline const ScoreboardId& getScoreboardId(Player* a1)
+	inline ScoreboardId* getScoreboardId(Player* a1)
 	{
 		return SymCall("?getScoreboardId@Scoreboard@@QEBAAEBUScoreboardId@@AEBVPlayer@@@Z",
-			const ScoreboardId&, Scoreboard*, Player*)(this, a1);
+			ScoreboardId*, Scoreboard*, Player*)(this, a1);
 	}
-	inline const ScoreboardId& getScoreboardId(const std::string& a1)
+	inline ScoreboardId* getScoreboardId(const std::string& a1)
 	{
-		return SymCall("?getScoreboardId@Scoreboard@@QEBAAEBUScoreboardId@@AEBV?$basic_string@DU?$"
-			"char_traits@D@std@@V?$allocator@D@2@@std@@@Z", const ScoreboardId&, Scoreboard*,
-			const std::string&)(this, a1);
+		return SymCall("?getScoreboardId@Scoreboard@@QEBAAEBUScoreboardId@@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z",
+			ScoreboardId*, Scoreboard*,const std::string&)
+			(this, a1);
 	}
 	inline std::vector<ScoreboardIdentityRef> getScoreboardIdentityRefs()
 	{
@@ -218,9 +217,9 @@ public:
 	inline int modifyPlayerScore(const ScoreboardId& a3, Objective* a4, int count, int mode)
 	{
 		bool a2 = true;
-		return SymCall("?modifyPlayerScore@Scoreboard@@QEAAHAEA_NAEBUScoreboardId@@"
-			"AEAVObjective@@HW4PlayerScoreSetFunction@@@Z", int, Scoreboard*, bool,
-			const ScoreboardId&, Objective*, int, int)(this, &a2, a3, a4, count, mode);
+		return SymCall("?modifyPlayerScore@Scoreboard@@QEAAHAEA_NAEBUScoreboardId@@AEAVObjective@@HW4PlayerScoreSetFunction@@@Z",
+			int, Scoreboard*, bool* ,const ScoreboardId&, Objective*, int, int)
+			(this, &a2, a3, a4, count, mode);
 	}
 };
 

@@ -26,11 +26,8 @@ ClassDefine<ObjectiveClass> ObjectiveClassBuilder =
 
 Local<Object> ObjectiveClass::newObjective(Objective* obj)
 {
-	if (obj)
-	{
-		auto newp = new ObjectiveClass(obj);
-		return newp->getScriptObject();
-	}
+	auto newp = new ObjectiveClass(obj);
+	return newp->getScriptObject();
 }
 
 void ObjectiveClass::set(Objective* obj)
