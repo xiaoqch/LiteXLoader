@@ -21,7 +21,7 @@
 
 - exitcode : `Integer`    
   shell退出码
-- output : `Integer`  
+- output : `String`  
   标准输出和标准错误输出的内容
 
 注意！这里执行的不是MC命令系统的命令  
@@ -48,7 +48,7 @@
 
 - exitcode : `Integer`    
   程序进程退出码
-- output : `Integer`  
+- output : `String`  
   程序标准输出和标准错误输出的内容
 
 此函数异步工作，不会等待系统执行完命令后再返回，而是由引擎自动调用给出的回调函数来返回结果

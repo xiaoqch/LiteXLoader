@@ -4,7 +4,7 @@ using namespace script;
 using namespace std;
 
 ClassDefine<void> TextClassBuilder =
-	defineClass("Text")
+	defineClass("Format")
 		.property("Black",		[]() { return String::newString("§0"); })
 		.property("DarkBlue",	[]() { return String::newString("§1"); })
 		.property("DarkGreen",	[]() { return String::newString("§2"); })
