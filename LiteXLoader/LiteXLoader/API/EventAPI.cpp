@@ -282,6 +282,8 @@ bool LxlCallEventsOnHotLoad(ScriptEngine* engine)
     FakeCallEvent(engine, EVENT_TYPES::onServerStarted);
 
     auto players = Raw_GetOnlinePlayers();
+    for (auto& pl : players)
+        FakeCallEvent(engine, EVENT_TYPES::onPreJoin, PlayerClass::newPlayer(pl));
     for(auto &pl : players)
         FakeCallEvent(engine, EVENT_TYPES::onJoin, PlayerClass::newPlayer(pl));
 
