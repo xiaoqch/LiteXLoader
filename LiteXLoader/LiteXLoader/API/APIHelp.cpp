@@ -440,7 +440,7 @@ void ValueToJson_Obj_Helper(JSON_VALUE& res, const Local<Object>& v)
             res.push_back({ key,v.get(key).asBoolean().value() });
             break;
         case ValueKind::kNull:
-            res.push_back(nullptr);
+            res.push_back({ key, nullptr });
             break;
         case ValueKind::kArray:
         {
