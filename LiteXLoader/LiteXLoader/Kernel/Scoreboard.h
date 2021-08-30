@@ -22,9 +22,7 @@ struct ScoreInfo
 	}
 };
 
-class PlayerScore
-{
-};
+class PlayerScore {};
 
 class Objective
 {
@@ -225,9 +223,22 @@ public:
 
 extern Scoreboard* globalScoreBoard;
 
+Objective* Raw_NewObjective(const string& objname, const string& displayName);
 bool Raw_SetDisplayObjective(const std::string& objname, const std::string& slot, int sort);
 Objective* Raw_ClearDisplayObjective(const std::string& slot);
 Objective* Raw_GetDisplayObjective(const std::string& slot);
-std::optional<int> Raw_ModifyScoreInObjective(const std::string& objname, const std::string& id, char mode, int score);
 bool Raw_RemoveFromObjective(const std::string& objname, const std::string& id);
+bool Raw_RemoveFromObjective(const std::string& objname, Player *player);
+
 int Raw_GetScore(const std::string& objname, const std::string& id);
+std::optional<int> Raw_SetScore(const std::string& objname, const std::string& id, int score);
+std::optional<int> Raw_AddScore(const std::string& objname, const std::string& id, int score);
+std::optional<int> Raw_ReduceScore(const std::string& objname, const std::string& id, int score);
+
+int Raw_GetScore(Player* player, const std::string& key);
+bool Raw_SetScore(Player* player, const std::string& key, int value);
+bool Raw_AddScore(Player* player, const std::string& key, int value);
+bool Raw_ReduceScore(Player* player, const std::string& key, int value);
+bool Raw_DeleteScore(Player* player, const std::string& objname);
+
+bool Raw_ScoreboardIdIsValid(ScoreboardId* id);

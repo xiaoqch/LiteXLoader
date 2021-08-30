@@ -246,64 +246,6 @@ int Raw_ClearItem(Player *player, std::string type)
     return res;
 }
 
-int Raw_GetScore(Player* player, const std::string &key)
-{
-    Objective* obj = globalScoreBoard->getObjective(key);
-    if (obj)
-    {
-        auto id = globalScoreBoard->getScoreboardId(player);
-        auto score = obj->getPlayerScore(*id);
-        return score.getCount();
-    }
-    return 0;
-}
-
-bool Raw_SetScore(Player* player, const std::string &key, int value)
-{
-    Objective* obj = globalScoreBoard->getObjective(key);
-    if (obj)
-    {
-        auto id = globalScoreBoard->getScoreboardId(player);
-        if (!SymCall("?isValid@ScoreboardId@@QEBA_NXZ", bool, ScoreboardId*)(id))
-        {
-            id = SymCall("?createScoreboardId@ServerScoreboard@@UEAAAEBUScoreboardId@@AEBVPlayer@@@Z",
-                ScoreboardId*, Scoreboard*, Player*)(globalScoreBoard, player);
-        }
-        globalScoreBoard->modifyPlayerScore(*id, obj, value, 0);   //Set
-        return true;
-    }
-    return false;
-}
-
-bool Raw_AddScore(Player* player, const std::string &key, int value)
-{
-    Objective* obj = globalScoreBoard->getObjective(key);
-    if (obj)
-    {
-        globalScoreBoard->modifyPlayerScore(*globalScoreBoard->getScoreboardId(player), obj, value, 1);   //Add
-        return true;
-    }
-    return false;
-}
-
-bool Raw_ReduceScore(Player* player, const std::string &key, int value)
-{
-    Objective* obj = globalScoreBoard->getObjective(key);
-    if (obj)
-    {
-        bool a1 = true;
-        bool& pa = a1;
-        globalScoreBoard->modifyPlayerScore(*globalScoreBoard->getScoreboardId(player), obj, value, 2);   //Reduce
-        return true;
-    }
-    return false;
-}
-
-bool Raw_DeleteScore(Player* player, const std::string& key)
-{
-    return Raw_RemoveFromObjective(key, Raw_GetPlayerName(player));
-}
-
 bool Raw_SetSidebar(Player *player, std::string title, const std::vector<std::pair<std::string,int>> &data, int sortOrder)
 {
     Raw_SendSetDisplayObjectivePacket(player, title, "FakeScoreObj", (char)sortOrder);

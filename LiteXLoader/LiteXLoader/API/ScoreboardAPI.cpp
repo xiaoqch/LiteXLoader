@@ -73,10 +73,10 @@ Local<Value> ObjectiveClass::setDisplay(const Arguments& args)
 	try {
 		string slot = args[0].toStr();
 		int sort = 0;
-		if (args.size() == 2) sort = args[1].toInt();
-		bool res = Raw_SetDisplayObjective(objname, slot, sort);
+		if (args.size() == 2)
+			sort = args[1].toInt();
 		
-		return Boolean::newBoolean(res);
+		return Boolean::newBoolean(Raw_SetDisplayObjective(objname, slot, sort));
 	}
 	CATCH("Fail in setDisplay");
 }
@@ -87,21 +87,30 @@ Local<Value> ObjectiveClass::setScore(const Arguments& args)
 	CHECK_ARG_TYPE(args[1], ValueKind::kNumber)
 
 	try {
+		int score = args[1].toInt();
+		Local<Value> rtn;
+
 		string id;
 		if (args[0].isString())
-			id = args[0].toStr();
+		{
+			string id = args[0].toStr();
+			std::optional<int> res = Raw_SetScore(objname, id, score);
+			if (res)
+				rtn = Number::newNumber(*res);
+		}
 		else if (IsInstanceOf<PlayerClass>(args[0]))
-			id = Raw_GetPlayerName(PlayerClass::extractPlayer(args[0]));
+		{
+			auto pl = PlayerClass::extractPlayer(args[0]);
+			if(Raw_SetScore(pl, objname, score))
+				rtn = Number::newNumber(Raw_GetScore(pl,objname));
+		}
 		else
 		{
 			ERROR("Wrong type of argument in setScore!");
 			return Local<Value>();
 		}
 
-		int score = args[1].toInt();
-		std::optional<int> res = Raw_ModifyScoreInObjective(objname, id, 0, score);
-
-		return res ? Number::newNumber(*res) : Local<Value>();
+		return rtn;
 	}
 	CATCH("Fail in setScore");
 }
@@ -112,21 +121,30 @@ Local<Value> ObjectiveClass::addScore(const Arguments& args)
 	CHECK_ARG_TYPE(args[1], ValueKind::kNumber)
 
 	try {
+		int score = args[1].toInt();
+		Local<Value> rtn;
+
 		string id;
 		if (args[0].isString())
-			id = args[0].toStr();
+		{
+			string id = args[0].toStr();
+			std::optional<int> res = Raw_AddScore(objname, id, score);
+			if (res)
+				rtn = Number::newNumber(*res);
+		}
 		else if (IsInstanceOf<PlayerClass>(args[0]))
-			id = Raw_GetPlayerName(PlayerClass::extractPlayer(args[0]));
+		{
+			auto pl = PlayerClass::extractPlayer(args[0]);
+			if (Raw_AddScore(pl, objname, score))
+				rtn = Number::newNumber(Raw_GetScore(pl, objname));
+		}
 		else
 		{
-			ERROR("Wrong type of argument in addScore!");
+			ERROR("Wrong type of argument in setScore!");
 			return Local<Value>();
 		}
 
-		int score = args[1].toInt();
-		std::optional<int> res = Raw_ModifyScoreInObjective(objname, id, 1, score);
-
-		return res ? Number::newNumber(*res) : Local<Value>();
+		return rtn;
 	}
 	CATCH("Fail in addScore");
 }
@@ -137,21 +155,30 @@ Local<Value> ObjectiveClass::reduceScore(const Arguments& args)
 	CHECK_ARG_TYPE(args[1], ValueKind::kNumber)
 
 	try {
+		int score = args[1].toInt();
+		Local<Value> rtn;
+
 		string id;
 		if (args[0].isString())
-			id = args[0].toStr();
+		{
+			string id = args[0].toStr();
+			std::optional<int> res = Raw_ReduceScore(objname, id, score);
+			if (res)
+				rtn = Number::newNumber(*res);
+		}
 		else if (IsInstanceOf<PlayerClass>(args[0]))
-			id = Raw_GetPlayerName(PlayerClass::extractPlayer(args[0]));
+		{
+			auto pl = PlayerClass::extractPlayer(args[0]);
+			if (Raw_ReduceScore(pl, objname, score))
+				rtn = Number::newNumber(Raw_GetScore(pl, objname));
+		}
 		else
 		{
-			ERROR("Wrong type of argument in reduceScore!");
+			ERROR("Wrong type of argument in setScore!");
 			return Local<Value>();
 		}
 
-		int score = args[1].toInt();
-		std::optional<int> res = Raw_ModifyScoreInObjective(objname, id, 2, score);
-
-		return res ? Number::newNumber(*res) : Local<Value>();
+		return rtn;
 	}
 	CATCH("Fail in removeScore");
 }
@@ -262,10 +289,8 @@ Local<Value> NewScoreObjective(const Arguments& args)
 		if (args.size() >= 2)
 			display = args[1].toStr();
 
-		string criteria = "dummy";
-		auto obj = globalScoreBoard->addObjective(name, display, globalScoreBoard->getCriteria(criteria));
-
-		return ObjectiveClass::newObjective(obj);
+		auto obj = Raw_NewObjective(name, display);
+		return obj ? ObjectiveClass::newObjective(obj) : Local<Value>();
 	}
 	CATCH("Fail in NewScoreObjective!")
 }

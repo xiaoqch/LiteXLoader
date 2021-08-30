@@ -43,11 +43,6 @@ Container* Raw_GetArmor(Player* pl);
 Container* Raw_GetEnderChest(Player* pl);
 bool Raw_RefreshItems(Player* pl);
 
-int Raw_GetScore(Player* player, const std::string &key);
-bool Raw_SetScore(Player* player, const std::string &key, int value);
-bool Raw_AddScore(Player* player, const std::string &key, int value);
-bool Raw_ReduceScore(Player* player, const std::string &key, int value);
-bool Raw_DeleteScore(Player* player, const std::string& key);
 bool Raw_SetSidebar(Player *player, std::string title, const std::vector<std::pair<std::string,int>> &data, int sortOrder);
 bool Raw_RemoveSidebar(Player *player);
 bool Raw_SetBossBar(Player *player, std::string title, float percent);

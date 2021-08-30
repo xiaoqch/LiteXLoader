@@ -14,6 +14,7 @@
 #include <Kernel/Container.h>
 #include <Kernel/Entity.h>
 #include <Kernel/Gui.h>
+#include <Kernel/Scoreboard.h>
 #include <string>
 #include <vector>
 #include <unordered_map>
