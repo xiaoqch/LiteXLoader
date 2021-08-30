@@ -28,6 +28,7 @@ ClassDefine<DbClass> DbClassBuilder =
 ClassDefine<ConfJsonClass> ConfJsonClassBuilder =
     defineClass<ConfJsonClass>("LXL_ConfJson")
         .constructor(nullptr)
+        .instanceFunction("init", &ConfJsonClass::init)
         .instanceFunction("get", &ConfJsonClass::get)
         .instanceFunction("set", &ConfJsonClass::set)
         .instanceFunction("delete", &ConfJsonClass::del)
@@ -41,6 +42,7 @@ ClassDefine<ConfJsonClass> ConfJsonClassBuilder =
 ClassDefine<ConfIniClass> ConfIniClassBuilder =
     defineClass<ConfIniClass>("LXL_ConfIni")
         .constructor(nullptr)
+        .instanceFunction("init", &ConfIniClass::init)
         .instanceFunction("set", &ConfIniClass::set)
         .instanceFunction("getStr", &ConfIniClass::getStr)
         .instanceFunction("getInt", &ConfIniClass::getInt)
@@ -216,6 +218,30 @@ ConfJsonClass::~ConfJsonClass()
     close();
 }
 
+Local<Value> ConfJsonClass::init(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 2);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+
+    try
+    {
+        return JsonToValue(jsonConf.at(args[0].toStr()));
+    }
+    catch (const std::out_of_range& e)
+    {
+        jsonConf[args[0].toStr()] = JSON_VALUE::parse(ValueToJson(args[1]));
+        flush();
+        return args[1];
+    }
+    catch (const JSON_VALUE::exception& e)
+    {
+        jsonConf[args[0].toStr()] = JSON_VALUE::parse(ValueToJson(args[1]));
+        flush();
+        return args[1];
+    }
+    CATCH("Fail in confJsonSet!");
+}
+
 Local<Value> ConfJsonClass::get(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
@@ -388,7 +414,7 @@ bool ConfIniClass::reload()
     return true;
 }
 
-Local<Value> ConfIniClass::set(const Arguments& args)
+Local<Value> ConfIniClass::init(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 3);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -401,6 +427,85 @@ Local<Value> ConfIniClass::set(const Arguments& args)
 
         string section = args[0].toStr();
         string key = args[1].toStr();
+        Local<Value> res;
+
+        switch (args[2].getKind())
+        {
+        case ValueKind::kString:
+        {
+            string def = args[2].toStr();
+            string data = Raw_IniGetString(iniConf, section, key, def);
+            if (data == def)
+            {
+                Raw_IniSetString(iniConf, section, key, def);
+                flush();
+            }
+            res = String::newString(data);
+            break;
+        }
+        case ValueKind::kNumber:
+        {
+            if (CheckIsFloat(args[2]))
+            {
+                //Float
+                float def = args[2].asNumber().toFloat();
+                float data = Raw_IniGetFloat(iniConf, section, key, def);
+                if (data == def)
+                {
+                    Raw_IniSetFloat(iniConf, section, key, def);
+                    flush();
+                }
+                res = Number::newNumber(data);
+            }
+            else
+            {
+                //Int
+                int def = args[2].toInt();
+                int data = Raw_IniGetInt(iniConf, section, key, def);
+                if (data == def)
+                {
+                    Raw_IniSetInt(iniConf, section, key, def);
+                    flush();
+                }
+                res = Number::newNumber(data);
+            }
+            break;
+        }
+        case ValueKind::kBoolean:
+        {
+            bool def = args[2].asBoolean().value();
+            bool data = Raw_IniGetBool(iniConf, section, key, def);
+            if (data == def)
+            {
+                Raw_IniSetBool(iniConf, section, key, def);
+                flush();
+            }
+            res = Boolean::newBoolean(data);
+            break;
+        }
+        default:
+            ERROR("Ini file don't support this type of data!");
+            return Local<Value>();
+            break;
+        }
+        return res;
+    }
+    CATCH("Fail in confIniInit!")
+}
+
+Local<Value> ConfIniClass::set(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 3);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+    CHECK_ARG_TYPE(args[1], ValueKind::kString);
+
+    try
+    {
+        if (!isValid())
+            return Local<Value>();
+        
+        string section = args[0].toStr();
+        string key = args[1].toStr();
         switch (args[2].getKind())
         {
         case ValueKind::kString:
@@ -408,7 +513,7 @@ Local<Value> ConfIniClass::set(const Arguments& args)
             break;
         case ValueKind::kNumber:
             if (CheckIsFloat(args[2]))
-                Raw_IniSetFloat(iniConf, section, key, (float)args[2].asNumber().toDouble());
+                Raw_IniSetFloat(iniConf, section, key, args[2].asNumber().toFloat());
             else
                 Raw_IniSetInt(iniConf, section, key, args[2].toInt());
             break;

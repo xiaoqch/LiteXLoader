@@ -59,6 +59,25 @@ LXL将打开指定的配置文件并返回一个配置文件对象。 如果目�
 
 如果选择了`Json`格式的配置文件，对于一个配置文件对象`conf`，你有这些读写接口可用
 
+#### 初始化配置项（方便函数）
+
+`conf.init(name,default)`
+
+- 参数：
+  - name : `String`  
+    配置项名字
+  - default : `任意类型`  
+    配置项初始化时写入的值
+- 返回值：指定配置项的数据
+- 返回值类型：`任意类型`，以具体储存的数据类型为准
+
+这里提供了一种简便的方法来初始化配置文件，避免了需要手写默认配置文件内容的麻烦  
+
+如果`init`访问的配置项不存在，那么引擎将在配置文件中自动创建此项，并写入给出的默认值  
+如果`init`访问的配置项已经存在，引擎将读取并返回配置文件中已有的值
+
+<br>
+
 #### 写入配置项
 
 `conf.set(name,data)`
@@ -110,6 +129,28 @@ LXL将打开指定的配置文件并返回一个配置文件对象。 如果目�
 
 如果选择了`ini`格式的配置文件，对于一个配置文件对象`conf`，你有这些读写接口可用
 
+#### 初始化配置项（方便函数）
+
+`conf.init(section,name,default)`
+
+- 参数：
+  - section : `String`  
+    配置项键名
+  - name : `String`  
+    配置项名字
+  - default : `指定类型`  
+    配置项初始化时写入的值。允许的数据类型有：  
+    `Integer` `Float` `String` `Boolean`
+- 返回值：指定配置项的数据
+- 返回值类型：`任意类型`，以具体储存的数据类型为准
+
+这里提供了一种简便的方法来初始化配置文件，避免了需要手写默认配置文件内容的麻烦  
+
+如果`init`访问的配置项不存在，那么引擎将在配置文件中自动创建此项，并写入给出的默认值  
+如果`init`访问的配置项已经存在，引擎将读取并返回配置文件中已有的值
+
+<br>
+
 #### 写入配置项
 
 `conf.set(section,name,data)`
@@ -131,71 +172,23 @@ LXL将打开指定的配置文件并返回一个配置文件对象。 如果目�
 
 <br>
 
-#### 读取整数项
+#### 读取配置项
 
-`conf.getInt(section,name[,default])`
+读取字符串 `conf.getStr(section,name[,default])`  
+读取整数项 `conf.getInt(section,name[,default])`  
+读取浮点数 `conf.getFloat(section,name[,default])`  
+读取布尔值 `conf.getBool(section,name[,default])`  
 
 - 参数：
   - section : `String`  
     配置项键名
   - name : `String`  
     配置项名字
-  - default : `Integer`  
+  - default :  `String`/ `Integer`/ `Float`/ `Boolean`  
     （可选参数）当读取失败时返回的默认值  
     默认为`0`
 - 返回值：指定配置项的数据
-- 返回值类型：`Integer`
-
-<br>
-
-#### 读取字符串项
-
-`conf.getStr(section,name[,default])`
-
-- 参数：
-  - section : `String`  
-    配置项键名
-  - name : `String`  
-    配置项名字
-  - default : `String`  
-    （可选参数）当读取失败时返回的默认值  
-    默认为`""`
-- 返回值：指定配置项的数据
-- 返回值类型：`String`
-
-<br>
-
-#### 读取浮点数项
-
-`conf.getFloat(section,name[,default])`
-
-- 参数：
-  - section : `String`  
-    配置项键名
-  - name : `String`  
-    配置项名字
-  - default : `Float`  
-    （可选参数）当读取失败时返回的默认值  
-    默认为`0.0`
-- 返回值：指定配置项的数据
-- 返回值类型：`Float`
-
-<br>
-
-#### 读取布尔项
-
-`conf.getBool(section,name[,default])`
-
-- 参数：
-  - section : `String`  
-    配置项键名
-  - name : `String`  
-    配置项名字
-  - default : `Boolean`  
-    （可选参数）当读取失败时返回的默认值  
-    默认为`false`
-- 返回值：指定配置项的数据
-- 返回值类型：`Boolean`
+- 返回值类型：`String`/ `Integer`/ `Float`/ `Boolean`
 
 <br>
 

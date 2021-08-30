@@ -61,6 +61,7 @@ public:
     explicit ConfJsonClass(const string& path, const string& defContent);
     ~ConfJsonClass();
 
+    Local<Value> init(const Arguments& args);
     Local<Value> get(const Arguments& args);
     Local<Value> set(const Arguments& args);
     Local<Value> del(const Arguments& args);
@@ -89,6 +90,7 @@ public:
         return iniConf != nullptr;
     }
 
+    Local<Value> init(const Arguments& args);
     Local<Value> set(const Arguments& args);
     Local<Value> getStr(const Arguments& args);
     Local<Value> getInt(const Arguments& args);
