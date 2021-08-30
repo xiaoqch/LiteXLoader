@@ -1,5 +1,6 @@
 #include "ContainerAPI.h"
 #include <Kernel/Container.h>
+#include <Kernel/Item.h>
 #include "APIHelp.h"
 #include "ItemAPI.h"
 using namespace std;
@@ -18,6 +19,7 @@ ClassDefine<ContainerClass> ContainerClassBuilder =
 		.instanceFunction("hasRoomFor", &ContainerClass::hasRoomFor)
 		.instanceFunction("removeItem", &ContainerClass::removeItem)
 		.instanceFunction("getItem", &ContainerClass::getItem)
+		.instanceFunction("setItem", &ContainerClass::setItem)
 		.instanceFunction("getAllItems", &ContainerClass::getAllItems)
 		.instanceFunction("removeAllItems", &ContainerClass::removeAllItems)
 		.instanceFunction("isEmpty", &ContainerClass::isEmpty)
@@ -137,6 +139,29 @@ Local<Value> ContainerClass::getItem(const Arguments& args)
 			return Local<Value>();
 		}
 		return ItemClass::newItem(item);
+	}
+	CATCH("Fail in getItem!");
+}
+
+Local<Value> ContainerClass::setItem(const Arguments& args)
+{
+	CHECK_ARGS_COUNT(args, 2);
+	CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
+
+	try {
+		ItemStack* item = ItemClass::extractItem(args[1]);
+		if (!item)
+		{
+			ERROR("Wrong type of argument in setItem!");
+			return Local<Value>();
+		}
+
+		ItemStack* itemOld = Raw_GetSlot(container, args[0].toInt());
+		if (!itemOld)
+			return Boolean::newBoolean(false);
+
+		Raw_SetItem(itemOld, item);
+		return Boolean::newBoolean(true);
 	}
 	CATCH("Fail in getItem!");
 }

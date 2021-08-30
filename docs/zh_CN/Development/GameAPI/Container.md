@@ -107,6 +107,20 @@
 
 <br>
 
+#### 设置容器某个格子的物品对象
+
+`ct.setItem(index,item)`  
+
+- 参数：
+  - index : `Integer`  
+    待设置的格子序号
+  - item : `Item`  
+    待设置的物品对象
+- 返回值：是否设置成功
+- 返回值类型：`Boolean`
+
+<br>
+
 #### 获取容器所有格子的物品对象列表
 
 `ct.getAllItems()`  

@@ -30,6 +30,7 @@ public:
     Local<Value> hasRoomFor(const Arguments& args);
     Local<Value> removeItem(const Arguments& args);
     Local<Value> getItem(const Arguments& args);
+    Local<Value> setItem(const Arguments& args);
     Local<Value> getAllItems(const Arguments& args);
     Local<Value> removeAllItems(const Arguments& args);
     Local<Value> isEmpty(const Arguments& args);
