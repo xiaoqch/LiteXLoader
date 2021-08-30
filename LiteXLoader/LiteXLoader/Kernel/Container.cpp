@@ -4,6 +4,13 @@
 #include "SymbolHelper.h"
 using namespace std;
 
+std::string Raw_GetContainerTypeName(Container* container)
+{
+	char type = dAccess<char>(container, 8);	//IDA Container::Container
+	return SymCall("?getContainerTypeName@Container@@SAAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@W4ContainerType@@@Z",
+		string, char)(type);
+}
+
 bool Raw_AddItem(Container* container, ItemStack* item)
 {
 	if (!Raw_HasRoomFor(container,item))

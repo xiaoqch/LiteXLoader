@@ -13,6 +13,7 @@ ClassDefine<ContainerClass> ContainerClassBuilder =
 		.instanceFunction("getRawPtr", &ContainerClass::getRawPtr)
 
 		.instanceProperty("size", &ContainerClass::getSize)
+		.instanceProperty("type", &ContainerClass::getType)
 
 		.instanceFunction("addItem", &ContainerClass::addItem)
 		.instanceFunction("addItemToFirstEmptySlot", &ContainerClass::addItemToFirstEmptySlot)
@@ -56,6 +57,14 @@ Local<Value> ContainerClass::getSize()
 		return Number::newNumber(Raw_GetContainerSize(container));
 	}
 	CATCH("Fail in getSize!")
+}
+
+Local<Value> ContainerClass::getType()
+{
+	try {
+		return String::newString(Raw_GetContainerTypeName(container));
+	}
+	CATCH("Fail in getType!")
 }
 
 Local<Value> ContainerClass::getRawPtr(const Arguments& args)

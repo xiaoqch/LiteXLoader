@@ -55,7 +55,7 @@ public:
     static Local<Value> newIntPos(const Arguments& args) { return NewIntPos(args); }
     static Local<Value> newFloatPos(const Arguments& args) { return NewFloatPos(args); }
 
-    static Local<Value> getDisplayObjectives(const Arguments& args) { return GetDisplayObjetives(args); }
+    static Local<Value> getDisplayObjective(const Arguments& args) { return GetDisplayObjetive(args); }
     static Local<Value> clearDisplayObjective(const Arguments& args) { return ClearDisplayObjetive(args); }
     static Local<Value> getScoreObjective(const Arguments& args) { return GetScoreObjetive(args); }
     static Local<Value> newScoreObjective(const Arguments& args) { return NewScoreObjective(args); }
@@ -87,7 +87,7 @@ static ClassDefine<void> McClassBuilder =
         .function("sendCmdOutput", &McClass::sendCmdOutput)
         .function("newIntPos", &McClass::newIntPos)
         .function("newFloatPos", &McClass::newFloatPos)
-        .function("getDisplayObjectives", &McClass::getDisplayObjectives)
+        .function("getDisplayObjective", &McClass::getDisplayObjective)
         .function("clearDisplayObjective", &McClass::clearDisplayObjective)
         .function("getScoreObjective", &McClass::getScoreObjective)
         .function("newScoreObjective", &McClass::newScoreObjective)
@@ -96,6 +96,7 @@ static ClassDefine<void> McClassBuilder =
 
         //For Compatity
         .function("getAllScoreObjective", &McClass::getAllScoreObjectives)
+        .function("getDisplayObjectives", &McClass::getDisplayObjective)
         .function("crash", CrashBDS)
         .build();
 

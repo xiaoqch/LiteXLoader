@@ -51,7 +51,7 @@ MC使用 **计分项** 作为计分板系统的核心，每一个计分项拥有
 
 #### 获取某个处于显示状态的计分项
 
-`mc.getDisplayObjectives(slot)`
+`mc.getDisplayObjective(slot)`
 
 - 参数：
   - slot : `String`   

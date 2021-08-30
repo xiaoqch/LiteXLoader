@@ -6,6 +6,8 @@ class Container;
 class ItemStack;
 class FloatVec4;
 
+std::string Raw_GetContainerTypeName(Container* container);
+
 bool Raw_AddItem(Container* container, ItemStack* item);
 bool Raw_AddItemToFirstEmptySlot(Container* container, ItemStack* item);
 bool Raw_HasRoomFor(Container* container, ItemStack* item);

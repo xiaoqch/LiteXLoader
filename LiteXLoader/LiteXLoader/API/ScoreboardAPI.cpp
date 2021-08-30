@@ -231,7 +231,7 @@ Local<Value> ObjectiveClass::getScore(const Arguments& args)
 
 //////////////////// APIs ////////////////////
 
-Local<Value> GetDisplayObjetives(const Arguments& args)
+Local<Value> GetDisplayObjetive(const Arguments& args)
 {
 	CHECK_ARGS_COUNT(args, 1);
 	CHECK_ARG_TYPE(args[0], ValueKind::kString);

@@ -30,7 +30,7 @@ public:
 
 //////////////////// APIs ////////////////////
 
-Local<Value> GetDisplayObjetives(const Arguments& args);
+Local<Value> GetDisplayObjetive(const Arguments& args);
 Local<Value> ClearDisplayObjetive(const Arguments& args);
 Local<Value> GetScoreObjetive(const Arguments& args);
 Local<Value> NewScoreObjective(const Arguments& args);

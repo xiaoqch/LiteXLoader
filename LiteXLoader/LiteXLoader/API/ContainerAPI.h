@@ -24,6 +24,7 @@ public:
     Local<Value> getRawPtr(const Arguments& args);
 
     Local<Value> getSize();
+    Local<Value> getType();
 
     Local<Value> addItem(const Arguments& args);
     Local<Value> addItemToFirstEmptySlot(const Arguments& args);
