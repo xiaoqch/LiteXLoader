@@ -489,7 +489,12 @@ Local<Value> OpenFile(const Arguments& args)
         FileOpenMode fMode = (FileOpenMode)(args[1].toInt());
         ios_base::openmode mode = ios_base::in;
         if (fMode == FileOpenMode::WriteMode)
+        {
+            fstream tmp(path, ios_base::app);
+            tmp.flush();
+            tmp.close();
             mode |= ios_base::out;
+        }
         else if (fMode == FileOpenMode::AppendMode)
             mode |= ios_base::app;
 
