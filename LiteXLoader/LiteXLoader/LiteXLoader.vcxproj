@@ -43,6 +43,7 @@
     <ClCompile Include="API\ContainerAPI.cpp" />
     <ClCompile Include="API\DataAPI.cpp" />
     <ClCompile Include="API\DeviceAPI.cpp" />
+    <ClCompile Include="API\DynamicNativeAPI.cpp" />
     <ClCompile Include="API\EntityAPI.cpp" />
     <ClCompile Include="API\EventAPI.cpp" />
     <ClCompile Include="API\FileSystemAPI.cpp" />
@@ -76,6 +77,7 @@
     <ClCompile Include="Kernel\Base.cpp" />
     <ClCompile Include="Kernel\Block.cpp" />
     <ClCompile Include="Kernel\Data.cpp" />
+    <ClCompile Include="Kernel\DynamicNative.cpp" />
     <ClCompile Include="Kernel\Entity.cpp" />
     <ClCompile Include="Kernel\Event.cpp" />
     <ClCompile Include="Kernel\Global.cpp" />
@@ -102,6 +104,7 @@
     <ClInclude Include="API\ContainerAPI.h" />
     <ClInclude Include="API\DataAPI.h" />
     <ClInclude Include="API\DeviceAPI.h" />
+    <ClInclude Include="API\DynamicNativeAPI.h" />
     <ClInclude Include="API\EntityAPI.h" />
     <ClInclude Include="API\EventAPI.h" />
     <ClInclude Include="API\FileSystemAPI.h" />
@@ -137,6 +140,7 @@
     <ClInclude Include="Kernel\Container.h" />
     <ClInclude Include="Kernel\Data.h" />
     <ClInclude Include="Kernel\Device.h" />
+    <ClInclude Include="Kernel\DynamicNative.h" />
     <ClInclude Include="Kernel\Entity.h" />
     <ClInclude Include="Kernel\Event.h" />
     <ClInclude Include="Kernel\Gui.h" />

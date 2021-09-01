@@ -193,6 +193,12 @@
     <ClCompile Include="API\GameUtilsAPI.cpp">
       <Filter>API</Filter>
     </ClCompile>
+    <ClCompile Include="Kernel\DynamicNative.cpp">
+      <Filter>Kernel</Filter>
+    </ClCompile>
+    <ClCompile Include="API\DynamicNativeAPI.cpp">
+      <Filter>API</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="API\BaseAPI.h">
@@ -370,6 +376,12 @@
       <Filter>API</Filter>
     </ClInclude>
     <ClInclude Include="API\GameUtilsAPI.h">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="Kernel\DynamicNative.h">
+      <Filter>Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="API\DynamicNativeAPI.h">
       <Filter>API</Filter>
     </ClInclude>
   </ItemGroup>

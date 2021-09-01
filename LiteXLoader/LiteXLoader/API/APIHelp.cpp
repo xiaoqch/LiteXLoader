@@ -19,6 +19,9 @@
 #include <API/GuiAPI.h>
 #include <API/DataAPI.h>
 #include <API/PlayerAPI.h>
+#include <API/BlockEntityAPI.h>
+#include <API/ScoreboardAPI.h>
+#include <API/NetworkAPI.h>
 #include <Kernel/Global.h>
 #include <Engine/EngineOwnData.h>
 using namespace script;
@@ -131,6 +134,21 @@ void PrintValue(std::ostream &out, Local<Value> v)
             if (IsInstanceOf<ItemClass>(v))
             {
                 out << "<Item>";
+                break;
+            }
+            if (IsInstanceOf<BlockEntityClass>(v))
+            {
+                out << "<BlockEntity>";
+                break;
+            }
+            if (IsInstanceOf<ObjectiveClass>(v))
+            {
+                out << "<Objective>";
+                break;
+            }
+            if (IsInstanceOf<WSClientClass>(v))
+            {
+                out << "<WSClient>";
                 break;
             }
             if (IsInstanceOf<PlayerClass>(v))

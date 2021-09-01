@@ -1,6 +1,7 @@
 ﻿#include <ScriptX/ScriptX.h>
 #include <API/APIHelp.h>
 #include <API/EventAPI.h>
+#include <API/DynamicNativeAPI.h>
 #include <Engine/GlobalShareData.h>
 #include <Engine/EngineOwnData.h>
 #include <Engine/LocalShareData.h>
@@ -79,6 +80,9 @@ void entry()
         Welcome();
     LoaderInfo();
 
+    //初始化动态Hook系统
+    InitDynamicCallSystem();
+
     //初始化经济系统
     Raw_InitEcnonmicSystem();
 
@@ -94,7 +98,7 @@ void entry()
     //初始化事件监听
     InitEventListeners();
 
-    //UnlockCmd
+    //UnlockCmd开关
     extern bool isUnlockCmdEnabled;
     isUnlockCmdEnabled = Raw_IniGetBool(iniConf, "Modules", "BuiltInUnlockCmd", true);
 

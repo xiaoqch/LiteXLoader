@@ -56,6 +56,9 @@ void BindAPIs(ScriptEngine *engine)
     engine->registerNativeClass(NbtStaticBuilder);
     engine->registerNativeClass(TextClassBuilder);
 
+    extern ClassDefine<void> NativeClassBuilder;
+    engine->registerNativeClass(NativeClassBuilder);
+
 
     //////////////// 实例类 ////////////////
 
