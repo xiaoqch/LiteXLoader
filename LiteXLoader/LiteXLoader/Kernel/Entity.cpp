@@ -42,13 +42,16 @@ string Raw_GetEntityName(Actor* actor)
     if (!name.empty()) {
         return name;
     }
+
     string nameKey;
     ActorType entityTypeId = actor->getEntityTypeId();
-    SymCall("?buildActorDisplayName@@YA?AUKeyOrNameResult@@W4ActorType@@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PEBVActor@@@Z",
-        string*, string*, ActorType, string*, Actor*)(&nameKey, entityTypeId, &name, actor);
-    SymCall("?get@I18n@@SA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV23@@Z",
-        string*, string*, string*)(&name, &nameKey);
-    return name;
+    nameKey = SymCall("?buildActorDisplayName@@YA?AUKeyOrNameResult@@W4ActorType@@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PEBVActor@@@Z",
+        string&, string*, ActorType, string*, Actor*)(&nameKey, entityTypeId, &name, actor);
+
+    string rtn;
+    return SymCall("?get@I18n@@SA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV23@@Z",
+        string&, string*, string*)(&rtn, &nameKey);
+    return rtn;
 }
 
 std::string Raw_GetEntityTypeName(Actor* actor)
