@@ -259,6 +259,7 @@ but if you modified the framework, or write a new framework based on this framew
 
 LiteXLoader交流群：850517473 [点击加入](https://jq.qq.com/?_wv=1027&k=zeUbrETH)  
 LiteLoader交流群：656669024 [点击加入](https://jq.qq.com/?_wv=1027&k=lagwtrfh)  
+Discord频道：#LiteLoaderBDS & LXL [点击加入](https://discord.gg/4tBQHc9u7p)  
 Telegram电报频道：#LiteLoader [点击加入](https://t.me/LiteLoader)  
 欢迎反馈崩溃和版本适配问题。务必准备好详细的情况描述，过于简略的提问将不予作答。  
 

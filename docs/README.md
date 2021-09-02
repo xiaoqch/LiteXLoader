@@ -4,7 +4,7 @@
 [![Build](https://img.shields.io/badge/build-passing-brightgreen)](#)
 ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/LiteLDev/LiteXLoader?include_prereleases)
 
-##### 简体中文 | [English]()
+##### 简体中文 | [English](https://github.com/LiteLDev/LiteXLoader/blob/main/README_en.md)
 
 ![LiteXLoader](https://socialify.git.ci/LiteLDev/LiteXLoader/image?description=1&descriptionEditable=%E5%88%92%E6%97%B6%E4%BB%A3%20x%20%E8%B7%A8%E8%AF%AD%E8%A8%80%20BDS%E8%84%9A%E6%9C%AC%E6%8F%92%E4%BB%B6%E5%8A%A0%E8%BD%BD%E5%99%A8&font=KoHo&forks=1&logo=https%3A%2F%2Fgithub.com%2FLiteLDev%2FLiteXLoader%2Fblob%2Fmain%2Fassets%2FLXL.png%3Fraw%3Dtrue&owner=1&pattern=Circuit%20Board&pulls=1&stargazers=1&theme=Light)
 
@@ -36,30 +36,34 @@
     - 提供众多的**游戏API**支持  
       玩家，实体，方块，物品，容器，NBT，服务器系统。。。。给你自由掌控世界的能力
     - 多达**五十多种**游戏事件监听，让你眼观六路耳听八方
-    - 配备大量基础设施
-      - 统一配置文件接口
-      - 统一日志接口
-      - 文件系统接口
-      - 关系型、非关系型数据库接口
-      - 系统调用接口
-      - 网络功能接口
-      - 脚本引擎辅助接口
-      - 热加载、热卸载、热重载插件
-    - 完善，严谨，成体系的**面向对象**api架构，符合编程逻辑的接口设计。  
-      让你专注于业务代码实现，而非在各种琐碎的技术细节上磕磕绊绊
-3. **兼容性强** ⭐
+    
+3. **配备大量基础设施** ⭐
+
+     - 统一配置文件接口
+     - 统一日志接口
+     - 文件系统接口
+     - 关系型、非关系型数据库接口
+     - 系统调用接口
+     - 网络功能接口
+     - 脚本引擎辅助接口
+     - 热加载、热卸载、热重载插件
+
+     完善，严谨，成体系的**面向对象**api架构，符合编程逻辑的接口设计。  
+     让你专注于业务代码实现，而非在各种琐碎的技术细节上磕磕绊绊
+
+4. **兼容性强** ⭐
 
      - LXL支持通过Wine在Linux平台运行，给Linux平台也带来自由的插件体验  
        一次编写，多平台共享
      - 仅依赖 `LiteLoader` 加载器和标准的C/C++运行时库，没有其他的额外依赖，兼容性极强
      - 兼容绝大多数其他主流插件加载器（`CSR` `PYR`等）
      - 后续版本更新时将保证 API 向后兼容，脚本插件不需要随版本更新而修改代码，一次编写，**全版本适配**。
-4. **模块化，高性能** ⭐
-   
+5. **模块化，高性能** ⭐
+
      - 使用C++开发，底层**性能优越**。借助ScriptX的高效率通用接口，让脚本插件也可以做到高效运行。
      - 底层仅有一套统一的C++ API，维护和适配都比较方便，新版本适配速度快。  
-5. **开源 & 永久免费** ⭐ 
-   
+6. **开源 & 永久免费** ⭐ 
+
      - 项目采用`GPL-3.0`开源许可证，保证**永远不会**收费或者推出商业版。  
        希望社区多多贡献力量，共同维护和建设这个项目💕    
 
@@ -68,7 +72,7 @@
 在安装 `LiteXLoader` 之前，你需要先配置好其依赖的 `LiteLoader` 加载器环境。  
 `LiteLoader`是知名的BDS C++插件加载器，提供了强大的底层API支持。LXL使用其提供的接口，并进行了很多拓展。
 
-3. [点击此处 前往MineBBS](https://www.minebbs.com/resources/liteloader.2059/)下载对应版本的 `LiteLoader` ，按要求解压之后运行SymDB2.exe生成相关数据
+1. [点击此处 前往MineBBS](https://www.minebbs.com/resources/liteloader.2059/)下载对应版本的 `LiteLoader` ，按要求解压之后运行SymDB2.exe生成相关数据
 2. 完成上述操作，并确认成功
 3. [点击此处 前往MineBBS](https://www.minebbs.com/resources/litexloader-x-bds.2670/)下载对应版本的`LiteXLoader`，解压
 4. 把全部内容复制到 **BDS** 的`plugins`目录中。如果复制时提示文件有冲突，选择覆盖即可。
@@ -228,7 +232,7 @@ VS项目采用多目标构建，构建的每种配置对应一种脚本语言
 [Hash](https://github.com/Chocobo1/Hash) GPL v3  
 [ThreadPool](https://github.com/jhasse/ThreadPool) Zlib License  
 [nbt-cpp](https://github.com/handtruth/nbt-cpp) MIT License  
-[LightWebSocketClient](https://github.com/cyanray/LightWebSocketClient) MIT License
+[LightWebSocketClient](https://github.com/cyanray/LightWebSocketClient) MIT License
 
 ### Extra Restrictions & Exceptions
 If you provides a server hosting service,you can use this framework for free, but you SHOULD NOT make PRIVATE changes to this framework as a selling point. If you fixed or tweaked the code, please pull request, instead of making it private for commercial use. 
@@ -255,6 +259,7 @@ but if you modified the framework, or write a new framework based on this framew
 
 LiteXLoader交流群：850517473 [点击加入](https://jq.qq.com/?_wv=1027&k=zeUbrETH)  
 LiteLoader交流群：656669024 [点击加入](https://jq.qq.com/?_wv=1027&k=lagwtrfh)  
+Discord频道：#LiteLoaderBDS & LXL [点击加入](https://discord.gg/4tBQHc9u7p)  
 Telegram电报频道：#LiteLoader [点击加入](https://t.me/LiteLoader)  
 欢迎反馈崩溃和版本适配问题。务必准备好详细的情况描述，过于简略的提问将不予作答。  
 
