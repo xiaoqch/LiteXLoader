@@ -39,10 +39,15 @@ Actor* Raw_SpawnMob(std::string name, const FloatVec4& pos)
 string Raw_GetEntityName(Actor* actor)
 {
     string name = actor->getNameTag();
-    if(name.empty())
-        name = Raw_GetEntityTypeName(actor);
-    if (StartsWith(name, "minecraft:"))
-        name = name.substr(10);
+    if (!name.empty()) {
+        return name;
+    }
+    string nameKey;
+    ActorType entityTypeId = actor->getEntityTypeId();
+    SymCall("?buildActorDisplayName@@YA?AUKeyOrNameResult@@W4ActorType@@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PEBVActor@@@Z",
+        string*, string*, ActorType, string*, Actor*)(&nameKey, entityTypeId, &name, actor);
+    SymCall("?get@I18n@@SA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV23@@Z",
+        string*, string*, string*)(&name, &nameKey);
     return name;
 }
 
