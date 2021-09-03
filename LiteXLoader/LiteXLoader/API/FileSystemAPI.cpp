@@ -282,7 +282,7 @@ Local<Value> FileClass::readAll(const Arguments& args)
 Local<Value> FileClass::write(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
-    if (args.size() >= 1)
+    if (args.size() >= 2)
         CHECK_ARG_TYPE(args[1], ValueKind::kFunction);
     
     try {
@@ -304,7 +304,7 @@ Local<Value> FileClass::write(const Arguments& args)
         }
 
         Global<Function> callbackFunc;
-        if (args.size() >= 1) 
+        if (args.size() >= 2) 
             callbackFunc = args[1].asFunction();
 
         pool.enqueue([fp{ &file }, lock{ &lock }, data{ std::move(data) }, isString, 
@@ -335,21 +335,21 @@ Local<Value> FileClass::write(const Arguments& args)
         });
         return Boolean::newBoolean(true);
     }
-    CATCH("Fail in readLine!");
+    CATCH("Fail in write!");
 }
 
 Local<Value> FileClass::writeLine(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
-    if (args.size() >= 1)
+    if (args.size() >= 2)
         CHECK_ARG_TYPE(args[1], ValueKind::kFunction);
 
     try {
         string data{ std::move(args[0].toStr()) };
 
         Global<Function> callbackFunc;
-        if (args.size() >= 1)
+        if (args.size() >= 2)
             callbackFunc = args[1].asFunction();
 
         pool.enqueue([fp{ &file }, lock{ &lock }, data{ std::move(data) }, 
@@ -377,7 +377,7 @@ Local<Value> FileClass::writeLine(const Arguments& args)
         });
         return Boolean::newBoolean(true);
     }
-    CATCH("Fail in readLine!");
+    CATCH("Fail in writeLine!");
 }
 
 Local<Value> FileClass::seekTo(const Arguments& args)
