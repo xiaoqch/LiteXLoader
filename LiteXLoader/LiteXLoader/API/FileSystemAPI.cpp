@@ -22,6 +22,7 @@ ClassDefine<FileClass> FileClassBuilder =
     defineClass<FileClass>("file")
         .constructor(nullptr)
         .instanceProperty("path", &FileClass::getPath)
+        .instanceProperty("absolutePath", &FileClass::getAbsolutePath)
         .instanceProperty("size", &FileClass::getSize)
 
         .instanceFunction("readSync", &FileClass::readSync)
@@ -88,6 +89,14 @@ Local<Value> FileClass::getPath()
         return String::newString(path);
     }
     CATCH("Fail in getPath!");
+}
+
+Local<Value> FileClass::getAbsolutePath()
+{
+    try {
+        return String::newString(canonical(filesystem::path(path)).u8string());
+    }
+    CATCH("Fail in getAbsolutePath!");
 }
 
 Local<Value> FileClass::getSize()
