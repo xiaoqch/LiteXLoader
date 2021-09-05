@@ -456,7 +456,12 @@ Local<Value> FileClass::isEOF(const Arguments& args)
 Local<Value> FileClass::flush(const Arguments& args)
 {
     try {
-        file.flush();
+        pool.enqueue([fp{ &file }, lock{ &lock }]()
+        {
+            lock->lock();
+            fp->flush();
+            lock->unlock();
+        });
         return Boolean::newBoolean(true);
     }
     CATCH("Fail in flush!");
