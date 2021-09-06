@@ -118,6 +118,11 @@ bool Raw_Tell(Player* player, const string &text, TextType type)
     return true;
 }
 
+bool Raw_TalkAs(Player* player, const std::string& text)
+{
+    return Raw_SendTextTalkPacket(player, text);
+}
+
 bool Raw_Broadcast(const std::string& text, TextType type)
 {
     auto playerList = Raw_GetOnlinePlayers();

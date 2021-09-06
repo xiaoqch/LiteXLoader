@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <ctime>
+#include <optional>
 using namespace std;
 
 vector<string> SplitCmdLine(const string& paras)
@@ -138,6 +139,25 @@ string wstr2str(wstring wstr)
     string result = string(buffer);
     delete[] buffer;
     return result;
+}
+
+std::optional<std::string> ReadAllFile(const std::string& filePath, bool isBinary)
+{
+    std::ifstream fRead;
+
+    std::ios_base::openmode mode = ios_base::in;
+    if (isBinary)
+        mode |= ios_base::binary;
+
+    fRead.open(filePath, mode);
+    if (!fRead.is_open())
+    {
+        return std::nullopt;
+    }
+    std::string data((std::istreambuf_iterator<char>(fRead)),
+        std::istreambuf_iterator<char>());
+    fRead.close();
+    return data;
 }
 
 unsigned long long GetCurrentTimeStampMS()

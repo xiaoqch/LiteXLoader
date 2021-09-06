@@ -56,6 +56,7 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceFunction("kick", &PlayerClass::kick)
         .instanceFunction("disconnect", &PlayerClass::kick)
         .instanceFunction("tell", &PlayerClass::tell)
+        .instanceFunction("talkAs", &PlayerClass::talkAs)
         .instanceFunction("sendText", &PlayerClass::tell)
         .instanceFunction("rename", &PlayerClass::rename)
         .instanceFunction("addLevel", &PlayerClass::addLevel)
@@ -620,6 +621,21 @@ Local<Value> PlayerClass::tell(const Arguments& args)
         return Boolean::newBoolean(Raw_Tell(player,args[0].toStr(),type));
     }
     CATCH("Fail in tell!");
+}
+
+Local<Value> PlayerClass::talkAs(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        return Boolean::newBoolean(Raw_TalkAs(player, args[0].toStr()));
+    }
+    CATCH("Fail in talkAs!");
 }
 
 Local<Value> PlayerClass::getHand(const Arguments& args)

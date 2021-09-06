@@ -97,6 +97,20 @@ bool Raw_SendCommandRequestPacket(Player* player,const string &cmd)
     return true;
 }
 
+bool Raw_SendTextTalkPacket(Player* player, const string& msg)
+{
+    Packet* pkt = Raw_CreatePacket(0x09);  //Text Packet
+    dAccess<unsigned char, 48>(pkt) = 1;
+    dAccess<string, 56>(pkt) = "";
+    dAccess<string, 88>(pkt) = msg;
+
+    void* clientId = SymCall("?getClientId@Player@@QEBAAEBVNetworkIdentifier@@XZ",
+        void*, Player*)(player);
+    SymCall("?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVTextPacket@@@Z",
+        void, ServerNetworkHandler*, void*, void*)(mc->getServerNetworkHandler(), clientId, pkt);
+    return true;
+}
+
 Player* Raw_GetPlayerFromPacket(ServerNetworkHandler* handler, NetworkIdentifier* id, Packet* packet)
 {
     return SymCall("?_getServerPlayer@ServerNetworkHandler@@AEAAPEAVServerPlayer@@AEBVNetworkIdentifier@@E@Z",

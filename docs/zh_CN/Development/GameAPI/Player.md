@@ -195,6 +195,18 @@ var open = pl.runcmd("tp ~ ~+50 ~");
 
 ```
 
+#### 以某个玩家身份说话
+
+`pl.talkAs(text)`
+
+- 参数：
+  - text : `String`  
+    模拟说话内容 
+- 返回值：是否执行成功
+- 返回值类型： `Boolean`   
+
+<br>
+
 #### 传送玩家至指定位置  
 
 `pl.teleport(pos)`  
