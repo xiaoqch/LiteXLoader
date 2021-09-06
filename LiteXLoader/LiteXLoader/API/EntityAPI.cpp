@@ -509,6 +509,18 @@ Local<Value> EntityClass::getAllTags(const Arguments& args)
     CATCH("Fail in getAllTags!");
 }
 
+Local<Value> GetAllEntities(const Arguments& args) {
+    try {
+       auto entityList = Raw_getAllEntities();
+       auto arr = Array::newArray();
+       for (auto i : entityList) {
+           arr.add(EntityClass::newEntity(i));
+       }
+       return arr;
+    }
+    CATCH("Fail in GetAllEntities");
+}
+
 Local<Value> SpawnMob(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 2);
