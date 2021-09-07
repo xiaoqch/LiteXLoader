@@ -151,6 +151,15 @@ SNBT字符串中必须包含一个完整的Compound。通过此接口，根据�
 
 <br>
 
+#### 示例：使用图形化编辑器处理 NBT 数据
+
+可以使用开源的 NBT Explorer，或其他 NBT 工具来**直观地**查看和修改 SNBT、二进制 NBT 数据  
+如图：
+
+![image-20210907134512490](NBT.assets/image-20210907134512490.png)
+
+<br>
+
 #### 清理此NBT对象
 
 `nbt.destroy()`
