@@ -29,6 +29,11 @@ bool Raw_CheckFileMD5(const string& path, const string& md5)
 	return calc.finalize().toString() == md5;
 }
 
+void ClearUpdates()
+{
+	filesystem::remove_all(LXL_UPDATE_CACHE_PATH);
+}
+
 void LXLUpdate()
 {
 	if (!filesystem::exists(LXL_UPDATE_INFO_RECORD))
@@ -41,6 +46,7 @@ void LXLUpdate()
 	string newVer(ini.GetValue("Info", "Version", ""));
 	if (!newVer.empty())
 	{
+		cout << "[LiteXLoader][Info] LXL Auto Upgrade working..." << endl;
 		cout << "[LiteXLoader][Info] LXL自动更新工作中..." << endl;
 		list<CSimpleIniA::Entry> files;
 		ini.GetAllSections(files);
@@ -54,7 +60,9 @@ void LXLUpdate()
 
 			if (!Raw_CheckFileMD5(from, ini.GetValue(file.pItem, "MD5","")))
 			{
+				cout << "[LiteXLoader][Error] MD5 Check failed! Auto Upgrade has not been finished." << endl;
 				cout << "[LiteXLoader][Error] MD5校验失败！自动更新未执行。" << endl;
+				ClearUpdates();
 				return;
 			}
 		}
@@ -69,18 +77,26 @@ void LXLUpdate()
 			string from = LXL_UPDATE_CACHE_PATH + name;
 			string to = ini.GetValue(name.c_str(), "Install","") + string("/") + name;
 
-			cout << "[LiteXLoader][Info] 正在更新文件" << to << endl;
+			cout << "[LiteXLoader][Info] Copying files..." << endl;
+			cout << "[LiteXLoader][Info] 正在更新文件..." << to << endl;
 
 			std::error_code ec;
 			if (!filesystem::copy_file(from, to, filesystem::copy_options::overwrite_existing, ec))
 			{
+				cout << "[LiteXLoader][FATAL] Error occurred in Automatic Update! Files copy failed. Error Code ：" << ec << endl;
+				cout << "[LiteXLoader][FATAL] WARN! Incomplete update may cause LXL to work abnormally." << endl;
+				cout << "[LiteXLoader][FATAL] It is recommended to manually update LiteXLoader! " << endl;
 				cout << "[LiteXLoader][FATAL] 自动更新出现错误！文件复制失败。错误码：" << ec << endl;
 				cout << "[LiteXLoader][FATAL] 警告！自动更新不完整可能造成LXL工作异常。建议前往LXL相关链接手动更新加载器" << endl;
+				ClearUpdates();
+				return;
 			}
 		}
 
-		filesystem::remove_all(LXL_UPDATE_CACHE_PATH);
+		ClearUpdates();
+		cout << "[LiteXLoader][Info] LXL Upgrade finished successfully." << endl;
+		cout << "[LiteXLoader][Info] Updated to version：v" << newVer << endl;
 		cout << "[LiteXLoader][Info] LXL自动更新已结束。" << endl;
-		cout << "[LiteXLoader][Info] 已更新到最新版本：v" << newVer << endl;
+		cout << "[LiteXLoader][Info] 已更新到版本：v" << newVer << endl;
 	}
 }
