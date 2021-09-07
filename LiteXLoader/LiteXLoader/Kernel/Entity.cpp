@@ -104,12 +104,16 @@ bool Raw_GetIsInWater(Actor* actor)
     return SymCall("?isInWater@Actor@@UEBA_NXZ", bool, Actor*)(actor);
 }
 
-std::vector<Actor*> Raw_getAllEntities() {
-    std::vector<Actor*> entityList;
+std::vector<Actor*> Raw_GetAllEntities()
+{
     auto lv = (uintptr_t)mc->getLevel();
-    auto begin = *(Actor***)(lv + 7952);
+
+    auto begin = *(Actor***)(lv + 7952);    // IDA Level::getAutonomousActiveEntity
     auto end = *(Actor***)(lv + 7960);
-    while (++begin != end) {
+
+    std::vector<Actor*> entityList;
+    while (++begin != end)
+    {
         entityList.push_back(*begin);
     }
     return entityList;

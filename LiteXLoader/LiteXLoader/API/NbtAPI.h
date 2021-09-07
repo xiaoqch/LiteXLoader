@@ -44,7 +44,7 @@ private:
 public:
     explicit NbtValue(Tag* p);
 
-    static Tag* extractNBT(Local<Value> v);
+    static Tag* extract(Local<Value> v);
     static Local<Object> newNBT(Tag* p, bool canDelete = true);
     TagType getValueType() { return type; }
 
@@ -59,7 +59,7 @@ class NbtList : public NbtBase, public ScriptClass
 public:
     explicit NbtList(Tag* p);
 
-    static Tag* extractNBT(Local<Value> v);
+    static Tag* extract(Local<Value> v);
     static Local<Object> newNBT(Tag* p, bool canDelete = true);
 
     Local<Value> getSize(const Arguments& args);
@@ -91,7 +91,7 @@ class NbtCompound : public NbtBase, public ScriptClass
 public:
     explicit NbtCompound(Tag* p);
 
-    static Tag* extractNBT(Local<Value> v);
+    static Tag* extract(Local<Value> v);
     static Local<Object> newNBT(Tag* p, bool canDelete = true);
 
     Local<Value> getKeys(const Arguments& args);

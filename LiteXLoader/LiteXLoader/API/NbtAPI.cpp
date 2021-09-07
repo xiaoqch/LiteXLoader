@@ -131,7 +131,7 @@ NbtValue::NbtValue(Tag* p) :ScriptClass(ScriptClass::ConstructFromCpp<NbtValue>{
     this->type = (TagType)(p->getTagType());
 }
 
-Tag* NbtValue::extractNBT(Local<Value> v)
+Tag* NbtValue::extract(Local<Value> v)
 {
     if (EngineScope::currentEngine()->isInstanceOf<NbtValue>(v))
         return EngineScope::currentEngine()->getNativeInstance<NbtValue>(v)->nbt;
@@ -173,7 +173,7 @@ NbtList::NbtList(Tag* p) :ScriptClass(ScriptClass::ConstructFromCpp<NbtList>{})
     this->nbt = p;
 }
 
-Tag* NbtList::extractNBT(Local<Value> v)
+Tag* NbtList::extract(Local<Value> v)
 {
     if (EngineScope::currentEngine()->isInstanceOf<NbtList>(v))
         return EngineScope::currentEngine()->getNativeInstance<NbtList>(v)->nbt;
@@ -455,21 +455,21 @@ Local<Value> NbtList::setTag(const Arguments& args)
             return Local<Value>();
         }
 
-        auto value = NbtValue::extractNBT(args[1]);
+        auto value = NbtValue::extract(args[1]);
         if (value)
         {
             list[index] = value;
             return this->getScriptObject();
         }
 
-        auto lst = NbtList::extractNBT(args[1]);
+        auto lst = NbtList::extract(args[1]);
         if (lst)
         {
             list[index] = lst;
             return this->getScriptObject();
         }
 
-        auto compound = NbtCompound::extractNBT(args[1]);
+        auto compound = NbtCompound::extract(args[1]);
         if (compound)
         {
             list[index] = compound;
@@ -488,21 +488,21 @@ Local<Value> NbtList::addTag(const Arguments& args)
 
     try
     {
-        auto value = NbtValue::extractNBT(args[0]);
+        auto value = NbtValue::extract(args[0]);
         if (value)
         {
             nbt->add(value);
             return this->getScriptObject();
         }
 
-        auto list = NbtList::extractNBT(args[0]);
+        auto list = NbtList::extract(args[0]);
         if (list)
         {
             nbt->add(list);
             return this->getScriptObject();
         }
 
-        auto compound = NbtCompound::extractNBT(args[0]);
+        auto compound = NbtCompound::extract(args[0]);
         if (compound)
         {
             nbt->add(compound);
@@ -625,7 +625,7 @@ NbtCompound::NbtCompound(Tag* p) :ScriptClass(ScriptClass::ConstructFromCpp<NbtC
     this->nbt = p;
 }
 
-Tag* NbtCompound::extractNBT(Local<Value> v)
+Tag* NbtCompound::extract(Local<Value> v)
 {
     if (EngineScope::currentEngine()->isInstanceOf<NbtCompound>(v))
         return EngineScope::currentEngine()->getNativeInstance<NbtCompound>(v)->nbt;
@@ -836,21 +836,21 @@ Local<Value> NbtCompound::setTag(const Arguments& args)
     {
         auto key = args[0].toStr();
 
-        auto value = NbtValue::extractNBT(args[1]);
+        auto value = NbtValue::extract(args[1]);
         if (value)
         {
             nbt->put(key, value);
             return this->getScriptObject();
         }
 
-        auto list = NbtList::extractNBT(args[1]);
+        auto list = NbtList::extract(args[1]);
         if (list)
         {
             nbt->put(key, list);
             return this->getScriptObject();
         }
 
-        auto compound = NbtCompound::extractNBT(args[1]);
+        auto compound = NbtCompound::extract(args[1]);
         if (compound)
         {
             nbt->putCompound(key, compound);
@@ -1317,7 +1317,7 @@ bool TagSetValue(Tag* nbt, Local<Value> value)
         break;
     }
     case TagType::List: {
-        auto tag = NbtList::extractNBT(value);
+        auto tag = NbtList::extract(value);
         if (tag == nullptr)
         {
             ERROR("Unmatch type of tag!");
@@ -1327,7 +1327,7 @@ bool TagSetValue(Tag* nbt, Local<Value> value)
         break;
     }
     case TagType::Compound: {
-        auto tag = NbtCompound::extractNBT(value);
+        auto tag = NbtCompound::extract(value);
         if (tag == nullptr)
         {
             ERROR("Unmatch type of tag!");

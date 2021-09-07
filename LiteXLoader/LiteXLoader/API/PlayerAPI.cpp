@@ -133,7 +133,7 @@ Local<Object> PlayerClass::newPlayer(WPlayer p)
 {
     return PlayerClass::newPlayer(p.v);
 }
-Player* PlayerClass::extractPlayer(Local<Value> v)
+Player* PlayerClass::extract(Local<Value> v)
 {
     if(EngineScope::currentEngine()->isInstanceOf<PlayerClass>(v))
         return EngineScope::currentEngine()->getNativeInstance<PlayerClass>(v)->get();
@@ -1206,7 +1206,7 @@ Local<Value> PlayerClass::giveItem(const Arguments& args)
         if (!player)
             return Local<Value>();
 
-        auto item = ItemClass::extractItem(args[0]);
+        auto item = ItemClass::extract(args[0]);
         if (!item)
             return Local<Value>();    //Null
 
@@ -1251,7 +1251,7 @@ Local<Value> PlayerClass::setNbt(const Arguments& args)
         if (!player)
             return Local<Value>();
 
-        auto nbt = NbtCompound::extractNBT(args[0]);
+        auto nbt = NbtCompound::extract(args[0]);
         if (!nbt)
             return Local<Value>();    //Null
 

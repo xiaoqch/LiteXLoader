@@ -23,27 +23,13 @@
 - 更改了Dependence的加载机制，现在只有baselib会被自动加载了
 - `pl.runcmd`成员方法执行的命令会带上 / 前缀了
 
-#### 20210809 - v0.4.1
-
-- 将容器类成员方法`getSlot`和`getAllSlots`分别改名为`getItem`和`getAllItems`（向下兼容）
-
-#### 20210808 - v0.4.1
-
-- 将`lxl.checkVersion`重命名为`lxl.requireVersion`（向下兼容）
-
 #### 20210807 - v0.4.0
 
-- 将玩家的`getAllItems()`、`removeItem()`接口删除，修改为分别使用容器类实现（向下兼容）
 - 增加事件：`onSpawnProjectile`, `onBedExplode`,` onRespawnAnchorExplode`
 - 删除事件：`onProjectileShoot`，`onSplashPotionHitEffect`,`onFishingHookRetrieve`
 
-#### 20210805 - v0.3.3
-
-- 将`pl.ip`属性移动到了玩家设备对象`DeviceAPI`中（向下兼容）
-
 #### 20210803 - v0.3.2
 
-- 将实体、方块、玩家、物品对象的`getTag`和`setTag`统一重命名为`getNbt`和`setNbt`，避免理解偏差（向下兼容）
 - `mc.listAllScoreObjective`更名为`mc.getAllScoreObjective`，接口进行了修复
 
 #### 20210802 - v0.3.1

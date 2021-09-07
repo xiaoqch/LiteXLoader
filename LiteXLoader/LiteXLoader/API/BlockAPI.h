@@ -34,7 +34,7 @@ public:
     static Local<Object> newBlock(Block *p, BlockPos *pos, int dim);
     static Local<Object> newBlock(Block *p, BlockPos *pos, BlockSource *bs);
     static Local<Object> newBlock(WBlock p);
-    static Block* extractBlock(Local<Value> v);
+    static Block* extract(Local<Value> v);
     Local<Value> getRawPtr(const Arguments& args);
 
     Local<Value> getName();

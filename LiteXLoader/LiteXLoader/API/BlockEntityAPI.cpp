@@ -38,7 +38,7 @@ Local<Object> BlockEntityClass::newBlockEntity(BlockActor * be,int dim)
 }
 
 //生成函数
-BlockActor* BlockEntityClass::extractBlockEntity(Local<Value> v)
+BlockActor* BlockEntityClass::extract(Local<Value> v)
 {
 	if (EngineScope::currentEngine()->isInstanceOf<BlockEntityClass>(v))
 		return EngineScope::currentEngine()->getNativeInstance<BlockEntityClass>(v)->get();
@@ -84,7 +84,7 @@ Local<Value> BlockEntityClass::setNbt(const Arguments& args)
 	CHECK_ARGS_COUNT(args, 1);
 
 	try {
-		auto nbt = NbtCompound::extractNBT(args[0]);
+		auto nbt = NbtCompound::extract(args[0]);
 		if (!nbt)
 			return Local<Value>();    //Null
 
