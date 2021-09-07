@@ -58,5 +58,7 @@ public:
 };
 
 //////////////////// APIs ////////////////////
+Local<Value> GetAllEntities(const Arguments& args);
+
 Local<Value> SpawnMob(const Arguments& args);
 Local<Value> Explode(const Arguments& args);
