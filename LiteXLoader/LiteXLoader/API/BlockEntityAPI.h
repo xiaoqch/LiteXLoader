@@ -22,7 +22,7 @@ public:
     }
 
     static Local<Object> newBlockEntity(BlockActor* be, int dim);
-    static BlockActor* extractBlockEntity(Local<Value> v);
+    static BlockActor* extract(Local<Value> v);
     Local<Value> getRawPtr(const Arguments& args);
 
     Local<Value> getPos();

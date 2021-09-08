@@ -22,7 +22,7 @@ public:
 
     static Local<Object> newEntity(Actor *p);
     static Local<Object> newEntity(WActor p);
-    static Actor* extractEntity(Local<Value> v);
+    static Actor* extract(Local<Value> v);
     Local<Value> getRawPtr(const Arguments& args);
 
     Local<Value> getName();
@@ -58,5 +58,7 @@ public:
 };
 
 //////////////////// APIs ////////////////////
+Local<Value> GetAllEntities(const Arguments& args);
+
 Local<Value> SpawnMob(const Arguments& args);
 Local<Value> Explode(const Arguments& args);

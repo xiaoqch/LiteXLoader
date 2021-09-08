@@ -79,7 +79,7 @@ Local<Object> BlockClass::newBlock(WBlock p)
 {
     return BlockClass::newBlock(p.v);
 }
-Block* BlockClass::extractBlock(Local<Value> v)
+Block* BlockClass::extract(Local<Value> v)
 {
     if(EngineScope::currentEngine()->isInstanceOf<BlockClass>(v))
         return EngineScope::currentEngine()->getNativeInstance<BlockClass>(v)->get();
@@ -153,7 +153,7 @@ Local<Value> BlockClass::setNbt(const Arguments& args)
     CHECK_ARGS_COUNT(args, 1);
 
     try {
-        auto nbt = NbtCompound::extractNBT(args[0]);
+        auto nbt = NbtCompound::extract(args[0]);
         if (!nbt)
             return Local<Value>();    //Null
         
@@ -365,7 +365,7 @@ Local<Value> SetBlock(const Arguments& args)
         else
         {
             //其他方块对象
-            Block* bl = BlockClass::extractBlock(block);
+            Block* bl = BlockClass::extract(block);
             if (!bl)
             {
                 ERROR("Wrong type of argument in SetBlock!");

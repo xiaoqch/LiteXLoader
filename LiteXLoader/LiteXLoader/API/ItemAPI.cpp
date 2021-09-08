@@ -51,7 +51,7 @@ Local<Object> ItemClass::newItem(ItemStack *p)
     auto newp = new ItemClass(p);
     return newp->getScriptObject();
 }
-ItemStack* ItemClass::extractItem(Local<Value> v)
+ItemStack* ItemClass::extract(Local<Value> v)
 {
     if(EngineScope::currentEngine()->isInstanceOf<ItemClass>(v))
         return EngineScope::currentEngine()->getNativeInstance<ItemClass>(v)->get();
@@ -130,7 +130,7 @@ Local<Value> ItemClass::set(const Arguments& args)
     CHECK_ARGS_COUNT(args, 1);
 
     try {
-        auto itemNew = ItemClass::extractItem(args[0]);
+        auto itemNew = ItemClass::extract(args[0]);
         if (!itemNew)
             return Local<Value>();    //Null
 
@@ -142,7 +142,7 @@ Local<Value> ItemClass::set(const Arguments& args)
 Local<Value> ItemClass::clone(const Arguments& args)
 {
     try {
-        auto item = ItemClass::extractItem(args[0]);
+        auto item = ItemClass::extract(args[0]);
         if (!item)
             return Local<Value>();    //Null
 
@@ -214,7 +214,7 @@ Local<Value> ItemClass::setNbt(const Arguments& args)
     CHECK_ARGS_COUNT(args, 1);
 
     try {
-        auto nbt = NbtCompound::extractNBT(args[0]);
+        auto nbt = NbtCompound::extract(args[0]);
         if (!nbt)
             return Local<Value>();    //Null
 
@@ -251,7 +251,7 @@ Local<Value> NewItem(const Arguments& args)
         }
         else
         {
-            Tag* nbt = NbtCompound::extractNBT(args[0]);
+            Tag* nbt = NbtCompound::extract(args[0]);
             if (nbt)
             {
                 ItemStack* item = Raw_NewItem(nbt);
@@ -325,7 +325,7 @@ Local<Value> SpawnItem(const Arguments& args)
         }
 
 
-        ItemStack* it = ItemClass::extractItem(args[0]);
+        ItemStack* it = ItemClass::extract(args[0]);
         if (it)
         {
             //By Item

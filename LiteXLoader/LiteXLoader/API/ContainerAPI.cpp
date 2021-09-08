@@ -42,7 +42,7 @@ Local<Object> ContainerClass::newContainer(Container* p)
 	auto newp = new ContainerClass(p);
 	return newp->getScriptObject();
 }
-Container* ContainerClass::extractContainer(Local<Value> v)
+Container* ContainerClass::extract(Local<Value> v)
 {
 	if (EngineScope::currentEngine()->isInstanceOf<ContainerClass>(v))
 		return EngineScope::currentEngine()->getNativeInstance<ContainerClass>(v)->get();
@@ -80,7 +80,7 @@ Local<Value> ContainerClass::addItem(const Arguments& args)
 	CHECK_ARGS_COUNT(args, 1);
 
 	try {
-		ItemStack* item = ItemClass::extractItem(args[0]);
+		ItemStack* item = ItemClass::extract(args[0]);
 		if (!item)
 		{
 			ERROR("Wrong type of argument in addItem!");
@@ -96,7 +96,7 @@ Local<Value> ContainerClass::addItemToFirstEmptySlot(const Arguments& args)
 	CHECK_ARGS_COUNT(args, 1);
 
 	try {
-		ItemStack* item = ItemClass::extractItem(args[0]);
+		ItemStack* item = ItemClass::extract(args[0]);
 		if (!item)
 		{
 			ERROR("Wrong type of argument in addItemToFirstEmptySlot!");
@@ -112,7 +112,7 @@ Local<Value> ContainerClass::hasRoomFor(const Arguments& args)
 	CHECK_ARGS_COUNT(args, 1);
 
 	try {
-		ItemStack* item = ItemClass::extractItem(args[0]);
+		ItemStack* item = ItemClass::extract(args[0]);
 		if (!item)
 		{
 			ERROR("Wrong type of argument in hasRoomFor!");
@@ -158,7 +158,7 @@ Local<Value> ContainerClass::setItem(const Arguments& args)
 	CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
 
 	try {
-		ItemStack* item = ItemClass::extractItem(args[1]);
+		ItemStack* item = ItemClass::extract(args[1]);
 		if (!item)
 		{
 			ERROR("Wrong type of argument in setItem!");

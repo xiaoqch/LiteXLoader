@@ -20,7 +20,7 @@ public:
     }
 
     static Local<Object> newContainer(Container* p);
-    static Container* extractContainer(Local<Value> v);
+    static Container* extract(Local<Value> v);
     Local<Value> getRawPtr(const Arguments& args);
 
     Local<Value> getSize();

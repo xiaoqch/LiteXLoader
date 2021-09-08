@@ -10,6 +10,8 @@
 #define LXL_UPDATE_CACHE_PATH "plugins/LiteXLoader/Update/"
 #define LXL_UPDATE_INFO_RECORD "plugins/LiteXLoader/Update/Update.ini"
 
+#define LXL_UPDATE_OTHER_FILES_RECORD "plugins/LiteXLoader/Versions.ini"
+
 #include <string>
 #include <thread>
 #include <chrono>
@@ -23,13 +25,89 @@
 #include <Kernel/Data.h>
 using namespace std;
 
+enum class DownloadResult {
+	Success, FailInit, FailDownload, FailDownloadMd5, FailCheckMd5
+};
+
+//Default MD5 File: filename + ".md5"
+DownloadResult DownloadAndCheckMd5(const string& url, const string& localPath, bool isBinary, int *errorCode = nullptr, string *md5Rtn = nullptr)
+{
+	string domain, path;
+	SplitHttpUrl(url, domain, path);
+
+	//Init
+	httplib::Client cli(domain.c_str());
+	cli.set_connection_timeout(LXL_UPDATE_CHECK_TIMEOUT, 0);
+	if (!cli.is_valid())
+	{
+		if (errorCode)
+			*errorCode = -1;
+		return DownloadResult::FailInit;
+	}
+
+	//Download
+	auto response = cli.Get(path.c_str());
+	if (response && response->status == 200)
+	{
+		if (filesystem::exists(localPath))
+			filesystem::remove(localPath);
+
+		ios_base::openmode mode = ios::out;
+		if (isBinary)
+			mode |= ios::binary;
+
+		ofstream fout(localPath, mode);
+		fout << response->body;
+		fout.close();
+	}
+	else
+	{
+		if (errorCode)
+			*errorCode = response->status;
+		return DownloadResult::FailDownload;
+	}
+
+	//Download MD5
+	string md5;
+	response = cli.Get((path + ".md5").c_str());
+	if (response && response->status == 200)
+	{
+		md5 = response->body;
+		if (md5.back() == '\n')
+			md5.pop_back();
+		if (md5.back() == '\r')
+			md5.pop_back();
+	}
+	else
+	{
+		if (errorCode)
+			*errorCode = response->status;
+		return DownloadResult::FailDownloadMd5;
+	}
+
+	if (md5Rtn)
+		*md5Rtn = md5;
+
+	//CheckMD5
+	auto content = ReadAllFile(localPath, true);
+	if (!content || Raw_toMD5(*content) != md5)
+	{
+		if (errorCode)
+			*errorCode = -1;
+		return DownloadResult::FailCheckMd5;
+	}
+	return DownloadResult::Success;
+}
+
 bool CheckAutoUpdate(bool isUpdateManually)
 {
 	try
 	{
+		//Init
 		httplib::Client cli(LXL_UPDATE_DOMAIN);
 		cli.set_connection_timeout(LXL_UPDATE_CHECK_TIMEOUT, 0);
 
+		//Get Json
 		auto response = cli.Get(LXL_UPDATE_INFO_REMOTE);
 		if (!response || response->status != 200)
 		{
@@ -42,9 +120,96 @@ bool CheckAutoUpdate(bool isUpdateManually)
 			return false;
 		}
 
+		//Parse
 		string info{ response->body };
 		JSON_ROOT data = JSON_ROOT::parse(info);
 
+		//Check Other Files config
+		if (!filesystem::exists(LXL_UPDATE_OTHER_FILES_RECORD))
+		{
+			ofstream fout(LXL_UPDATE_OTHER_FILES_RECORD);
+			fout.flush();
+			fout.close();
+		}
+
+		//Process Other Files
+		auto iniVersions = Raw_IniOpen(LXL_UPDATE_OTHER_FILES_RECORD);
+		for (auto& file : data["OtherFiles"])
+		{
+			string fileName = file["Name"].get<string>();
+			string nowVersion = iniVersions->GetValue(fileName.c_str(), "Version", "0.0.0");
+			string newVersion = file["Version"].get<string>();
+
+			if (IsVersionLess(nowVersion, newVersion))
+			{
+				if (isUpdateManually)
+				{
+					PRINT("正在更新附属文件：" + fileName);
+				}
+				else
+					DEBUG("正在更新附属文件：" + fileName);
+
+				string url = file["URL"].get<string>();
+
+				string remotePath = url + fileName;
+				string localPath = file["Install"].get<string>() + "/" + fileName;
+
+				bool isBinary = file["IsBinary"].get<bool>();
+
+				//Download File
+				int errorCode;
+				string md5;
+				switch (DownloadAndCheckMd5(remotePath, localPath, isBinary, &errorCode, &md5))
+				{
+				case DownloadResult::Success:
+					iniVersions->SetValue(fileName.c_str(), "Version", newVersion.c_str());
+					break;
+				case DownloadResult::FailInit:
+					if (isUpdateManually)
+					{
+						PRINT("附属文件更新 - 连接初始化失败！");
+					}
+					else
+						DEBUG("附属文件更新 - 连接初始化失败！");
+					break;
+				case DownloadResult::FailDownload:
+					if (isUpdateManually)
+					{
+						PRINT("附属文件更新 - 下载文件失败！错误码：" + to_string(errorCode));
+					}
+					else
+						DEBUG("附属文件更新 - 下载文件失败！错误码：" + to_string(errorCode));
+					break;
+				case DownloadResult::FailDownloadMd5:
+					if (isUpdateManually)
+					{
+						PRINT("附属文件更新 - 下载MD5校验文件失败！错误码：" + to_string(errorCode));
+					}
+					else
+						DEBUG("附属文件更新 - 下载MD5校验文件失败！错误码：" + to_string(errorCode));
+					break;
+				case DownloadResult::FailCheckMd5:
+					if (isUpdateManually)
+					{
+						PRINT("附属文件更新 - MD5校验失败！");
+					}
+					else
+						DEBUG("附属文件更新 - MD5校验失败！");
+					break;
+				}
+			}
+		}
+		iniVersions->SaveFile(LXL_UPDATE_OTHER_FILES_RECORD, true);
+		Raw_IniClose(iniVersions);
+
+		if (isUpdateManually)
+		{
+			PRINT("");
+		}
+		else
+			DEBUG("");
+
+		//Check BDS Version
 		string bds = Raw_GetBDSVersion();
 		if (bds.front() == 'v')
 			bds.erase(0, 1);
@@ -72,17 +237,17 @@ bool CheckAutoUpdate(bool isUpdateManually)
 					DEBUG("版本信息解析失败！格式错误");
 				return false;
 			}
-				
+			
+			//Compare Version
 			int a = stoi(versRemote[0]);
 			int b = stoi(versRemote[1]);
 			int c = stoi(versRemote[2]);
 
-			if (a < LXL_VERSION_MAJOR || (a == LXL_VERSION_MAJOR && b < LXL_VERSION_MINOR) 
-				|| (a == LXL_VERSION_MAJOR && b == LXL_VERSION_MINOR && c <= LXL_VERSION_REVISION))
+			if(!IsVersionLess(LXL_VERSION_MAJOR, LXL_VERSION_MINOR, LXL_VERSION_REVISION, a,b,c))
 			{
 				if (isUpdateManually)
 				{
-					PRINT("当前版本已是最新版本，无需更新。");
+					PRINT("当前LXL已是最新版本，无需更新。");
 				}
 				return true;
 			}
@@ -105,7 +270,7 @@ bool CheckAutoUpdate(bool isUpdateManually)
 			}
 			Raw_IniClose(ini);
 
-			//Downloading
+			//Init for Download
 			if (isUpdateManually)
 			{
 				PRINT("检测到新版本，启动更新");
@@ -114,78 +279,77 @@ bool CheckAutoUpdate(bool isUpdateManually)
 				DEBUG("检测到新版本，启动更新");
 			filesystem::remove_all(LXL_UPDATE_CACHE_PATH);
 			filesystem::create_directories(LXL_UPDATE_CACHE_PATH);
-			
-			string url = data[bds]["URL"];
-			string domain, path;
-			SplitHttpUrl(url, domain, path);
 
-			httplib::Client cli(domain.c_str());
-			cli.set_connection_timeout(LXL_UPDATE_CHECK_TIMEOUT, 0);
-			if (!cli.is_valid())
-			{
-				if (isUpdateManually)
-				{
-					PRINT("更新启动失败！");
-				}
-				else
-					DEBUG("更新启动失败！");
-				return false;
-			}
-
+			//Downloading
 			auto iniUpdate = Raw_IniOpen(LXL_UPDATE_INFO_RECORD);
 			for (auto& file : data[bds]["Files"])
 			{
 				string fileName = file["Name"].get<string>();
-				string filePath = path + fileName;
+				if (isUpdateManually)
+				{
+					PRINT("正在下载更新：" + fileName);
+				}
+				else
+					DEBUG("正在下载更新：" + fileName);
+
+				string url = file["URL"].get<string>();
+
+				string remotePath = url + fileName;
 				string localPath = LXL_UPDATE_CACHE_PATH + fileName;
-				string md5 = "";
+				bool isBinary = file["IsBinary"].get<bool>();
 
-				//源文件
-				auto response = cli.Get(filePath.c_str());
-				if (response && response->status == 200)
+				//Download File
+				int errorCode;
+				string md5;
+				switch (DownloadAndCheckMd5(remotePath,localPath,isBinary,&errorCode,&md5))
 				{
-					ofstream fout(localPath, ios::binary);
-					fout << response->body;
-					fout.close();
-				}
-				else
-				{
+				case DownloadResult::Success:
+					break;
+				case DownloadResult::FailInit:
 					if (isUpdateManually)
 					{
-						PRINT("自动更新下载文件失败！错误码：" + to_string(response->status));
+						PRINT("自动更新 - 连接初始化失败！");
 					}
 					else
-						DEBUG("自动更新下载文件失败！错误码：" + to_string(response->status));
-					return true;
-				}
-
-				//MD5
-				response = cli.Get((filePath+".md5").c_str());
-				if (response && response->status == 200)
-				{
-					md5 = response->body;
-					if (md5.back() == '\n')
-						md5.pop_back();
-					if (md5.back() == '\r')
-						md5.pop_back();
-				}
-				else
-				{
+						DEBUG("自动更新 - 连接初始化失败！");
+					return false;
+					break;
+				case DownloadResult::FailDownload:
 					if (isUpdateManually)
 					{
-						PRINT("自动更新下载MD5校验文件失败！错误码：" + to_string(response->status));
+						PRINT("自动更新 - 下载文件失败！错误码：" + to_string(errorCode));
 					}
 					else
-						DEBUG("自动更新下载MD5校验文件失败！错误码：" + to_string(response->status));
-					return true;
+						DEBUG("自动更新 - 下载文件失败！错误码：" + to_string(errorCode));
+					return false;
+					break;
+				case DownloadResult::FailDownloadMd5:
+					if (isUpdateManually)
+					{
+						PRINT("自动更新 - 下载MD5校验文件失败！错误码：" + to_string(errorCode));
+					}
+					else
+						DEBUG("自动更新 - 下载MD5校验文件失败！错误码：" + to_string(errorCode));
+					return false;
+					break;
+				case DownloadResult::FailCheckMd5:
+					if (isUpdateManually)
+					{
+						PRINT("自动更新 - MD5校验失败！");
+					}
+					else
+						DEBUG("自动更新 - MD5校验失败！");
+					return false;
+					break;
 				}
 
+				//Write to Update.ini
 				string install = file["Install"].get<string>();
-
 				iniUpdate->SetValue(fileName.c_str(), "Install", install.c_str());
 				iniUpdate->SetValue(fileName.c_str(), "MD5", md5.c_str());
 			}
 
+			//Finish Download
 			iniUpdate->SetValue("Info", "Version", verRemote.c_str());
 			iniUpdate->SaveFile(LXL_UPDATE_INFO_RECORD);
 
@@ -224,6 +388,15 @@ void AddPreload()
 	fPreload << "\n" << LXL_UPDATE_PROGRAM << endl;
 }
 
+void ClearUpdateLibrary()
+{
+	HMODULE hMod = GetModuleHandle(L"LXLAutoUpdate.dll");
+	if (hMod != NULL)
+	{
+		FreeLibrary(hMod);
+	}
+}
+
 void InitAutoUpdateCheck()
 {
 	//Check Files
@@ -236,6 +409,7 @@ void InitAutoUpdateCheck()
 	{
 		filesystem::create_directories(LXL_UPDATE_CACHE_PATH);
 	}
+	ClearUpdateLibrary();
 	AddPreload();
 
 	std::thread([]()

@@ -4,6 +4,7 @@
 #include <Engine/EngineOwnData.h>
 #include <Engine/LoaderHelper.h>
 #include <Kernel/System.h>
+#include <Kernel/Utils.h>
 #include <Engine/LoaderHelper.h>
 #include <Version.h>
 #include <string>
@@ -34,19 +35,8 @@ Local<Value> LxlRequireVersion(const Arguments& args)
         CHECK_ARG_TYPE(args[2], ValueKind::kNumber);
 
     try {
-        string require(char(args[0].toInt()), 1);
-        string current(char(LXL_VERSION_MAJOR), 1);
-        if (args.size() >= 2)
-        {
-            require.append(1, char(args[1].toInt()));
-            current.append(1, char(LXL_VERSION_MINOR));
-        }
-        if (args.size() >= 3)
-        {
-            require.append(1, char(args[2].toInt()));
-            current.append(1, char(LXL_VERSION_REVISION));
-        }
-        return Boolean::newBoolean(current >= require);
+        return Boolean::newBoolean(!IsVersionLess(LXL_VERSION_MAJOR, LXL_VERSION_MINOR, LXL_VERSION_REVISION, 
+            args[0].toInt(), (args.size() >= 2) ? args[1].toInt() : 0, (args.size() >= 3) ? args[2].toInt() : 0));
     }
     CATCH("Fail in LxlRequireVersion!")
 }

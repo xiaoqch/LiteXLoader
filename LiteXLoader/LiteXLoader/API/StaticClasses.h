@@ -176,14 +176,16 @@ public:
 
 static ClassDefine<void> DataClassBuilder =
     defineClass("data")
-        .function("openConfig", &DataClass::openConfig)
-        .function("openDB", &DataClass::openDB)
         .function("xuid2name", &DataClass::xuid2name)
         .function("name2xuid", &DataClass::name2xuid)
         .function("parseJson", &DataClass::parseJson)
         .function("toJson", &DataClass::toJson)
         .function("toMD5", &DataClass::toMD5)
         .function("toSHA1", &DataClass::toSHA1)
+
+        //For Compatibility
+        .function("openDB", &DataClass::openDB)
+        .function("openConfig", &DataClass::openConfig)
         .build();
 
 class MoneyClass
@@ -220,10 +222,12 @@ public:
 
 static ClassDefine<void> NetworkClassBuilder =
     defineClass("network")
-        .function("newWebSocket", &NetworkClass::newWebSocket)
         .function("httpGet", &NetworkClass::httpGet)
         .function("httpPost", &NetworkClass::httpPost)
         .function("httpGetSync", &NetworkClass::httpGetSync)
+
+        //For compatibility
+        .function("newWebSocket", &NetworkClass::newWebSocket)
         .build();
 
 class LxlClass

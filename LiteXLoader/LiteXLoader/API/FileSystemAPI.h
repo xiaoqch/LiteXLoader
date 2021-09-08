@@ -34,15 +34,8 @@ private:
     std::mutex lock;
 
 public:
-    explicit FileClass(std::fstream &&f, const std::string& path, bool isBinary)
-        :ScriptClass(ScriptClass::ConstructFromCpp<FileClass>{})
-    {
-        set(std::move(f), path, isBinary);
-    }
-
-    void set(std::fstream&& f, const std::string& path, bool isBinary);
-
-    static Local<Object> newFile(std::fstream&& f, const std::string& path, bool isBinary);
+    explicit FileClass(std::fstream&& f, const std::string& path, bool isBinary);
+    static FileClass* constructor(const Arguments& args);
 
     Local<Value> getPath();
     Local<Value> getAbsolutePath();
@@ -68,7 +61,6 @@ public:
     Local<Value> errorCode(const Arguments& args);
     Local<Value> clear(const Arguments& args);
 
-    static Local<Value> open(const Arguments& args) { return OpenFile(args); }
     static Local<Value> readFromStatic(const Arguments& args) { return FileReadFrom(args); }
     static Local<Value> writeToStatic(const Arguments& args) { return FileWriteTo(args); }
     static Local<Value> writeLineStatic(const Arguments& args) { return FileWriteLine(args); }
@@ -82,4 +74,8 @@ public:
     static Local<Value> checkIsDir(const Arguments& args) { return CheckIsDir(args); }
     static Local<Value> getFileSize(const Arguments& args) { return GetFileSize(args); }
     static Local<Value> getFilesList(const Arguments& args) { return GetFilesList(args); }
+
+    //For Compatibility
+    static Local<Object> newFile(std::fstream&& f, const std::string& path, bool isBinary);
+    static Local<Value> open(const Arguments& args) { return OpenFile(args); }
 };

@@ -61,7 +61,7 @@ Local<Object> EntityClass::newEntity(WActor p)
 {
     return EntityClass::newEntity(p.v);
 }
-Actor* EntityClass::extractEntity(Local<Value> v)
+Actor* EntityClass::extract(Local<Value> v)
 {
     if(EngineScope::currentEngine()->isInstanceOf<EntityClass>(v))
         return EngineScope::currentEngine()->getNativeInstance<EntityClass>(v)->get();
@@ -439,7 +439,7 @@ Local<Value> EntityClass::setNbt(const Arguments& args)
         if (!entity)
             return Local<Value>();
 
-        auto nbt = NbtCompound::extractNBT(args[0]);
+        auto nbt = NbtCompound::extract(args[0]);
         if (!nbt)
             return Local<Value>();    //Null
 
@@ -507,6 +507,18 @@ Local<Value> EntityClass::getAllTags(const Arguments& args)
         return arr;
     }
     CATCH("Fail in getAllTags!");
+}
+
+Local<Value> GetAllEntities(const Arguments& args) {
+    try {
+       auto entityList = Raw_GetAllEntities();
+       auto arr = Array::newArray();
+       for (auto i : entityList) {
+           arr.add(EntityClass::newEntity(i));
+       }
+       return arr;
+    }
+    CATCH("Fail in GetAllEntities");
 }
 
 Local<Value> SpawnMob(const Arguments& args)
@@ -634,7 +646,7 @@ Local<Value> Explode(const Arguments& args)
             return Local<Value>();
         }
 
-        auto source = EntityClass::extractEntity(args[beginIndex + 0]); //Can be nullptr
+        auto source = EntityClass::extract(args[beginIndex + 0]); //Can be nullptr
         
         CHECK_ARG_TYPE(args[beginIndex + 1], ValueKind::kNumber);
         CHECK_ARG_TYPE(args[beginIndex + 2], ValueKind::kNumber);

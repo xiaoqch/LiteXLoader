@@ -100,7 +100,7 @@ Local<Value> ObjectiveClass::setScore(const Arguments& args)
 		}
 		else if (IsInstanceOf<PlayerClass>(args[0]))
 		{
-			auto pl = PlayerClass::extractPlayer(args[0]);
+			auto pl = PlayerClass::extract(args[0]);
 			if(Raw_SetScore(pl, objname, score))
 				rtn = Number::newNumber(Raw_GetScore(pl,objname));
 		}
@@ -134,7 +134,7 @@ Local<Value> ObjectiveClass::addScore(const Arguments& args)
 		}
 		else if (IsInstanceOf<PlayerClass>(args[0]))
 		{
-			auto pl = PlayerClass::extractPlayer(args[0]);
+			auto pl = PlayerClass::extract(args[0]);
 			if (Raw_AddScore(pl, objname, score))
 				rtn = Number::newNumber(Raw_GetScore(pl, objname));
 		}
@@ -168,7 +168,7 @@ Local<Value> ObjectiveClass::reduceScore(const Arguments& args)
 		}
 		else if (IsInstanceOf<PlayerClass>(args[0]))
 		{
-			auto pl = PlayerClass::extractPlayer(args[0]);
+			auto pl = PlayerClass::extract(args[0]);
 			if (Raw_ReduceScore(pl, objname, score))
 				rtn = Number::newNumber(Raw_GetScore(pl, objname));
 		}
@@ -192,7 +192,7 @@ Local<Value> ObjectiveClass::deleteScore(const Arguments& args)
 		if (args[0].isString())
 			id = args[0].toStr();
 		else if (IsInstanceOf<PlayerClass>(args[0]))
-			id = Raw_GetPlayerName(PlayerClass::extractPlayer(args[0]));
+			id = Raw_GetPlayerName(PlayerClass::extract(args[0]));
 		else
 		{
 			ERROR("Wrong type of argument in deleteScore!");
@@ -215,7 +215,7 @@ Local<Value> ObjectiveClass::getScore(const Arguments& args)
 		if (args[0].isString())
 			id = args[0].toStr();
 		else if (IsInstanceOf<PlayerClass>(args[0]))
-			id = Raw_GetPlayerName(PlayerClass::extractPlayer(args[0]));
+			id = Raw_GetPlayerName(PlayerClass::extract(args[0]));
 		else
 		{
 			ERROR("Wrong type of argument in getScore!");

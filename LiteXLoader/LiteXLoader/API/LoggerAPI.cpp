@@ -254,7 +254,7 @@ Local<Value> LoggerSetPlayer(const Arguments& args)
         CHECK_ARG_TYPE(args[1], ValueKind::kNumber)
 
     try {
-        Player *p = PlayerClass::extractPlayer(args[0]);
+        Player *p = PlayerClass::extract(args[0]);
         ENGINE_OWN_DATA()->player = p;
 
         if (args.size() >= 2)
