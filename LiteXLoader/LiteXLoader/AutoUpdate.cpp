@@ -388,6 +388,15 @@ void AddPreload()
 	fPreload << "\n" << LXL_UPDATE_PROGRAM << endl;
 }
 
+void ClearUpdateLibrary()
+{
+	HMODULE hMod = GetModuleHandle(L"LXLAutoUpdate.dll");
+	if (hMod != NULL)
+	{
+		FreeLibrary(hMod);
+	}
+}
+
 void InitAutoUpdateCheck()
 {
 	//Check Files
@@ -400,6 +409,7 @@ void InitAutoUpdateCheck()
 	{
 		filesystem::create_directories(LXL_UPDATE_CACHE_PATH);
 	}
+	ClearUpdateLibrary();
 	AddPreload();
 
 	std::thread([]()
