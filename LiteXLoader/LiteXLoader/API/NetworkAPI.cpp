@@ -11,8 +11,8 @@ using namespace script;
 //////////////////// Classes ////////////////////
 
 ClassDefine<WSClientClass> WSClientClassBuilder =
-    defineClass<WSClientClass>("LXL_WSClient")
-        .constructor(nullptr)
+    defineClass<WSClientClass>("WSClient")
+        .constructor(&WSClientClass::constructor)
         .instanceProperty("status", &WSClientClass::getStatus)
         .instanceFunction("connect", &WSClientClass::connect)
         .instanceFunction("send", &WSClientClass::send)
@@ -28,12 +28,6 @@ ClassDefine<WSClientClass> WSClientClassBuilder =
 
 
 //生成函数
-Local<Object> WSClientClass::newWSClient()
-{
-    auto newp = new WSClientClass();
-    return newp->getScriptObject();
-}
-
 WSClientClass::WSClientClass()
     :ScriptClass(ScriptClass::ConstructFromCpp<WSClientClass>{})
 {
@@ -80,6 +74,11 @@ WSClientClass::WSClientClass()
                 NewTimeout(listener.func.get(), { Number::newNumber(code) }, 1);
             }
     });
+}
+
+WSClientClass* WSClientClass::constructor(const Arguments& args)
+{
+    return new WSClientClass;
 }
 
 //成员函数
@@ -291,4 +290,12 @@ Local<Value> HttpGetSync(const Arguments& args)
         return res;
     }
     CATCH("Fail in HttpGetSync");
+}
+
+
+//For compatibility
+Local<Object> WSClientClass::newWSClient()
+{
+    auto newp = new WSClientClass();
+    return newp->getScriptObject();
 }

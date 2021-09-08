@@ -16,8 +16,8 @@ using namespace std;
 //////////////////// Class Definition ////////////////////
 
 ClassDefine<DbClass> DbClassBuilder =
-    defineClass<DbClass>("LXL_Db")
-        .constructor(nullptr)
+    defineClass<DbClass>("KVDatabase")
+        .constructor(&DbClass::constructor)
         .instanceFunction("get", &DbClass::get)
         .instanceFunction("set", &DbClass::set)
         .instanceFunction("delete", &DbClass::del)
@@ -26,8 +26,8 @@ ClassDefine<DbClass> DbClassBuilder =
         .build();
 
 ClassDefine<ConfJsonClass> ConfJsonClassBuilder =
-    defineClass<ConfJsonClass>("LXL_ConfJson")
-        .constructor(nullptr)
+    defineClass<ConfJsonClass>("JsonConfigFile")
+        .constructor(&ConfJsonClass::constructor)
         .instanceFunction("init", &ConfJsonClass::init)
         .instanceFunction("get", &ConfJsonClass::get)
         .instanceFunction("set", &ConfJsonClass::set)
@@ -40,8 +40,8 @@ ClassDefine<ConfJsonClass> ConfJsonClassBuilder =
         .build();
 
 ClassDefine<ConfIniClass> ConfIniClassBuilder =
-    defineClass<ConfIniClass>("LXL_ConfIni")
-        .constructor(nullptr)
+    defineClass<ConfIniClass>("IniConfigFile")
+        .constructor(&ConfIniClass::constructor)
         .instanceFunction("init", &ConfIniClass::init)
         .instanceFunction("set", &ConfIniClass::set)
         .instanceFunction("getStr", &ConfIniClass::getStr)
@@ -60,19 +60,6 @@ ClassDefine<ConfIniClass> ConfIniClassBuilder =
 //////////////////// Classes Db ////////////////////
 
 //生成函数
-Local<Value> DbClass::newDb(const string& dir)
-{
-    auto newp = new DbClass(dir);
-
-    if (newp->isValid())
-        return newp->getScriptObject();
-    else
-    {
-        delete newp;
-        return Local<Value>();
-    }
-}
-
 DbClass::DbClass(const string &dir)
     :ScriptClass(ScriptClass::ConstructFromCpp<DbClass>{})
 {
@@ -86,6 +73,21 @@ DbClass::~DbClass()
         Raw_DBClose(kvdb);
         kvdb = nullptr;
     }
+}
+
+DbClass* DbClass::constructor(const Arguments& args)
+{
+    CHECK_ARGS_COUNT_C(args, 1);
+    CHECK_ARG_TYPE_C(args[0], ValueKind::kString);
+
+    try {
+        auto res = new DbClass(args[0].toStr());
+        if (res->isValid())
+            return res;
+        else
+            return nullptr;
+    }
+    CATCH_C("Fail in Open Database!");
 }
 
 Local<Value> DbClass::get(const Arguments& args)
@@ -201,12 +203,6 @@ Local<Value> ConfBaseClass::read(const Arguments& args)
 //////////////////// Classes ConfJson ////////////////////
 
 //生成函数
-Local<Value> ConfJsonClass::newConf(const string& path, const string& defContent)
-{
-    auto newp = new ConfJsonClass(path,defContent);
-    return newp->getScriptObject();
-}
-
 ConfJsonClass::ConfJsonClass(const string& path, const string& defContent)
     :ScriptClass(ScriptClass::ConstructFromCpp<ConfJsonClass>{}), ConfBaseClass(path)
 {
@@ -216,6 +212,26 @@ ConfJsonClass::ConfJsonClass(const string& path, const string& defContent)
 ConfJsonClass::~ConfJsonClass()
 {
     close();
+}
+
+ConfJsonClass* ConfJsonClass::constructor(const Arguments& args)
+{
+    CHECK_ARGS_COUNT_C(args, 1);
+    CHECK_ARG_TYPE_C(args[0], ValueKind::kString);
+    if (args.size() >= 2)
+        CHECK_ARG_TYPE_C(args[1], ValueKind::kString);
+
+    try {
+        string path = args[0].toStr();
+        if (path.empty())
+            return nullptr;
+
+        if (args.size() >= 2)
+            return new ConfJsonClass(path, args[1].toStr());
+        else
+            return new ConfJsonClass(path, "{}");
+    }
+    CATCH_C("Fail in Open JsonConfigFile!");
 }
 
 Local<Value> ConfJsonClass::init(const Arguments& args)
@@ -369,15 +385,6 @@ bool ConfJsonClass::reload()
 //////////////////// Classes ConfIni ////////////////////
 
 //生成函数
-Local<Value> ConfIniClass::newConf(const string& path, const string& defContent)
-{
-    auto newp = new ConfIniClass(path,defContent);
-    if (newp)
-        return newp->getScriptObject();
-    else
-        return Local<Value>();
-}
-
 ConfIniClass::ConfIniClass(const string& path, const string& defContent)
     :ScriptClass(ScriptClass::ConstructFromCpp<ConfIniClass>{}), ConfBaseClass(path)
 {
@@ -387,6 +394,26 @@ ConfIniClass::ConfIniClass(const string& path, const string& defContent)
 ConfIniClass::~ConfIniClass()
 {
     close();
+}
+
+ConfIniClass* ConfIniClass::constructor(const Arguments& args)
+{
+    CHECK_ARGS_COUNT_C(args, 1);
+    CHECK_ARG_TYPE_C(args[0], ValueKind::kString);
+    if (args.size() >= 2)
+        CHECK_ARG_TYPE_C(args[1], ValueKind::kString);
+
+    try {
+        string path = args[0].toStr();
+        if (path.empty())
+            return nullptr;
+
+        if (args.size() >= 2)
+            return new ConfIniClass(path, args[1].toStr());
+        else
+            return new ConfIniClass(path, "");
+    }
+    CATCH_C("Fail in Open JsonConfigFile!");
 }
 
 bool ConfIniClass::flush()
@@ -659,55 +686,6 @@ Local<Value> ConfIniClass::close(const Arguments& args)
 
 
 //////////////////// APIs ////////////////////
-
-Local<Value> OpenConfig(const Arguments& args)
-{
-    CHECK_ARGS_COUNT(args, 1);
-    CHECK_ARG_TYPE(args[0], ValueKind::kString);
-    if (args.size() >= 2)
-        CHECK_ARG_TYPE(args[1], ValueKind::kString);
-    if (args.size() >= 3)
-        CHECK_ARG_TYPE(args[2], ValueKind::kString);
-
-    try{
-        string path = args[0].toStr();
-        GlobalConfType confType = GlobalConfType::ini;
-
-        if(path.empty())
-            return Boolean::newBoolean(false);  
-
-        if(args.size() >= 2)
-        {
-            string fileType = args[1].toStr();
-            if(fileType == "json" || fileType == "Json")
-                confType = GlobalConfType::json;
-        }
-        
-        if(confType == GlobalConfType::ini)
-        {
-            if (args.size() >= 3)
-                return ConfIniClass::newConf(path, args[2].toStr());
-            else
-                return ConfIniClass::newConf(path);
-        }
-        else    //json
-        {
-            if (args.size() >= 3)
-                return ConfJsonClass::newConf(path, args[2].toStr());
-            else
-                return ConfJsonClass::newConf(path, "{}");
-        }
-    }
-    CATCH("Fail in OpenConfig!");
-}
-
-Local<Value> OpenDB(const Arguments& args)
-{
-    CHECK_ARGS_COUNT(args, 1);
-    CHECK_ARG_TYPE(args[0], ValueKind::kString);
-
-    return DbClass::newDb(args[0].toStr());
-}
 
 Local<Value> MoneySet(const Arguments& args)
 {
@@ -1003,4 +981,87 @@ Local<Value> ToSHA1(const Arguments& args)
         return String::newString(Raw_toSHA1(args[0].toStr()));
     }
     CATCH("Fail in SHA1!")
+}
+
+
+//For Compability
+
+Local<Value> DbClass::newDb(const string& dir)
+{
+    auto newp = new DbClass(dir);
+
+    if (newp->isValid())
+        return newp->getScriptObject();
+    else
+    {
+        delete newp;
+        return Local<Value>();
+    }
+}
+
+Local<Value> ConfJsonClass::newConf(const string& path, const string& defContent)
+{
+    auto newp = new ConfJsonClass(path, defContent);
+    return newp->getScriptObject();
+}
+
+
+Local<Value> ConfIniClass::newConf(const string& path, const string& defContent)
+{
+    auto newp = new ConfIniClass(path, defContent);
+    if (newp)
+        return newp->getScriptObject();
+    else
+        return Local<Value>();
+}
+
+Local<Value> OpenConfig(const Arguments& args)
+{
+    enum GlobalConfType { json, ini };
+
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+    if (args.size() >= 2)
+        CHECK_ARG_TYPE(args[1], ValueKind::kString);
+    if (args.size() >= 3)
+        CHECK_ARG_TYPE(args[2], ValueKind::kString);
+
+    try {
+        string path = args[0].toStr();
+        GlobalConfType confType = GlobalConfType::ini;
+
+        if (path.empty())
+            return Boolean::newBoolean(false);
+
+        if (args.size() >= 2)
+        {
+            string fileType = args[1].toStr();
+            if (fileType == "json" || fileType == "Json")
+                confType = GlobalConfType::json;
+        }
+
+        if (confType == GlobalConfType::ini)
+        {
+            if (args.size() >= 3)
+                return ConfIniClass::newConf(path, args[2].toStr());
+            else
+                return ConfIniClass::newConf(path);
+        }
+        else    //json
+        {
+            if (args.size() >= 3)
+                return ConfJsonClass::newConf(path, args[2].toStr());
+            else
+                return ConfJsonClass::newConf(path, "{}");
+        }
+    }
+    CATCH("Fail in OpenConfig!");
+}
+
+Local<Value> OpenDB(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+
+    return DbClass::newDb(args[0].toStr());
 }

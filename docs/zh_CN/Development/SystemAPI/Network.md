@@ -55,13 +55,14 @@
 
 ## 🔌 WebSocket 客户端对象 API
 
-在LXL中，使用「WebSocket 对象」来操作某个WebSocket客户端的连接和工作
+在LXL中，使用「WebSocket 对象」来操作某个 WebSocket 客户端的连接和工作
 
-### 获取一个WebSocket 客户端对象
+### 创建一个新的WebSocket 客户端对象
 
-`network.newWebSocket()`
+[Js] `new WSClient()`  
+[Lua] `WSClient()`
 
-- 返回值：一个新的websocket对象
+- 返回值：一个新的 websocket 客户端对象
 - 返回值类型：`WSClient`
 
 <br>

@@ -19,8 +19,8 @@ enum class FileOpenMode : int
 };
 
 ClassDefine<FileClass> FileClassBuilder =
-    defineClass<FileClass>("file")
-        .constructor(nullptr)
+    defineClass<FileClass>("File")
+        .constructor(&FileClass::constructor)
         .instanceProperty("path", &FileClass::getPath)
         .instanceProperty("absolutePath", &FileClass::getAbsolutePath)
         .instanceProperty("size", &FileClass::getSize)
@@ -49,7 +49,6 @@ ClassDefine<FileClass> FileClassBuilder =
         .property("WriteMode", [] { return Number::newNumber((int)FileOpenMode::WriteMode); })
         .property("AppendMode", [] { return Number::newNumber((int)FileOpenMode::AppendMode); })
     
-        .function("open", &FileClass::open)
         .function("readFrom", &FileClass::readFromStatic)
         .function("writeTo", &FileClass::writeToStatic)
         .function("writeLine", &FileClass::writeLineStatic)
@@ -64,25 +63,75 @@ ClassDefine<FileClass> FileClassBuilder =
         .function("checkIsDir", &FileClass::checkIsDir)
         .function("getFileSize", &FileClass::getFileSize)
         .function("getFilesList", &FileClass::getFilesList)
+
+        //For Compatibility
+        .function("open", &FileClass::open)
         .build();
 
 //////////////////// Classes ////////////////////
 
 //生成函数
-Local<Object> FileClass::newFile(std::fstream&& f, const std::string& path, bool isBinary)
-{
-    auto newp = new FileClass(std::move(f), path, isBinary);
-    return newp->getScriptObject();
-}
-
-//成员函数
-void FileClass::set(std::fstream&& f, const std::string& path, bool isBinary)
+FileClass::FileClass(std::fstream&& f, const std::string& path, bool isBinary)
+    :ScriptClass(ScriptClass::ConstructFromCpp<FileClass>{})
 {
     this->file = std::move(f);
     this->path = path;
     this->isBinary = isBinary;
 }
 
+FileClass* FileClass::constructor(const Arguments& args)
+{
+    CHECK_ARGS_COUNT_C(args, 2);
+    CHECK_ARG_TYPE_C(args[0], ValueKind::kString);
+    CHECK_ARG_TYPE_C(args[1], ValueKind::kNumber);
+    if (args.size() >= 3)
+        CHECK_ARG_TYPE_C(args[2], ValueKind::kBoolean);
+
+    try {
+        string path = args[0].toStr();
+        Raw_AutoCreateDirs(path);
+
+        FileOpenMode fMode = (FileOpenMode)(args[1].toInt());
+        //Auto Create
+        if (fMode == FileOpenMode::ReadMode || fMode == FileOpenMode::WriteMode)
+        {
+            fstream tmp(path, ios_base::app);
+            tmp.flush();
+            tmp.close();
+        }
+
+        ios_base::openmode mode = ios_base::in;
+        if(fMode == FileOpenMode::WriteMode)
+        {
+            mode |= ios_base::out;
+        }
+        else if (fMode == FileOpenMode::AppendMode)
+            mode |= ios_base::app;
+
+        bool isBinary = false;
+        if (args.size() >= 3 && args[2].asBoolean().value())
+        {
+            isBinary = true;
+            mode |= ios_base::binary;
+        }
+
+        fstream fs(path, mode);
+        if (!fs.is_open())
+        {
+            ERROR("Fail to Open File " + path + "!\n");
+            return nullptr;
+        }
+        return new FileClass(std::move(fs), path, isBinary);
+    }
+    catch (const filesystem_error& e)
+    {
+        ERROR("Fail to Open File " + args[0].asString().toString() + "!\n");
+        return nullptr;
+    }
+    CATCH_C("Fail in OpenFile!");
+}
+
+//成员函数
 Local<Value> FileClass::getPath()
 {
     try {
@@ -488,53 +537,6 @@ Local<Value> FileClass::clear(const Arguments& args)
 
 //////////////////// APIs ////////////////////
 
-Local<Value> OpenFile(const Arguments& args)
-{
-    CHECK_ARGS_COUNT(args, 2);
-    CHECK_ARG_TYPE(args[0], ValueKind::kString);
-    CHECK_ARG_TYPE(args[1], ValueKind::kNumber);
-    if(args.size() >= 3)
-        CHECK_ARG_TYPE(args[2], ValueKind::kBoolean);
-
-    try{
-        string path = args[0].toStr();
-        Raw_AutoCreateDirs(path);
-
-        FileOpenMode fMode = (FileOpenMode)(args[1].toInt());
-        ios_base::openmode mode = ios_base::in;
-        if (fMode == FileOpenMode::WriteMode)
-        {
-            fstream tmp(path, ios_base::app);
-            tmp.flush();
-            tmp.close();
-            mode |= ios_base::out;
-        }
-        else if (fMode == FileOpenMode::AppendMode)
-            mode |= ios_base::app;
-
-        bool isBinary = false;
-        if (args.size() >= 3 && args[2].asBoolean().value())
-        {
-            isBinary = true;
-            mode |= ios_base::binary;
-        }
-
-        fstream fs(path, mode);
-        if (!fs.is_open())
-        {
-            ERROR("Fail to Open File " + path + "!\n");
-            return Local<Value>();
-        }
-        return FileClass::newFile(std::move(fs), path, isBinary);
-    }
-    catch(const filesystem_error& e)
-    {
-        ERROR("Fail to Open File "+ args[0].asString().toString() +"!\n");
-        return Local<Value>();
-    }
-    CATCH("Fail in CreateDir!");
-}
-
 Local<Value> DirCreate(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
@@ -744,4 +746,60 @@ Local<Value> FileWriteLine(const Arguments& args)
         return Boolean::newBoolean(fileWrite.good());
     }
     CATCH("Fail in FileWriteLine!");
+}
+
+
+//////////////////// For Compatibility ////////////////////
+
+Local<Value> OpenFile(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 2);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+    CHECK_ARG_TYPE(args[1], ValueKind::kNumber);
+    if (args.size() >= 3)
+        CHECK_ARG_TYPE(args[2], ValueKind::kBoolean);
+
+    try {
+        string path = args[0].toStr();
+        Raw_AutoCreateDirs(path);
+
+        FileOpenMode fMode = (FileOpenMode)(args[1].toInt());
+        ios_base::openmode mode = ios_base::in;
+        if (fMode == FileOpenMode::WriteMode)
+        {
+            fstream tmp(path, ios_base::app);
+            tmp.flush();
+            tmp.close();
+            mode |= ios_base::out;
+        }
+        else if (fMode == FileOpenMode::AppendMode)
+            mode |= ios_base::app;
+
+        bool isBinary = false;
+        if (args.size() >= 3 && args[2].asBoolean().value())
+        {
+            isBinary = true;
+            mode |= ios_base::binary;
+        }
+
+        fstream fs(path, mode);
+        if (!fs.is_open())
+        {
+            ERROR("Fail to Open File " + path + "!\n");
+            return Local<Value>();
+        }
+        return FileClass::newFile(std::move(fs), path, isBinary);
+    }
+    catch (const filesystem_error& e)
+    {
+        ERROR("Fail to Open File " + args[0].asString().toString() + "!\n");
+        return Local<Value>();
+    }
+    CATCH("Fail in OpenFile!");
+}
+
+Local<Object> FileClass::newFile(std::fstream&& f, const std::string& path, bool isBinary)
+{
+    auto newp = new FileClass(std::move(f), path, isBinary);
+    return newp->getScriptObject();
 }

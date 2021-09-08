@@ -7,13 +7,14 @@
 ## 📝 简单文件读写 API
 
 下面这些API提供了简单读写文件的接口，为偶尔读取和写入文件提供方便。  
+LXL使用文件类 **File** 来封装文件相关操作  
 如果需要频繁地操作文件，请使用下方的文件类，以提高性能
 
 > 注：所有文本相关的操作均使用UTF-8编码。  
 
 ### 读入文件的所有内容
 
-`file.readFrom(path)`
+`File.readFrom(path)`
 
 - 参数：
   - path : `String`  
@@ -26,7 +27,7 @@
 
 ### 向指定文件写入内容
 
-`file.writeTo(path,text)`
+`File.writeTo(path,text)`
 
 - 参数：
   - path : `String`  
@@ -45,7 +46,7 @@
 
 ### 向指定文件追加一行
 
-`file.writeLine(path,text)`
+`File.writeLine(path,text)`
 
 - 参数：
   - path : `String`  
@@ -62,9 +63,10 @@
 
 在LXL中，使用「文件对象」来操作和读写某一个特定的文件。
 
-### 获取一个文件对象
+### 创建一个新的文件对象
 
-`file.open(path,mode[,isBinary])`
+[Js] `new File(path,mode[,isBinary])`  
+[Lua] `File(path,mode[,isBinary])`
 
 - 参数：
   - path : `String`  
@@ -76,7 +78,7 @@
     普通模式下，文件读写过程中，换行符将会被按本地格式转换。如果你使用二进制模式打开文件，表明此文件并非普通的文本格式，这些自动转换将不会发生。
 - 返回值：打开的文件对象
 - 返回值类型：`File`
-  - 如返回值为 `Null` 则表示打开失败
+  - 如果打开失败，将抛出异常
 
 文件的打开模式有如下可选项：
 

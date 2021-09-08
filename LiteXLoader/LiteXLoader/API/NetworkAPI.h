@@ -26,8 +26,7 @@ private:
 public:
     explicit WSClientClass();
     ~WSClientClass() { ws.Shutdown(); }
-
-    static Local<Object> newWSClient();
+    static WSClientClass* constructor(const Arguments& args);
 
     Local<Value> getStatus();
 
@@ -37,12 +36,17 @@ public:
     Local<Value> close(const Arguments& args);
     Local<Value> shutdown(const Arguments& args);
     Local<Value> errorCode(const Arguments& args);
+
+    //For Compatibility
+    static Local<Object> newWSClient();
 };
 
 
 //////////////////// APIs ////////////////////
 
-Local<Value> NewWebSocket(const Arguments& args);
 Local<Value> HttpGet(const Arguments& args);
 Local<Value> HttpPost(const Arguments& args);
 Local<Value> HttpGetSync(const Arguments& args);
+
+//For Compatibility
+Local<Value> NewWebSocket(const Arguments& args);
