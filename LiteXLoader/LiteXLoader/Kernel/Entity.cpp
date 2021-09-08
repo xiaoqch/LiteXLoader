@@ -1,4 +1,5 @@
 #include "Global.h"
+#include "Base.h"
 #include "Entity.h"
 #include "Player.h"
 #include "SymbolHelper.h"
@@ -104,18 +105,30 @@ bool Raw_GetIsInWater(Actor* actor)
     return SymCall("?isInWater@Actor@@UEBA_NXZ", bool, Actor*)(actor);
 }
 
+std::vector<Actor*> Raw_GetAllEntities(int dimid)
+{
+    auto lv = mc->getLevel();
+    std::vector<Actor*> entityList;
+    auto dim = Raw_GetDimByLevel(lv, dimid);
+    if (!dim)
+        return entityList;
+    auto list = *(std::unordered_map<long, Actor*>*)((uintptr_t)dim + 304);
+    entityList.resize(list.size());
+    for (auto i : list)
+        entityList.push_back(i.second);
+    return entityList;
+}
+
 std::vector<Actor*> Raw_GetAllEntities()
 {
     auto lv = (uintptr_t)mc->getLevel();
-
-    auto begin = *(Actor***)(lv + 7952);    // IDA Level::getAutonomousActiveEntity
-    auto end = *(Actor***)(lv + 7960);
-
     std::vector<Actor*> entityList;
-    while (++begin != end)
-    {
-        entityList.push_back(*begin);
-    }
+    auto dim0 = Raw_GetAllEntities(0);
+    auto dim1 = Raw_GetAllEntities(1);
+    auto dim2 = Raw_GetAllEntities(2);
+    entityList.insert(entityList.end(), dim0.begin(), dim0.end());
+    entityList.insert(entityList.end(), dim1.begin(), dim1.end());
+    entityList.insert(entityList.end(), dim2.begin(), dim2.end());
     return entityList;
 }
 
