@@ -5,3 +5,4 @@ std::pair<bool, std::string> Raw_RuncmdEx(const std::string &cmd);
 bool Raw_RegisterCmd(const std::string &cmd, const std::string &describe, int cmdLevel);
 bool Raw_SendCmdOutput(const std::string& output);
 std::string Raw_GetBDSVersion();
+void* Raw_GetDimByLevel(Level* lv, int id);
