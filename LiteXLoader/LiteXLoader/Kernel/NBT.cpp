@@ -371,93 +371,84 @@ void TagToSNBT_List_Helper(tags::bytearray_list_tag& res, Tag* nbt)
     }
 }
 
-void TagToSNBT_List_Helper(tags::list_tag& res, Tag* nbt)
+tags::tag_list_tag TagToSNBT_List_Helper(Tag* nbt)
 {
     auto& list = nbt->asList();
     if (list.empty())
     {
-        res = tags::tag_list_tag();
-        return;
+        return tags::tag_list_tag();
     }
-    for (auto& tag : list)
+    switch (list[0]->getTagType())
     {
-        switch (list[0]->getTagType())
-        {
-            case TagType::Byte:
-            {
-                tags::byte_list_tag data;
-                TagToSNBT_List_Helper(data, tag);
-                res = std::move(data.as_tags());
-                break;
-            }
-            case TagType::Short:
-            {
-                tags::short_list_tag data;
-                TagToSNBT_List_Helper(data, tag);
-                res = std::move(data.as_tags());
-                break;
-            }
-            case TagType::Int:
-            {
-                tags::int_list_tag data;
-                TagToSNBT_List_Helper(data, tag);
-                res = std::move(data.as_tags());
-                break;
-            }
-            case TagType::Long:
-            {
-                tags::long_list_tag data;
-                TagToSNBT_List_Helper(data, tag);
-                res = std::move(data.as_tags());
-                break;
-            }
-            case TagType::Float:
-            {
-                tags::float_list_tag data;
-                TagToSNBT_List_Helper(data, tag);
-                res = std::move(data.as_tags());
-            }
-            case TagType::Double:
-            {
-                tags::double_list_tag data;
-                TagToSNBT_List_Helper(data, tag);
-                res = std::move(data.as_tags());
-                break;
-            }
-            case TagType::String:
-            {
-                tags::string_list_tag data;
-                TagToSNBT_List_Helper(data, tag);
-                res = std::move(data.as_tags());
-                break;
-            }
-            case TagType::ByteArray:
-            {
-                tags::bytearray_list_tag data;
-                TagToSNBT_List_Helper(data, tag);
-                res = std::move(data.as_tags());
-                break;
-            }
-            case TagType::List:
-            {
-                tags::list_list_tag data;
-                TagToSNBT_List_Helper(data, tag);
-                res = std::move(data.as_tags());
-                break;
-            }
-            case TagType::Compound:
-            {
-                tags::compound_list_tag data;
-                TagToSNBT_List_Helper(data, tag);
-                res = std::move(data.as_tags());
-                break;
-            }
-            default:
-            {
-                res = tags::end_list_tag();
-                break;
-            }
+    case TagType::Byte:
+    {
+        tags::byte_list_tag data;
+        TagToSNBT_List_Helper(data, nbt);
+        return data.as_tags();
+    }
+    case TagType::Short:
+    {
+        tags::short_list_tag data;
+        TagToSNBT_List_Helper(data, nbt);
+        return data.as_tags();
+    }
+    case TagType::Int:
+    {
+        tags::int_list_tag data;
+        TagToSNBT_List_Helper(data, nbt);
+        // this is error, so return.
+        // res = std::move(data.as_tags());
+        return data.as_tags();
+    }
+    case TagType::Long:
+    {
+        tags::long_list_tag data;
+        TagToSNBT_List_Helper(data, nbt);
+        return data.as_tags();
+    }
+    case TagType::Float:
+    {
+        tags::float_list_tag data;
+        TagToSNBT_List_Helper(data, nbt);
+        return data.as_tags();
+    }
+    case TagType::Double:
+    {
+        tags::double_list_tag data;
+        TagToSNBT_List_Helper(data, nbt);
+        return data.as_tags();
+    }
+    case TagType::String:
+    {
+        tags::string_list_tag data;
+        TagToSNBT_List_Helper(data, nbt);
+        return data.as_tags();
+    }
+    case TagType::ByteArray:
+    {
+        tags::bytearray_list_tag data;
+        TagToSNBT_List_Helper(data, nbt);
+        return data.as_tags();
+    }
+    case TagType::List:
+    {
+        tags::list_list_tag res;
+        for (auto& tag : list) {
+            tags::tag_list_tag data = TagToSNBT_List_Helper(tag);
+            res.value.emplace_back(std::make_unique<tags::tag_list_tag>(data));
         }
+        return res.as_tags();
+    }
+    case TagType::Compound:
+    {
+        tags::compound_list_tag data;
+        TagToSNBT_List_Helper(data, nbt);
+        return data.as_tags();
+    }
+    default:
+    {
+        return tags::end_list_tag().as_tags();
+    }
     }
 }
 
@@ -522,84 +513,8 @@ void TagToSNBT_Compound_Helper(tags::compound_tag& res, Tag* nbt)
                 res.value[key] = make_unique<tags::tag_list_tag>();
                 break;
             }
-            switch (list[0]->getTagType())
-            {
-                case TagType::Byte:
-                {
-                    tags::byte_list_tag data;
-                    TagToSNBT_List_Helper(data, &tag);
-                    res.value[key] = make_unique<tags::byte_list_tag>(data);
-                    break;
-                }
-                case TagType::Short:
-                {
-                    tags::short_list_tag data;
-                    TagToSNBT_List_Helper(data, &tag);
-                    res.value[key] = make_unique<tags::short_list_tag>(data);
-                    break;
-                }
-                case TagType::Int:
-                {
-                    tags::int_list_tag data;
-                    TagToSNBT_List_Helper(data, &tag);
-                    res.value[key] = make_unique<tags::int_list_tag>(data);
-                    break;
-                }
-                case TagType::Long:
-                {
-                    tags::long_list_tag data;
-                    TagToSNBT_List_Helper(data, &tag);
-                    res.value[key] = make_unique<tags::long_list_tag>(data);
-                    break;
-                }
-                case TagType::Float:
-                {
-                    tags::float_list_tag data;
-                    TagToSNBT_List_Helper(data, &tag);
-                    res.value[key] = make_unique<tags::float_list_tag>(data);
-                    break;
-                }
-                case TagType::Double:
-                {
-                    tags::double_list_tag data;
-                    TagToSNBT_List_Helper(data, &tag);
-                    res.value[key] = make_unique<tags::double_list_tag>(data);
-                    break;
-                }
-                case TagType::String:
-                {
-                    tags::string_list_tag data;
-                    TagToSNBT_List_Helper(data, &tag);
-                    res.value[key] = make_unique<tags::string_list_tag>(data);
-                    break;
-                }
-                case TagType::ByteArray:
-                {
-                    tags::bytearray_list_tag data;
-                    TagToSNBT_List_Helper(data, &tag);
-                    res.value[key] = make_unique<tags::bytearray_list_tag>(data);
-                    break;
-                }
-                case TagType::List:
-                {
-                    tags::list_list_tag data;
-                    TagToSNBT_List_Helper(data, &tag);
-                    res.value[key] = make_unique<tags::list_list_tag>(data);
-                    break;
-                }
-                case TagType::Compound:
-                {
-                    tags::compound_list_tag data;
-                    TagToSNBT_List_Helper(data, &tag);
-                    res.value[key] = make_unique<tags::compound_list_tag>(data);
-                    break;
-                }
-                default:
-                {
-                    res.value[key] = make_unique<tags::end_list_tag>();
-                    break;
-                }
-            }
+            tags::tag_list_tag obj = TagToSNBT_List_Helper(&tag);
+            res.value[key] = make_unique<tags::tag_list_tag>(obj);
             break;
         }
         case TagType::Compound: {
