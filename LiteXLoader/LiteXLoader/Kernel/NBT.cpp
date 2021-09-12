@@ -546,8 +546,10 @@ string TagToBinaryNBT(Tag* nbt)
 {
     if (nbt->getTagType() != TagType::Compound)
         return "";
+    tags::compound_tag content(false);
+    TagToSNBT_Compound_Helper(content, nbt);
     tags::compound_tag root(true);
-    TagToSNBT_Compound_Helper(root, nbt);
+    root.value[""] = make_unique<tags::compound_tag>(content);
 
     ostringstream sout;
     sout << contexts::bedrock_disk << root;
@@ -777,9 +779,11 @@ Tag* BinaryNBTToTag(void* data, size_t len)
     istringstream bsin(string((char*)data, len));
     tags::compound_tag root(true);
     bsin >> contexts::bedrock_disk >> root;
+    tags::compound_tag content(false);
+    content = *(tags::compound_tag*)root.value.begin()->second.get();
 
     Tag* res = Tag::createTag(TagType::Compound);
-    SNBTToTag_Compound_Helper(res, root);
+    SNBTToTag_Compound_Helper(res, content);
     return res;
 }
 
