@@ -1040,9 +1040,9 @@ Local<Value> PlayerClass::sendForm(const Arguments& args)
             return Local<Value>();
 
         int formId = 0;
-        auto jsonForm = SimpleFormClass::extractForm(args[0]);
+        auto jsonForm = SimpleFormClass::extract(args[0]);
         if(jsonForm == nullptr)
-            jsonForm = CustomFormClass::extractForm(args[0]);
+            jsonForm = CustomFormClass::extract(args[0]);
 
         if (jsonForm != nullptr)
         {

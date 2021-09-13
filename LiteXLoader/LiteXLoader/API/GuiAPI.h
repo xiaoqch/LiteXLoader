@@ -19,7 +19,7 @@ public:
     }
 
     static Local<Object> newForm();
-    static JSON_ROOT* extractForm(Local<Value> v);
+    static JSON_ROOT* extract(Local<Value> v);
 
     Local<Value> setTitle(const Arguments& args);
     Local<Value> setContent(const Arguments& args);
@@ -42,7 +42,7 @@ public:
     }
 
     static Local<Object> newForm();
-    static JSON_ROOT* extractForm(Local<Value> v);
+    static JSON_ROOT* extract(Local<Value> v);
 
     Local<Value> setTitle(const Arguments& args);
 
