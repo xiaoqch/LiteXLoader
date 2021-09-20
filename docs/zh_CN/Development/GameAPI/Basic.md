@@ -76,7 +76,7 @@ LXL提供了丰富强大的游戏元素接口，为你发挥创意保驾护航�
 
 #### 生成一个整数坐标对象
 
-`mc.newIntPos(x,y,z,dimid)`
+`mc.newIntPos(x,y,z,dimid)` [static]
 
 - 参数：
   - x : `Integer`  

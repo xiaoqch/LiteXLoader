@@ -425,7 +425,7 @@ Local<Value> EntityClass::getNbt(const Arguments& args)
         if (!entity)
             return Local<Value>();
 
-        return NbtCompound::newNBT(Tag::fromActor(entity));
+        return NbtCompoundClass::pack(Tag::fromActor(entity));
     }
     CATCH("Fail in getNbt!")
 }
@@ -439,7 +439,7 @@ Local<Value> EntityClass::setNbt(const Arguments& args)
         if (!entity)
             return Local<Value>();
 
-        auto nbt = NbtCompound::extract(args[0]);
+        auto nbt = NbtCompoundClass::extract(args[0]);
         if (!nbt)
             return Local<Value>();    //Null
 

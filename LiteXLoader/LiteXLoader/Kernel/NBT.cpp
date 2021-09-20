@@ -378,77 +378,78 @@ tags::tag_list_tag TagToSNBT_List_Helper(Tag* nbt)
     {
         return tags::tag_list_tag();
     }
+
     switch (list[0]->getTagType())
     {
-    case TagType::Byte:
-    {
-        tags::byte_list_tag data;
-        TagToSNBT_List_Helper(data, nbt);
-        return data.as_tags();
-    }
-    case TagType::Short:
-    {
-        tags::short_list_tag data;
-        TagToSNBT_List_Helper(data, nbt);
-        return data.as_tags();
-    }
-    case TagType::Int:
-    {
-        tags::int_list_tag data;
-        TagToSNBT_List_Helper(data, nbt);
-        // this is error, so return.
-        // res = std::move(data.as_tags());
-        return data.as_tags();
-    }
-    case TagType::Long:
-    {
-        tags::long_list_tag data;
-        TagToSNBT_List_Helper(data, nbt);
-        return data.as_tags();
-    }
-    case TagType::Float:
-    {
-        tags::float_list_tag data;
-        TagToSNBT_List_Helper(data, nbt);
-        return data.as_tags();
-    }
-    case TagType::Double:
-    {
-        tags::double_list_tag data;
-        TagToSNBT_List_Helper(data, nbt);
-        return data.as_tags();
-    }
-    case TagType::String:
-    {
-        tags::string_list_tag data;
-        TagToSNBT_List_Helper(data, nbt);
-        return data.as_tags();
-    }
-    case TagType::ByteArray:
-    {
-        tags::bytearray_list_tag data;
-        TagToSNBT_List_Helper(data, nbt);
-        return data.as_tags();
-    }
-    case TagType::List:
-    {
-        tags::list_list_tag res;
-        for (auto& tag : list) {
-            tags::tag_list_tag data = TagToSNBT_List_Helper(tag);
-            res.value.emplace_back(std::make_unique<tags::tag_list_tag>(data));
+        case TagType::Byte:
+        {
+            tags::byte_list_tag data;
+            TagToSNBT_List_Helper(data, nbt);
+            return data.as_tags();
         }
-        return res.as_tags();
-    }
-    case TagType::Compound:
-    {
-        tags::compound_list_tag data;
-        TagToSNBT_List_Helper(data, nbt);
-        return data.as_tags();
-    }
-    default:
-    {
-        return tags::end_list_tag().as_tags();
-    }
+        case TagType::Short:
+        {
+            tags::short_list_tag data;
+            TagToSNBT_List_Helper(data, nbt);
+            return data.as_tags();
+        }
+        case TagType::Int:
+        {
+            tags::int_list_tag data;
+            TagToSNBT_List_Helper(data, nbt);
+            // this is error, so return.
+            // res = std::move(data.as_tags());
+            return data.as_tags();
+        }
+        case TagType::Long:
+        {
+            tags::long_list_tag data;
+            TagToSNBT_List_Helper(data, nbt);
+            return data.as_tags();
+        }
+        case TagType::Float:
+        {
+            tags::float_list_tag data;
+            TagToSNBT_List_Helper(data, nbt);
+            return data.as_tags();
+        }
+        case TagType::Double:
+        {
+            tags::double_list_tag data;
+            TagToSNBT_List_Helper(data, nbt);
+            return data.as_tags();
+        }
+        case TagType::String:
+        {
+            tags::string_list_tag data;
+            TagToSNBT_List_Helper(data, nbt);
+            return data.as_tags();
+        }
+        case TagType::ByteArray:
+        {
+            tags::bytearray_list_tag data;
+            TagToSNBT_List_Helper(data, nbt);
+            return data.as_tags();
+        }
+        case TagType::List:
+        {
+            tags::list_list_tag res;
+            for (auto& tag : list) {
+                tags::tag_list_tag data = TagToSNBT_List_Helper(tag);
+                res.value.emplace_back(std::make_unique<tags::tag_list_tag>(data));
+            }
+            return res.as_tags();
+        }
+        case TagType::Compound:
+        {
+            tags::compound_list_tag data;
+            TagToSNBT_List_Helper(data, nbt);
+            return data.as_tags();
+        }
+        default:
+        {
+            return tags::end_list_tag().as_tags();
+        }
     }
 }
 

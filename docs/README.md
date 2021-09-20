@@ -59,12 +59,14 @@ LXL 拥有 **极其详尽** 的文档说明和示例，帮助你从零开始学�
 
 更多详情，请见下面的具体介绍
 
+<br>
+
 ### 🔨 功能强大，设施完备
 
 ##### 众多的**游戏API**支持 🎈
 
 - 玩家，实体，方块，物品，容器，NBT，服务器系统。。。。给你自由掌控世界的能力
-- 多达 **五十多种** 游戏事件监听，不管什么事情发生，都可以第一时间响应
+- 多达 **五十多种** 游戏事件监听，不管什么事情发生，都可以第一时间响应
 
 ##### 方便的 开发基础设施 🧪
 
@@ -81,6 +83,8 @@ LXL 拥有 **极其详尽** 的文档说明和示例，帮助你从零开始学�
 完善，严谨，成体系的 **面向对象** api架构，符合编程逻辑的接口设计。  
 让你专注于业务代码实现，而非在各种琐碎的技术细节上磕磕绊绊
 
+<br>
+
 ### 🎨 架构设计充分
 
 ##### 兼容性强 🏆
@@ -95,6 +99,8 @@ LXL 拥有 **极其详尽** 的文档说明和示例，帮助你从零开始学�
 
 - 使用 C++ 开发，底层 **性能优越** 。借助 ScriptX 的高效率通用接口，让脚本插件也可以做到高效运行。
 - 底层仅有一套统一的 C++ API，维护和适配都比较方便，新版本适配速度快；`LiteLoader`系列独有符号查找技术，跨版本 **自动适配** 不再是梦想
+
+<br>
 
 ### 💎 应用生态健全
 
@@ -298,16 +304,20 @@ but if you modified the framework, or write a new framework based on this framew
 
 #### 重要贡献者
 
-| ![yqs112358](https://avatars.githubusercontent.com/u/37969157?s=96&v=4) | ![wzy](https://avatars.githubusercontent.com/u/59381521?s=96&v=4) | ![twoone-3](https://avatars.githubusercontent.com/u/62778573?s=96&v=4) | ![dreamguxiang](https://avatars.githubusercontent.com/u/62042544?s=96&v=4) | ![Sysca11](https://avatars.githubusercontent.com/u/46832985?s=96&v=4) | ![RedbeanW](https://avatars.githubusercontent.com/u/29711228?s=96&v=4) | ![littlegao233](https://avatars.githubusercontent.com/u/46601807?s=96&v=4) | ![JasonZYT](https://avatars.githubusercontent.com/u/66063199?s=96&v=4) |
-| :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | ------------------------------------------------------------ |
-|          [@yqs112358](https://github.com/yqs112358)          |             [@wzy](https://github.com/wzyyyyyyy)             |           [@twoone-3](https://github.com/twoone-3)           |       [@dreamguxiang](https://github.com/dreamguxiang)       |            [@Sysca11](https://github.com/Sysca11)            |        [@RedbeanW](https://github.com/Redbeanw44602)         |           [@gxh](https://github.com/littlegao233)            | [@JasonZYT](https://github.com/Jasonzyt)                     |
+| ![yqs112358](https://avatars.githubusercontent.com/u/37969157?s=96&v=4) | ![wzy](https://avatars.githubusercontent.com/u/59381521?s=96&v=4) | ![twoone-3](https://avatars.githubusercontent.com/u/62778573?s=96&v=4) | ![dreamguxiang](https://avatars.githubusercontent.com/u/62042544?s=96&v=4) | ![Sysca11](https://avatars.githubusercontent.com/u/46832985?s=96&v=4) | ![RedbeanW](https://avatars.githubusercontent.com/u/29711228?s=96&v=4) |
+| :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+|          [@yqs112358](https://github.com/yqs112358)          |             [@wzy](https://github.com/wzyyyyyyy)             |           [@twoone-3](https://github.com/twoone-3)           |       [@dreamguxiang](https://github.com/dreamguxiang)       |            [@Sysca11](https://github.com/Sysca11)            |        [@RedbeanW](https://github.com/Redbeanw44602)         |
+|                                                              |                                                              |                                                              |                                                              |                                                              |                                                              |
+
+| ![littlegao233](https://avatars.githubusercontent.com/u/46601807?s=96&v=4) | ![JasonZYT](https://avatars.githubusercontent.com/u/66063199?s=96&v=4) | ![xiaoqch](https://avatars.githubusercontent.com/u/37901097?s=96&v=4) |
+| :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+|           [@gxh](https://github.com/littlegao233)            |           [@JasonZYT](https://github.com/Jasonzyt)           |            [@xiaoqch](https://github.com/xiaoqch)            |
 
 ## 📞 联系我们
 
 LiteXLoader QQ交流群：850517473 [点击加入](https://jq.qq.com/?_wv=1027&k=zeUbrETH)  
 LiteLoader QQ交流群：656669024 [点击加入](https://jq.qq.com/?_wv=1027&k=lagwtrfh)  
-Discord 频道：#LiteLoaderBDS & LXL [点击加入](https://discord.gg/4tBQHc9u7p)  
-Telegram 频道：#LiteLoader [点击加入](https://t.me/LiteLoader)
+Discord 频道：#LiteLoaderBDS & LXL [点击加入](https://discord.gg/4tBQHc9u7p)
 
 欢迎反馈崩溃和版本适配问题，以及参与相关技术讨论与交流。
 

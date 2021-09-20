@@ -4,6 +4,7 @@
 using namespace script;
 
 extern struct Tag;
+extern ClassDefine<void> NbtStaticBuilder;
 
 class NbtBase
 {
@@ -12,7 +13,7 @@ protected:
     bool canDelete = false;
 
 public:
-    Local<Value> getType(const Arguments& args);
+    virtual Local<Value> getType(const Arguments& args) = 0;
     Local<Value> toString(const Arguments& args);
     Local<Value> destroy(const Arguments& args);
 };
@@ -22,7 +23,7 @@ public:
 class NbtStatic : public ScriptClass
 {
 public:
-    static Local<Value> createTag(const Arguments& args);
+    static Local<Value> newTag(const Arguments& args);
     static Local<Value> parseSNBT(const Arguments& args);
     static Local<Value> parseBinaryNBT(const Arguments& args);
 
@@ -32,36 +33,145 @@ public:
         return Number::newNumber((int)T);
     }
 };
-extern ClassDefine<void> NbtStaticBuilder;
 
 
-//NBT Value
-class NbtValue : public NbtBase, public ScriptClass
+//NBT End
+class NbtEndClass : public NbtBase, public ScriptClass
 {
-private:
-    TagType type;
-
 public:
-    explicit NbtValue(Tag* p);
-
+    explicit NbtEndClass(Tag* p, bool canDelete = false);
+    static NbtEndClass* constructor(const Arguments& args);
     static Tag* extract(Local<Value> v);
-    static Local<Object> newNBT(Tag* p, bool canDelete = true);
-    TagType getValueType() { return type; }
+    static Local<Value> pack(Tag* tag, bool canDelete = false);
 
+    virtual Local<Value> getType(const Arguments& args) override;
+    Local<Value> set(const Arguments& args);
+    Local<Value> get(const Arguments& args);
+};
+
+//NBT Byte
+class NbtByteClass : public NbtBase, public ScriptClass
+{
+public:
+    explicit NbtByteClass(Tag* p, bool canDelete = false);
+    static NbtByteClass* constructor(const Arguments& args);
+    static Tag* extract(Local<Value> v);
+    static Local<Value> pack(Tag* tag, bool canDelete = false);
+
+    virtual Local<Value> getType(const Arguments& args) override;
+    Local<Value> set(const Arguments& args);
+    Local<Value> get(const Arguments& args);
+};
+
+//NBT Short
+class NbtShortClass : public NbtBase, public ScriptClass
+{
+public:
+    explicit NbtShortClass(Tag* p, bool canDelete = false);
+    static NbtShortClass* constructor(const Arguments& args);
+    static Tag* extract(Local<Value> v);
+    static Local<Value> pack(Tag* tag, bool canDelete = false);
+
+    virtual Local<Value> getType(const Arguments& args) override;
+    Local<Value> set(const Arguments& args);
+    Local<Value> get(const Arguments& args);
+};
+
+//NBT Int
+class NbtIntClass : public NbtBase, public ScriptClass
+{
+public:
+    explicit NbtIntClass(Tag* p, bool canDelete = false);
+    static NbtIntClass* constructor(const Arguments& args);
+    static Tag* extract(Local<Value> v);
+    static Local<Value> pack(Tag* tag, bool canDelete = false);
+    
+    virtual Local<Value> getType(const Arguments& args) override;
+    Local<Value> set(const Arguments& args);
+    Local<Value> get(const Arguments& args);
+};
+
+//NBT Long
+class NbtLongClass : public NbtBase, public ScriptClass
+{
+public:
+    explicit NbtLongClass(Tag* p, bool canDelete = false);
+    static NbtLongClass* constructor(const Arguments& args);
+    static Tag* extract(Local<Value> v);
+    static Local<Value> pack(Tag* tag, bool canDelete = false);
+
+    virtual Local<Value> getType(const Arguments& args) override;
+    Local<Value> set(const Arguments& args);
+    Local<Value> get(const Arguments& args);
+};
+
+//NBT Float
+class NbtFloatClass : public NbtBase, public ScriptClass
+{
+public:
+    explicit NbtFloatClass(Tag* p, bool canDelete = false);
+    static NbtFloatClass* constructor(const Arguments& args);
+    static Tag* extract(Local<Value> v);
+    static Local<Value> pack(Tag* tag, bool canDelete = false);
+
+    virtual Local<Value> getType(const Arguments& args) override;
+    Local<Value> set(const Arguments& args);
+    Local<Value> get(const Arguments& args);
+};
+
+//NBT Double
+class NbtDoubleClass : public NbtBase, public ScriptClass
+{
+public:
+    explicit NbtDoubleClass(Tag* p, bool canDelete = false);
+    static NbtDoubleClass* constructor(const Arguments& args);
+    static Tag* extract(Local<Value> v);
+    static Local<Value> pack(Tag* tag, bool canDelete = false);
+
+    virtual Local<Value> getType(const Arguments& args) override;
+    Local<Value> set(const Arguments& args);
+    Local<Value> get(const Arguments& args);
+};
+
+//NBT String
+class NbtStringClass : public NbtBase, public ScriptClass
+{
+public:
+    explicit NbtStringClass(Tag* p, bool canDelete = false);
+    static NbtStringClass* constructor(const Arguments& args);
+    static Tag* extract(Local<Value> v);
+    static Local<Value> pack(Tag* tag, bool canDelete = false);
+
+    virtual Local<Value> getType(const Arguments& args) override;
+    Local<Value> set(const Arguments& args);
+    Local<Value> get(const Arguments& args);
+};
+
+//NBT ByteArray
+class NbtByteArrayClass : public NbtBase, public ScriptClass
+{
+public:
+    explicit NbtByteArrayClass(Tag* p, bool canDelete = false);
+    static NbtByteArrayClass* constructor(const Arguments& args);
+    static Tag* extract(Local<Value> v);
+    static Local<Value> pack(Tag* tag, bool canDelete = false);
+
+    virtual Local<Value> getType(const Arguments& args) override;
     Local<Value> set(const Arguments& args);
     Local<Value> get(const Arguments& args);
 };
 
 
 //NBT List
-class NbtList : public NbtBase, public ScriptClass
+class NbtListClass : public NbtBase, public ScriptClass
 {
 public:
-    explicit NbtList(Tag* p);
-
+    explicit NbtListClass(Tag* p, bool canDelete = false);
+    static NbtListClass* constructor(const Arguments& args);
     static Tag* extract(Local<Value> v);
-    static Local<Object> newNBT(Tag* p, bool canDelete = true);
-
+    static Local<Value> pack(Tag* tag, bool canDelete = false);
+    
+    virtual Local<Value> getType(const Arguments& args) override;
     Local<Value> getSize(const Arguments& args);
     Local<Value> getTypeOf(const Arguments& args);
 
@@ -86,14 +196,15 @@ public:
 
 
 //NBT Compound
-class NbtCompound : public NbtBase, public ScriptClass
+class NbtCompoundClass : public NbtBase, public ScriptClass
 {
 public:
-    explicit NbtCompound(Tag* p);
-
+    explicit NbtCompoundClass(Tag* p, bool canDelete = false);
+    static NbtCompoundClass* constructor(const Arguments& args);
     static Tag* extract(Local<Value> v);
-    static Local<Object> newNBT(Tag* p, bool canDelete = true);
+    static Local<Value> pack(Tag* tag, bool canDelete = false);
 
+    virtual Local<Value> getType(const Arguments& args) override;
     Local<Value> getKeys(const Arguments& args);
     Local<Value> getTypeOf(const Arguments& args);
 
@@ -119,5 +230,6 @@ public:
 
 
 //Helper
+bool IsNbtClass(Local<Value> value);
 Local<Value> Tag2Value(Tag* nbt, bool autoExpansion = false);
-bool TagSetValue(Tag* nbt, Local<Value> value);
+bool TagSetValue(TagType type, Tag* nbt, Local<Value> value = Local<Value>());

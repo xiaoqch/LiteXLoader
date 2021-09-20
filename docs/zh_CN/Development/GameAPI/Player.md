@@ -111,7 +111,7 @@ var open = pl.isOP();
 //对于一个玩家对象pl
 pl.kick();
 [Lua]
-
+pl:kick()
 ```
 
 #### 发送一个文本消息给玩家  

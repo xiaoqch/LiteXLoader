@@ -102,18 +102,43 @@ void BindAPIs(ScriptEngine *engine)
     extern ClassDefine<PlayerClass> PlayerClassBuilder;
     engine->registerNativeClass<PlayerClass>(PlayerClassBuilder);
 
-    extern ClassDefine<NbtValue> NbtValueBuilder;
-    engine->registerNativeClass<NbtValue>(NbtValueBuilder);
-
-    extern ClassDefine<NbtList> NbtListBuilder;
-    engine->registerNativeClass<NbtList>(NbtListBuilder);
-
-    extern ClassDefine<NbtCompound> NbtCompoundBuilder;
-    engine->registerNativeClass<NbtCompound>(NbtCompoundBuilder);
-
     extern ClassDefine<ObjectiveClass> ObjectiveClassBuilder;
     engine->registerNativeClass<ObjectiveClass>(ObjectiveClassBuilder);
 
     extern ClassDefine<PacketClass> PacketClassBuilder;
     engine->registerNativeClass<PacketClass>(PacketClassBuilder);
+
+    extern ClassDefine<NbtEndClass> NbtEndClassBuilder;
+    engine->registerNativeClass<NbtEndClass>(NbtEndClassBuilder);
+
+    extern ClassDefine<NbtByteClass> NbtByteClassBuilder;
+    engine->registerNativeClass<NbtByteClass>(NbtByteClassBuilder);
+
+    extern ClassDefine<NbtShortClass> NbtShortClassBuilder;
+    engine->registerNativeClass<NbtShortClass>(NbtShortClassBuilder);
+
+    extern ClassDefine<NbtIntClass> NbtIntClassBuilder;
+    engine->registerNativeClass<NbtIntClass>(NbtIntClassBuilder);
+
+    extern ClassDefine<NbtLongClass> NbtLongClassBuilder;
+    engine->registerNativeClass<NbtLongClass>(NbtLongClassBuilder);
+
+    extern ClassDefine<NbtFloatClass> NbtFloatClassBuilder;
+    engine->registerNativeClass<NbtFloatClass>(NbtFloatClassBuilder);
+
+    extern ClassDefine<NbtDoubleClass> NbtDoubleClassBuilder;
+    engine->registerNativeClass<NbtDoubleClass>(NbtDoubleClassBuilder);
+
+    extern ClassDefine<NbtStringClass> NbtStringClassBuilder;
+    engine->registerNativeClass<NbtStringClass>(NbtStringClassBuilder);
+
+    extern ClassDefine<NbtByteArrayClass> NbtByteArrayClassBuilder;
+    engine->registerNativeClass<NbtByteArrayClass>(NbtByteArrayClassBuilder);
+
+    extern ClassDefine<NbtListClass> NbtListClassBuilder;
+    engine->registerNativeClass<NbtListClass>(NbtListClassBuilder);
+
+    extern ClassDefine<NbtCompoundClass> NbtCompoundClassBuilder;
+    engine->registerNativeClass<NbtCompoundClass>(NbtCompoundClassBuilder);
+
 }

@@ -74,7 +74,7 @@ Local<Value> BlockEntityClass::getType()
 Local<Value> BlockEntityClass::getNbt(const Arguments& args)
 {
 	try {
-		return NbtCompound::newNBT(Tag::fromBlockEntity(blockEntity), true);
+		return NbtCompoundClass::pack(Tag::fromBlockEntity(blockEntity), true);
 	}
 	CATCH("Fail in getNbt!")
 }
@@ -84,7 +84,7 @@ Local<Value> BlockEntityClass::setNbt(const Arguments& args)
 	CHECK_ARGS_COUNT(args, 1);
 
 	try {
-		auto nbt = NbtCompound::extract(args[0]);
+		auto nbt = NbtCompoundClass::extract(args[0]);
 		if (!nbt)
 			return Local<Value>();    //Null
 

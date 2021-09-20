@@ -58,7 +58,7 @@ log(result.output);
     待注册的命令
   - description : `String`  
     命令描述文本  
-  - callback : `Function`  
+  - callback : `Function(player,args)`  
     注册的这个命令被执行时，接口自动调用的回调函数。
   - level : `Integer`  
     （可选参数）命令的注册等级，默认为 0 ，即所有人都可以执行  

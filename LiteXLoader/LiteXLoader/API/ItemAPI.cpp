@@ -204,7 +204,7 @@ Local<Value> ItemClass::setLore(const Arguments& args)
 Local<Value> ItemClass::getNbt(const Arguments& args)
 {
     try {
-        return NbtCompound::newNBT(Tag::fromItem(item));
+        return NbtCompoundClass::pack(Tag::fromItem(item));
     }
     CATCH("Fail in getNbt!");
 }
@@ -214,7 +214,7 @@ Local<Value> ItemClass::setNbt(const Arguments& args)
     CHECK_ARGS_COUNT(args, 1);
 
     try {
-        auto nbt = NbtCompound::extract(args[0]);
+        auto nbt = NbtCompoundClass::extract(args[0]);
         if (!nbt)
             return Local<Value>();    //Null
 
@@ -251,7 +251,7 @@ Local<Value> NewItem(const Arguments& args)
         }
         else
         {
-            Tag* nbt = NbtCompound::extract(args[0]);
+            Tag* nbt = NbtCompoundClass::extract(args[0]);
             if (nbt)
             {
                 ItemStack* item = Raw_NewItem(nbt);

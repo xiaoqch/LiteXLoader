@@ -138,19 +138,9 @@ void PrintValue(std::ostream &out, Local<Value> v)
                 out << "<Player>";
                 break;
             }
-            if (IsInstanceOf<NbtValue>(v))
+            if (IsNbtClass(v))
             {
-                out << "<NbtValue>";
-                break;
-            }
-            if (IsInstanceOf<NbtList>(v))
-            {
-                out << "<NbtList>";
-                break;
-            }
-            if (IsInstanceOf<NbtCompound>(v))
-            {
-                out << "<NbtCompound>";
+                out << "<NbtClass>";
                 break;
             }
 

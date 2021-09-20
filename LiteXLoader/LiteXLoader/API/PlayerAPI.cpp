@@ -1237,7 +1237,7 @@ Local<Value> PlayerClass::getNbt(const Arguments& args)
         if (!player)
             return Local<Value>();
 
-        return NbtCompound::newNBT(Tag::fromActor((Actor*)player));
+        return NbtCompoundClass::pack(Tag::fromActor((Actor*)player));
     }
     CATCH("Fail in getNbt!")
 }
@@ -1251,7 +1251,7 @@ Local<Value> PlayerClass::setNbt(const Arguments& args)
         if (!player)
             return Local<Value>();
 
-        auto nbt = NbtCompound::extract(args[0]);
+        auto nbt = NbtCompoundClass::extract(args[0]);
         if (!nbt)
             return Local<Value>();    //Null
 
