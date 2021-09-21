@@ -1392,3 +1392,45 @@ THook(ostream&, "??$_Insert_string@DU?$char_traits@D@std@@_K@std@@YAAEAV?$basic_
     IF_LISTENED_END(EVENT_TYPES::onConsoleOutput);
     return original(_this, str, size);
 }
+
+/*
+class InventoryTransaction;
+THook(void, "?handle@?$PacketHandlerDispatcherInstance@VInventoryTransactionPacket@@$0A@@@UEBAXAEBVNetworkIdentifier@@AEAVNetEventCallback@@AEAV?$shared_ptr@VPacket@@@std@@@Z",
+    void* _this, NetworkIdentifier* id, ServerNetworkHandler* handler, void* pPacket)
+{
+    Packet* packet = *(Packet**)pPacket;
+    Player* p = Raw_GetPlayerFromPacket(handler, id, packet);
+    
+    ///
+        NORMAL = 0,
+        MISMATCH = 1,
+        USE_ITEM = 2,
+        USE_ITEM_ON_ENTITY = 3,
+        RELEASE_ITEM = 4
+    ///
+
+    auto type = *(DWORD*)(*((QWORD*)packet + 10) + 8i64);
+    auto invts = (InventoryTransaction*)(*((QWORD*)packet + 10) + 16i64);
+    cout << "PacketType: " << type << "\n";
+
+    RBStream rb(packet,0);
+
+    unsigned actionType;
+    int bp_x;
+    unsigned bp_y;
+    int bp_z;
+    int blockFace;
+    int hotbarSlot;
+
+    rb.apply(actionType, bp_x, bp_y, bp_z, blockFace, hotbarSlot);
+
+    cout << actionType << "\n"
+        << bp_x << "\n"
+        << bp_y << "\n"
+        << bp_z << "\n"
+        << blockFace << "\n"
+        << hotbarSlot << "\n";
+
+    original(_this, id, handler, pPacket);
+}
+*/

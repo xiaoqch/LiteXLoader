@@ -26,6 +26,8 @@
 #include "i18n.h"
 #include <string>
 
+typedef unsigned long long QWORD;
+
 class IntVec4
 {
 public:
