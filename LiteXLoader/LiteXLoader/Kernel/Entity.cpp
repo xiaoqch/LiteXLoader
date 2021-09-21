@@ -113,9 +113,13 @@ std::vector<Actor*> Raw_GetAllEntities(int dimid)
     if (!dim)
         return entityList;
     auto list = *(std::unordered_map<long, Actor*>*)((uintptr_t)dim + 304);
-    entityList.resize(list.size());
+    //entityList.resize(list.size());
+
     for (auto i : list)
-        entityList.push_back(i.second);
+    {
+        if(!Raw_EntityIsRemoved(i.second))
+            entityList.push_back(i.second);
+    }
     return entityList;
 }
 
@@ -261,4 +265,9 @@ bool Raw_RefreshItems(Actor* ac)
     bitset<4> bits("1111");
     SymCall("?sendArmor@Mob@@UEAAXAEBV?$bitset@$03@std@@@Z", void, Mob*, bitset<4>*)((Mob*)ac, &bits);
     return true;
+}
+
+bool Raw_EntityIsRemoved(Actor* ac)
+{
+    return SymCall("?isRemoved@Actor@@QEBA_NXZ", bool, Actor*)(ac);
 }
