@@ -50,7 +50,7 @@ enum class EVENT_TYPES : int
     onMobDie, onMobHurt, onExplode, onBlockExploded, onCmdBlockExecute, onRedStoneUpdate, onProjectileHitEntity,
     onProjectileHitBlock, onBlockInteracted, onUseRespawnAnchor, onFarmLandDecay, onUseFrameBlock,
     onPistonPush, onHopperSearchItem, onHopperPushOut, onFireSpread, onNpcCmd,
-    onScoreChanged, onServerStarted, onConsoleCmd, onFormSelected, onConsoleOutput,
+    onScoreChanged, onServerStarted, onConsoleCmd, onFormSelected, onConsoleOutput, onTick,
     EVENT_COUNT
 };
 static const std::unordered_map<string, EVENT_TYPES> EventsMap{
@@ -110,6 +110,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onServerStarted",EVENT_TYPES::onServerStarted},
     {"onConsoleCmd",EVENT_TYPES::onConsoleCmd},
     {"onConsoleOutput",EVENT_TYPES::onConsoleOutput},
+    {"onTick",EVENT_TYPES::onTick},
     {"onFormSelected",EVENT_TYPES::onFormSelected}
 };
 struct ListenerListType
@@ -403,6 +404,13 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ",
         ERROR("Error occurred in Engine Message Loop!");
         ERROR("Uncaught Exception Detected!");
     }
+
+    IF_LISTENED(EVENT_TYPES::onTick)
+    {
+        CallEventRtnVoid(EVENT_TYPES::onTick);
+    }
+    IF_LISTENED_END(EVENT_TYPES::onTick);
+
     return original(_this);
 }
 
