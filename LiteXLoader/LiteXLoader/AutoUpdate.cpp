@@ -414,10 +414,19 @@ void InitAutoUpdateCheck()
 
 	std::thread([]()
 	{
+		_set_se_translator(seh_exception::TranslateSEHtoCE);
 		while (true)
 		{
-			std::this_thread::sleep_for(std::chrono::seconds(LXL_UPDATE_CHECK_INTERVAL));
-			CheckAutoUpdate(false);
+			try
+			{
+				std::this_thread::sleep_for(std::chrono::seconds(LXL_UPDATE_CHECK_INTERVAL));
+				CheckAutoUpdate(false);
+			}
+			catch (const seh_exception& e)
+			{
+				DEBUG(string("SEH Uncaught Exception Detected!\n")+e.what());
+				DEBUG("In Auto Update system");
+			}
 		}
 	}).detach();
 }
