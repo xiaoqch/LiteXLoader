@@ -419,5 +419,8 @@
     <Library Include="..\third-party\LightWebSocketClient\lib\LightWSClient.lib">
       <Filter>Lib</Filter>
     </Library>
+    <Library Include="..\third-party\cpp-base64\lib\cpp-base64.lib">
+      <Filter>Lib</Filter>
+    </Library>
   </ItemGroup>
 </Project>

@@ -826,9 +826,7 @@ void TagToJson_List_Helper(JSON_VALUE& res, Tag* nbt)
         case TagType::ByteArray:
         {
             auto& bytes = nbt->asByteArray();
-            char* resStr = Raw_Base64Encode((char*)bytes.data.get(), bytes.size);
-            res.push_back(string(resStr));
-            free(resStr);
+            res.push_back(Raw_ToBase64(string((char*)bytes.data.get(), bytes.size)));
             break;
         }
         case TagType::List: {
@@ -884,9 +882,7 @@ void TagToJson_Compound_Helper(JSON_VALUE& res, Tag* nbt)
         case TagType::ByteArray:
         {
             auto& bytes = nbt->asByteArray();
-            char* resStr = Raw_Base64Encode((char*)bytes.data.get(), bytes.size);
-            res.push_back({ key,string(resStr) });
-            free(resStr);
+            res.push_back(Raw_ToBase64(string((char*)bytes.data.get(), bytes.size)));
             break;
         }
         case TagType::List: {
@@ -940,9 +936,7 @@ string TagToJson(Tag* nbt, int formatIndent)
     case TagType::ByteArray:
     {
         auto& bytes = nbt->asByteArray();
-        char* res = Raw_Base64Encode((char*)bytes.data.get(), bytes.size);
-        result = string(res);
-        free(res);
+        result = Raw_ToBase64(string((char*)bytes.data.get(), bytes.size));
         break;
     }
     case TagType::List: {

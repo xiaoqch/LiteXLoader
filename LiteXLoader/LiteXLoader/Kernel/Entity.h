@@ -41,3 +41,4 @@ bool Raw_Explode(FloatVec4 pos, Actor* source, float power, float range, float i
 
 void Raw_RefreshActorData(Actor* ac);
 bool Raw_RefreshItems(Actor* ac);
+bool Raw_EntityIsRemoved(Actor* ac);

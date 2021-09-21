@@ -1,4 +1,10 @@
 /*
+For Compatibility
+*/
+var file = File
+
+
+/*
 cjs.js begin, see <https://github.com/callstackexceed/cjs.js>
 
 Copyright 2021 callstackexceed

@@ -658,7 +658,7 @@ Local<Value> ConfIniClass::reload(const Arguments& args)
     {
         return Boolean::newBoolean(reload());
     }
-    CATCH("Fail in confReload!")
+    CATCH("Fail in confReload!");
 }
 
 Local<Value> ConfIniClass::write(const Arguments& args)
@@ -681,7 +681,7 @@ Local<Value> ConfIniClass::close(const Arguments& args)
     {
         return Boolean::newBoolean(close());
     }
-    CATCH("Fail in confClose!")
+    CATCH("Fail in confClose!");
 }
 
 
@@ -709,7 +709,7 @@ Local<Value> MoneySet(const Arguments& args)
         ERRPRINT(e.what());
         return Boolean::newBoolean(false);
     }
-    CATCH("Fail in MoneySet!")
+    CATCH("Fail in MoneySet!");
 }
 
 Local<Value> MoneyGet(const Arguments& args)
@@ -733,7 +733,7 @@ Local<Value> MoneyGet(const Arguments& args)
         ERRPRINT(e.what());
         return Number::newNumber(0);
     }
-    CATCH("Fail in MoneyGet!")
+    CATCH("Fail in MoneyGet!");
 }
 
 Local<Value> MoneyAdd(const Arguments& args)
@@ -758,7 +758,7 @@ Local<Value> MoneyAdd(const Arguments& args)
         ERRPRINT(e.what());
         return Boolean::newBoolean(false);
     }
-    CATCH("Fail in MoneyAdd!")
+    CATCH("Fail in MoneyAdd!");
 }
 
 Local<Value> MoneyReduce(const Arguments& args)
@@ -783,7 +783,7 @@ Local<Value> MoneyReduce(const Arguments& args)
         ERRPRINT(e.what());
         return Boolean::newBoolean(false);
     }
-    CATCH("Fail in MoneyReduce!")
+    CATCH("Fail in MoneyReduce!");
 }
 
 Local<Value> MoneyTrans(const Arguments& args)
@@ -813,7 +813,7 @@ Local<Value> MoneyTrans(const Arguments& args)
         ERRPRINT(e.what());
         return Boolean::newBoolean(false);
     }
-    CATCH("Fail in MoneyTrans!")
+    CATCH("Fail in MoneyTrans!");
 }
 
 Local<Value> MoneyGetHintory(const Arguments& args)
@@ -874,7 +874,7 @@ Local<Value> MoneyGetHintory(const Arguments& args)
         ERRPRINT(e.what());
         return Local<Value>();
     }
-    CATCH("Fail in MoneyGetHintory!")
+    CATCH("Fail in MoneyGetHintory!");
 }
 
 Local<Value> MoneyClearHistory(const Arguments& args)
@@ -886,7 +886,7 @@ Local<Value> MoneyClearHistory(const Arguments& args)
     {
         return Boolean::newBoolean(Raw_ClearMoneyHist(args[0].asNumber().toInt64()));
     }
-    CATCH("Fail in MoneyClearHistory!")
+    CATCH("Fail in MoneyClearHistory!");
 }
 
 Local<Value> Xuid2Name(const Arguments& args)
@@ -898,7 +898,7 @@ Local<Value> Xuid2Name(const Arguments& args)
     {
         return String::newString(Raw_Xuid2Name(args[0].toStr()));
     }
-    CATCH("Fail in Xuid2Name!")
+    CATCH("Fail in Xuid2Name!");
 }
 
 Local<Value> Name2Xuid(const Arguments& args)
@@ -910,7 +910,7 @@ Local<Value> Name2Xuid(const Arguments& args)
     {
         return String::newString(Raw_Name2Xuid(args[0].toStr()));
     }
-    CATCH("Fail in Name2Xuid!")
+    CATCH("Fail in Name2Xuid!");
 }
 
 Local<Value> ToJson(const Arguments& args)
@@ -938,7 +938,7 @@ Local<Value> ToJson(const Arguments& args)
             return Local<Value>();
         }
     }
-    CATCH("Fail in ToJson!")
+    CATCH("Fail in ToJson!");
 }
 
 Local<Value> ParseJson(const Arguments& args)
@@ -958,29 +958,87 @@ Local<Value> ParseJson(const Arguments& args)
             return Local<Value>();
         }
     }
-    CATCH("Fail in ParseJson!")
+    CATCH("Fail in ParseJson!");
 }
 
 Local<Value> ToMD5(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 1)
-    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARGS_COUNT(args, 1);
 
     try {
-        return String::newString(Raw_toMD5(args[0].toStr()));
+        string data;
+        if (args[0].isString())
+            data = args[0].toStr();
+        else if (args[0].isByteBuffer())
+        {
+            Local<ByteBuffer> buf = args[0].asByteBuffer();
+            data = string((char*)buf.getRawBytes(), buf.byteLength());
+        }
+        else
+        {
+            ERROR("Wrong type of argument in ToMD5");
+            return Local<Value>();
+        }
+        return String::newString(Raw_toMD5(data));
     }
-    CATCH("Fail in ToMD5!")
+    CATCH("Fail in ToMD5!");
 }
 
 Local<Value> ToSHA1(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 1)
-    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARGS_COUNT(args, 1);
 
     try {
-        return String::newString(Raw_toSHA1(args[0].toStr()));
+        string data;
+        if (args[0].isString())
+            data = args[0].toStr();
+        else if (args[0].isByteBuffer())
+        {
+            Local<ByteBuffer> buf = args[0].asByteBuffer();
+            data = string((char*)buf.getRawBytes(), buf.byteLength());
+        }
+        else
+        {
+            ERROR("Wrong type of argument in ToSHA1");
+            return Local<Value>();
+        }
+        return String::newString(Raw_toSHA1(data));
     }
-    CATCH("Fail in SHA1!")
+    CATCH("Fail in ToSHA1!");
+}
+
+Local<Value> ToBase64(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+
+    try {
+        string data;
+        if (args[0].isString())
+            data = args[0].toStr();
+        else if (args[0].isByteBuffer())
+        {
+            Local<ByteBuffer> buf = args[0].asByteBuffer();
+            data = string((char*)buf.getRawBytes(), buf.byteLength());
+        }
+        else
+        {
+            ERROR("Wrong type of argument in ToBase64");
+            return Local<Value>();
+        }
+        return String::newString(Raw_ToBase64(data));
+    }
+    CATCH("Fail in ToBase64!");
+}
+
+Local<Value> FromBase64(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+
+    try {
+        return String::newString(Raw_FromBase64(args[0].toStr()));
+    }
+    CATCH("Fail in FromBase64!");
 }
 
 
