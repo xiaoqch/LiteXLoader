@@ -127,6 +127,8 @@ Local<Value> ToJson(const Arguments& args);
 Local<Value> ParseJson(const Arguments& args);
 Local<Value> ToMD5(const Arguments& args);
 Local<Value> ToSHA1(const Arguments& args);
+Local<Value> ToBase64(const Arguments& args);
+Local<Value> FromBase64(const Arguments& args);
 
 //For Compatibility
 Local<Value> OpenConfig(const Arguments& args);

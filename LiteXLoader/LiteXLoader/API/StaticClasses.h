@@ -171,7 +171,8 @@ public:
     static Local<Value> toJson(const Arguments& args) { return ToJson(args); }
     static Local<Value> toMD5(const Arguments& args) { return ToMD5(args); }
     static Local<Value> toSHA1(const Arguments& args) { return ToSHA1(args); }
-   
+    static Local<Value> toBase64(const Arguments& args) { return ToBase64(args); }
+    static Local<Value> fromBase64(const Arguments& args) { return FromBase64(args); }
 };
 
 static ClassDefine<void> DataClassBuilder =
@@ -182,6 +183,8 @@ static ClassDefine<void> DataClassBuilder =
         .function("toJson", &DataClass::toJson)
         .function("toMD5", &DataClass::toMD5)
         .function("toSHA1", &DataClass::toSHA1)
+        .function("toBase64", &DataClass::toBase64)
+        .function("fromBase64", &DataClass::fromBase64)
 
         //For Compatibility
         .function("openDB", &DataClass::openDB)

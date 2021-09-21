@@ -60,5 +60,5 @@ std::string Raw_toMD5(const std::string& str);
 std::string Raw_toSHA1(const std::string& str);
 
 //Base64
-char* Raw_Base64Encode(const char* buffer, int length, bool newLine = false);
-char* Raw_Base64Decode(char* input, int length, bool newLine = false);
+std::string Raw_ToBase64(const std::string &data);
+std::string Raw_FromBase64(const std::string& data);

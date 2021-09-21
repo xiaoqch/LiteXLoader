@@ -156,6 +156,7 @@
     <ClInclude Include="Version.h" />
   </ItemGroup>
   <ItemGroup>
+    <Library Include="..\third-party\cpp-base64\lib\cpp-base64.lib" />
     <Library Include="..\third-party\dyncall\lib\libdyncallback_s.lib" />
     <Library Include="..\third-party\dyncall\lib\libdyncall_s.lib" />
     <Library Include="..\third-party\dyncall\lib\libdynload_s.lib" />
