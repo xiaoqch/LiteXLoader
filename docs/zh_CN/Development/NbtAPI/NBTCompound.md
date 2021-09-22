@@ -21,7 +21,30 @@
 - 返回值类型：`NbtList`
   - 如果创建失败，将抛出异常
 
-<br>
+```clike
+[Js]
+var nbt = new NbtCompound({
+        "name1": new NbtInt(3),
+        "name2": new NbtString("test"),
+        "name3": new NbtList([
+            new NbtFloat(4.0),
+            new NbtFloat(6.0)
+        ]),
+        "name4": new NbtLong(66666)
+    });
+[Lua]
+local nbt = NbtCompound({
+        "name1": NbtInt(3),
+        "name2": NbtString("test"),
+        "name3": NbtList([
+            NbtFloat(4.0),
+            NbtFloat(6.0)
+        ]),
+        "name4": NbtLong(66666)
+    });
+```
+
+
 
 #### 从 SNBT  字符串生成 NBT 标签对象
 
