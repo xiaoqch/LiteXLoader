@@ -2,6 +2,7 @@
 #include <Kernel/Scoreboard.h>
 #include <Kernel/Player.h>
 #include "ScoreboardAPI.h"
+#include "McAPI.h"
 #include "PlayerAPI.h"
 #include <optional>
 using namespace std;
@@ -21,6 +22,7 @@ ClassDefine<ObjectiveClass> ObjectiveClassBuilder =
 		.instanceFunction("deleteScore", &ObjectiveClass::deleteScore)
 		.instanceFunction("getScore", &ObjectiveClass::getScore)
 		.build();
+
 
 //////////////////// Classes ////////////////////
 
@@ -231,7 +233,7 @@ Local<Value> ObjectiveClass::getScore(const Arguments& args)
 
 //////////////////// APIs ////////////////////
 
-Local<Value> GetDisplayObjetive(const Arguments& args)
+Local<Value> McClass::getDisplayObjective(const Arguments& args)
 {
 	CHECK_ARGS_COUNT(args, 1);
 	CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -246,7 +248,7 @@ Local<Value> GetDisplayObjetive(const Arguments& args)
 	CATCH("Fail in GetDisplayObjective");
 }
 
-Local<Value> ClearDisplayObjetive(const Arguments& args)
+Local<Value> McClass::clearDisplayObjective(const Arguments& args)
 {
 	CHECK_ARGS_COUNT(args, 1);
 	CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -261,7 +263,7 @@ Local<Value> ClearDisplayObjetive(const Arguments& args)
 	CATCH("Fail in ClearDisplayObjective");
 }
 
-Local<Value> GetScoreObjetive(const Arguments& args)
+Local<Value> McClass::getScoreObjective(const Arguments& args)
 {
 	CHECK_ARGS_COUNT(args, 1);
 	CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -276,7 +278,7 @@ Local<Value> GetScoreObjetive(const Arguments& args)
 	CATCH("Fail in GetScoreObjective");
 }
 
-Local<Value> NewScoreObjective(const Arguments& args)
+Local<Value> McClass::newScoreObjective(const Arguments& args)
 {
 	CHECK_ARGS_COUNT(args, 1)
 	CHECK_ARG_TYPE(args[0], ValueKind::kString)
@@ -295,7 +297,7 @@ Local<Value> NewScoreObjective(const Arguments& args)
 	CATCH("Fail in NewScoreObjective!")
 }
 
-Local<Value> RemoveScoreObjective(const Arguments& args)
+Local<Value> McClass::removeScoreObjective(const Arguments& args)
 {
 	CHECK_ARGS_COUNT(args, 1)
 	CHECK_ARG_TYPE(args[0], ValueKind::kString)
@@ -313,7 +315,7 @@ Local<Value> RemoveScoreObjective(const Arguments& args)
 	CATCH("Fail in RemoveScoreObjective!")
 }
 
-Local<Value> GetAllScoreObjectives(const Arguments& args)
+Local<Value> McClass::getAllScoreObjectives(const Arguments& args)
 {
 	try {
 		Local<Array> res = Array::newArray();

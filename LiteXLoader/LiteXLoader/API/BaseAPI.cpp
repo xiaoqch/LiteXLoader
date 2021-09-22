@@ -2,6 +2,7 @@
 #include "APIHelp.h"
 #include <Kernel/Base.h>
 #include <Kernel/SymbolHelper.h>
+#include "McAPI.h"
 using namespace script;
 
 //////////////////// Class Definition ////////////////////
@@ -153,7 +154,7 @@ Local<Value> FloatPos::getDim()
 
 //////////////////// APIs ////////////////////
 
-Local<Value> NewIntPos(const Arguments& args)
+Local<Value> McClass::newIntPos(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 4)
     CHECK_ARG_TYPE(args[0], ValueKind::kNumber)
@@ -168,7 +169,7 @@ Local<Value> NewIntPos(const Arguments& args)
     CATCH("Fail in NewIntPos!")
 }
 
-Local<Value> NewFloatPos(const Arguments& args)
+Local<Value> McClass::newFloatPos(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 4)
     CHECK_ARG_TYPE(args[0], ValueKind::kNumber)
@@ -183,7 +184,7 @@ Local<Value> NewFloatPos(const Arguments& args)
     CATCH("Fail in NewFloatPos!")
 }
 
-Local<Value> GetBDSVersion(const Arguments& args)
+Local<Value> McClass::getBDSVersion(const Arguments& args)
 {
     try
     {

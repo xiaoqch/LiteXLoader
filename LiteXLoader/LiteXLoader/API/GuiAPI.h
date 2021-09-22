@@ -26,6 +26,7 @@ public:
 
     Local<Value> addButton(const Arguments& args);
 };
+extern ClassDefine<SimpleFormClass> SimpleFormClassBuilder;
 
 
 class CustomFormClass : public ScriptClass
@@ -53,11 +54,7 @@ public:
     Local<Value> addSlider(const Arguments& args);
     Local<Value> addStepSlider(const Arguments& args);
 };
-
-//////////////////// APIs ////////////////////
-
-Local<Value> NewSimpleForm(const Arguments& args);
-Local<Value> NewCustomForm(const Arguments& args);
+extern ClassDefine<CustomFormClass> CustomFormClassBuilder;
 
 // 表单回调
 bool CallFormCallback(Player* player, unsigned formId, const std::string& data);

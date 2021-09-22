@@ -32,3 +32,4 @@ public:
     Local<Value> setNbt(const Arguments& args);
     Local<Value> getBlock(const Arguments& args);
 };
+extern ClassDefine<BlockEntityClass> BlockEntityClassBuilder;

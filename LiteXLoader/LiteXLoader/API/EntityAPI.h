@@ -56,9 +56,4 @@ public:
     Local<Value> hasTag(const Arguments& args);
     Local<Value> getAllTags(const Arguments& args);
 };
-
-//////////////////// APIs ////////////////////
-Local<Value> GetAllEntities(const Arguments& args);
-
-Local<Value> SpawnMob(const Arguments& args);
-Local<Value> Explode(const Arguments& args);
+extern ClassDefine<EntityClass> EntityClassBuilder;

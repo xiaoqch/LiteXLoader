@@ -1,5 +1,6 @@
 #include "CommandAPI.h"
 #include "APIHelp.h"
+#include "McAPI.h"
 #include "PlayerAPI.h"
 #include <Kernel/Utils.h>
 #include <Engine/GlobalShareData.h>
@@ -16,7 +17,7 @@ using namespace std;
 
 //////////////////// APIs ////////////////////
 
-Local<Value> Runcmd(const Arguments& args)
+Local<Value> McClass::runcmd(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1)
     CHECK_ARG_TYPE(args[0], ValueKind::kString)
@@ -27,7 +28,7 @@ Local<Value> Runcmd(const Arguments& args)
     CATCH("Fail in RunCmd!")
 }
 
-Local<Value> RuncmdEx(const Arguments& args)
+Local<Value> McClass::runcmdEx(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1)
     CHECK_ARG_TYPE(args[0], ValueKind::kString)
@@ -78,7 +79,7 @@ bool LxlRemoveCmdRegister(ScriptEngine* engine)
 }
 // Helper
 
-Local<Value> RegisterPlayerCmd(const Arguments& args)
+Local<Value> McClass::regPlayerCmd(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 3);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -105,7 +106,7 @@ Local<Value> RegisterPlayerCmd(const Arguments& args)
     CATCH("Fail in RegisterPlayerCmd!");
 }
 
-Local<Value> RegisterConsoleCmd(const Arguments& args)
+Local<Value> McClass::regConsoleCmd(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 3);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -122,7 +123,7 @@ Local<Value> RegisterConsoleCmd(const Arguments& args)
     CATCH("Fail in RegisterConsoleCmd!");
 }
 
-Local<Value> SendCmdOutput(const Arguments& args)
+Local<Value> McClass::sendCmdOutput(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);

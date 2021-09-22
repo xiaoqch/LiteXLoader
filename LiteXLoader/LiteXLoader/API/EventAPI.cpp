@@ -1,4 +1,5 @@
 #include "EventAPI.h"
+#include "McAPI.h"
 #include <iostream>
 #include <vector>
 #include <list>
@@ -238,7 +239,7 @@ string EventTypeToString(EVENT_TYPES e)
 
 //////////////////// APIs ////////////////////
 
-Local<Value> Listen(const Arguments& args)
+Local<Value> McClass::listen(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 2);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);

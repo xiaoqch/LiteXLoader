@@ -1,6 +1,7 @@
 #include "APIHelp.h"
 #include "GuiAPI.h"
 #include "PlayerAPI.h"
+#include "McAPI.h"
 #include <Engine/GlobalShareData.h>
 #include <Engine/LocalShareData.h>
 #include <Engine/EngineOwnData.h>
@@ -345,12 +346,12 @@ Local<Value> CustomFormClass::addStepSlider(const Arguments& args)
 
 //////////////////// APIs ////////////////////
 
-Local<Value> NewSimpleForm(const Arguments& args)
+Local<Value> McClass::newSimpleForm(const Arguments& args)
 {
     return SimpleFormClass::newForm();
 }
 
-Local<Value> NewCustomForm(const Arguments& args)
+Local<Value> McClass::newCustomForm(const Arguments& args)
 {
     return CustomFormClass::newForm();
 }

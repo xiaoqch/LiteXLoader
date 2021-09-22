@@ -3,7 +3,8 @@
 using namespace script;
 #include <list>
 
-//////////////////// Classes ////////////////////
+//////////////////// Types ////////////////////
+
 enum class WSClientEvents : char
 {
     onTextReceived = 0, onBinaryReceived, onError, onLostConnection,
@@ -15,6 +16,24 @@ struct ListenerListType
     ScriptEngine* engine;
     Global<Function> func;
 };
+
+
+//////////////////// Network Static ////////////////////
+
+class NetworkClass
+{
+public:
+    static Local<Value> httpGet(const Arguments& args);
+    static Local<Value> httpPost(const Arguments& args);
+    static Local<Value> httpGetSync(const Arguments& args);
+
+    //For Compatibility
+    static Local<Value> newWebSocket(const Arguments& args);
+};
+extern ClassDefine<void> NetworkClassBuilder;
+
+
+//////////////////// Classes ////////////////////
 
 class WSClientClass : public ScriptClass
 {
@@ -40,13 +59,4 @@ public:
     //For Compatibility
     static Local<Object> newWSClient();
 };
-
-
-//////////////////// APIs ////////////////////
-
-Local<Value> HttpGet(const Arguments& args);
-Local<Value> HttpPost(const Arguments& args);
-Local<Value> HttpGetSync(const Arguments& args);
-
-//For Compatibility
-Local<Value> NewWebSocket(const Arguments& args);
+extern ClassDefine<WSClientClass> WSClientClassBuilder;

@@ -15,6 +15,33 @@ using namespace std;
 
 //////////////////// Class Definition ////////////////////
 
+ClassDefine<void> DataClassBuilder =
+    defineClass("data")
+        .function("xuid2name", &DataClass::xuid2name)
+        .function("name2xuid", &DataClass::name2xuid)
+        .function("parseJson", &DataClass::parseJson)
+        .function("toJson", &DataClass::toJson)
+        .function("toMD5", &DataClass::toMD5)
+        .function("toSHA1", &DataClass::toSHA1)
+        .function("toBase64", &DataClass::toBase64)
+        .function("fromBase64", &DataClass::fromBase64)
+
+        //For Compatibility
+        .function("openDB", &DataClass::openDB)
+        .function("openConfig", &DataClass::openConfig)
+        .build();
+
+ClassDefine<void> MoneyClassBuilder =
+    defineClass("money")
+        .function("set", &MoneyClass::set)
+        .function("get", &MoneyClass::get)
+        .function("add", &MoneyClass::add)
+        .function("reduce", &MoneyClass::reduce)
+        .function("trans", &MoneyClass::trans)
+        .function("getHistory", &MoneyClass::getHistory)
+        .function("clearHistory", &MoneyClass::clearHistory)
+        .build();
+
 ClassDefine<DbClass> DbClassBuilder =
     defineClass<DbClass>("KVDatabase")
         .constructor(&DbClass::constructor)
@@ -687,7 +714,7 @@ Local<Value> ConfIniClass::close(const Arguments& args)
 
 //////////////////// APIs ////////////////////
 
-Local<Value> MoneySet(const Arguments& args)
+Local<Value> MoneyClass::set(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 2);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -712,7 +739,7 @@ Local<Value> MoneySet(const Arguments& args)
     CATCH("Fail in MoneySet!");
 }
 
-Local<Value> MoneyGet(const Arguments& args)
+Local<Value> MoneyClass::get(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -736,7 +763,7 @@ Local<Value> MoneyGet(const Arguments& args)
     CATCH("Fail in MoneyGet!");
 }
 
-Local<Value> MoneyAdd(const Arguments& args)
+Local<Value> MoneyClass::add(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 2);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -761,7 +788,7 @@ Local<Value> MoneyAdd(const Arguments& args)
     CATCH("Fail in MoneyAdd!");
 }
 
-Local<Value> MoneyReduce(const Arguments& args)
+Local<Value> MoneyClass::reduce(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 2);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -786,7 +813,7 @@ Local<Value> MoneyReduce(const Arguments& args)
     CATCH("Fail in MoneyReduce!");
 }
 
-Local<Value> MoneyTrans(const Arguments& args)
+Local<Value> MoneyClass::trans(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 3);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -816,7 +843,7 @@ Local<Value> MoneyTrans(const Arguments& args)
     CATCH("Fail in MoneyTrans!");
 }
 
-Local<Value> MoneyGetHintory(const Arguments& args)
+Local<Value> MoneyClass::getHistory(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 2);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -877,7 +904,7 @@ Local<Value> MoneyGetHintory(const Arguments& args)
     CATCH("Fail in MoneyGetHintory!");
 }
 
-Local<Value> MoneyClearHistory(const Arguments& args)
+Local<Value> MoneyClass::clearHistory(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
     CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
@@ -889,7 +916,7 @@ Local<Value> MoneyClearHistory(const Arguments& args)
     CATCH("Fail in MoneyClearHistory!");
 }
 
-Local<Value> Xuid2Name(const Arguments& args)
+Local<Value> DataClass::xuid2name(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -901,7 +928,7 @@ Local<Value> Xuid2Name(const Arguments& args)
     CATCH("Fail in Xuid2Name!");
 }
 
-Local<Value> Name2Xuid(const Arguments& args)
+Local<Value> DataClass::name2xuid(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -913,7 +940,7 @@ Local<Value> Name2Xuid(const Arguments& args)
     CATCH("Fail in Name2Xuid!");
 }
 
-Local<Value> ToJson(const Arguments& args)
+Local<Value> DataClass::toJson(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
     if (args.size() >= 2)
@@ -941,7 +968,7 @@ Local<Value> ToJson(const Arguments& args)
     CATCH("Fail in ToJson!");
 }
 
-Local<Value> ParseJson(const Arguments& args)
+Local<Value> DataClass::parseJson(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -961,7 +988,7 @@ Local<Value> ParseJson(const Arguments& args)
     CATCH("Fail in ParseJson!");
 }
 
-Local<Value> ToMD5(const Arguments& args)
+Local<Value> DataClass::toMD5(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
 
@@ -984,7 +1011,7 @@ Local<Value> ToMD5(const Arguments& args)
     CATCH("Fail in ToMD5!");
 }
 
-Local<Value> ToSHA1(const Arguments& args)
+Local<Value> DataClass::toSHA1(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
 
@@ -1007,7 +1034,7 @@ Local<Value> ToSHA1(const Arguments& args)
     CATCH("Fail in ToSHA1!");
 }
 
-Local<Value> ToBase64(const Arguments& args)
+Local<Value> DataClass::toBase64(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
 
@@ -1030,7 +1057,7 @@ Local<Value> ToBase64(const Arguments& args)
     CATCH("Fail in ToBase64!");
 }
 
-Local<Value> FromBase64(const Arguments& args)
+Local<Value> DataClass::fromBase64(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -1073,7 +1100,7 @@ Local<Value> ConfIniClass::newConf(const string& path, const string& defContent)
         return Local<Value>();
 }
 
-Local<Value> OpenConfig(const Arguments& args)
+Local<Value> DataClass::openConfig(const Arguments& args)
 {
     enum GlobalConfType { json, ini };
 
@@ -1116,7 +1143,7 @@ Local<Value> OpenConfig(const Arguments& args)
     CATCH("Fail in OpenConfig!");
 }
 
-Local<Value> OpenDB(const Arguments& args)
+Local<Value> DataClass::openDB(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);

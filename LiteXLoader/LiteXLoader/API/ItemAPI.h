@@ -41,9 +41,5 @@ public:
     Local<Value> setLore(const Arguments& args);
     Local<Value> getNbt(const Arguments& args);
     Local<Value> setNbt(const Arguments& args);
-
 };
-
-//////////////////// APIs ////////////////////
-Local<Value> NewItem(const Arguments& args);
-Local<Value> SpawnItem(const Arguments& args);
+extern ClassDefine<ItemClass> ItemClassBuilder;

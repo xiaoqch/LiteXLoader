@@ -36,3 +36,4 @@ public:
     Local<Value> removeAllItems(const Arguments& args);
     Local<Value> isEmpty(const Arguments& args);
 };
+extern ClassDefine<ContainerClass> ContainerClassBuilder;

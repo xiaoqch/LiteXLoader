@@ -1,6 +1,7 @@
 #include "APIHelp.h"
 #include "BaseAPI.h"
 #include "ItemAPI.h"
+#include "McAPI.h"
 #include "EntityAPI.h"
 #include <Kernel/Item.h>
 #include "NbtAPI.h"
@@ -224,7 +225,7 @@ Local<Value> ItemClass::setNbt(const Arguments& args)
     CATCH("Fail in setNbt!");
 }
 
-Local<Value> NewItem(const Arguments& args)
+Local<Value> McClass::newItem(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
 
@@ -270,7 +271,7 @@ Local<Value> NewItem(const Arguments& args)
     CATCH("Fail in NewItem!");
 }
 
-Local<Value> SpawnItem(const Arguments& args)
+Local<Value> McClass::spawnItem(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 2);
 

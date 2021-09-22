@@ -1,10 +1,4 @@
 /*
-For Compatibility
-*/
-var file = File
-
-
-/*
 cjs.js begin, see <https://github.com/callstackexceed/cjs.js>
 
 Copyright 2021 callstackexceed
@@ -388,3 +382,10 @@ SOFTWARE.
 /*
 cjs.js end
 */
+
+
+
+/*
+For Compatibility
+*/
+globalThis.file = File
