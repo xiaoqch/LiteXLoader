@@ -18,7 +18,7 @@ bool Raw_HasBlockEntity(Block* bl)
 
 int Raw_GetBlockEntityType(Block* bl)
 {
-	return dAccess<unsigned int>(bl, 192);		//IDA  Block::getBlockEntityType
+	return dAccess<unsigned int>(bl, 188);		//IDA  Block::getBlockEntityType
 }
 
 unsigned int Raw_GetBlockEntityType(BlockActor* ba)
