@@ -9,6 +9,8 @@
 
 详见 [NbtList - 列表类型](zh_CN/Development/NbtAPI/NBTList.md) 和 [NbtCompound - 标签类型](zh_CN/Development/NbtAPI/NBTCompound.md) 文档
 
+<br>
+
 #### 创建新的NBT列表对象
 
 [Js]  `new NbtList([data])`  

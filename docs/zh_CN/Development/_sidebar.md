@@ -25,10 +25,10 @@
   - [📦 方块事件列表](zh_CN/Development/EventAPI/BlockEvents.md)
   - [🔊 其他事件列表](zh_CN/Development/EventAPI/OtherEvents.md)
 - NBT
-  - [🥽 NBT通用接口 与 数值类型](zh_CN/Development/NbtAPI/NBT.md)
-  - [📚 NBT列表类型](zh_CN/Development/NbtAPI/NBTList.md)
-  - [📒 NBT标签类型](zh_CN/Development/NbtAPI/NBTCompound.md)
-  - [🔨 NBT其他通用接口]
+  - [🥽 NBT 概述与通用接口](zh_CN/Development/NbtAPI/NBT.md)
+  - [📋 NBT 普通数据类型](zh_CN/Development/NbtAPI/NBTValue.md)
+  - [📚 NBT 列表类型](zh_CN/Development/NbtAPI/NBTList.md)
+  - [📒 NBT 标签类型](zh_CN/Development/NbtAPI/NBTCompound.md)
   
 - 图形界面与表单
   

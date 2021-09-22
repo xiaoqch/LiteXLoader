@@ -9,6 +9,8 @@
 
 详见 [NbtList - 列表类型](zh_CN/Development/NbtAPI/NBTList.md) 和 [NbtCompound - 标签类型](zh_CN/Development/NbtAPI/NBTCompound.md) 文档
 
+<br>
+
 #### 创建新的 NBT 标签对象
 
 [Js]  `new NbtCompound([data])`  
@@ -34,13 +36,13 @@ var nbt = new NbtCompound({
     });
 [Lua]
 local nbt = NbtCompound({
-        "name1": NbtInt(3),
-        "name2": NbtString("test"),
-        "name3": NbtList([
+        "name1" = NbtInt(3),
+        "name2" = NbtString("test"),
+        "name3" = NbtList({
             NbtFloat(4.0),
             NbtFloat(6.0)
-        ]),
-        "name4": NbtLong(66666)
+        }),
+        "name4" = NbtLong(66666)
     });
 ```
 
