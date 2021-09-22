@@ -19,13 +19,14 @@ public:
     }
 
     static Local<Object> newForm();
-    static JSON_ROOT* extractForm(Local<Value> v);
+    static JSON_ROOT* extract(Local<Value> v);
 
     Local<Value> setTitle(const Arguments& args);
     Local<Value> setContent(const Arguments& args);
 
     Local<Value> addButton(const Arguments& args);
 };
+extern ClassDefine<SimpleFormClass> SimpleFormClassBuilder;
 
 
 class CustomFormClass : public ScriptClass
@@ -42,7 +43,7 @@ public:
     }
 
     static Local<Object> newForm();
-    static JSON_ROOT* extractForm(Local<Value> v);
+    static JSON_ROOT* extract(Local<Value> v);
 
     Local<Value> setTitle(const Arguments& args);
 
@@ -53,11 +54,7 @@ public:
     Local<Value> addSlider(const Arguments& args);
     Local<Value> addStepSlider(const Arguments& args);
 };
-
-//////////////////// APIs ////////////////////
-
-Local<Value> NewSimpleForm(const Arguments& args);
-Local<Value> NewCustomForm(const Arguments& args);
+extern ClassDefine<CustomFormClass> CustomFormClassBuilder;
 
 // 表单回调
 bool CallFormCallback(Player* player, unsigned formId, const std::string& data);

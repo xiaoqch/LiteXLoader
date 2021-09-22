@@ -27,6 +27,7 @@ bool Raw_SetPlayerPermLevel(Player* player, int permLevel);
 bool Raw_SetGameMode(Player* player, int gameMode);
 bool Raw_KickPlayer(Player* player, const std::string &msg);
 bool Raw_Tell(Player* player, const std::string &text, TextType type = TextType::RAW);
+bool Raw_TalkAs(Player* player, const std::string& text);
 bool Raw_Broadcast(const std::string& text, TextType type = TextType::RAW);
 bool Raw_RenamePlayer(Player* player, const std::string &name);
 bool Raw_AddLevel(Player* player, int level);

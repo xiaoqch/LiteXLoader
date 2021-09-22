@@ -19,7 +19,7 @@ public:
 
     static Local<Object> newPlayer(Player *p);
     static Local<Object> newPlayer(WPlayer p);
-    static Player* extractPlayer(Local<Value> v);
+    static Player* extract(Local<Value> v);
     Local<Value> getRawPtr(const Arguments& args);
 
     Local<Value> getName();
@@ -47,6 +47,7 @@ public:
     Local<Value> kill(const Arguments& args);
     Local<Value> kick(const Arguments& args);
     Local<Value> tell(const Arguments& args);
+    Local<Value> talkAs(const Arguments& args);
     Local<Value> rename(const Arguments& args);
     Local<Value> addLevel(const Arguments& args);
     Local<Value> transServer(const Arguments& args);
@@ -99,10 +100,4 @@ public:
     Local<Value> getAllItems(const Arguments& args);
     Local<Value> removeItem(const Arguments& args);
 };
-
-//////////////////// APIs ////////////////////
-
-Local<Value> Broadcast(const Arguments& args);
-
-Local<Value> GetPlayer(const Arguments& args);
-Local<Value> GetOnlinePlayers(const Arguments& args);
+extern ClassDefine<PlayerClass> PlayerClassBuilder;

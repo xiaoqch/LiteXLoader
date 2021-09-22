@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <ctime>
+#include <optional>
 using namespace std;
 
 vector<string> SplitCmdLine(const string& paras)
@@ -118,6 +119,19 @@ void SplitHttpUrl(const std::string& url, string& host, string& path)
     }
 }
 
+bool IsVersionLess(const std::string& v1, const std::string& v2)
+{
+    auto vers1 = SplitStrWithPattern(v1, ".");
+    auto vers2 = SplitStrWithPattern(v2, ".");
+    return IsVersionLess(stoi(vers1[0]), stoi(vers1[1]), stoi(vers1[2]), stoi(vers2[0]), stoi(vers2[1]), stoi(vers2[2]));
+}
+
+bool IsVersionLess(int v1a, int v1b, int v1c, int v2a, int v2b, int v2c)
+{
+    return (v1a < v2a || (v1a == v2a && v1b < v2b)
+        || (v1a == v2a && v1b == v2b && v1c < v2c));
+}
+
 wchar_t* str2cwstr(string str)
 {
     auto len = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, NULL, 0);
@@ -138,6 +152,25 @@ string wstr2str(wstring wstr)
     string result = string(buffer);
     delete[] buffer;
     return result;
+}
+
+std::optional<std::string> ReadAllFile(const std::string& filePath, bool isBinary)
+{
+    std::ifstream fRead;
+
+    std::ios_base::openmode mode = ios_base::in;
+    if (isBinary)
+        mode |= ios_base::binary;
+
+    fRead.open(filePath, mode);
+    if (!fRead.is_open())
+    {
+        return std::nullopt;
+    }
+    std::string data((std::istreambuf_iterator<char>(fRead)),
+        std::istreambuf_iterator<char>());
+    fRead.close();
+    return data;
 }
 
 unsigned long long GetCurrentTimeStampMS()

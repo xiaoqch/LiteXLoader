@@ -2,6 +2,7 @@
 #include "BaseAPI.h"
 #include "DeviceAPI.h"
 #include "PlayerAPI.h"
+#include "McAPI.h"
 #include "ContainerAPI.h"
 #include "ItemAPI.h"
 #include "GuiAPI.h"
@@ -56,6 +57,7 @@ ClassDefine<PlayerClass> PlayerClassBuilder =
         .instanceFunction("kick", &PlayerClass::kick)
         .instanceFunction("disconnect", &PlayerClass::kick)
         .instanceFunction("tell", &PlayerClass::tell)
+        .instanceFunction("talkAs", &PlayerClass::talkAs)
         .instanceFunction("sendText", &PlayerClass::tell)
         .instanceFunction("rename", &PlayerClass::rename)
         .instanceFunction("addLevel", &PlayerClass::addLevel)
@@ -132,7 +134,7 @@ Local<Object> PlayerClass::newPlayer(WPlayer p)
 {
     return PlayerClass::newPlayer(p.v);
 }
-Player* PlayerClass::extractPlayer(Local<Value> v)
+Player* PlayerClass::extract(Local<Value> v)
 {
     if(EngineScope::currentEngine()->isInstanceOf<PlayerClass>(v))
         return EngineScope::currentEngine()->getNativeInstance<PlayerClass>(v)->get();
@@ -141,7 +143,7 @@ Player* PlayerClass::extractPlayer(Local<Value> v)
 }
 
 //公用API
-Local<Value> GetPlayer(const Arguments& args)
+Local<Value> McClass::getPlayer(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
@@ -182,7 +184,7 @@ Local<Value> GetPlayer(const Arguments& args)
     CATCH("Fail in GetPlayer!")
 }
 
-Local<Value> GetOnlinePlayers(const Arguments& args)
+Local<Value> McClass::getOnlinePlayers(const Arguments& args)
 {
     try{
         auto players = Raw_GetOnlinePlayers();
@@ -194,7 +196,7 @@ Local<Value> GetOnlinePlayers(const Arguments& args)
     CATCH("Fail in GetOnlinePlayers!")
 }
 
-Local<Value> Broadcast(const Arguments& args)
+Local<Value> McClass::broadcast(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1)
     CHECK_ARG_TYPE(args[0], ValueKind::kString)
@@ -622,6 +624,21 @@ Local<Value> PlayerClass::tell(const Arguments& args)
     CATCH("Fail in tell!");
 }
 
+Local<Value> PlayerClass::talkAs(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+
+    try {
+        Player* player = get();
+        if (!player)
+            return Local<Value>();
+
+        return Boolean::newBoolean(Raw_TalkAs(player, args[0].toStr()));
+    }
+    CATCH("Fail in talkAs!");
+}
+
 Local<Value> PlayerClass::getHand(const Arguments& args)
 {
     try {
@@ -1024,9 +1041,9 @@ Local<Value> PlayerClass::sendForm(const Arguments& args)
             return Local<Value>();
 
         int formId = 0;
-        auto jsonForm = SimpleFormClass::extractForm(args[0]);
+        auto jsonForm = SimpleFormClass::extract(args[0]);
         if(jsonForm == nullptr)
-            jsonForm = CustomFormClass::extractForm(args[0]);
+            jsonForm = CustomFormClass::extract(args[0]);
 
         if (jsonForm != nullptr)
         {
@@ -1190,7 +1207,7 @@ Local<Value> PlayerClass::giveItem(const Arguments& args)
         if (!player)
             return Local<Value>();
 
-        auto item = ItemClass::extractItem(args[0]);
+        auto item = ItemClass::extract(args[0]);
         if (!item)
             return Local<Value>();    //Null
 
@@ -1235,7 +1252,7 @@ Local<Value> PlayerClass::setNbt(const Arguments& args)
         if (!player)
             return Local<Value>();
 
-        auto nbt = NbtCompound::extractNBT(args[0]);
+        auto nbt = NbtCompound::extract(args[0]);
         if (!nbt)
             return Local<Value>();    //Null
 

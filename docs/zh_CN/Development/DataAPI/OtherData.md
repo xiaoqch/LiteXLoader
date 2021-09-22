@@ -34,26 +34,50 @@
 
 <br>
 
-### 字符串转MD5
+### MD5计算
 
 `data.toMD5(str)`
 
 - 参数：
-  - str : `String`  
-    要转换为MD5的字符串
-- 返回值：转换的结果
-- 返回值类型：`String`，,字符串MD5信息
+  - str : `String` / `ByteBuffer`  
+    要计算MD5的字符串 / 字节数组
+- 返回值：原数据的MD5摘要字符串
+- 返回值类型：`String`
 
 <br>
 
-### 字符串转SHA1
+### SHA1计算
 
 `data.toSHA1(str)`
 
 - 参数：
-  - str : `String`  
-    要转换为SHA1的字符串
-- 返回值：转换的结果
-- 返回值类型：`String`，,字符串SHA1信息
+  - str : `String` / `ByteBuffer`  
+    要计算SHA1的字符串 / 字节数组
+- 返回值：原数据的SHA1摘要字符串
+- 返回值类型：`String`
+
+<br>
+
+### 数据转Base64
+
+`data.toBase64(str)`
+
+- 参数：
+  - str : `String` / `ByteBuffer`  
+    要转化为Base64的字符串 / 字节数组
+- 返回值：Base64结果
+- 返回值类型：`String`
+
+<br>
+
+### Base64解码为数据
+
+`data.fromBase64(base64)`
+
+- 参数：
+  - base64 : `String`  
+    要解码的base64字符串
+- 返回值：解码后的数据
+- 返回值类型：`ByteBuffer`
 
 <br>

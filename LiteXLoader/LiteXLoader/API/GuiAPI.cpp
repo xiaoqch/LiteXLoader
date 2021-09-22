@@ -1,6 +1,7 @@
 #include "APIHelp.h"
 #include "GuiAPI.h"
 #include "PlayerAPI.h"
+#include "McAPI.h"
 #include <Engine/GlobalShareData.h>
 #include <Engine/LocalShareData.h>
 #include <Engine/EngineOwnData.h>
@@ -49,7 +50,7 @@ Local<Object> SimpleFormClass::newForm()
     return newp->getScriptObject();
 }
 
-JSON_ROOT* SimpleFormClass::extractForm(Local<Value> v)
+JSON_ROOT* SimpleFormClass::extract(Local<Value> v)
 {
     if (EngineScope::currentEngine()->isInstanceOf<SimpleFormClass>(v))
         return EngineScope::currentEngine()->getNativeInstance<SimpleFormClass>(v)->get();
@@ -139,7 +140,7 @@ Local<Object> CustomFormClass::newForm()
     return newp->getScriptObject();
 }
 
-JSON_ROOT* CustomFormClass::extractForm(Local<Value> v)
+JSON_ROOT* CustomFormClass::extract(Local<Value> v)
 {
     if(EngineScope::currentEngine()->isInstanceOf<CustomFormClass>(v))
         return EngineScope::currentEngine()->getNativeInstance<CustomFormClass>(v)->get();
@@ -345,12 +346,12 @@ Local<Value> CustomFormClass::addStepSlider(const Arguments& args)
 
 //////////////////// APIs ////////////////////
 
-Local<Value> NewSimpleForm(const Arguments& args)
+Local<Value> McClass::newSimpleForm(const Arguments& args)
 {
     return SimpleFormClass::newForm();
 }
 
-Local<Value> NewCustomForm(const Arguments& args)
+Local<Value> McClass::newCustomForm(const Arguments& args)
 {
     return CustomFormClass::newForm();
 }

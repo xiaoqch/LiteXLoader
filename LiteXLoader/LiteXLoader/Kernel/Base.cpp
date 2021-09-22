@@ -39,3 +39,8 @@ string Raw_GetBDSVersion()
         string&, string&)(ver);
     return ver;
 }
+
+Dimension* Raw_GetDimByLevel(Level* lv, int id) {
+    return SymCall("?getDimension@Level@@UEBAPEAVDimension@@V?$AutomaticID@VDimension@@H@@@Z",
+        Dimension*, void*, int)(lv, id);
+}

@@ -28,6 +28,7 @@ public:
     void setZ(const Local<Value>& value) { z = value.asNumber().toInt64(); }
     void setDimId(const Local<Value>& value) { dim = value.asNumber().toInt32(); }
 };
+extern ClassDefine<IntPos> IntPosBuilder;
 
 class FloatPos : public FloatVec4, public ScriptClass
 {
@@ -50,9 +51,4 @@ public:
     void setZ(const Local<Value>& value) { z = value.asNumber().toInt64(); }
     void setDimId(const Local<Value>& value) { dim = value.asNumber().toInt32(); }
 };
-
-//////////////////// APIs ////////////////////
-
-Local<Value> GetBDSVersion(const Arguments& args);
-Local<Value> NewIntPos(const Arguments& args);
-Local<Value> NewFloatPos(const Arguments& args);
+extern ClassDefine<FloatPos> FloatPosBuilder;

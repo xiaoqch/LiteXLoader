@@ -27,12 +27,4 @@ public:
 	Local<Value> deleteScore(const Arguments& args);
 	Local<Value> getScore(const Arguments& args);
 };
-
-//////////////////// APIs ////////////////////
-
-Local<Value> GetDisplayObjetive(const Arguments& args);
-Local<Value> ClearDisplayObjetive(const Arguments& args);
-Local<Value> GetScoreObjetive(const Arguments& args);
-Local<Value> NewScoreObjective(const Arguments& args);
-Local<Value> RemoveScoreObjective(const Arguments& args);
-Local<Value> GetAllScoreObjectives(const Arguments& args);
+extern ClassDefine<ObjectiveClass> ObjectiveClassBuilder;

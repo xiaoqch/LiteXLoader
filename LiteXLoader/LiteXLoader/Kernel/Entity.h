@@ -16,6 +16,7 @@ int Raw_GetHealth(Actor *actor);
 int Raw_GetMaxHealth(Actor *actor);
 bool Raw_GetIsInAir(Actor *actor);
 bool Raw_GetIsInWater(Actor* actor);
+std::vector<Actor*> Raw_GetAllEntities();
 
 bool Raw_TeleportEntity(Actor* actor, const FloatVec4 &pos);
 bool Raw_KillEntity(Actor* actor);
@@ -40,3 +41,4 @@ bool Raw_Explode(FloatVec4 pos, Actor* source, float power, float range, float i
 
 void Raw_RefreshActorData(Actor* ac);
 bool Raw_RefreshItems(Actor* ac);
+bool Raw_EntityIsRemoved(Actor* ac);

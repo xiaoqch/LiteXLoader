@@ -2,9 +2,47 @@
 #include <ScriptX/ScriptX.h>
 using namespace script;
 #include <Kernel/Data.h>
-
 #include <string>
 #include <memory>
+
+
+//////////////////// Data Static ////////////////////
+
+class DataClass
+{
+public:
+    static Local<Value> xuid2name(const Arguments& args);
+    static Local<Value> name2xuid(const Arguments& args);
+
+    static Local<Value> parseJson(const Arguments& args);
+    static Local<Value> toJson(const Arguments& args);
+    static Local<Value> toMD5(const Arguments& args);
+    static Local<Value> toSHA1(const Arguments& args);
+    static Local<Value> toBase64(const Arguments& args);
+    static Local<Value> fromBase64(const Arguments& args);
+
+    //For Compatibility
+    static Local<Value> openConfig(const Arguments& args);
+    static Local<Value> openDB(const Arguments& args);
+};
+extern ClassDefine<void> DataClassBuilder;
+
+
+//////////////////// Money Static ////////////////////
+
+class MoneyClass
+{
+public:
+    static Local<Value> set(const Arguments& args);
+    static Local<Value> get(const Arguments& args);
+    static Local<Value> add(const Arguments& args);
+    static Local<Value> reduce(const Arguments& args);
+    static Local<Value> trans(const Arguments& args);
+    static Local<Value> getHistory(const Arguments& args);
+    static Local<Value> clearHistory(const Arguments& args);
+};
+extern ClassDefine<void> MoneyClassBuilder;
+
 
 //////////////////// Classes ////////////////////
 
@@ -16,6 +54,7 @@ private:
 public:
 	explicit DbClass(const string &dir);
     ~DbClass();
+    static DbClass* constructor(const Arguments& args);
 
     bool isValid()
     { return kvdb != nullptr; }
@@ -26,8 +65,10 @@ public:
     Local<Value> close(const Arguments& args);
     Local<Value> listKey(const Arguments& args);
 
+    //For Compatibility
     static Local<Value> newDb(const string& dir);
 };
+extern ClassDefine<DbClass> DbClassBuilder;
 
 
 class ConfBaseClass
@@ -60,6 +101,7 @@ private:
 public:
     explicit ConfJsonClass(const string& path, const string& defContent);
     ~ConfJsonClass();
+    static ConfJsonClass* constructor(const Arguments& args);
 
     Local<Value> init(const Arguments& args);
     Local<Value> get(const Arguments& args);
@@ -69,8 +111,10 @@ public:
     virtual Local<Value> close(const Arguments& args) override;
     virtual Local<Value> write(const Arguments& args) override;
 
+    //For Compatibility
     static Local<Value> newConf(const string& path, const string& defContent = "");
 };
+extern ClassDefine<ConfJsonClass> ConfJsonClassBuilder;
 
 
 class ConfIniClass : public ScriptClass, public ConfBaseClass
@@ -84,6 +128,7 @@ private:
 public:
     explicit ConfIniClass(const string& path, const string& defContent);
     ~ConfIniClass();
+    static ConfIniClass* constructor(const Arguments& args);
 
     bool isValid()
     {
@@ -101,27 +146,7 @@ public:
     virtual Local<Value> close(const Arguments& args) override;
     virtual Local<Value> write(const Arguments& args) override;
 
+    //For Compatibility
     static Local<Value> newConf(const string& path, const string& defContent = "");
 };
-
-//////////////////// APIs ////////////////////
-
-Local<Value> OpenConfig(const Arguments& args);
-
-Local<Value> OpenDB(const Arguments& args);
-
-Local<Value> MoneySet(const Arguments& args);
-Local<Value> MoneyGet(const Arguments& args);
-Local<Value> MoneyAdd(const Arguments& args);
-Local<Value> MoneyReduce(const Arguments& args);
-Local<Value> MoneyTrans(const Arguments& args);
-Local<Value> MoneyGetHintory(const Arguments& args);
-Local<Value> MoneyClearHistory(const Arguments& args);
-
-Local<Value> Xuid2Name(const Arguments& args);
-Local<Value> Name2Xuid(const Arguments& args);
-
-Local<Value> ToJson(const Arguments& args);
-Local<Value> ParseJson(const Arguments& args);
-Local<Value> ToMD5(const Arguments& args);
-Local<Value> ToSHA1(const Arguments& args);
+extern ClassDefine<ConfIniClass> ConfIniClassBuilder;

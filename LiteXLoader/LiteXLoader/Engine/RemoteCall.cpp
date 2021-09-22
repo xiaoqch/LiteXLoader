@@ -1,4 +1,5 @@
 #include <API/APIHelp.h>
+#include <API/LxlAPI.h>
 #include <Engine/RemoteCall.h>
 #include <Engine/GlobalShareData.h>
 #include <Engine/MessageSystem.h>
@@ -137,7 +138,7 @@ bool LxlRemoveAllExportedFuncs(ScriptEngine* engine)
 
 //////////////////// APIs ////////////////////
 
-Local<Value> LxlExport(const Arguments& args)
+Local<Value> LxlClass::exportFunc(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 2);
     CHECK_ARG_TYPE(args[0], ValueKind::kFunction);
@@ -149,7 +150,7 @@ Local<Value> LxlExport(const Arguments& args)
     CATCH("Fail in LxlExport!");
 }
 
-Local<Value> LxlImport(const Arguments &args)
+Local<Value> LxlClass::importFunc(const Arguments &args)
 {
     CHECK_ARGS_COUNT(args, 1);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);

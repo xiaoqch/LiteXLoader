@@ -1,4 +1,5 @@
 #include "Global.h"
+#include "Base.h"
 #include "Entity.h"
 #include "Player.h"
 #include "SymbolHelper.h"
@@ -38,12 +39,9 @@ Actor* Raw_SpawnMob(std::string name, const FloatVec4& pos)
 
 string Raw_GetEntityName(Actor* actor)
 {
-    string name = actor->getNameTag();
-    if(name.empty())
-        name = Raw_GetEntityTypeName(actor);
-    if (StartsWith(name, "minecraft:"))
-        name = name.substr(10);
-    return name;
+    string name;
+    return SymCall("?getActorName@CommandUtils@@YA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBVActor@@@Z",
+        std::string&, std::string*, Actor * actor)(&name, actor);
 }
 
 std::string Raw_GetEntityTypeName(Actor* actor)
@@ -56,7 +54,7 @@ std::string Raw_GetEntityTypeName(Actor* actor)
         return "minecraft:player";
     else
     {
-        HashedString hash = dAccess<HashedString>(actor, 896);      //IDA Actor::Actor
+        HashedString hash = dAccess<HashedString>(actor, 888);      //IDA Actor::Actor
         return hash.getString();
     }
 }
@@ -105,6 +103,37 @@ bool Raw_GetIsInAir(Actor *actor)
 bool Raw_GetIsInWater(Actor* actor)
 {
     return SymCall("?isInWater@Actor@@UEBA_NXZ", bool, Actor*)(actor);
+}
+
+std::vector<Actor*> Raw_GetAllEntities(int dimid)
+{
+    auto lv = mc->getLevel();
+    std::vector<Actor*> entityList;
+    auto dim = Raw_GetDimByLevel(lv, dimid);
+    if (!dim)
+        return entityList;
+    auto list = *(std::unordered_map<long, Actor*>*)((uintptr_t)dim + 304);
+    //entityList.resize(list.size());
+
+    for (auto i : list)
+    {
+        if(!Raw_EntityIsRemoved(i.second))
+            entityList.push_back(i.second);
+    }
+    return entityList;
+}
+
+std::vector<Actor*> Raw_GetAllEntities()
+{
+    auto lv = (uintptr_t)mc->getLevel();
+    std::vector<Actor*> entityList;
+    auto dim0 = Raw_GetAllEntities(0);
+    auto dim1 = Raw_GetAllEntities(1);
+    auto dim2 = Raw_GetAllEntities(2);
+    entityList.insert(entityList.end(), dim0.begin(), dim0.end());
+    entityList.insert(entityList.end(), dim1.begin(), dim1.end());
+    entityList.insert(entityList.end(), dim2.begin(), dim2.end());
+    return entityList;
 }
 
 bool Raw_TeleportEntity(Actor* actor, const FloatVec4 &pos)
@@ -236,4 +265,9 @@ bool Raw_RefreshItems(Actor* ac)
     bitset<4> bits("1111");
     SymCall("?sendArmor@Mob@@UEAAXAEBV?$bitset@$03@std@@@Z", void, Mob*, bitset<4>*)((Mob*)ac, &bits);
     return true;
+}
+
+bool Raw_EntityIsRemoved(Actor* ac)
+{
+    return SymCall("?isRemoved@Actor@@QEBA_NXZ", bool, Actor*)(ac);
 }

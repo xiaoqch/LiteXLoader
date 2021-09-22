@@ -1,4 +1,4 @@
-![logo](icon.ico)
+![logo](assets/LXL.png)
 
 # LiteXLoader Docs
 

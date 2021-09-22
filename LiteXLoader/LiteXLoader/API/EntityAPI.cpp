@@ -2,6 +2,7 @@
 #include "BaseAPI.h"
 #include "EntityAPI.h"
 #include "PlayerAPI.h"
+#include "McAPI.h"
 #include "ContainerAPI.h"
 #include "NbtAPI.h"
 #include <Kernel/Entity.h>
@@ -61,7 +62,7 @@ Local<Object> EntityClass::newEntity(WActor p)
 {
     return EntityClass::newEntity(p.v);
 }
-Actor* EntityClass::extractEntity(Local<Value> v)
+Actor* EntityClass::extract(Local<Value> v)
 {
     if(EngineScope::currentEngine()->isInstanceOf<EntityClass>(v))
         return EngineScope::currentEngine()->getNativeInstance<EntityClass>(v)->get();
@@ -439,7 +440,7 @@ Local<Value> EntityClass::setNbt(const Arguments& args)
         if (!entity)
             return Local<Value>();
 
-        auto nbt = NbtCompound::extractNBT(args[0]);
+        auto nbt = NbtCompound::extract(args[0]);
         if (!nbt)
             return Local<Value>();    //Null
 
@@ -509,7 +510,19 @@ Local<Value> EntityClass::getAllTags(const Arguments& args)
     CATCH("Fail in getAllTags!");
 }
 
-Local<Value> SpawnMob(const Arguments& args)
+Local<Value> McClass::getAllEntities(const Arguments& args) {
+    try {
+       auto entityList = Raw_GetAllEntities();
+       auto arr = Array::newArray();
+       for (auto i : entityList) {
+           arr.add(EntityClass::newEntity(i));
+       }
+       return arr;
+    }
+    CATCH("Fail in GetAllEntities");
+}
+
+Local<Value> McClass::spawnMob(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 2);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -575,7 +588,7 @@ Local<Value> SpawnMob(const Arguments& args)
     CATCH("Fail in SpawnMob!");
 }
 
-Local<Value> Explode(const Arguments& args)
+Local<Value> McClass::explode(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 6);
 
@@ -634,7 +647,7 @@ Local<Value> Explode(const Arguments& args)
             return Local<Value>();
         }
 
-        auto source = EntityClass::extractEntity(args[beginIndex + 0]); //Can be nullptr
+        auto source = EntityClass::extract(args[beginIndex + 0]); //Can be nullptr
         
         CHECK_ARG_TYPE(args[beginIndex + 1], ValueKind::kNumber);
         CHECK_ARG_TYPE(args[beginIndex + 2], ValueKind::kNumber);

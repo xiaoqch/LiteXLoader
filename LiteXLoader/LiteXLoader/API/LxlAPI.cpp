@@ -4,6 +4,7 @@
 #include <Engine/EngineOwnData.h>
 #include <Engine/LoaderHelper.h>
 #include <Kernel/System.h>
+#include <Kernel/Utils.h>
 #include <Engine/LoaderHelper.h>
 #include <Version.h>
 #include <string>
@@ -11,7 +12,24 @@
 using namespace std;
 using namespace script;
 
-Local<Value> LxlGetVersion(const Arguments& args)
+//////////////////// Classes ////////////////////
+
+ClassDefine<void> LxlClassBuilder =
+    defineClass("lxl")
+        .function("version", &LxlClass::version)
+        .function("requireVersion", &LxlClass::requireVersion)
+        .function("listPlugins", &LxlClass::listPlugins)
+        .function("import", &LxlClass::importFunc)
+        .function("export", &LxlClass::exportFunc)
+        .function("require", &LxlClass::require)
+        .function("eval", &LxlClass::eval)
+
+        //For Compatibility
+        .function("checkVersion", &LxlClass::requireVersion)
+        .build();
+
+
+Local<Value> LxlClass::version(const Arguments& args)
 {
     try{
         Local<Object> ver = Object::newObject();
@@ -24,7 +42,7 @@ Local<Value> LxlGetVersion(const Arguments& args)
     CATCH("Fail in LxlGetVersion!")
 }
 
-Local<Value> LxlRequireVersion(const Arguments& args)
+Local<Value> LxlClass::requireVersion(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
     CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
@@ -34,24 +52,13 @@ Local<Value> LxlRequireVersion(const Arguments& args)
         CHECK_ARG_TYPE(args[2], ValueKind::kNumber);
 
     try {
-        string require(char(args[0].toInt()), 1);
-        string current(char(LXL_VERSION_MAJOR), 1);
-        if (args.size() >= 2)
-        {
-            require.append(1, char(args[1].toInt()));
-            current.append(1, char(LXL_VERSION_MINOR));
-        }
-        if (args.size() >= 3)
-        {
-            require.append(1, char(args[2].toInt()));
-            current.append(1, char(LXL_VERSION_REVISION));
-        }
-        return Boolean::newBoolean(current >= require);
+        return Boolean::newBoolean(!IsVersionLess(LXL_VERSION_MAJOR, LXL_VERSION_MINOR, LXL_VERSION_REVISION, 
+            args[0].toInt(), (args.size() >= 2) ? args[1].toInt() : 0, (args.size() >= 3) ? args[2].toInt() : 0));
     }
     CATCH("Fail in LxlRequireVersion!")
 }
 
-Local<Value> LxlListPlugins(const Arguments& args)
+Local<Value> LxlClass::listPlugins(const Arguments& args)
 {
     try
     {
@@ -66,7 +73,7 @@ Local<Value> LxlListPlugins(const Arguments& args)
     CATCH("Fail in LxlListPlugins!")
 }
 
-Local<Value> LxlRequire(const Arguments& args)
+Local<Value> LxlClass::require(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1)
     CHECK_ARG_TYPE(args[0], ValueKind::kString)
@@ -182,7 +189,7 @@ Local<Value> LxlRequire(const Arguments& args)
     CATCH("Fail in LxlRequire!")
 }
 
-Local<Value> LxlEval(const Arguments& args)
+Local<Value> LxlClass::eval(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);

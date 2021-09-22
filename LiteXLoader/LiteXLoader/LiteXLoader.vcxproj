@@ -47,6 +47,7 @@
     <ClCompile Include="API\EntityAPI.cpp" />
     <ClCompile Include="API\EventAPI.cpp" />
     <ClCompile Include="API\FileSystemAPI.cpp" />
+    <ClCompile Include="API\McAPI.cpp" />
     <ClCompile Include="API\ScoreboardAPI.cpp" />
     <ClCompile Include="API\GameUtilsAPI.cpp" />
     <ClCompile Include="API\GuiAPI.cpp" />
@@ -121,7 +122,7 @@
     <ClInclude Include="API\PlayerAPI.h" />
     <ClInclude Include="API\ScriptAPI.h" />
     <ClInclude Include="API\ServerAPI.h" />
-    <ClInclude Include="API\StaticClasses.h" />
+    <ClInclude Include="API\McAPI.h" />
     <ClInclude Include="API\SystemAPI.h" />
     <ClInclude Include="AutoUpdate.h" />
     <ClInclude Include="CheckNotice.h" />
@@ -160,6 +161,7 @@
     <ClInclude Include="Version.h" />
   </ItemGroup>
   <ItemGroup>
+    <Library Include="..\third-party\cpp-base64\lib\cpp-base64.lib" />
     <Library Include="..\third-party\dyncall\lib\libdyncallback_s.lib" />
     <Library Include="..\third-party\dyncall\lib\libdyncall_s.lib" />
     <Library Include="..\third-party\dyncall\lib\libdynload_s.lib" />

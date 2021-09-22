@@ -2,6 +2,7 @@
 #include <Kernel/Scoreboard.h>
 #include <Kernel/Player.h>
 #include "ScoreboardAPI.h"
+#include "McAPI.h"
 #include "PlayerAPI.h"
 #include <optional>
 using namespace std;
@@ -21,6 +22,7 @@ ClassDefine<ObjectiveClass> ObjectiveClassBuilder =
 		.instanceFunction("deleteScore", &ObjectiveClass::deleteScore)
 		.instanceFunction("getScore", &ObjectiveClass::getScore)
 		.build();
+
 
 //////////////////// Classes ////////////////////
 
@@ -100,7 +102,7 @@ Local<Value> ObjectiveClass::setScore(const Arguments& args)
 		}
 		else if (IsInstanceOf<PlayerClass>(args[0]))
 		{
-			auto pl = PlayerClass::extractPlayer(args[0]);
+			auto pl = PlayerClass::extract(args[0]);
 			if(Raw_SetScore(pl, objname, score))
 				rtn = Number::newNumber(Raw_GetScore(pl,objname));
 		}
@@ -134,7 +136,7 @@ Local<Value> ObjectiveClass::addScore(const Arguments& args)
 		}
 		else if (IsInstanceOf<PlayerClass>(args[0]))
 		{
-			auto pl = PlayerClass::extractPlayer(args[0]);
+			auto pl = PlayerClass::extract(args[0]);
 			if (Raw_AddScore(pl, objname, score))
 				rtn = Number::newNumber(Raw_GetScore(pl, objname));
 		}
@@ -168,7 +170,7 @@ Local<Value> ObjectiveClass::reduceScore(const Arguments& args)
 		}
 		else if (IsInstanceOf<PlayerClass>(args[0]))
 		{
-			auto pl = PlayerClass::extractPlayer(args[0]);
+			auto pl = PlayerClass::extract(args[0]);
 			if (Raw_ReduceScore(pl, objname, score))
 				rtn = Number::newNumber(Raw_GetScore(pl, objname));
 		}
@@ -192,7 +194,7 @@ Local<Value> ObjectiveClass::deleteScore(const Arguments& args)
 		if (args[0].isString())
 			id = args[0].toStr();
 		else if (IsInstanceOf<PlayerClass>(args[0]))
-			id = Raw_GetPlayerName(PlayerClass::extractPlayer(args[0]));
+			id = Raw_GetPlayerName(PlayerClass::extract(args[0]));
 		else
 		{
 			ERROR("Wrong type of argument in deleteScore!");
@@ -215,7 +217,7 @@ Local<Value> ObjectiveClass::getScore(const Arguments& args)
 		if (args[0].isString())
 			id = args[0].toStr();
 		else if (IsInstanceOf<PlayerClass>(args[0]))
-			id = Raw_GetPlayerName(PlayerClass::extractPlayer(args[0]));
+			id = Raw_GetPlayerName(PlayerClass::extract(args[0]));
 		else
 		{
 			ERROR("Wrong type of argument in getScore!");
@@ -231,7 +233,7 @@ Local<Value> ObjectiveClass::getScore(const Arguments& args)
 
 //////////////////// APIs ////////////////////
 
-Local<Value> GetDisplayObjetive(const Arguments& args)
+Local<Value> McClass::getDisplayObjective(const Arguments& args)
 {
 	CHECK_ARGS_COUNT(args, 1);
 	CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -246,7 +248,7 @@ Local<Value> GetDisplayObjetive(const Arguments& args)
 	CATCH("Fail in GetDisplayObjective");
 }
 
-Local<Value> ClearDisplayObjetive(const Arguments& args)
+Local<Value> McClass::clearDisplayObjective(const Arguments& args)
 {
 	CHECK_ARGS_COUNT(args, 1);
 	CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -261,7 +263,7 @@ Local<Value> ClearDisplayObjetive(const Arguments& args)
 	CATCH("Fail in ClearDisplayObjective");
 }
 
-Local<Value> GetScoreObjetive(const Arguments& args)
+Local<Value> McClass::getScoreObjective(const Arguments& args)
 {
 	CHECK_ARGS_COUNT(args, 1);
 	CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -276,7 +278,7 @@ Local<Value> GetScoreObjetive(const Arguments& args)
 	CATCH("Fail in GetScoreObjective");
 }
 
-Local<Value> NewScoreObjective(const Arguments& args)
+Local<Value> McClass::newScoreObjective(const Arguments& args)
 {
 	CHECK_ARGS_COUNT(args, 1)
 	CHECK_ARG_TYPE(args[0], ValueKind::kString)
@@ -295,7 +297,7 @@ Local<Value> NewScoreObjective(const Arguments& args)
 	CATCH("Fail in NewScoreObjective!")
 }
 
-Local<Value> RemoveScoreObjective(const Arguments& args)
+Local<Value> McClass::removeScoreObjective(const Arguments& args)
 {
 	CHECK_ARGS_COUNT(args, 1)
 	CHECK_ARG_TYPE(args[0], ValueKind::kString)
@@ -313,7 +315,7 @@ Local<Value> RemoveScoreObjective(const Arguments& args)
 	CATCH("Fail in RemoveScoreObjective!")
 }
 
-Local<Value> GetAllScoreObjectives(const Arguments& args)
+Local<Value> McClass::getAllScoreObjectives(const Arguments& args)
 {
 	try {
 		Local<Array> res = Array::newArray();

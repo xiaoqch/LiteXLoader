@@ -15,7 +15,6 @@ struct FormCallbackData
     script::Global<script::Function> func;
 };
 
-enum GlobalConfType { json, ini };
 class Player;
 
 struct EngineOwnData

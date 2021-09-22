@@ -52,9 +52,6 @@ bool inline IsInstanceOf(Local<Value> v)
         return Local<Value>(); \
     }
 
-// 判断是否为浮点数
-bool CheckIsFloat(const Local<Value> &num);
-
 // 截获引擎异常
 #define CATCH(LOG) \
     catch(const Exception& e) \
@@ -87,6 +84,61 @@ bool CheckIsFloat(const Local<Value> &num);
         return Local<Value>(); \
     }
 
+// 至少COUNT个参数_Constructor
+#define CHECK_ARGS_COUNT_C(ARGS,COUNT) \
+    if(ARGS.size()<COUNT) \
+    { \
+        ERROR("Too Few arguments!"); \
+        ERROR(std::string("In API: ") + __FUNCTION__); \
+        ERROR("In Plugin: " + ENGINE_OWN_DATA()->pluginName); \
+        return nullptr; \
+    }
+
+// 检查是否TYPE类型_Constructor
+#define CHECK_ARG_TYPE_C(ARG,TYPE) \
+    if(ARG.getKind() != TYPE) \
+    { \
+        ERROR("Wrong type of argument!"); \
+        ERROR(std::string("In API: ") + __FUNCTION__); \
+        ERROR("In Plugin: " + ENGINE_OWN_DATA()->pluginName); \
+        return nullptr; \
+    }
+
+// 截获引擎异常_Constructor
+#define CATCH_C(LOG) \
+    catch(const Exception& e) \
+    { \
+        ERROR(LOG##"\n"); ERRPRINT(e); \
+        ERRPRINT("[Error] In Plugin: " + ENGINE_OWN_DATA()->pluginName); \
+        return nullptr; \
+    } \
+    catch(const std::exception &e) \
+    { \
+        ERROR("C++ Uncaught Exception Detected!"); \
+        ERRPRINT(e.what()); \
+        ERROR(std::string("In API: ") + __FUNCTION__); \
+        ERROR("In Plugin: " + ENGINE_OWN_DATA()->pluginName); \
+        return nullptr; \
+    } \
+    catch(const seh_exception &e) \
+    { \
+        ERROR("SEH Uncaught Exception Detected!"); \
+        ERRPRINT(e.what()); \
+        ERROR(std::string("In API: ") + __FUNCTION__); \
+        ERROR("In Plugin: " + ENGINE_OWN_DATA()->pluginName); \
+        return nullptr; \
+    } \
+    catch(...) \
+    { \
+        ERROR("Uncaught Exception Detected!"); \
+        ERROR(std::string("In API: ") + __FUNCTION__); \
+        ERROR("In Plugin: " + ENGINE_OWN_DATA()->pluginName); \
+        return nullptr; \
+    }
+
+
+// 判断是否为浮点数
+bool CheckIsFloat(const Local<Value>& num);
 
 // 序列化
 void PrintValue(std::ostream &out, Local<Value> v);

@@ -197,6 +197,9 @@
       <Filter>Kernel</Filter>
     </ClCompile>
     <ClCompile Include="API\DynamicNativeAPI.cpp">
+    <Filter>API</Filter>
+    </ClCompile>
+    <ClCompile Include="API\McAPI.cpp">
       <Filter>API</Filter>
     </ClCompile>
   </ItemGroup>
@@ -372,7 +375,7 @@
     <ClInclude Include="API\BlockEntityAPI.h">
       <Filter>API</Filter>
     </ClInclude>
-    <ClInclude Include="API\StaticClasses.h">
+    <ClInclude Include="API\McAPI.h">
       <Filter>API</Filter>
     </ClInclude>
     <ClInclude Include="API\GameUtilsAPI.h">
@@ -429,6 +432,9 @@
       <Filter>Lib</Filter>
     </Library>
     <Library Include="..\third-party\LightWebSocketClient\lib\LightWSClient.lib">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="..\third-party\cpp-base64\lib\cpp-base64.lib">
       <Filter>Lib</Filter>
     </Library>
   </ItemGroup>
