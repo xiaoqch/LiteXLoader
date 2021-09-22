@@ -194,7 +194,6 @@ bool LxlLoadPlugin(const std::string& filePath, bool isHotLoad)
             ERRPRINT(e);
             ExitEngineScope exit;
         }
-
         deleteEngine->destroy();
     }
     catch (const std::exception& e)

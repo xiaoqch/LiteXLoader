@@ -10,6 +10,16 @@ using namespace script;
 
 //////////////////// Classes ////////////////////
 
+ClassDefine<void> NetworkClassBuilder =
+    defineClass("network")
+        .function("httpGet", &NetworkClass::httpGet)
+        .function("httpPost", &NetworkClass::httpPost)
+        .function("httpGetSync", &NetworkClass::httpGetSync)
+
+        //For compatibility
+        .function("newWebSocket", &NetworkClass::newWebSocket)
+        .build();
+
 ClassDefine<WSClientClass> WSClientClassBuilder =
     defineClass<WSClientClass>("WSClient")
         .constructor(&WSClientClass::constructor)
@@ -207,13 +217,7 @@ Local<Value> WSClientClass::errorCode(const Arguments& args)
 
 //////////////////// APIs ////////////////////
 
-Local<Value> NewWebSocket(const Arguments& args)
-{
-    auto newp = new WSClientClass();
-    return newp->getScriptObject();
-}
-
-Local<Value> HttpGet(const Arguments& args)
+Local<Value> NetworkClass::httpGet(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 2);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -243,7 +247,7 @@ Local<Value> HttpGet(const Arguments& args)
     CATCH("Fail in HttpGet");
 }
 
-Local<Value> HttpPost(const Arguments& args)
+Local<Value> NetworkClass::httpPost(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 4);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -275,7 +279,7 @@ Local<Value> HttpPost(const Arguments& args)
     CATCH("Fail in HttpPost");
 }
 
-Local<Value> HttpGetSync(const Arguments& args)
+Local<Value> NetworkClass::httpGetSync(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -294,6 +298,12 @@ Local<Value> HttpGetSync(const Arguments& args)
 
 
 //For compatibility
+Local<Value> NetworkClass::newWebSocket(const Arguments& args)
+{
+    auto newp = new WSClientClass();
+    return newp->getScriptObject();
+}
+
 Local<Object> WSClientClass::newWSClient()
 {
     auto newp = new WSClientClass();

@@ -4,15 +4,6 @@
 #include <vector>
 using namespace script;
 
-//////////////////// APIs ////////////////////
-
-Local<Value> Runcmd(const Arguments& args);
-Local<Value> RuncmdEx(const Arguments& args);
-Local<Value> RegisterPlayerCmd(const Arguments& args);
-Local<Value> RegisterConsoleCmd(const Arguments& args);
-Local<Value> SendCmdOutput(const Arguments& args);
-
-
 //////////////////// LXL Event Callbacks ////////////////////
 
 class Player;

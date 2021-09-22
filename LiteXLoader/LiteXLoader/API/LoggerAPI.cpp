@@ -11,6 +11,33 @@
 using namespace std;
 using namespace script;
 
+#define LOGGER_CHECK_DEBUG(level) (level >= 5)
+#define LOGGER_CHECK_INFO(level) (level >= 4)
+#define LOGGER_CHECK_WARN(level) (level >= 3)
+#define LOGGER_CHECK_ERROR(level) (level >= 2)
+#define LOGGER_CHECK_FATAL(level) (level >= 1)
+
+
+//////////////////// Classes ////////////////////
+
+ClassDefine<void> LoggerClassBuilder =
+    defineClass("logger")
+        .function("log", &LoggerClass::log)
+        .function("debug", &LoggerClass::debug)
+        .function("info", &LoggerClass::info)
+        .function("warn", &LoggerClass::warn)
+        .function("warning", &LoggerClass::warn)
+        .function("error", &LoggerClass::error)
+        .function("fatal", &LoggerClass::fatal)
+
+        .function("setTitle", &LoggerClass::setTitle)
+        .function("setConsole", &LoggerClass::setConsole)
+        .function("setFile", &LoggerClass::setFile)
+        .function("setPlayer", &LoggerClass::setPlayer)
+        .function("setLogLevel", &LoggerClass::setLogLevel)
+        .build();
+
+
 ////////////////// Helper //////////////////
 string inline GetTimeStrHelper()
 {
@@ -65,7 +92,7 @@ void LogToEachTarget(shared_ptr<EngineOwnData> globalConf,
     }
 }
 
-Local<Value> LoggerLog(const Arguments& args)
+Local<Value> LoggerClass::log(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
 
@@ -77,7 +104,7 @@ Local<Value> LoggerLog(const Arguments& args)
     CATCH("Fail in LoggerLog!")
 }
 
-Local<Value> LoggerDebug(const Arguments& args)
+Local<Value> LoggerClass::debug(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
 
@@ -97,7 +124,7 @@ Local<Value> LoggerDebug(const Arguments& args)
     CATCH("Fail in LoggerDebug!")
 }
 
-Local<Value> LoggerInfo(const Arguments& args)
+Local<Value> LoggerClass::info(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
     
@@ -117,7 +144,7 @@ Local<Value> LoggerInfo(const Arguments& args)
     CATCH("Fail in LoggerInfo!")
 }
 
-Local<Value> LoggerWarn(const Arguments& args)
+Local<Value> LoggerClass::warn(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
     
@@ -137,7 +164,7 @@ Local<Value> LoggerWarn(const Arguments& args)
     CATCH("Fail in LoggerWarn!")
 }
 
-Local<Value> LoggerError(const Arguments& args)
+Local<Value> LoggerClass::error(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
     
@@ -157,7 +184,7 @@ Local<Value> LoggerError(const Arguments& args)
     CATCH("Fail in LoggerError!")
 }
 
-Local<Value> LoggerFatal(const Arguments& args)
+Local<Value> LoggerClass::fatal(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
     
@@ -177,7 +204,7 @@ Local<Value> LoggerFatal(const Arguments& args)
     CATCH("Fail in LoggerFatal!")
 }
 
-Local<Value> LoggerSetTitle(const Arguments& args)
+Local<Value> LoggerClass::setTitle(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
@@ -201,7 +228,7 @@ void UpdateMaxLogLevel()
 }
 ///////////////// Helper /////////////////
 
-Local<Value> LoggerSetConsole(const Arguments& args)
+Local<Value> LoggerClass::setConsole(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
     CHECK_ARG_TYPE(args[0],ValueKind::kBoolean)
@@ -220,7 +247,7 @@ Local<Value> LoggerSetConsole(const Arguments& args)
     CATCH("Fail in LoggerSetConsole!")
 }
 
-Local<Value> LoggerSetFile(const Arguments& args)
+Local<Value> LoggerClass::setFile(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
@@ -247,7 +274,7 @@ Local<Value> LoggerSetFile(const Arguments& args)
     CATCH("Fail in LoggerSetFile!")
 }
 
-Local<Value> LoggerSetPlayer(const Arguments& args)
+Local<Value> LoggerClass::setPlayer(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
     if (args.size() >= 2)
@@ -267,7 +294,7 @@ Local<Value> LoggerSetPlayer(const Arguments& args)
     CATCH("Fail in LoggerSetPlayer!")
 }
 
-Local<Value> SetLogLevel(const Arguments& args)
+Local<Value> LoggerClass::setLogLevel(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1)
     CHECK_ARG_TYPE(args[0], ValueKind::kNumber)

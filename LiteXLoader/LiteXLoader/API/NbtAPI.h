@@ -76,6 +76,7 @@ public:
     Local<Value> set(const Arguments& args);
     Local<Value> get(const Arguments& args);
 };
+extern ClassDefine<NbtValue> NbtValueBuilder;
 
 //NBT Int
 class NbtIntClass : public NbtBase, public ScriptClass
@@ -193,6 +194,7 @@ public:
 
     Local<Value> toArray(const Arguments& args);
 };
+extern ClassDefine<NbtList> NbtListBuilder;
 
 
 //NBT Compound
@@ -227,6 +229,7 @@ public:
     Local<Value> toSNBT(const Arguments& args);
     Local<Value> toBinaryNBT(const Arguments& args);
 };
+extern ClassDefine<NbtCompound> NbtCompoundBuilder;
 
 
 //Helper

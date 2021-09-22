@@ -6,8 +6,8 @@
 
 ### 创建文件夹  
 
-`file.createDir(dir)`  
-`file.mkdir(dir)`
+`File.createDir(dir)`  
+`File.mkdir(dir)`
 
 - 参数：
   - dir : `String`  
@@ -20,7 +20,7 @@
 
 ### 删除文件 / 文件夹  
 
-`file.delete(path)`
+`File.delete(path)`
 
 - 参数：
   - path : `String`  
@@ -32,7 +32,7 @@
 
 ### 判断文件 / 文件夹是否存在  
 
-`file.exists(path)`
+`File.exists(path)`
 
 - 参数：
   - path : `String`  
@@ -44,7 +44,7 @@
 
 ### 复制文件 / 文件夹到指定位置  
 
-`file.copy(from,to)`
+`File.copy(from,to)`
 
 - 参数：
   - from : `String`  
@@ -59,7 +59,7 @@
 
 ### 移动文件 / 文件夹到指定位置  
 
-`file.move(from,to)`
+`File.move(from,to)`
 
 - 参数：
   - from : `String`  
@@ -74,7 +74,7 @@
 
 ### 重命名指定文件 / 文件夹  
 
-`file.rename(from,to)`
+`File.rename(from,to)`
 
 - 参数：
   - from : `String`  
@@ -89,7 +89,7 @@
 
 ### 获取指定文件的大小
 
-`file.getFileSize(path)`
+`File.getFileSize(path)`
 
 - 参数：
   - path : `String`  
@@ -104,7 +104,7 @@
 
 ### 判断指定路径是否是文件夹
 
-`file.checkIsDir(path)`
+`File.checkIsDir(path)`
 
 - 参数：
   - path : `String`  
@@ -118,7 +118,7 @@
 
 ### 列出指定文件夹下的所有文件 / 文件夹
 
-`file.getFilesList(dir)`
+`File.getFilesList(dir)`
 
 - 参数：
   - dir: `String`  

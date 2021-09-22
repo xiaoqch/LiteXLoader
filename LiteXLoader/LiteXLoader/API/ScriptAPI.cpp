@@ -84,37 +84,6 @@ Local<Value> FastLog(const Arguments& args)
     CATCH("Fail in FastLog!");
 }
 
-Local<Value> GetTimeStr(const Arguments& args)
-{
-    try {
-        return String::newString(Raw_GetDateTimeStr());
-    }
-    CATCH("Fail in GetTimeStr!")
-}
-
-Local<Value> GetTimeObj(const Arguments& args)
-{
-    try {
-        SYSTEMTIME st;
-        GetLocalTime(&st);
-        Local<Object> res = Object::newObject();
-        res.set("Y", Number::newNumber((int)st.wYear));
-        res.set("M", Number::newNumber((int)st.wMonth));
-        res.set("D", Number::newNumber((int)st.wDay));
-        res.set("h", Number::newNumber((int)st.wHour));
-        res.set("m", Number::newNumber((int)st.wMinute));
-        res.set("s", Number::newNumber((int)st.wSecond));
-        res.set("ms", Number::newNumber((int)st.wMilliseconds));
-        return res;
-    }
-    CATCH("Fail in GetTimeNow!")
-}
-
-Local<Value> RandomGuid(const Arguments& args)
-{
-    return String::newString(Raw_RandomGuid());
-}
-
 
 //////////////////// APIs ////////////////////
 

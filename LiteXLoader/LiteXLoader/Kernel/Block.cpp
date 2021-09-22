@@ -23,10 +23,13 @@ int Raw_GetBlockId(Block* block)
     return blockLegacy->getBlockItemId();
 }
 
+struct BlockPalette;
 Block* Raw_NewBlockFromName(string name)
 {
-    string blockName = "?m" + name + "@VanillaBlocks@@3PEBVBlock@@EB";
-    return *(Block**)dlsym_real(blockName.c_str());
+    BlockPalette* generator = SymCall("?getBlockPalette@Level@@UEBAAEBVBlockPalette@@XZ", BlockPalette*, Level*)(mc->getLevel());
+    BlockLegacy* blk = SymCall("?getBlockLegacy@BlockPalette@@QEBAPEBVBlockLegacy@@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z",
+        BlockLegacy*, void*, string*)(generator, &name);
+    return SymCall("?getRenderBlock@BlockLegacy@@UEBAAEBVBlock@@XZ", Block*, BlockLegacy*)(blk);    //SetBlockCommand::execute
 }
 
 bool Raw_SetBlockByBlock(IntVec4 pos, Block* block)

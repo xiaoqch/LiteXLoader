@@ -2,9 +2,47 @@
 #include <ScriptX/ScriptX.h>
 using namespace script;
 #include <Kernel/Data.h>
-
 #include <string>
 #include <memory>
+
+
+//////////////////// Data Static ////////////////////
+
+class DataClass
+{
+public:
+    static Local<Value> xuid2name(const Arguments& args);
+    static Local<Value> name2xuid(const Arguments& args);
+
+    static Local<Value> parseJson(const Arguments& args);
+    static Local<Value> toJson(const Arguments& args);
+    static Local<Value> toMD5(const Arguments& args);
+    static Local<Value> toSHA1(const Arguments& args);
+    static Local<Value> toBase64(const Arguments& args);
+    static Local<Value> fromBase64(const Arguments& args);
+
+    //For Compatibility
+    static Local<Value> openConfig(const Arguments& args);
+    static Local<Value> openDB(const Arguments& args);
+};
+extern ClassDefine<void> DataClassBuilder;
+
+
+//////////////////// Money Static ////////////////////
+
+class MoneyClass
+{
+public:
+    static Local<Value> set(const Arguments& args);
+    static Local<Value> get(const Arguments& args);
+    static Local<Value> add(const Arguments& args);
+    static Local<Value> reduce(const Arguments& args);
+    static Local<Value> trans(const Arguments& args);
+    static Local<Value> getHistory(const Arguments& args);
+    static Local<Value> clearHistory(const Arguments& args);
+};
+extern ClassDefine<void> MoneyClassBuilder;
+
 
 //////////////////// Classes ////////////////////
 
@@ -30,6 +68,7 @@ public:
     //For Compatibility
     static Local<Value> newDb(const string& dir);
 };
+extern ClassDefine<DbClass> DbClassBuilder;
 
 
 class ConfBaseClass
@@ -75,6 +114,7 @@ public:
     //For Compatibility
     static Local<Value> newConf(const string& path, const string& defContent = "");
 };
+extern ClassDefine<ConfJsonClass> ConfJsonClassBuilder;
 
 
 class ConfIniClass : public ScriptClass, public ConfBaseClass
@@ -109,25 +149,4 @@ public:
     //For Compatibility
     static Local<Value> newConf(const string& path, const string& defContent = "");
 };
-
-//////////////////// APIs ////////////////////
-
-Local<Value> MoneySet(const Arguments& args);
-Local<Value> MoneyGet(const Arguments& args);
-Local<Value> MoneyAdd(const Arguments& args);
-Local<Value> MoneyReduce(const Arguments& args);
-Local<Value> MoneyTrans(const Arguments& args);
-Local<Value> MoneyGetHintory(const Arguments& args);
-Local<Value> MoneyClearHistory(const Arguments& args);
-
-Local<Value> Xuid2Name(const Arguments& args);
-Local<Value> Name2Xuid(const Arguments& args);
-
-Local<Value> ToJson(const Arguments& args);
-Local<Value> ParseJson(const Arguments& args);
-Local<Value> ToMD5(const Arguments& args);
-Local<Value> ToSHA1(const Arguments& args);
-
-//For Compatibility
-Local<Value> OpenConfig(const Arguments& args);
-Local<Value> OpenDB(const Arguments& args);
+extern ClassDefine<ConfIniClass> ConfIniClassBuilder;

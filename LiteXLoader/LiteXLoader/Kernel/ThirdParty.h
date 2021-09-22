@@ -48,3 +48,6 @@ public:
 //////////////// Websocket Client ////////////////
 #include <LightWebSocketClient/include/WebSocketClient.h>
 using namespace cyanray;
+
+//////////////// Base64 ////////////////
+#include <cpp-base64/include/base64.h>

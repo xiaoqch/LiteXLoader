@@ -29,3 +29,4 @@ public:
     Local<Value> getOs();
     Local<Value> getClientId();
 };
+extern ClassDefine<DeviceClass> DeviceClassBuilder;

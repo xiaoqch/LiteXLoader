@@ -2,6 +2,7 @@
 #include "BaseAPI.h"
 #include "DeviceAPI.h"
 #include "PlayerAPI.h"
+#include "McAPI.h"
 #include "ContainerAPI.h"
 #include "ItemAPI.h"
 #include "GuiAPI.h"
@@ -142,7 +143,7 @@ Player* PlayerClass::extract(Local<Value> v)
 }
 
 //公用API
-Local<Value> GetPlayer(const Arguments& args)
+Local<Value> McClass::getPlayer(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args,1)
     CHECK_ARG_TYPE(args[0],ValueKind::kString)
@@ -183,7 +184,7 @@ Local<Value> GetPlayer(const Arguments& args)
     CATCH("Fail in GetPlayer!")
 }
 
-Local<Value> GetOnlinePlayers(const Arguments& args)
+Local<Value> McClass::getOnlinePlayers(const Arguments& args)
 {
     try{
         auto players = Raw_GetOnlinePlayers();
@@ -195,7 +196,7 @@ Local<Value> GetOnlinePlayers(const Arguments& args)
     CATCH("Fail in GetOnlinePlayers!")
 }
 
-Local<Value> Broadcast(const Arguments& args)
+Local<Value> McClass::broadcast(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1)
     CHECK_ARG_TYPE(args[0], ValueKind::kString)

@@ -10,8 +10,3 @@ bool LxlRemoveAllExportedFuncs(ScriptEngine* engine);
 class ModuleMessage;
 void RemoteCallCallback(ModuleMessage& msg);
 void RemoteCallReturnCallback(ModuleMessage& msg);
-
-//////////////////// APIs ////////////////////
-
-Local<Value> LxlExport(const Arguments& args);
-Local<Value> LxlImport(const Arguments& args);

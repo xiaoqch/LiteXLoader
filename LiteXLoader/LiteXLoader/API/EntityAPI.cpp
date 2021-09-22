@@ -2,6 +2,7 @@
 #include "BaseAPI.h"
 #include "EntityAPI.h"
 #include "PlayerAPI.h"
+#include "McAPI.h"
 #include "ContainerAPI.h"
 #include "NbtAPI.h"
 #include <Kernel/Entity.h>
@@ -509,7 +510,7 @@ Local<Value> EntityClass::getAllTags(const Arguments& args)
     CATCH("Fail in getAllTags!");
 }
 
-Local<Value> GetAllEntities(const Arguments& args) {
+Local<Value> McClass::getAllEntities(const Arguments& args) {
     try {
        auto entityList = Raw_GetAllEntities();
        auto arr = Array::newArray();
@@ -521,7 +522,7 @@ Local<Value> GetAllEntities(const Arguments& args) {
     CATCH("Fail in GetAllEntities");
 }
 
-Local<Value> SpawnMob(const Arguments& args)
+Local<Value> McClass::spawnMob(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 2);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -587,7 +588,7 @@ Local<Value> SpawnMob(const Arguments& args)
     CATCH("Fail in SpawnMob!");
 }
 
-Local<Value> Explode(const Arguments& args)
+Local<Value> McClass::explode(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 6);
 

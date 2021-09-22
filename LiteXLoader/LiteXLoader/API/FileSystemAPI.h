@@ -79,3 +79,4 @@ public:
     static Local<Object> newFile(std::fstream&& f, const std::string& path, bool isBinary);
     static Local<Value> open(const Arguments& args) { return OpenFile(args); }
 };
+extern ClassDefine<FileClass> FileClassBuilder;

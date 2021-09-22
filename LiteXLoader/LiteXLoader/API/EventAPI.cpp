@@ -1,4 +1,5 @@
 #include "EventAPI.h"
+#include "McAPI.h"
 #include <iostream>
 #include <vector>
 #include <list>
@@ -50,7 +51,7 @@ enum class EVENT_TYPES : int
     onMobDie, onMobHurt, onExplode, onBlockExploded, onCmdBlockExecute, onRedStoneUpdate, onProjectileHitEntity,
     onProjectileHitBlock, onBlockInteracted, onUseRespawnAnchor, onFarmLandDecay, onUseFrameBlock,
     onPistonPush, onHopperSearchItem, onHopperPushOut, onFireSpread, onNpcCmd,
-    onScoreChanged, onServerStarted, onConsoleCmd, onFormSelected, onConsoleOutput,
+    onScoreChanged, onServerStarted, onConsoleCmd, onFormSelected, onConsoleOutput, onTick,
     EVENT_COUNT
 };
 static const std::unordered_map<string, EVENT_TYPES> EventsMap{
@@ -110,6 +111,7 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onServerStarted",EVENT_TYPES::onServerStarted},
     {"onConsoleCmd",EVENT_TYPES::onConsoleCmd},
     {"onConsoleOutput",EVENT_TYPES::onConsoleOutput},
+    {"onTick",EVENT_TYPES::onTick},
     {"onFormSelected",EVENT_TYPES::onFormSelected}
 };
 struct ListenerListType
@@ -237,7 +239,7 @@ string EventTypeToString(EVENT_TYPES e)
 
 //////////////////// APIs ////////////////////
 
-Local<Value> Listen(const Arguments& args)
+Local<Value> McClass::listen(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 2);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -403,6 +405,13 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ",
         ERROR("Error occurred in Engine Message Loop!");
         ERROR("Uncaught Exception Detected!");
     }
+
+    IF_LISTENED(EVENT_TYPES::onTick)
+    {
+        CallEventRtnVoid(EVENT_TYPES::onTick);
+    }
+    IF_LISTENED_END(EVENT_TYPES::onTick);
+
     return original(_this);
 }
 
@@ -1392,3 +1401,45 @@ THook(ostream&, "??$_Insert_string@DU?$char_traits@D@std@@_K@std@@YAAEAV?$basic_
     IF_LISTENED_END(EVENT_TYPES::onConsoleOutput);
     return original(_this, str, size);
 }
+
+/*
+class InventoryTransaction;
+THook(void, "?handle@?$PacketHandlerDispatcherInstance@VInventoryTransactionPacket@@$0A@@@UEBAXAEBVNetworkIdentifier@@AEAVNetEventCallback@@AEAV?$shared_ptr@VPacket@@@std@@@Z",
+    void* _this, NetworkIdentifier* id, ServerNetworkHandler* handler, void* pPacket)
+{
+    Packet* packet = *(Packet**)pPacket;
+    Player* p = Raw_GetPlayerFromPacket(handler, id, packet);
+    
+    ///
+        NORMAL = 0,
+        MISMATCH = 1,
+        USE_ITEM = 2,
+        USE_ITEM_ON_ENTITY = 3,
+        RELEASE_ITEM = 4
+    ///
+
+    auto type = *(DWORD*)(*((QWORD*)packet + 10) + 8i64);
+    auto invts = (InventoryTransaction*)(*((QWORD*)packet + 10) + 16i64);
+    cout << "PacketType: " << type << "\n";
+
+    RBStream rb(packet,0);
+
+    unsigned actionType;
+    int bp_x;
+    unsigned bp_y;
+    int bp_z;
+    int blockFace;
+    int hotbarSlot;
+
+    rb.apply(actionType, bp_x, bp_y, bp_z, blockFace, hotbarSlot);
+
+    cout << actionType << "\n"
+        << bp_x << "\n"
+        << bp_y << "\n"
+        << bp_z << "\n"
+        << blockFace << "\n"
+        << hotbarSlot << "\n";
+
+    original(_this, id, handler, pPacket);
+}
+*/

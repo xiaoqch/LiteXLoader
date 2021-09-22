@@ -12,7 +12,24 @@
 using namespace std;
 using namespace script;
 
-Local<Value> LxlGetVersion(const Arguments& args)
+//////////////////// Classes ////////////////////
+
+ClassDefine<void> LxlClassBuilder =
+    defineClass("lxl")
+        .function("version", &LxlClass::version)
+        .function("requireVersion", &LxlClass::requireVersion)
+        .function("listPlugins", &LxlClass::listPlugins)
+        .function("import", &LxlClass::importFunc)
+        .function("export", &LxlClass::exportFunc)
+        .function("require", &LxlClass::require)
+        .function("eval", &LxlClass::eval)
+
+        //For Compatibility
+        .function("checkVersion", &LxlClass::requireVersion)
+        .build();
+
+
+Local<Value> LxlClass::version(const Arguments& args)
 {
     try{
         Local<Object> ver = Object::newObject();
@@ -25,7 +42,7 @@ Local<Value> LxlGetVersion(const Arguments& args)
     CATCH("Fail in LxlGetVersion!")
 }
 
-Local<Value> LxlRequireVersion(const Arguments& args)
+Local<Value> LxlClass::requireVersion(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
     CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
@@ -41,7 +58,7 @@ Local<Value> LxlRequireVersion(const Arguments& args)
     CATCH("Fail in LxlRequireVersion!")
 }
 
-Local<Value> LxlListPlugins(const Arguments& args)
+Local<Value> LxlClass::listPlugins(const Arguments& args)
 {
     try
     {
@@ -56,7 +73,7 @@ Local<Value> LxlListPlugins(const Arguments& args)
     CATCH("Fail in LxlListPlugins!")
 }
 
-Local<Value> LxlRequire(const Arguments& args)
+Local<Value> LxlClass::require(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1)
     CHECK_ARG_TYPE(args[0], ValueKind::kString)
@@ -172,7 +189,7 @@ Local<Value> LxlRequire(const Arguments& args)
     CATCH("Fail in LxlRequire!")
 }
 
-Local<Value> LxlEval(const Arguments& args)
+Local<Value> LxlClass::eval(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);

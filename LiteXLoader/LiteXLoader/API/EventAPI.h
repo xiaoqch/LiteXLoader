@@ -9,8 +9,3 @@ bool LxlAddEventListener(ScriptEngine* engine, const std::string& eventName, con
 bool LxlRemoveAllEventListeners(ScriptEngine* engine);
 bool LxlCallEventsOnHotLoad(ScriptEngine* engine);
 bool LxlCallEventsOnHotUnload(ScriptEngine* engine);
-
-
-//////////////////// APIs ////////////////////
-
-Local<Value> Listen(const Arguments& args);

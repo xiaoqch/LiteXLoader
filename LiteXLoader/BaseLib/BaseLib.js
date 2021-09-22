@@ -382,3 +382,10 @@ SOFTWARE.
 /*
 cjs.js end
 */
+
+
+
+/*
+For Compatibility
+*/
+globalThis.file = File

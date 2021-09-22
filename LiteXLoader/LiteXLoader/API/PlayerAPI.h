@@ -100,10 +100,4 @@ public:
     Local<Value> getAllItems(const Arguments& args);
     Local<Value> removeItem(const Arguments& args);
 };
-
-//////////////////// APIs ////////////////////
-
-Local<Value> Broadcast(const Arguments& args);
-
-Local<Value> GetPlayer(const Arguments& args);
-Local<Value> GetOnlinePlayers(const Arguments& args);
+extern ClassDefine<PlayerClass> PlayerClassBuilder;

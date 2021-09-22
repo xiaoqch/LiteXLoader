@@ -15,6 +15,33 @@ using namespace std;
 
 //////////////////// Class Definition ////////////////////
 
+ClassDefine<void> DataClassBuilder =
+    defineClass("data")
+        .function("xuid2name", &DataClass::xuid2name)
+        .function("name2xuid", &DataClass::name2xuid)
+        .function("parseJson", &DataClass::parseJson)
+        .function("toJson", &DataClass::toJson)
+        .function("toMD5", &DataClass::toMD5)
+        .function("toSHA1", &DataClass::toSHA1)
+        .function("toBase64", &DataClass::toBase64)
+        .function("fromBase64", &DataClass::fromBase64)
+
+        //For Compatibility
+        .function("openDB", &DataClass::openDB)
+        .function("openConfig", &DataClass::openConfig)
+        .build();
+
+ClassDefine<void> MoneyClassBuilder =
+    defineClass("money")
+        .function("set", &MoneyClass::set)
+        .function("get", &MoneyClass::get)
+        .function("add", &MoneyClass::add)
+        .function("reduce", &MoneyClass::reduce)
+        .function("trans", &MoneyClass::trans)
+        .function("getHistory", &MoneyClass::getHistory)
+        .function("clearHistory", &MoneyClass::clearHistory)
+        .build();
+
 ClassDefine<DbClass> DbClassBuilder =
     defineClass<DbClass>("KVDatabase")
         .constructor(&DbClass::constructor)
@@ -658,7 +685,7 @@ Local<Value> ConfIniClass::reload(const Arguments& args)
     {
         return Boolean::newBoolean(reload());
     }
-    CATCH("Fail in confReload!")
+    CATCH("Fail in confReload!");
 }
 
 Local<Value> ConfIniClass::write(const Arguments& args)
@@ -681,13 +708,13 @@ Local<Value> ConfIniClass::close(const Arguments& args)
     {
         return Boolean::newBoolean(close());
     }
-    CATCH("Fail in confClose!")
+    CATCH("Fail in confClose!");
 }
 
 
 //////////////////// APIs ////////////////////
 
-Local<Value> MoneySet(const Arguments& args)
+Local<Value> MoneyClass::set(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 2);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -709,10 +736,10 @@ Local<Value> MoneySet(const Arguments& args)
         ERRPRINT(e.what());
         return Boolean::newBoolean(false);
     }
-    CATCH("Fail in MoneySet!")
+    CATCH("Fail in MoneySet!");
 }
 
-Local<Value> MoneyGet(const Arguments& args)
+Local<Value> MoneyClass::get(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -733,10 +760,10 @@ Local<Value> MoneyGet(const Arguments& args)
         ERRPRINT(e.what());
         return Number::newNumber(0);
     }
-    CATCH("Fail in MoneyGet!")
+    CATCH("Fail in MoneyGet!");
 }
 
-Local<Value> MoneyAdd(const Arguments& args)
+Local<Value> MoneyClass::add(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 2);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -758,10 +785,10 @@ Local<Value> MoneyAdd(const Arguments& args)
         ERRPRINT(e.what());
         return Boolean::newBoolean(false);
     }
-    CATCH("Fail in MoneyAdd!")
+    CATCH("Fail in MoneyAdd!");
 }
 
-Local<Value> MoneyReduce(const Arguments& args)
+Local<Value> MoneyClass::reduce(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 2);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -783,10 +810,10 @@ Local<Value> MoneyReduce(const Arguments& args)
         ERRPRINT(e.what());
         return Boolean::newBoolean(false);
     }
-    CATCH("Fail in MoneyReduce!")
+    CATCH("Fail in MoneyReduce!");
 }
 
-Local<Value> MoneyTrans(const Arguments& args)
+Local<Value> MoneyClass::trans(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 3);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -813,10 +840,10 @@ Local<Value> MoneyTrans(const Arguments& args)
         ERRPRINT(e.what());
         return Boolean::newBoolean(false);
     }
-    CATCH("Fail in MoneyTrans!")
+    CATCH("Fail in MoneyTrans!");
 }
 
-Local<Value> MoneyGetHintory(const Arguments& args)
+Local<Value> MoneyClass::getHistory(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 2);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -874,10 +901,10 @@ Local<Value> MoneyGetHintory(const Arguments& args)
         ERRPRINT(e.what());
         return Local<Value>();
     }
-    CATCH("Fail in MoneyGetHintory!")
+    CATCH("Fail in MoneyGetHintory!");
 }
 
-Local<Value> MoneyClearHistory(const Arguments& args)
+Local<Value> MoneyClass::clearHistory(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
     CHECK_ARG_TYPE(args[0], ValueKind::kNumber);
@@ -886,10 +913,10 @@ Local<Value> MoneyClearHistory(const Arguments& args)
     {
         return Boolean::newBoolean(Raw_ClearMoneyHist(args[0].asNumber().toInt64()));
     }
-    CATCH("Fail in MoneyClearHistory!")
+    CATCH("Fail in MoneyClearHistory!");
 }
 
-Local<Value> Xuid2Name(const Arguments& args)
+Local<Value> DataClass::xuid2name(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -898,10 +925,10 @@ Local<Value> Xuid2Name(const Arguments& args)
     {
         return String::newString(Raw_Xuid2Name(args[0].toStr()));
     }
-    CATCH("Fail in Xuid2Name!")
+    CATCH("Fail in Xuid2Name!");
 }
 
-Local<Value> Name2Xuid(const Arguments& args)
+Local<Value> DataClass::name2xuid(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -910,10 +937,10 @@ Local<Value> Name2Xuid(const Arguments& args)
     {
         return String::newString(Raw_Name2Xuid(args[0].toStr()));
     }
-    CATCH("Fail in Name2Xuid!")
+    CATCH("Fail in Name2Xuid!");
 }
 
-Local<Value> ToJson(const Arguments& args)
+Local<Value> DataClass::toJson(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
     if (args.size() >= 2)
@@ -938,10 +965,10 @@ Local<Value> ToJson(const Arguments& args)
             return Local<Value>();
         }
     }
-    CATCH("Fail in ToJson!")
+    CATCH("Fail in ToJson!");
 }
 
-Local<Value> ParseJson(const Arguments& args)
+Local<Value> DataClass::parseJson(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);
@@ -958,29 +985,87 @@ Local<Value> ParseJson(const Arguments& args)
             return Local<Value>();
         }
     }
-    CATCH("Fail in ParseJson!")
+    CATCH("Fail in ParseJson!");
 }
 
-Local<Value> ToMD5(const Arguments& args)
+Local<Value> DataClass::toMD5(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 1)
-    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARGS_COUNT(args, 1);
 
     try {
-        return String::newString(Raw_toMD5(args[0].toStr()));
+        string data;
+        if (args[0].isString())
+            data = args[0].toStr();
+        else if (args[0].isByteBuffer())
+        {
+            Local<ByteBuffer> buf = args[0].asByteBuffer();
+            data = string((char*)buf.getRawBytes(), buf.byteLength());
+        }
+        else
+        {
+            ERROR("Wrong type of argument in ToMD5");
+            return Local<Value>();
+        }
+        return String::newString(Raw_toMD5(data));
     }
-    CATCH("Fail in ToMD5!")
+    CATCH("Fail in ToMD5!");
 }
 
-Local<Value> ToSHA1(const Arguments& args)
+Local<Value> DataClass::toSHA1(const Arguments& args)
 {
-    CHECK_ARGS_COUNT(args, 1)
-    CHECK_ARG_TYPE(args[0], ValueKind::kString)
+    CHECK_ARGS_COUNT(args, 1);
 
     try {
-        return String::newString(Raw_toSHA1(args[0].toStr()));
+        string data;
+        if (args[0].isString())
+            data = args[0].toStr();
+        else if (args[0].isByteBuffer())
+        {
+            Local<ByteBuffer> buf = args[0].asByteBuffer();
+            data = string((char*)buf.getRawBytes(), buf.byteLength());
+        }
+        else
+        {
+            ERROR("Wrong type of argument in ToSHA1");
+            return Local<Value>();
+        }
+        return String::newString(Raw_toSHA1(data));
     }
-    CATCH("Fail in SHA1!")
+    CATCH("Fail in ToSHA1!");
+}
+
+Local<Value> DataClass::toBase64(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+
+    try {
+        string data;
+        if (args[0].isString())
+            data = args[0].toStr();
+        else if (args[0].isByteBuffer())
+        {
+            Local<ByteBuffer> buf = args[0].asByteBuffer();
+            data = string((char*)buf.getRawBytes(), buf.byteLength());
+        }
+        else
+        {
+            ERROR("Wrong type of argument in ToBase64");
+            return Local<Value>();
+        }
+        return String::newString(Raw_ToBase64(data));
+    }
+    CATCH("Fail in ToBase64!");
+}
+
+Local<Value> DataClass::fromBase64(const Arguments& args)
+{
+    CHECK_ARGS_COUNT(args, 1);
+    CHECK_ARG_TYPE(args[0], ValueKind::kString);
+
+    try {
+        return String::newString(Raw_FromBase64(args[0].toStr()));
+    }
+    CATCH("Fail in FromBase64!");
 }
 
 
@@ -1015,7 +1100,7 @@ Local<Value> ConfIniClass::newConf(const string& path, const string& defContent)
         return Local<Value>();
 }
 
-Local<Value> OpenConfig(const Arguments& args)
+Local<Value> DataClass::openConfig(const Arguments& args)
 {
     enum GlobalConfType { json, ini };
 
@@ -1058,7 +1143,7 @@ Local<Value> OpenConfig(const Arguments& args)
     CATCH("Fail in OpenConfig!");
 }
 
-Local<Value> OpenDB(const Arguments& args)
+Local<Value> DataClass::openDB(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
     CHECK_ARG_TYPE(args[0], ValueKind::kString);

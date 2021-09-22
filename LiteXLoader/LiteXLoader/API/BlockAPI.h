@@ -51,9 +51,4 @@ public:
     Local<Value> getBlockEntity(const Arguments& args);
     Local<Value> removeBlockEntity(const Arguments& args);
 };
-
-//////////////////// APIs ////////////////////
-
-Local<Value> GetBlock(const Arguments& args);
-Local<Value> SetBlock(const Arguments& args);
-Local<Value> SpawnParticle(const Arguments& args);
+extern ClassDefine<BlockClass> BlockClassBuilder;

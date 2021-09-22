@@ -1,5 +1,6 @@
 #include "APIHelp.h"
 #include "BaseAPI.h"
+#include "McAPI.h"
 #include "BlockAPI.h"
 #include "ContainerAPI.h"
 #include "EntityAPI.h"
@@ -226,7 +227,7 @@ Local<Value> BlockClass::removeBlockEntity(const Arguments& args)
 }
 
 //公用API
-Local<Value> GetBlock(const Arguments& args)
+Local<Value> McClass::getBlock(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 1);
 
@@ -296,7 +297,7 @@ Local<Value> GetBlock(const Arguments& args)
     CATCH("Fail in GetBlock!")
 }
 
-Local<Value> SetBlock(const Arguments& args)
+Local<Value> McClass::setBlock(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 2);
 
@@ -377,7 +378,7 @@ Local<Value> SetBlock(const Arguments& args)
     CATCH("Fail in SetBlock!")
 }
 
-Local<Value> SpawnParticle(const Arguments& args)
+Local<Value> McClass::spawnParticle(const Arguments& args)
 {
     CHECK_ARGS_COUNT(args, 2)      
 

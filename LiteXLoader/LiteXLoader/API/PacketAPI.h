@@ -28,6 +28,6 @@ public:
     Local<Value> writeFloat(const Arguments& args);
     Local<Value> writeDouble(const Arguments& args);
     Local<Value> writeBool(const Arguments& args);
-
 };
+extern ClassDefine<PacketClass> PacketClassBuilder;
 
