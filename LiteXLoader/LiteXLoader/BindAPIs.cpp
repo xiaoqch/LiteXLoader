@@ -69,42 +69,18 @@ void BindAPIs(ScriptEngine *engine)
     engine->registerNativeClass<CustomFormClass>(CustomFormClassBuilder);
     engine->registerNativeClass<ItemClass>(ItemClassBuilder);
     engine->registerNativeClass<PlayerClass>(PlayerClassBuilder);
-
-    extern ClassDefine<ObjectiveClass> ObjectiveClassBuilder;
     engine->registerNativeClass<ObjectiveClass>(ObjectiveClassBuilder);
     engine->registerNativeClass<PacketClass>(PacketClassBuilder);
-
-    extern ClassDefine<NbtEndClass> NbtEndClassBuilder;
     engine->registerNativeClass<NbtEndClass>(NbtEndClassBuilder);
-
-    extern ClassDefine<NbtByteClass> NbtByteClassBuilder;
     engine->registerNativeClass<NbtByteClass>(NbtByteClassBuilder);
-
-    extern ClassDefine<NbtShortClass> NbtShortClassBuilder;
     engine->registerNativeClass<NbtShortClass>(NbtShortClassBuilder);
-
-    extern ClassDefine<NbtIntClass> NbtIntClassBuilder;
     engine->registerNativeClass<NbtIntClass>(NbtIntClassBuilder);
-
-    extern ClassDefine<NbtLongClass> NbtLongClassBuilder;
     engine->registerNativeClass<NbtLongClass>(NbtLongClassBuilder);
-
-    extern ClassDefine<NbtFloatClass> NbtFloatClassBuilder;
     engine->registerNativeClass<NbtFloatClass>(NbtFloatClassBuilder);
-
-    extern ClassDefine<NbtDoubleClass> NbtDoubleClassBuilder;
     engine->registerNativeClass<NbtDoubleClass>(NbtDoubleClassBuilder);
-
-    extern ClassDefine<NbtStringClass> NbtStringClassBuilder;
     engine->registerNativeClass<NbtStringClass>(NbtStringClassBuilder);
-
-    extern ClassDefine<NbtByteArrayClass> NbtByteArrayClassBuilder;
     engine->registerNativeClass<NbtByteArrayClass>(NbtByteArrayClassBuilder);
-
-    extern ClassDefine<NbtListClass> NbtListClassBuilder;
     engine->registerNativeClass<NbtListClass>(NbtListClassBuilder);
-
-    extern ClassDefine<NbtCompoundClass> NbtCompoundClassBuilder;
     engine->registerNativeClass<NbtCompoundClass>(NbtCompoundClassBuilder);
 
 }

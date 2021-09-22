@@ -1335,9 +1335,9 @@ Local<Value> NbtListClass::toArray(const Arguments& args)
 //////////////////// Classes NbtCompound ////////////////////
 
 NbtCompoundClass::NbtCompoundClass(Tag* p, bool canDelete)
-    :ScriptClass(ScriptClass::ConstructFromCpp<NbtCompoundClass>{})
+    :NbtBase(), ScriptClass(ScriptClass::ConstructFromCpp<NbtCompoundClass>{})
 {
-    this->nbt = p;
+    nbt = p;
     this->canDelete = canDelete;
 }
 

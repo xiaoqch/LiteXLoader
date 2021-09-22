@@ -71,7 +71,7 @@ Tag* Tag::createTag(TagType t)
 char Tag::getTagType() {
     __try
     {
-        return ((*(__int64(__fastcall**)(const struct Tag*))(*(uintptr_t*)this + 40i64))(this));
+        return VirtualCall<char>(this, 40, this);   //IDA Tag::print
     }
     __except (EXCEPTION_EXECUTE_HANDLER)
     {

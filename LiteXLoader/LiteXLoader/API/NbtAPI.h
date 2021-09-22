@@ -8,12 +8,11 @@ extern ClassDefine<void> NbtStaticBuilder;
 
 class NbtBase
 {
-protected:
+public:
     Tag* nbt;
     bool canDelete = false;
 
-public:
-    virtual Local<Value> getType(const Arguments& args) = 0;
+    //virtual Local<Value> getType(const Arguments& args) = 0;
     Local<Value> toString(const Arguments& args);
     Local<Value> destroy(const Arguments& args);
 };
@@ -33,6 +32,7 @@ public:
         return Number::newNumber((int)T);
     }
 };
+extern ClassDefine<void> NbtStaticBuilder;
 
 
 //NBT End
@@ -44,10 +44,12 @@ public:
     static Tag* extract(Local<Value> v);
     static Local<Value> pack(Tag* tag, bool canDelete = false);
 
-    virtual Local<Value> getType(const Arguments& args) override;
+    Local<Value> getType(const Arguments& args);
     Local<Value> set(const Arguments& args);
     Local<Value> get(const Arguments& args);
 };
+extern ClassDefine<NbtEndClass> NbtEndClassBuilder;
+
 
 //NBT Byte
 class NbtByteClass : public NbtBase, public ScriptClass
@@ -58,10 +60,12 @@ public:
     static Tag* extract(Local<Value> v);
     static Local<Value> pack(Tag* tag, bool canDelete = false);
 
-    virtual Local<Value> getType(const Arguments& args) override;
+    Local<Value> getType(const Arguments& args);
     Local<Value> set(const Arguments& args);
     Local<Value> get(const Arguments& args);
 };
+extern ClassDefine<NbtByteClass> NbtByteClassBuilder;
+
 
 //NBT Short
 class NbtShortClass : public NbtBase, public ScriptClass
@@ -72,11 +76,12 @@ public:
     static Tag* extract(Local<Value> v);
     static Local<Value> pack(Tag* tag, bool canDelete = false);
 
-    virtual Local<Value> getType(const Arguments& args) override;
+    Local<Value> getType(const Arguments& args);
     Local<Value> set(const Arguments& args);
     Local<Value> get(const Arguments& args);
 };
-extern ClassDefine<NbtValue> NbtValueBuilder;
+extern ClassDefine<NbtShortClass> NbtShortClassBuilder;
+
 
 //NBT Int
 class NbtIntClass : public NbtBase, public ScriptClass
@@ -87,10 +92,12 @@ public:
     static Tag* extract(Local<Value> v);
     static Local<Value> pack(Tag* tag, bool canDelete = false);
     
-    virtual Local<Value> getType(const Arguments& args) override;
+    Local<Value> getType(const Arguments& args);
     Local<Value> set(const Arguments& args);
     Local<Value> get(const Arguments& args);
 };
+extern ClassDefine<NbtIntClass> NbtIntClassBuilder;
+
 
 //NBT Long
 class NbtLongClass : public NbtBase, public ScriptClass
@@ -101,10 +108,12 @@ public:
     static Tag* extract(Local<Value> v);
     static Local<Value> pack(Tag* tag, bool canDelete = false);
 
-    virtual Local<Value> getType(const Arguments& args) override;
+    Local<Value> getType(const Arguments& args);
     Local<Value> set(const Arguments& args);
     Local<Value> get(const Arguments& args);
 };
+extern ClassDefine<NbtLongClass> NbtLongClassBuilder;
+
 
 //NBT Float
 class NbtFloatClass : public NbtBase, public ScriptClass
@@ -115,10 +124,12 @@ public:
     static Tag* extract(Local<Value> v);
     static Local<Value> pack(Tag* tag, bool canDelete = false);
 
-    virtual Local<Value> getType(const Arguments& args) override;
+    Local<Value> getType(const Arguments& args);
     Local<Value> set(const Arguments& args);
     Local<Value> get(const Arguments& args);
 };
+extern ClassDefine<NbtFloatClass> NbtFloatClassBuilder;
+
 
 //NBT Double
 class NbtDoubleClass : public NbtBase, public ScriptClass
@@ -129,10 +140,12 @@ public:
     static Tag* extract(Local<Value> v);
     static Local<Value> pack(Tag* tag, bool canDelete = false);
 
-    virtual Local<Value> getType(const Arguments& args) override;
+    Local<Value> getType(const Arguments& args);
     Local<Value> set(const Arguments& args);
     Local<Value> get(const Arguments& args);
 };
+extern ClassDefine<NbtDoubleClass> NbtDoubleClassBuilder;
+
 
 //NBT String
 class NbtStringClass : public NbtBase, public ScriptClass
@@ -143,10 +156,12 @@ public:
     static Tag* extract(Local<Value> v);
     static Local<Value> pack(Tag* tag, bool canDelete = false);
 
-    virtual Local<Value> getType(const Arguments& args) override;
+    Local<Value> getType(const Arguments& args);
     Local<Value> set(const Arguments& args);
     Local<Value> get(const Arguments& args);
 };
+extern ClassDefine<NbtStringClass> NbtStringClassBuilder;
+
 
 //NBT ByteArray
 class NbtByteArrayClass : public NbtBase, public ScriptClass
@@ -157,10 +172,11 @@ public:
     static Tag* extract(Local<Value> v);
     static Local<Value> pack(Tag* tag, bool canDelete = false);
 
-    virtual Local<Value> getType(const Arguments& args) override;
+    Local<Value> getType(const Arguments& args);
     Local<Value> set(const Arguments& args);
     Local<Value> get(const Arguments& args);
 };
+extern ClassDefine<NbtByteArrayClass> NbtByteArrayClassBuilder;
 
 
 //NBT List
@@ -172,7 +188,7 @@ public:
     static Tag* extract(Local<Value> v);
     static Local<Value> pack(Tag* tag, bool canDelete = false);
     
-    virtual Local<Value> getType(const Arguments& args) override;
+    Local<Value> getType(const Arguments& args);
     Local<Value> getSize(const Arguments& args);
     Local<Value> getTypeOf(const Arguments& args);
 
@@ -194,7 +210,7 @@ public:
 
     Local<Value> toArray(const Arguments& args);
 };
-extern ClassDefine<NbtList> NbtListBuilder;
+extern ClassDefine<NbtListClass> NbtListClassBuilder;
 
 
 //NBT Compound
@@ -206,7 +222,7 @@ public:
     static Tag* extract(Local<Value> v);
     static Local<Value> pack(Tag* tag, bool canDelete = false);
 
-    virtual Local<Value> getType(const Arguments& args) override;
+    Local<Value> getType(const Arguments& args);
     Local<Value> getKeys(const Arguments& args);
     Local<Value> getTypeOf(const Arguments& args);
 
@@ -229,7 +245,7 @@ public:
     Local<Value> toSNBT(const Arguments& args);
     Local<Value> toBinaryNBT(const Arguments& args);
 };
-extern ClassDefine<NbtCompound> NbtCompoundBuilder;
+extern ClassDefine<NbtCompoundClass> NbtCompoundClassBuilder;
 
 
 //Helper
