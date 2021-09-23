@@ -913,14 +913,14 @@ THook(bool, "?_hurt@Mob@@MEAA_NAEBVActorDamageSource@@H_N1@Z",
 }
 
 // ===== onExplode & onBedExplode =====
-THook(bool, "?explode@Level@@UEAAXAEAVBlockSource@@PEAVActor@@AEBVVec3@@M_N3M3@Z",
+THook(void, "?explode@Level@@UEAAXAEAVBlockSource@@PEAVActor@@AEBVVec3@@M_N3M3@Z",
     Level* _this, BlockSource* bs, Actor* actor, Vec3* pos, float power, bool isFire, bool isDestroy, float range, bool a9)
 {
     IF_LISTENED(EVENT_TYPES::onExplode)
     {
         if (actor)
         {
-            CallEventRtnBool(EVENT_TYPES::onExplode, EntityClass::newEntity(actor), 
+            CallEventRtnVoid(EVENT_TYPES::onExplode, EntityClass::newEntity(actor), 
                 FloatPos::newPos(pos->x, pos->y, pos->z, Raw_GetBlockDimensionId(bs)),
                 Number::newNumber(power), Number::newNumber(range),
                 Boolean::newBoolean(isDestroy), Boolean::newBoolean(isFire) );
@@ -932,11 +932,11 @@ THook(bool, "?explode@Level@@UEAAXAEAVBlockSource@@PEAVActor@@AEBVVec3@@M_N3M3@Z
     {
         if (!actor)
         {
-            CallEventRtnBool(EVENT_TYPES::onBedExplode, IntPos::newPos(pos->x, pos->y, pos->z, Raw_GetBlockDimensionId(bs)));
+            CallEventRtnVoid(EVENT_TYPES::onBedExplode, IntPos::newPos(pos->x, pos->y, pos->z, Raw_GetBlockDimensionId(bs)));
         }
     }
     IF_LISTENED_END(EVENT_TYPES::onBedExplode);
-    return original(_this, bs, actor, pos, power, isFire, isDestroy, range, a9);
+    original(_this, bs, actor, pos, power, isFire, isDestroy, range, a9);
 }
 
 // ===== onRespawnAnchorExplode =====

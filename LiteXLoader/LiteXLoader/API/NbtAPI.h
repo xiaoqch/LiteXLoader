@@ -40,6 +40,7 @@ class NbtEndClass : public NbtBase, public ScriptClass
 {
 public:
     explicit NbtEndClass(Tag* p, bool canDelete = false);
+    ~NbtEndClass() = default;
     static NbtEndClass* constructor(const Arguments& args);
     static Tag* extract(Local<Value> v);
     static Local<Value> pack(Tag* tag, bool canDelete = false);
@@ -56,6 +57,7 @@ class NbtByteClass : public NbtBase, public ScriptClass
 {
 public:
     explicit NbtByteClass(Tag* p, bool canDelete = false);
+    NbtByteClass() = default;
     static NbtByteClass* constructor(const Arguments& args);
     static Tag* extract(Local<Value> v);
     static Local<Value> pack(Tag* tag, bool canDelete = false);
@@ -72,6 +74,7 @@ class NbtShortClass : public NbtBase, public ScriptClass
 {
 public:
     explicit NbtShortClass(Tag* p, bool canDelete = false);
+    ~NbtShortClass() = default;
     static NbtShortClass* constructor(const Arguments& args);
     static Tag* extract(Local<Value> v);
     static Local<Value> pack(Tag* tag, bool canDelete = false);
@@ -88,6 +91,7 @@ class NbtIntClass : public NbtBase, public ScriptClass
 {
 public:
     explicit NbtIntClass(Tag* p, bool canDelete = false);
+    ~NbtIntClass() = default;
     static NbtIntClass* constructor(const Arguments& args);
     static Tag* extract(Local<Value> v);
     static Local<Value> pack(Tag* tag, bool canDelete = false);
@@ -104,6 +108,7 @@ class NbtLongClass : public NbtBase, public ScriptClass
 {
 public:
     explicit NbtLongClass(Tag* p, bool canDelete = false);
+    ~NbtLongClass() = default;
     static NbtLongClass* constructor(const Arguments& args);
     static Tag* extract(Local<Value> v);
     static Local<Value> pack(Tag* tag, bool canDelete = false);
@@ -120,6 +125,7 @@ class NbtFloatClass : public NbtBase, public ScriptClass
 {
 public:
     explicit NbtFloatClass(Tag* p, bool canDelete = false);
+    ~NbtFloatClass() = default;
     static NbtFloatClass* constructor(const Arguments& args);
     static Tag* extract(Local<Value> v);
     static Local<Value> pack(Tag* tag, bool canDelete = false);
@@ -136,6 +142,7 @@ class NbtDoubleClass : public NbtBase, public ScriptClass
 {
 public:
     explicit NbtDoubleClass(Tag* p, bool canDelete = false);
+    ~NbtDoubleClass() = default;
     static NbtDoubleClass* constructor(const Arguments& args);
     static Tag* extract(Local<Value> v);
     static Local<Value> pack(Tag* tag, bool canDelete = false);
@@ -152,6 +159,7 @@ class NbtStringClass : public NbtBase, public ScriptClass
 {
 public:
     explicit NbtStringClass(Tag* p, bool canDelete = false);
+    ~NbtStringClass() = default;
     static NbtStringClass* constructor(const Arguments& args);
     static Tag* extract(Local<Value> v);
     static Local<Value> pack(Tag* tag, bool canDelete = false);
@@ -168,6 +176,7 @@ class NbtByteArrayClass : public NbtBase, public ScriptClass
 {
 public:
     explicit NbtByteArrayClass(Tag* p, bool canDelete = false);
+    ~NbtByteArrayClass() = default;
     static NbtByteArrayClass* constructor(const Arguments& args);
     static Tag* extract(Local<Value> v);
     static Local<Value> pack(Tag* tag, bool canDelete = false);
@@ -184,6 +193,7 @@ class NbtListClass : public NbtBase, public ScriptClass
 {
 public:
     explicit NbtListClass(Tag* p, bool canDelete = false);
+    ~NbtListClass() = default;
     static NbtListClass* constructor(const Arguments& args);
     static Tag* extract(Local<Value> v);
     static Local<Value> pack(Tag* tag, bool canDelete = false);
@@ -218,6 +228,7 @@ class NbtCompoundClass : public NbtBase, public ScriptClass
 {
 public:
     explicit NbtCompoundClass(Tag* p, bool canDelete = false);
+    ~NbtCompoundClass() = default;
     static NbtCompoundClass* constructor(const Arguments& args);
     static Tag* extract(Local<Value> v);
     static Local<Value> pack(Tag* tag, bool canDelete = false);
