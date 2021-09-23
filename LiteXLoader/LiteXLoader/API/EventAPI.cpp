@@ -814,7 +814,7 @@ THook(bool, "?stopOpen@ChestBlockActor@@UEAAXAEAVPlayer@@@Z",
 {
     IF_LISTENED(EVENT_TYPES::onCloseContainer)
     {
-        auto bp = (BlockPos*)((char*)_this - 204);
+        auto bp = (BlockPos*)((char*)_this - 240);          //IDA ChestBlockActor::stopOpen
         int dim = Raw_GetPlayerDimId(pl);
         BlockSource* bs = Raw_GetBlockSourceByDim(dim);
         Block* bl = Raw_GetBlockByPos(bp,bs);
@@ -847,7 +847,7 @@ THook(bool, "?stopOpen@BarrelBlockActor@@UEAAXAEAVPlayer@@@Z",
 {
     IF_LISTENED(EVENT_TYPES::onCloseContainer)
     {
-        auto bp = (BlockPos*)((char*)_this - 204);
+        auto bp = (BlockPos*)((char*)_this - 240);          //IDA BarrelBlockActor::stopOpen
         int dim = Raw_GetPlayerDimId(pl);
         BlockSource* bs = Raw_GetBlockSourceByDim(dim);
         Block* bl = Raw_GetBlockByPos(bp, bs);
@@ -865,7 +865,7 @@ THook(void, "?_onItemChanged@LevelContainerModel@@MEAAXHAEBVItemStack@@0@Z",
 {
     IF_LISTENED(EVENT_TYPES::onContainerChange)
     {
-        Actor* pl = dAccess<Actor*>(_this, 208);
+        Actor* pl = dAccess<Actor*>(_this, 208);            //IDA LevelContainerModel::LevelContainerModel
         BlockSource* bs = Raw_GetBlockSourceByActor(pl);
         BlockPos* bpos = (BlockPos*)((char*)_this + 216);
         Block* block = Raw_GetBlockByPos(bpos, bs);
