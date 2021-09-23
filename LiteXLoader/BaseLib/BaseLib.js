@@ -388,4 +388,4 @@ cjs.js end
 /*
 For Compatibility
 */
-globalThis.file = File
+globalThis.file = File;
