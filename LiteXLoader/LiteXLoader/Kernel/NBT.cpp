@@ -543,20 +543,6 @@ string TagToSNBT(Tag* nbt)
     return sout.str();
 }
 
-string TagToBinaryNBT(Tag* nbt)
-{
-    if (nbt->getTagType() != TagType::Compound)
-        return "";
-    tags::compound_tag content(false);
-    TagToSNBT_Compound_Helper(content, nbt);
-    tags::compound_tag root(true);
-    root.value[""] = make_unique<tags::compound_tag>(content);
-
-    ostringstream sout;
-    sout << contexts::bedrock_disk << root;
-    return sout.str();
-}
-
 
 //////////////////// From SNBT ////////////////////
 
@@ -775,17 +761,98 @@ Tag* SNBTToTag(const string& snbt)
     return res;
 }
 
-Tag* BinaryNBTToTag(void* data, size_t len)
-{
-    istringstream bsin(string((char*)data, len));
-    tags::compound_tag root(true);
-    bsin >> contexts::bedrock_disk >> root;
-    tags::compound_tag content(false);
-    content = *(tags::compound_tag*)root.value.begin()->second.get();
 
-    Tag* res = Tag::createTag(TagType::Compound);
-    SNBTToTag_Compound_Helper(res, content);
-    return res;
+//////////////////// From Binary ////////////////////
+
+Tag* BinaryNBTToTag(void* data, size_t len, size_t& offset, bool isLittleEndian) {
+    void* vtbl;
+    if (isLittleEndian)
+        vtbl = dlsym("??_7StringByteInput@@6B@");
+    else
+        vtbl = dlsym("??_7BigEndianStringByteInput@@6B@");
+
+    uintptr_t iDataInput[4] = { (uintptr_t)vtbl , offset, len, (uintptr_t)data };
+    Tag* tag = Tag::createTag(TagType::Compound);
+    auto rtn = SymCall("?read@NbtIo@@SA?AV?$unique_ptr@VCompoundTag@@U?$default_delete@VCompoundTag@@@std@@@std@@AEAVIDataInput@@@Z",
+        unique_ptr<Tag>*, Tag**, void*)(&tag, (void*)iDataInput);
+
+    offset = iDataInput[1];
+    return rtn->get();
+}
+
+Tag* BinaryNBTToTag(void* data, size_t len, bool isLittleEndian) {
+    size_t offset = 0;
+    return BinaryNBTToTag(data, len, offset, isLittleEndian);
+}
+
+
+//////////////////// To Binary ////////////////////
+
+// Reference from StringByteOutput and BigEndianStringByteInput
+class BigEndianStringByteOutput {
+    void writeBigEndianBytes(byte* bytes, size_t count) {
+        auto v5 = bytes + count - 1;
+        if (v5 >= bytes)
+        {
+            auto v7 = bytes + 1;
+            do
+            {
+                auto v8 = *(v7 - 1);
+                *(v7 - 1) = *v5;
+                *v5-- = v8;
+            } while (v7++ <= v5);
+        }
+        writeBytes(bytes, count);
+    }
+public:
+    virtual ~BigEndianStringByteOutput() {};
+    virtual void* writeString(void* string_span) {
+        return SymCall("?writeString@BytesDataOutput@@UEAAXV?$basic_string_span@$$CBD$0?0@gsl@@@Z",
+            void*, void*, void*)((void*)this, string_span);
+    }
+    virtual void* writeLongString(void* string_span) {
+        return SymCall("?writeLongString@BytesDataOutput@@UEAAXV?$basic_string_span@$$CBD$0?0@gsl@@@Z",
+            void*, void*, void*)((void*)this, string_span);
+    }
+    virtual void writeFloat(float data) {
+        writeBigEndianBytes((byte*)&data, 4);
+    }
+    virtual void writeDouble(double data) {
+        writeBigEndianBytes((byte*)&data, 8);
+    }
+    virtual void writeByte(byte data) {
+        writeBytes(&data, 1);
+    }
+    virtual void writeShort(short data) {
+        writeBigEndianBytes((byte*)&data, 2);
+    }
+    virtual void writeInt(int data) {
+        writeBigEndianBytes((byte*)&data, 4);
+    }
+    virtual void writeLongLong(long long data) {
+        writeBigEndianBytes((byte*)&data, 8);
+    }
+    virtual void* writeBytes(byte* bytes, size_t count) {
+        return SymCall("?writeBytes@StringByteOutput@@UEAAXPEBX_K@Z",
+            void*, void*, byte*, size_t)((void*)this, bytes, count);
+    }
+};
+
+string TagToBinaryNBT(Tag* tag, bool isLittleEndian) {
+    void* vtbl;
+    if (isLittleEndian) {
+        vtbl = dlsym("??_7StringByteOutput@@6B@");
+    }
+    else {
+        auto tmp = BigEndianStringByteOutput();
+        vtbl = *(void**)&tmp;
+    }
+    string result = "";
+    void* iDataOutput[2] = { vtbl , &result };
+
+    SymCall("?write@NbtIo@@SAXPEBVCompoundTag@@AEAVIDataOutput@@@Z",
+        void*, Tag*, void*)(tag, (void*)iDataOutput);
+    return result;
 }
 
 
