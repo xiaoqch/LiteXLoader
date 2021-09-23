@@ -1,5 +1,6 @@
 #pragma once
 #include <ScriptX/ScriptX.h>
+#include <Kernel/Data.h>
 using namespace script;
 
 //////////////////// Funcs ////////////////////
@@ -9,3 +10,7 @@ bool LxlAddEventListener(ScriptEngine* engine, const std::string& eventName, con
 bool LxlRemoveAllEventListeners(ScriptEngine* engine);
 bool LxlCallEventsOnHotLoad(ScriptEngine* engine);
 bool LxlCallEventsOnHotUnload(ScriptEngine* engine);
+
+//////////////////// Callback ////////////////////
+
+bool MoneyEventCallback(LLMoneyEvent type, xuid_t from, xuid_t to, money_t value);

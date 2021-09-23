@@ -38,10 +38,17 @@ bool Raw_IniDeleteKey(INI_ROOT ini, const std::string & sec, const std::string &
 
 
 //LLMoney
-bool Raw_InitEcnonmicSystem();
 
 typedef long long money_t;
 typedef unsigned long long xuid_t;
+
+enum LLMoneyEvent
+{
+    Set, Add, Reduce, Trans
+};
+typedef bool (*LLMoneyCallback)(LLMoneyEvent type, xuid_t from, xuid_t to, money_t value);
+
+bool Raw_InitEcnonmicSystem(LLMoneyCallback eventCallback);
 
 money_t Raw_GetMoney(xuid_t player);
 bool Raw_SetMoney(xuid_t player, money_t money);

@@ -55,6 +55,17 @@
 
 <br>
 
+#### `"onFireSpread"` - 火焰蔓延
+
+- 监听函数原型
+  `function(pos)`
+- 参数：
+  - pos : `IntPos`  
+    火焰蔓延到的方块坐标
+- 拦截事件：函数返回`false`
+
+<br>
+
 #### `"onCmdBlockExecute"` - 命令方块执行命令
 
 - 监听函数原型

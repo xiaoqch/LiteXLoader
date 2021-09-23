@@ -219,27 +219,33 @@ bool Raw_IniDeleteKey(INI_ROOT ini, const std::string & sec, const std::string &
 
 
 ////////////// Helper //////////////
-typedef money_t (*Dy_GetMoney_T)(xuid_t);
-typedef string (*Dy_GetTransHist_T)(xuid_t, int);
-typedef bool (*Dy_TransMoney_T)(xuid_t, xuid_t, money_t, string const&);
-typedef bool (*Dy_SetMoney_T)(xuid_t, money_t);
-typedef bool (*Dy_AddMoney_T)(xuid_t, money_t);
-typedef bool (*Dy_ReduceMoney_T)(xuid_t, money_t);
-typedef void (*Dy_ClearHist_T)(int);
+typedef money_t (*LLMoneyGet_T)(xuid_t);
+typedef string (*LLMoneyGetHist_T)(xuid_t, int);
+typedef bool (*LLMoneyTrans_T)(xuid_t, xuid_t, money_t, string const&);
+typedef bool (*LLMoneySet_T)(xuid_t, money_t);
+typedef bool (*LLMoneyAdd_T)(xuid_t, money_t);
+typedef bool (*LLMoneyReduce_T)(xuid_t, money_t);
+typedef void (*LLMoneyClearHist_T)(int);
+
+typedef void (*LLMoneyListenBeforeEvent_T)(LLMoneyCallback callback);
+typedef void (*LLMoneyListenAfterEvent_T)(LLMoneyCallback callback);
 
 struct dynamicSymbolsMap_type
 {
-    Dy_GetMoney_T Dy_GetMoney = nullptr;
-    Dy_SetMoney_T Dy_SetMoney = nullptr;
-    Dy_AddMoney_T Dy_AddMoney = nullptr;
-    Dy_ReduceMoney_T Dy_ReduceMoney = nullptr;
-    Dy_TransMoney_T Dy_TransMoney = nullptr;
-    Dy_GetTransHist_T Dy_GetTransHist = nullptr;
-    Dy_ClearHist_T Dy_ClearHist = nullptr;
+    LLMoneyGet_T LLMoneyGet = nullptr;
+    LLMoneySet_T LLMoneySet = nullptr;
+    LLMoneyAdd_T LLMoneyAdd = nullptr;
+    LLMoneyReduce_T LLMoneyReduce = nullptr;
+    LLMoneyTrans_T LLMoneyTrans = nullptr;
+    LLMoneyGetHist_T LLMoneyGetHist = nullptr;
+    LLMoneyClearHist_T LLMoneyClearHist = nullptr;
+
+    LLMoneyListenBeforeEvent_T LLMoneyListenBeforeEvent = nullptr;
+    LLMoneyListenAfterEvent_T LLMoneyListenAfterEvent = nullptr;
 } dynamicSymbolsMap;
 ////////////// Helper //////////////
 
-bool Raw_InitEcnonmicSystem()
+bool Raw_InitEcnonmicSystem(LLMoneyCallback eventCallback)
 {
     auto libs = liteloader::getAllLibs();
     bool libExists = false;
@@ -248,33 +254,47 @@ bool Raw_InitEcnonmicSystem()
         {
             libExists = true;
                 
-            dynamicSymbolsMap.Dy_GetMoney = (Dy_GetMoney_T)GetProcAddress(h, "LLMoneyGet");
-            if(!dynamicSymbolsMap.Dy_GetMoney)
+            dynamicSymbolsMap.LLMoneyGet = (LLMoneyGet_T)GetProcAddress(h, "LLMoneyGet");
+            if(!dynamicSymbolsMap.LLMoneyGet)
                 WARN("Fail to load API money.getMoney!");
 
-            dynamicSymbolsMap.Dy_SetMoney = (Dy_SetMoney_T)GetProcAddress(h, "LLMoneySet");
-            if (!dynamicSymbolsMap.Dy_SetMoney)
+            dynamicSymbolsMap.LLMoneySet = (LLMoneySet_T)GetProcAddress(h, "LLMoneySet");
+            if (!dynamicSymbolsMap.LLMoneySet)
                 WARN("Fail to load API money.setMoney!");
 
-            dynamicSymbolsMap.Dy_AddMoney = (Dy_AddMoney_T)GetProcAddress(h, "LLMoneyAdd");
-            if (!dynamicSymbolsMap.Dy_AddMoney)
+            dynamicSymbolsMap.LLMoneyAdd = (LLMoneyAdd_T)GetProcAddress(h, "LLMoneyAdd");
+            if (!dynamicSymbolsMap.LLMoneyAdd)
                 WARN("Fail to load API money.addMoney!");
 
-            dynamicSymbolsMap.Dy_ReduceMoney = (Dy_ReduceMoney_T)GetProcAddress(h, "LLMoneyReduce");
-            if (!dynamicSymbolsMap.Dy_ReduceMoney)
+            dynamicSymbolsMap.LLMoneyReduce = (LLMoneyReduce_T)GetProcAddress(h, "LLMoneyReduce");
+            if (!dynamicSymbolsMap.LLMoneyReduce)
                 WARN("Fail to load API money.reduceMoney!");
 
-            dynamicSymbolsMap.Dy_TransMoney = (Dy_TransMoney_T)GetProcAddress(h, "LLMoneyTrans");
-            if (!dynamicSymbolsMap.Dy_TransMoney)
+            dynamicSymbolsMap.LLMoneyTrans = (LLMoneyTrans_T)GetProcAddress(h, "LLMoneyTrans");
+            if (!dynamicSymbolsMap.LLMoneyTrans)
                 WARN("Fail to load API money.transMoney!");
 
-            dynamicSymbolsMap.Dy_GetTransHist = (Dy_GetTransHist_T)GetProcAddress(h, "LLMoneyGetHist");
-            if (!dynamicSymbolsMap.Dy_GetTransHist)
+            dynamicSymbolsMap.LLMoneyGetHist = (LLMoneyGetHist_T)GetProcAddress(h, "LLMoneyGetHist");
+            if (!dynamicSymbolsMap.LLMoneyGetHist)
                 WARN("Fail to load API money.getTransHist!");
 
-            dynamicSymbolsMap.Dy_ClearHist = (Dy_ClearHist_T)GetProcAddress(h, "LLMoneyClearHist");
-            if (!dynamicSymbolsMap.Dy_ClearHist)
+            dynamicSymbolsMap.LLMoneyClearHist = (LLMoneyClearHist_T)GetProcAddress(h, "LLMoneyClearHist");
+            if (!dynamicSymbolsMap.LLMoneyClearHist)
                 WARN("Fail to load API money.clearHist!");
+
+            dynamicSymbolsMap.LLMoneyListenBeforeEvent = (LLMoneyListenBeforeEvent_T)GetProcAddress(h, "LLMoneyListenBeforeEvent");
+            if (!dynamicSymbolsMap.LLMoneyListenBeforeEvent)
+            {
+                WARN("Fail to load API to listen money event!");
+            }
+            else
+            {
+                dynamicSymbolsMap.LLMoneyListenBeforeEvent(eventCallback);
+            }
+
+            //dynamicSymbolsMap.LLMoneyListenAfterEvent = (LLMoneyListenAfterEvent_T)GetProcAddress(h, "LLMoneyListenAfterEvent");
+            //if (!dynamicSymbolsMap.LLMoneyListenAfterEvent)
+            //    WARN("Fail to load API to listen money event!");
         }
     if (!libExists)
     {
@@ -286,8 +306,8 @@ bool Raw_InitEcnonmicSystem()
 
 money_t Raw_GetMoney(xuid_t player)
 {
-    if (dynamicSymbolsMap.Dy_GetMoney)
-        return dynamicSymbolsMap.Dy_GetMoney(player);
+    if (dynamicSymbolsMap.LLMoneyGet)
+        return dynamicSymbolsMap.LLMoneyGet(player);
     else
     {
         ERROR("API money.getMoney have not been loaded!");
@@ -297,8 +317,8 @@ money_t Raw_GetMoney(xuid_t player)
 
 bool Raw_SetMoney(xuid_t player, money_t money)
 {
-    if (dynamicSymbolsMap.Dy_SetMoney)
-        return dynamicSymbolsMap.Dy_SetMoney(player,money);
+    if (dynamicSymbolsMap.LLMoneySet)
+        return dynamicSymbolsMap.LLMoneySet(player,money);
     else
     {
         ERROR("API money.setMoney have not been loaded!");
@@ -308,8 +328,8 @@ bool Raw_SetMoney(xuid_t player, money_t money)
 
 bool Raw_AddMoney(xuid_t player, money_t money)
 {
-    if (dynamicSymbolsMap.Dy_AddMoney)
-        return dynamicSymbolsMap.Dy_AddMoney(player,money);
+    if (dynamicSymbolsMap.LLMoneyAdd)
+        return dynamicSymbolsMap.LLMoneyAdd(player,money);
     else
     {
         ERROR("API money.addMoney have not been loaded!");
@@ -319,8 +339,8 @@ bool Raw_AddMoney(xuid_t player, money_t money)
 
 bool Raw_ReduceMoney(xuid_t player, money_t money)
 {
-    if (dynamicSymbolsMap.Dy_ReduceMoney)
-        return dynamicSymbolsMap.Dy_ReduceMoney(player, money);
+    if (dynamicSymbolsMap.LLMoneyReduce)
+        return dynamicSymbolsMap.LLMoneyReduce(player, money);
     else
     {
         ERROR("API money.reduceMoney have not been loaded!");
@@ -330,8 +350,8 @@ bool Raw_ReduceMoney(xuid_t player, money_t money)
 
 bool Raw_TransMoney(xuid_t player1, xuid_t player2, money_t money, string const& notes)
 {
-    if (dynamicSymbolsMap.Dy_TransMoney)
-        return dynamicSymbolsMap.Dy_TransMoney(player1, player2, money, notes);
+    if (dynamicSymbolsMap.LLMoneyTrans)
+        return dynamicSymbolsMap.LLMoneyTrans(player1, player2, money, notes);
     else
     {
         ERROR("API money.transMoney have not been loaded!");
@@ -341,8 +361,8 @@ bool Raw_TransMoney(xuid_t player1, xuid_t player2, money_t money, string const&
 
 std::string Raw_GetMoneyHist(xuid_t player, int time)
 {
-    if (dynamicSymbolsMap.Dy_GetTransHist)
-        return dynamicSymbolsMap.Dy_GetTransHist(player, time);
+    if (dynamicSymbolsMap.LLMoneyGetHist)
+        return dynamicSymbolsMap.LLMoneyGetHist(player, time);
     else
     {
         ERROR("API money.getTransHist have not been loaded!");
@@ -352,9 +372,9 @@ std::string Raw_GetMoneyHist(xuid_t player, int time)
 
 bool Raw_ClearMoneyHist(int time)
 {
-    if (dynamicSymbolsMap.Dy_ClearHist)
+    if (dynamicSymbolsMap.LLMoneyClearHist)
     {
-        dynamicSymbolsMap.Dy_ClearHist(time);
+        dynamicSymbolsMap.LLMoneyClearHist(time);
         return true;
     }
     else

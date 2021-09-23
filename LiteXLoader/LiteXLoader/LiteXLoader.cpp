@@ -80,7 +80,7 @@ void entry()
     LoaderInfo();
 
     //初始化经济系统
-    Raw_InitEcnonmicSystem();
+    Raw_InitEcnonmicSystem(MoneyEventCallback);
 
     //预加载库
     LoadDepends();

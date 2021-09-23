@@ -24,6 +24,7 @@
   - [🎈 实体事件列表](zh_CN/Development/EventAPI/EntityEvents.md)
   - [📦 方块事件列表](zh_CN/Development/EventAPI/BlockEvents.md)
   - [🔊 其他事件列表](zh_CN/Development/EventAPI/OtherEvents.md)
+  - [💰 经济系统事件列表](zh_CN/Development/EventAPI/EconomicEvents.md)
 - NBT
   - [🥽 NBT 概述与通用接口](zh_CN/Development/NbtAPI/NBT.md)
   - [📋 NBT 普通数据类型](zh_CN/Development/NbtAPI/NBTValue.md)

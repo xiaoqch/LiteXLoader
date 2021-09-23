@@ -52,6 +52,7 @@ enum class EVENT_TYPES : int
     onProjectileHitBlock, onBlockInteracted, onUseRespawnAnchor, onFarmLandDecay, onUseFrameBlock,
     onPistonPush, onHopperSearchItem, onHopperPushOut, onFireSpread, onNpcCmd,
     onScoreChanged, onServerStarted, onConsoleCmd, onFormSelected, onConsoleOutput, onTick,
+    onMoneyAdd, onMoneyReduce, onMoneyTrans, onMoneySet, 
     EVENT_COUNT
 };
 static const std::unordered_map<string, EVENT_TYPES> EventsMap{
@@ -112,6 +113,10 @@ static const std::unordered_map<string, EVENT_TYPES> EventsMap{
     {"onConsoleCmd",EVENT_TYPES::onConsoleCmd},
     {"onConsoleOutput",EVENT_TYPES::onConsoleOutput},
     {"onTick",EVENT_TYPES::onTick},
+    {"onMoneyAdd",EVENT_TYPES::onMoneyAdd},
+    {"onMoneyReduce",EVENT_TYPES::onMoneyReduce},
+    {"onMoneyTrans",EVENT_TYPES::onMoneyTrans},
+    {"onMoneySet",EVENT_TYPES::onMoneySet},
     {"onFormSelected",EVENT_TYPES::onFormSelected}
 };
 struct ListenerListType
@@ -1400,6 +1405,52 @@ THook(ostream&, "??$_Insert_string@DU?$char_traits@D@std@@_K@std@@YAAEAV?$basic_
     }
     IF_LISTENED_END(EVENT_TYPES::onConsoleOutput);
     return original(_this, str, size);
+}
+
+bool MoneyEventCallback(LLMoneyEvent type, xuid_t from, xuid_t to, money_t value)
+{
+    switch (type)
+    {
+        case LLMoneyEvent::Add:
+        {
+            IF_LISTENED(EVENT_TYPES::onMoneyAdd)
+            {
+                CallEventRtnBool(EVENT_TYPES::onMoneyAdd, String::newString(to_string(to)), Number::newNumber(value));
+            }
+            IF_LISTENED_END(EVENT_TYPES::onMoneyAdd);
+            break;
+        }
+        case LLMoneyEvent::Reduce:
+        {
+            IF_LISTENED(EVENT_TYPES::onMoneyReduce)
+            {
+                CallEventRtnBool(EVENT_TYPES::onMoneyReduce, String::newString(to_string(to)), Number::newNumber(value));
+            }
+            IF_LISTENED_END(EVENT_TYPES::onMoneyReduce);
+            break;
+        }
+        case LLMoneyEvent::Trans:
+        {
+            IF_LISTENED(EVENT_TYPES::onMoneyTrans)
+            {
+                CallEventRtnBool(EVENT_TYPES::onMoneyTrans, String::newString(to_string(from)), String::newString(to_string(to)), Number::newNumber(value));
+            }
+            IF_LISTENED_END(EVENT_TYPES::onMoneyTrans);
+            break;
+        }
+        case LLMoneyEvent::Set:
+        {
+            IF_LISTENED(EVENT_TYPES::onMoneySet)
+            {
+                CallEventRtnBool(EVENT_TYPES::onMoneySet, String::newString(to_string(to)), Number::newNumber(value));
+            }
+            IF_LISTENED_END(EVENT_TYPES::onMoneySet);
+            break;
+        }
+        default:
+            break;
+    }
+    return true;
 }
 
 /*
