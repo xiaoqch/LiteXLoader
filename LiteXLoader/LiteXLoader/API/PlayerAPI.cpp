@@ -1080,7 +1080,8 @@ Local<Value> PlayerClass::sendPacket(const Arguments& args)
             return Local<Value>();
         auto id = PacketClass::_getPacketid(args[0]);
         auto wb = PacketClass::extractPacket(args[0]);
-        auto pkt = MyPkt(id, wb);
+        auto pkt = MyPkt("", (MinecraftPacketIds)id);
+        pkt.write(wb);
         Raw_SendPacket(player, &pkt);
     }
     CATCH("Fail in sendPacket");

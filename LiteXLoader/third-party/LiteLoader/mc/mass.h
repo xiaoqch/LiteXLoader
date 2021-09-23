@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include <api/serviceLocate.h>
-#include <loader\Loader.h>
+#include <loader/Loader.h>
 #include <mc/Core.h>
 #include <functional>
 
@@ -26,7 +26,7 @@ static_assert(offsetof(CommandContext, Ori) == 32);
 class MinecraftCommands;
 class MinecraftCommands {
   public:
-    static MCRESULT _runcmd(void *origin, const std::string &cmd, int unk1, bool unk2) {
+    static MCRESULT _runcmd(void* origin, const std::string& cmd, int unk1, bool unk2) {
         MCRESULT rv;
         SymCall(
             "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@VCommandContext@@@"
@@ -97,6 +97,8 @@ struct RakPeer_t {
         return rv;
     }
 };
+
+
 class ServerPlayer;
 class ServerNetworkHandler {
   public:
@@ -142,20 +144,17 @@ class Minecraft {
         return (this->*rv)();
     }
     MCINLINE class NetworkHandler* getNetworkHandler() {
-        class NetworkHandler* (Minecraft:: * fnp)() const;
+        class NetworkHandler* (Minecraft::*fnp)() const;
         *((void**)&fnp) = dlsym("?getNetworkHandler@Minecraft@@QEAAAEAVNetworkHandler@@XZ");
         return (this->*fnp)();
     }
 };
 
-
 class NetworkPeer {
 public:
     enum class Reliability : int {};
-    enum class DataStatus : int {
-        OK,
-        BUSY
-    };
+    enum class DataStatus : int { OK,
+                                  BUSY };
     struct NetworkStatus {
         int    level;
         int    ping, avgping;
@@ -164,8 +163,8 @@ public:
 
     virtual ~NetworkPeer();
     virtual void          sendPacket(std::string, NetworkPeer::Reliability, int) = 0;
-    virtual DataStatus    receivePacket(std::string&) = 0;
-    virtual NetworkStatus getNetworkStatus() = 0;
+    virtual DataStatus    receivePacket(std::string&)                            = 0;
+    virtual NetworkStatus getNetworkStatus()                                     = 0;
     virtual void    update();
     virtual void    flush(std::function<void(void)>&&);
 };

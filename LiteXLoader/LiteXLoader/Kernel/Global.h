@@ -8,12 +8,12 @@
 #include <gsl>
 #include <windows.h>
 #include <LiteLoader/lbpch.h>
-#include <LiteLoader/api/Basic_Event.h>
+#include <LiteLoader/api/basicEvent.h>
 #include <LiteLoader/mc/OffsetHelper.h>
 #include <LiteLoader/mc/block.h>
 #include <LiteLoader/mc/item.h>
 #include <LiteLoader/mc/mass.h>
-#include <LiteLoader/api/commands.h>
+#include <LiteLoader/api/regCommandHelper.h>
 #include <LiteLoader/api/types/types.h>
 #include <LiteLoader/api/xuidreg/xuidreg.h>
 #include <LiteLoader/stl/KVDB.h>
