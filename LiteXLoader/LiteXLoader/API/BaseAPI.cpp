@@ -71,7 +71,7 @@ Local<Object> IntPos::newPos(const BlockPos* b, int dim)
 
 Local<Object> IntPos::newPos(const BlockPos* b, BlockSource* bs)
 {
-    return IntPos::newPos(b->x, b->y, b->z, Raw_GetBlockDimension(bs));
+    return IntPos::newPos(b->x, b->y, b->z, Raw_GetBlockDimensionId(bs));
 }
 
 IntPos* IntPos::extractPos(Local<Value> v)

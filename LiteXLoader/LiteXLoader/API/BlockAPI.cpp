@@ -73,7 +73,7 @@ Local<Object> BlockClass::newBlock(Block *p, BlockPos *pos, int dim)
 }
 Local<Object> BlockClass::newBlock(Block *p, BlockPos *pos, BlockSource *bs)
 {
-    auto newp = new BlockClass(p,*pos,Raw_GetBlockDimension(bs));
+    auto newp = new BlockClass(p,*pos,Raw_GetBlockDimensionId(bs));
     return newp->getScriptObject();
 }
 Local<Object> BlockClass::newBlock(WBlock p)

@@ -8,18 +8,10 @@ BlockSource* Raw_GetBlockSourceByActor(Actor* actor)
 	return SymCall("?getRegionConst@Actor@@QEBAAEBVBlockSource@@XZ", BlockSource*, Actor*)(actor);
 }
 
-//////////////////////// Helper ////////////////////////
-class AutomaticID<class Dimension, int> GetDimensionId(BlockSource* bs)
+int Raw_GetBlockDimensionId(BlockSource* bs)
 {
-	class AutomaticID<class Dimension, int>(BlockSource:: * rv)() const;
-	*((void**)&rv) = dlsym("?getDimensionId@BlockSource@@QEBA?AV?$AutomaticID@VDimension@@H@@XZ");
-	return (bs->*rv)();
-}
-//////////////////////// Helper ////////////////////////
-
-int Raw_GetBlockDimension(BlockSource* bs)
-{
-	return GetDimensionId(bs);
+	return SymCall("?getDimensionId@BlockSource@@QEBA?AV?$AutomaticID@VDimension@@H@@XZ",
+		int, BlockSource*)(bs);
 }
 
 BlockSource* Raw_GetBlockSourceByDim(int dimid)

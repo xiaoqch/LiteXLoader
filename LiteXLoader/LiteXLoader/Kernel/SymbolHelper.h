@@ -93,7 +93,7 @@ extern Minecraft* mc;
 //辅助函数
 BlockSource* Raw_GetBlockSourceByActor(Actor* actor);
 BlockSource* Raw_GetBlockSourceByDim(int dimid);
-int Raw_GetBlockDimension(BlockSource* bs);
+int Raw_GetBlockDimensionId(BlockSource* bs);
 Block* Raw_GetBlockByPos(IntVec4* pos);
 Block* Raw_GetBlockByPos(BlockPos* bp, BlockSource* bs);
 Block* Raw_GetBlockByPos(BlockPos* bp, int dimid);

@@ -921,7 +921,7 @@ THook(bool, "?explode@Level@@UEAAXAEAVBlockSource@@PEAVActor@@AEBVVec3@@M_N3M3@Z
         if (actor)
         {
             CallEventRtnBool(EVENT_TYPES::onExplode, EntityClass::newEntity(actor), 
-                FloatPos::newPos(pos->x, pos->y, pos->z, Raw_GetBlockDimension(bs)),
+                FloatPos::newPos(pos->x, pos->y, pos->z, Raw_GetBlockDimensionId(bs)),
                 Number::newNumber(power), Number::newNumber(range),
                 Boolean::newBoolean(isDestroy), Boolean::newBoolean(isFire) );
         }
@@ -932,7 +932,7 @@ THook(bool, "?explode@Level@@UEAAXAEAVBlockSource@@PEAVActor@@AEBVVec3@@M_N3M3@Z
     {
         if (!actor)
         {
-            CallEventRtnBool(EVENT_TYPES::onBedExplode, IntPos::newPos(pos->x, pos->y, pos->z, Raw_GetBlockDimension(bs)));
+            CallEventRtnBool(EVENT_TYPES::onBedExplode, IntPos::newPos(pos->x, pos->y, pos->z, Raw_GetBlockDimensionId(bs)));
         }
     }
     IF_LISTENED_END(EVENT_TYPES::onBedExplode);
@@ -1157,7 +1157,7 @@ THook(bool, "?_attachedBlockWalker@PistonBlockActor@@AEAA_NAEAVBlockSource@@AEBV
 {
     IF_LISTENED(EVENT_TYPES::onPistonPush)
     {
-        int dim = Raw_GetBlockDimension(bs);
+        int dim = Raw_GetBlockDimensionId(bs);
         BlockPos pistonPos = _this->getPosition();
         Block* pushedBlock = Raw_GetBlockByPos(bp, bs);
 
@@ -1173,7 +1173,7 @@ THook(bool, "?_tryPullInItemsFromAboveContainer@Hopper@@IEAA_NAEAVBlockSource@@A
 {
     IF_LISTENED(EVENT_TYPES::onHopperSearchItem)
     {
-        CallEventRtnBool(EVENT_TYPES::onHopperSearchItem, FloatPos::newPos(*pos, Raw_GetBlockDimension(bs)));
+        CallEventRtnBool(EVENT_TYPES::onHopperSearchItem, FloatPos::newPos(*pos, Raw_GetBlockDimensionId(bs)));
     }
     IF_LISTENED_END(EVENT_TYPES::onHopperSearchItem);
     return original(_this, bs, container, pos);
@@ -1185,7 +1185,7 @@ THook(bool, "?_pushOutItems@Hopper@@IEAA_NAEAVBlockSource@@AEAVContainer@@AEBVVe
 {
     IF_LISTENED(EVENT_TYPES::onHopperPushOut)
     {
-        CallEventRtnBool(EVENT_TYPES::onHopperPushOut, FloatPos::newPos(*pos, Raw_GetBlockDimension(bs)));
+        CallEventRtnBool(EVENT_TYPES::onHopperPushOut, FloatPos::newPos(*pos, Raw_GetBlockDimensionId(bs)));
     }
     IF_LISTENED_END(EVENT_TYPES::onHopperPushOut);
     return original(_this, bs, container, pos, a5);
