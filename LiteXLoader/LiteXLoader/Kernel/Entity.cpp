@@ -112,8 +112,9 @@ std::vector<Actor*> Raw_GetAllEntities(int dimid)
     auto dim = Raw_GetDimByLevel(lv, dimid);
     if (!dim)
         return entityList;
-    auto& list = *(std::unordered_map<long, void*>*)((uintptr_t)dim + 304);
-    //entityList.resize(list.size());
+    auto& list = *(std::unordered_map<long, void*>*)((uintptr_t)dim + 304);     //Dimension::getEntityIdMap
+    
+    //Check Valid
     auto currTick = SymCall("?getCurrentTick@Level@@UEBAAEBUTick@@XZ"
         , Tick*, Level*)(lv)->t;
     for (auto& i : list)
