@@ -82,5 +82,4 @@ void BindAPIs(ScriptEngine *engine)
     engine->registerNativeClass<NbtByteArrayClass>(NbtByteArrayClassBuilder);
     engine->registerNativeClass<NbtListClass>(NbtListClassBuilder);
     engine->registerNativeClass<NbtCompoundClass>(NbtCompoundClassBuilder);
-
 }
