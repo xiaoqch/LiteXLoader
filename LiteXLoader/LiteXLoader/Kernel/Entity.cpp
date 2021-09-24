@@ -112,13 +112,19 @@ std::vector<Actor*> Raw_GetAllEntities(int dimid)
     auto dim = Raw_GetDimByLevel(lv, dimid);
     if (!dim)
         return entityList;
-    auto list = *(std::unordered_map<long, Actor*>*)((uintptr_t)dim + 304);
+    auto& list = *(std::unordered_map<long, void*>*)((uintptr_t)dim + 304);
     //entityList.resize(list.size());
-
-    for (auto i : list)
+    auto currTick = SymCall("?getCurrentTick@Level@@UEBAAEBUTick@@XZ"
+        , Tick*, Level*)(lv)->t;
+    for (auto& i : list)
     {
-        if(!Raw_EntityIsRemoved(i.second))
-            entityList.push_back(i.second);
+        auto entity = SymCall("??$tryUnwrap@VActor@@$$V@WeakEntityRef@@QEBAPEAVActor@@XZ",
+            Actor*, void*)(&i.second);
+        if (!entity)
+            continue;
+        auto lastTick = Raw_GetEntityLastTick(entity)->t;
+        if (currTick - lastTick == 0 || currTick - lastTick == 1)
+            entityList.push_back(entity);
     }
     return entityList;
 }
@@ -270,4 +276,14 @@ bool Raw_RefreshItems(Actor* ac)
 bool Raw_EntityIsRemoved(Actor* ac)
 {
     return SymCall("?isRemoved@Actor@@QEBA_NXZ", bool, Actor*)(ac);
+}
+
+Tick* Raw_GetEntityLastTick(Actor* ac)
+{
+    auto bs = Raw_GetBlockSourceByActor(ac);
+    auto bpos = ((Vec3)ac->getPos()).toBlockPos();
+    void* lc = SymCall("?getChunkAt@BlockSource@@QEBAPEAVLevelChunk@@AEBVBlockPos@@@Z",
+        void*, BlockSource*, BlockPos*)(bs, &bpos);
+    return SymCall("?getLastTick@LevelChunk@@QEBAAEBUTick@@XZ"
+        , Tick*, void*)(lc);
 }
