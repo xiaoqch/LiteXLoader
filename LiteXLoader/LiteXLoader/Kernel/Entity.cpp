@@ -79,10 +79,8 @@ FloatVec4 Raw_GetEntityPos(Actor* actor)
 
 IntVec4 Raw_GetEntityBlockPos(Actor* actor)
 {
-    BlockPos pos;
-    SymCall("?getFeetBlockPos@CommandUtils@@YA?AVBlockPos@@PEBVActor@@@Z",
-        BlockPos*, BlockPos*, Actor*)(&pos, actor);
-    return { pos.x,pos.y,pos.z,Raw_GetEntityDimId(actor) };
+    auto pos = Raw_GetEntityPos(actor);
+    return { (int)pos.x, (int)(pos.y+0.5), (int)pos.z, pos.dim };
 }
 
 int Raw_GetHealth(Actor *actor)
