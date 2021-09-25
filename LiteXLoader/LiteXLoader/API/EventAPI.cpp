@@ -11,6 +11,7 @@
 #include <Kernel/Global.h>
 #include <Kernel/Base.h>
 #include <Kernel/Block.h>
+#include <Kernel/BlockEntity.h>
 #include <Kernel/Item.h>
 #include <Kernel/Entity.h>
 #include <Kernel/Player.h>
@@ -814,12 +815,13 @@ THook(bool, "?stopOpen@ChestBlockActor@@UEAAXAEAVPlayer@@@Z",
 {
     IF_LISTENED(EVENT_TYPES::onCloseContainer)
     {
-        auto bp = (BlockPos*)((char*)_this - 240);          //IDA ChestBlockActor::stopOpen
+        auto ba = (BlockActor*)((char*)_this - 240);        //IDA ChestBlockActor::stopOpen
+        auto bp = Raw_GetBlockEntityPos(ba);
         int dim = Raw_GetPlayerDimId(pl);
         BlockSource* bs = Raw_GetBlockSourceByDim(dim);
-        Block* bl = Raw_GetBlockByPos(bp,bs);
+        Block* bl = Raw_GetBlockByPos(&bp,bs);
 
-        CallEventRtnBool(EVENT_TYPES::onCloseContainer, PlayerClass::newPlayer(pl), BlockClass::newBlock(bl, bp, dim));
+        CallEventRtnBool(EVENT_TYPES::onCloseContainer, PlayerClass::newPlayer(pl), BlockClass::newBlock(bl, &bp, dim));
     }
     IF_LISTENED_END(EVENT_TYPES::onCloseContainer);
     return original(_this, pl);
@@ -847,12 +849,13 @@ THook(bool, "?stopOpen@BarrelBlockActor@@UEAAXAEAVPlayer@@@Z",
 {
     IF_LISTENED(EVENT_TYPES::onCloseContainer)
     {
-        auto bp = (BlockPos*)((char*)_this - 240);          //IDA BarrelBlockActor::stopOpen
+        auto ba = (BlockActor*)((char*)_this - 240);       //EventAPI onCloseContainer_Chest
+        auto bp = Raw_GetBlockEntityPos(ba);
         int dim = Raw_GetPlayerDimId(pl);
         BlockSource* bs = Raw_GetBlockSourceByDim(dim);
-        Block* bl = Raw_GetBlockByPos(bp, bs);
+        Block* bl = Raw_GetBlockByPos(&bp, bs);
 
-        CallEventRtnBool(EVENT_TYPES::onCloseContainer, PlayerClass::newPlayer(pl), BlockClass::newBlock(bl, bp, dim));
+        CallEventRtnBool(EVENT_TYPES::onCloseContainer, PlayerClass::newPlayer(pl), BlockClass::newBlock(bl, &bp, dim));
     }
     IF_LISTENED_END(EVENT_TYPES::onCloseContainer);
     return original(_this, pl);
@@ -898,13 +901,12 @@ THook(bool, "?_hurt@Mob@@MEAA_NAEBVActorDamageSource@@H_N1@Z",
         if (ac)
         {
             auto level = offPlayer::getLevel(ac);
-            char v83;
-            auto v6 = *(void**)(*(__int64(__fastcall**)(void*, char*))(*(uintptr_t*)ads + 64))(ads, &v83);
-            auto src = SymCall("?fetchEntity@Level@@UEBAPEAVActor@@UActorUniqueID@@_N@Z", Actor*, Level*,
-                void*, bool)(level, v6, 0);
-            
+            void* v83;
+            auto v6 = *VirtualCall<ActorUniqueID*>(ads, 0x40, &v83); //IDA ActorDamageSource::`vftable'
+            auto src = Raw_GetEntityByUniqueId(v6);
 
-            CallEventRtnBool(EVENT_TYPES::onMobHurt, EntityClass::newEntity(ac), EntityClass::newEntity(src),
+            CallEventRtnBool(EVENT_TYPES::onMobHurt, EntityClass::newEntity(ac),
+                src ? EntityClass::newEntity(src) : Local<Value>(),
                 Number::newNumber(damage));
         }
     }
@@ -1001,7 +1003,7 @@ THook(void, "?onProjectileHit@Block@@QEBAXAEAVBlockSource@@AEBVBlockPos@@AEBVAct
 {
     IF_LISTENED(EVENT_TYPES::onProjectileHitBlock)
     {
-        if (Raw_GetEntityTypeName(actor) != "minecraft:air")
+        if (Raw_GetBlockType(_this) != "minecraft:air")
         {
             CallEventRtnVoid(EVENT_TYPES::onProjectileHitBlock, BlockClass::newBlock(_this, bp, bs), EntityClass::newEntity(actor));
         }
@@ -1158,8 +1160,10 @@ THook(bool, "?_attachedBlockWalker@PistonBlockActor@@AEAA_NAEAVBlockSource@@AEBV
     IF_LISTENED(EVENT_TYPES::onPistonPush)
     {
         int dim = Raw_GetBlockDimensionId(bs);
-        BlockPos pistonPos = _this->getPosition();
+        BlockPos pistonPos = Raw_GetBlockEntityPos(_this);
         Block* pushedBlock = Raw_GetBlockByPos(bp, bs);
+        if (Raw_GetBlockType(pushedBlock) == "minecraft:air")
+            return original(_this, bs, bp, a3, a4);
 
         CallEventRtnBool(EVENT_TYPES::onPistonPush, IntPos::newPos(pistonPos, dim), BlockClass::newBlock(pushedBlock, bp, dim));
     }
