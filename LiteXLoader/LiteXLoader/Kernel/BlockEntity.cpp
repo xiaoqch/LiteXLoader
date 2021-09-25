@@ -28,7 +28,7 @@ unsigned int Raw_GetBlockEntityType(BlockActor* ba)
 
 BlockPos Raw_GetBlockEntityPos(BlockActor* ba)
 {
-	return ba->getPosition();
+	return dAccess<BlockPos>(ba, 44); //(Linux)BlockActor::getPosition
 }
 
 bool Raw_RemoveBlockEntity(IntVec4 pos)
